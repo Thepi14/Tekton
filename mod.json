@@ -1,9 +1,9 @@
 {
-    "displayName": "Mod Template",
-    "description": "Mindustry Java mod template, complete with EntityAnno and syntax downgrader integration.",
-    "version": "v1.0",
+    "displayName": "Tekton",
+    "description": "A Mindustry Java mod adding a new planet.",
+    "version": "v0.1.0",
     "minGameVersion": "146",
-    "author": "You",
+    "author": "ThePi14",
     "java": true,
-    "main": "template.ModTemplate"
+    "main": "tekton.Tekton"
 }
