@@ -20,7 +20,7 @@ import static mindustry.Vars.*;
 
 
 public class TektonStatusEffects {
-	public static StatusEffect tarredInMethane, wetInAcid, acidified, shortCircuit, incineration, radioactiveContamination, radiationAbsorption, foggerStatus;
+	public static StatusEffect tarredInMethane, wetInAcid, acidified, shortCircuit, incineration, radioactiveContamination, radiationAbsorption, foggerStatus, cobwebbed;
 	
 	public static void load(){
 		
@@ -138,6 +138,7 @@ public class TektonStatusEffects {
 			show = true;
 			hideDetails = false;
 			outline = false;
+			permanent = false;
 	        color = Color.valueOf("bbd658");
 			applyColor = Color.valueOf("bbd658");
 	        speedMultiplier = rspeedMultiplier;
@@ -159,7 +160,7 @@ public class TektonStatusEffects {
 			show = true;
 			hideDetails = false;
 			outline = false;
-			permanent = true;
+			permanent = false;
 	        color = Color.valueOf("bbd658");
 			applyColor = Color.valueOf("bbd658");
 	        speedMultiplier = 2f - rspeedMultiplier;
@@ -171,7 +172,18 @@ public class TektonStatusEffects {
 	        effect = Fx.none;
 	    }};
 	    
-	    foggerStatus = new StatusEffect("fogger") {{
+	    cobwebbed = new StatusEffect("status-cobwebbed") {{
+			show = true;
+			hideDetails = false;
+			outline = false;
+	        color = Color.valueOf("d6d6d6");
+			applyColor = Color.valueOf("d6d6d6");
+	        speedMultiplier = 0.1f;
+	        dragMultiplier = 1.2f;
+	        effect = Fx.none;
+	    }};
+	    
+	    foggerStatus = new StatusEffect("status-fogger") {{
 	    	show = false;
 			hideDetails = true;
 			outline = false;

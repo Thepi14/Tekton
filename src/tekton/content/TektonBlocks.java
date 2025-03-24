@@ -323,7 +323,7 @@ public class TektonBlocks {
 		graphiteConcentrator = new GenericCrafter("graphite-concentrator"){{
 			requirements(Category.crafting, with(iron, 90, zirconium, 70, Items.silicon, 25));
 			
-			outputItem = new ItemStack(Items.graphite, 2);
+			outputItem = new ItemStack(Items.graphite, 3);
 			outputLiquid = new LiquidStack(Liquids.water, 10f / 60f);
 			craftTime = 180f;
 			size = 3;
@@ -1363,6 +1363,7 @@ public class TektonBlocks {
 
 			consumePower(160f / 60f);
 			consumeLiquid(TektonLiquids.oxygen, 1f / 60f);
+			consumeLiquid(TektonLiquids.ammonia, 2f / 60f).boost();
 		}};
 		
 		carbonicLaserDrill = new Drill("carbonic-laser-drill") {{
@@ -1378,6 +1379,8 @@ public class TektonBlocks {
 			rotateSpeed = 10f;
 			warmupSpeed = 0.01f;
 			itemCapacity = 50;
+
+	        ambientSoundVolume = 0.044f;
 			
 			drillMultipliers.put(TektonItems.zirconium, multiCarbonicDrill(0.2f));
 			drillMultipliers.put(TektonItems.iron, multiCarbonicDrill(0.4f));
@@ -1386,9 +1389,9 @@ public class TektonBlocks {
 			blockedItem = Items.sand;
 			//drillMultipliers.put(Items.sand, multiCarbonicDrill(0.5f));
 			
-			liquidBoostIntensity = 1.5f;
+			liquidBoostIntensity = 1.6f;
 			
-			consumePower(450f / 60f);
+			consumePower(480f / 60f);
 			consumeLiquid(Liquids.hydrogen, 5f / 60f);
 			consumeLiquid(TektonLiquids.ammonia, 3f / 60f).boost();
 		}};
@@ -1466,6 +1469,7 @@ public class TektonBlocks {
 		}};
 		
 		//turrets
+		
 		one = new ItemTurret("one") {{
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
@@ -1482,7 +1486,7 @@ public class TektonBlocks {
 					iron, new BasicBulletType(6f, 25){{
 						width = 7f;
 						height = 9f;
-						lifetime = 150f;
+						lifetime = 15f;
 						shootEffect = Fx.shootSmall;
 						shootEffect = Fx.shootSmallSmoke;
 						sprite = "tekton-basic-bullet";
@@ -1496,7 +1500,7 @@ public class TektonBlocks {
 					Items.silicon, new BasicBulletType(6.2f, 35){{
 						width = 7f;
 						height = 9f;
-						lifetime = 150f;
+						lifetime = 15f;
 						shootEffect = Fx.shootSmall;
 						shootEffect = Fx.shootSmallSmoke;
 						sprite = "tekton-basic-bullet";
@@ -2820,7 +2824,7 @@ public class TektonBlocks {
 				new UnitType[]{TektonUnits.piezo, TektonUnits.electret},
 				new UnitType[]{TektonUnits.martyris, TektonUnits.bellator},
 				new UnitType[]{TektonUnits.caravela, TektonUnits.sagres},
-				new UnitType[]{TektonUnits.nail, TektonUnits.striker}
+				new UnitType[]{TektonUnits.nail, TektonUnits.strike}
 			);
 			researchCostMultiplier = 0.25f;
 		}};
@@ -2901,7 +2905,7 @@ public class TektonBlocks {
 			constructTime = 60f * 80f;
 
 			upgrades.addAll(
-				new UnitType[]{TektonUnits.striker, TektonUnits.hammer}
+				new UnitType[]{TektonUnits.strike, TektonUnits.hammer}
 			);
             researchCostMultiplier = 0.5f;
 		}};

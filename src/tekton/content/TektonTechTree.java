@@ -302,7 +302,7 @@ public class TektonTechTree {
         	        		});
         				});
             		});
-    				node(TektonUnits.striker, Seq.with(new SectorComplete(river)), () -> {
+    				node(TektonUnits.strike, Seq.with(new SectorComplete(river)), () -> {
     					node(mechRefabricator, Seq.with(new SectorComplete(proelium)), () -> {
     						node(TektonUnits.hammer, Seq.with(new Research(mechRefabricator)), () -> {
         	        			
@@ -391,9 +391,12 @@ public class TektonTechTree {
             					node(TektonUnits.formica, () -> {
             						node(TektonUnits.gracilipes, () -> {
             							node(TektonUnits.carabidae, () -> {
-            								
+            								node(TektonUnits.latrodectus, () -> {
+            									node(TektonLiquids.cobweb, Seq.with(new Research(latrodectus)), () -> {
+                            						
+                            					});
+                        					});
                     					});
-            							
                 					});
             						node(TektonUnits.isoptera, () -> {
                 						

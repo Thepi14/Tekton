@@ -6,7 +6,7 @@ import mindustry.type.CellLiquid;
 import mindustry.type.Liquid;
 
 public class TektonLiquids {
-	public static Liquid ammonia, oxygen, methane, liquidMethane, metazotoplasm, acid;
+	public static Liquid ammonia, oxygen, methane, liquidMethane, metazotoplasm, acid, cobweb;
 	
 	public static void load(){
 		ammonia = new Liquid("ammonia", TektonColor.ammonia) {{
@@ -39,7 +39,8 @@ public class TektonLiquids {
 			flammability = 0.9f;
 			explosiveness = 0.5f;
 			alwaysUnlocked = true;
-            gasColor = TektonColor.methane;
+            lightColor = TektonColor.methane.cpy().a(0.3f);
+            gasColor = TektonColor.methane.cpy().mul(1.1f);
             effect = TektonStatusEffects.tarredInMethane;
 		}};
 		
@@ -83,6 +84,19 @@ public class TektonLiquids {
             colorFrom = Color.valueOf("999999");
             colorTo = Color.valueOf("55ff55");
         }};
+        
+        cobweb = new Liquid("cobweb", Color.valueOf("d6d6d6")) {{
+        	hidden = false;
+            coolant = false;
+			gas = false;
+			temperature = 1f;
+            viscosity = 0.9f;
+            effect = TektonStatusEffects.cobwebbed;
+            lightColor = Color.valueOf("d6d6d6").a(0.3f);
+            boilPoint = 0.9f;
+			alwaysUnlocked = false;
+			canStayOn.addAll(Liquids.water, liquidMethane);
+		}};
         
         Liquids.water.canStayOn.addAll(ammonia, liquidMethane);
 	}

@@ -10,6 +10,7 @@ import arc.util.*;
 import mindustry.content.Fx;
 import mindustry.entities.*;
 import mindustry.entities.abilities.*;
+import mindustry.entities.effect.ExplosionEffect;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.effect.ParticleEffect;
 import mindustry.entities.effect.WaveEffect;
@@ -66,6 +67,20 @@ public class TektonFx {
         			colorTo = Color.valueOf("4a9eff");
         		}}
     	};
+    }},
+    
+    electricExplosionShoot = new ExplosionEffect(){{
+        lifetime = 40f;
+        waveStroke = 4f;
+        waveColor = sparkColor = smokeColor = Pal.lancerLaser;
+        waveRad = 15f;
+        smokeSize = 5f;
+        smokes = 8;
+        smokeSizeBase = 0f;
+        sparks = 8;
+        sparkRad = 40f;
+        sparkLen = 4f;
+        sparkStroke = 3f;
     }},
     
 	lancerLaserCharge = copyEffect(Fx.lancerLaserCharge),
