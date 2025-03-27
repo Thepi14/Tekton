@@ -454,20 +454,19 @@ public class TektonUnits {
             	parts.add(new RegionPart("-breech") {{
             		mirror = true;
             		under = false;
-                    x = 0f;
-                    y = 0f;
+                    x = y = 0f;
                     var a = 1.5f;
             		moveX = a * 1.5f;
             		moveY = -a;
             		heatProgress = PartProgress.warmup;
                     heatColor = Color.valueOf("4a9eff");
-                    outlineLayerOffset = 0f;
                     }});
                 top = true;
                 shoot = new ShootHelix() {{
                 mag = 1f;
                 scl = 2.7f;
                 shots = 1;
+                layerOffset = 0.01f;
             	}};
                 //layerOffset = 0.0001f;
                 x = 0f;
@@ -1120,23 +1119,132 @@ public class TektonUnits {
 			rotateSpeed = 1.8f;
 			armor = 14;
 			itemCapacity = 0;
-			faceTarget = false;
+			faceTarget = true;
 			crashDamageMultiplier = 2f;
             engineSize = 5.6f;
             engineOffset = 62 / 3f;
             var xPos = 19f;
             var yPos = 12.5f;
+            aimDst = xPos + 20f;
+            
             for (float i : Mathf.signs) {
             	abilities.add(new SuppressionFieldAbility() {{
                     orbRadius = 9.5f;
                     range = 60f;
                     x = xPos * i;
                     y = yPos;
-                    
+                    active = i > 0;
                 }});
                 abilities.add(wavePart(xPos * i, yPos, false, 9.5f * 2.2f, 3f, 120f / 2f, 10f, 9.5f));
             }
+            
+            var bulletImperatoris = new ContinuousFlameBulletType() {{
+            	//layer = Layer.flyingUnit + 0.1f;
+                damage = 500f / 12f;
+                length = 300f;
+                drawSize = 0f;
+                lifetime = 200f;
+                continuous = true;
+                width = 10f;
+                shake = 1f;
+                shootEffect = smokeEffect = hitEffect = despawnEffect = Fx.none;
+                chargeEffect = new Effect(40f, 100f, e -> {
+                    color(Pal.sapBullet);
+                    stroke(e.fin() * 2f);
+                    Lines.circle(e.x, e.y, e.fout() * 50f);
+                }).followParent(true).rotWithParent(true);
+                chargeEffect.layer = Layer.flyingUnit;
+                
+                flareLayer = Layer.flyingUnit + 1f;
+                colors = new Color[]{Pal.sapBullet.cpy().a(.2f), Pal.sapBullet.cpy().a(.5f), Pal.sapBullet.cpy().mul(1.2f), Color.white};
+                flareWidth = 5f;
+                flareLength = 70f;
+                hitColor = flareColor = Pal.sapBullet.cpy().mul(1.15f);
 
+                pierce = true;
+                pierceBuilding = true;
+                pierceArmor = true;
+                pierceCap = 2;
+                incendChance = 0.05f;
+                incendAmount = 2;
+                incendSpread = 3f;
+                
+                status = StatusEffects.melting;
+                statusDuration = 130f;
+            }};
+            
+            var imperatorisWeapon = new Weapon(name + "-weapon") {{
+            	x = xPos - 6;
+            	y = yPos + 19f;
+                mirror = true;
+                top = false;
+                layerOffset = -0.0001f;
+                shake = 4f;
+                shootY = 1f;
+                rotate = true;
+                shootCone = 15f;
+                rotationLimit = 60f;
+                alternate = false;
+                rotateSpeed = 3f;
+
+                shoot.firstShotDelay = Fx.greenLaserChargeSmall.lifetime - 1f;
+                parentizeEffects = true;
+
+                reload = 40f;
+                recoil = 2f;
+                chargeSound = Sounds.lasercharge2;
+                shootSound = Sounds.beam;
+                continuous = true;
+                cooldownTime = 200f;
+                
+                parts.add(new RegionPart("-piece") {{
+            		mirror = true;
+            		under = false;
+                    x = y = 0f;
+                    var a = 2f;
+            		moveX = a;
+            		moveY = -a;
+            		progress = PartProgress.warmup;
+                    heatColor = Pal.sapBullet;
+                    outlineLayerOffset = -0.0001f;
+                    }});
+
+                bullet = bulletImperatoris;
+
+                heatColor = lightColor = Pal.sapBullet.cpy().mul(1.15f);
+            }};
+            
+            weapons.add(imperatorisWeapon, new Weapon(name + "-weapon") {{
+            	x = 0f;
+            	y = yPos + 14f;
+                mirror = false;
+                top = true;
+                shake = imperatorisWeapon.shake;
+                shootY = imperatorisWeapon.shootY;
+                rotate = imperatorisWeapon.rotate;
+                shootCone = imperatorisWeapon.shootCone;
+                rotationLimit = imperatorisWeapon.rotationLimit;
+                alternate = false;
+                rotateSpeed = imperatorisWeapon.rotateSpeed;
+
+                shoot.firstShotDelay = Fx.greenLaserChargeSmall.lifetime - 1f;
+                parentizeEffects = imperatorisWeapon.parentizeEffects;
+
+                reload = imperatorisWeapon.reload;
+                recoil = imperatorisWeapon.recoil;
+                chargeSound = imperatorisWeapon.chargeSound;
+                shootSound = imperatorisWeapon.shootSound;
+                continuous = imperatorisWeapon.continuous;
+                cooldownTime = imperatorisWeapon.cooldownTime;
+                layerOffset = 0.01f;
+                
+                parts.add(imperatorisWeapon.parts);
+
+                bullet = bulletImperatoris;
+
+                heatColor = lightColor = imperatorisWeapon.heatColor;
+            }});
+            
             researchCostMultiplier = 0f;
 		}};
 		
