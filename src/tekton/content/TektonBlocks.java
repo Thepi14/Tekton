@@ -7,7 +7,6 @@ import arc.struct.*;
 import arc.graphics.Color;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
-import mindustry.content.Blocks;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
@@ -16,7 +15,6 @@ import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
 import mindustry.entities.part.*;
-import mindustry.entities.part.DrawPart.PartProgress;
 import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -31,12 +29,12 @@ import mindustry.world.blocks.payloads.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.*;
-import mindustry.world.blocks.units.*;
 import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import tekton.*;
+import tekton.type.gravity.*;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
@@ -49,7 +47,9 @@ public class TektonBlocks {
 	public static Block 
 	
 	//Environment
-	methane, deepMethane, methaneDarkSilicaSand, silicaSand, darkSilicaSand, brownSand, brownStone, brownIce, brownStoneWall, brownStoneVent, diatomite, diatomiteWall, diatomiteVent,
+	methane, deepMethane, methaneDarkSilicaSand, silicaSand, darkSilicaSand, 
+	brownSand, brownStone, brownIce, brownStoneWall, brownStoneVent, 
+	diatomite, diatomiteWall, diatomiteVent,
 	
 	//ores
 	oreIron, oreZirconium, oreTantalum, oreUranium,
@@ -61,20 +61,25 @@ public class TektonBlocks {
 	diatomiteBoulder, brownStoneBoulder,
 	
 	//crafting
-	/*artificialVent,*/ siliconFilter, siliconSmelter, graphiteConcentrator, coldElectrolyzer, atmosphericMethaneConcentrator, 
+	siliconFilter, siliconSmelter, graphiteConcentrator, coldElectrolyzer, atmosphericMethaneConcentrator, 
 	polycarbonateSynthesizer, sandFilter, ammoniaCatalyst, cryogenicMixer, polytalumFuser, hydrogenIncinerator,
 	
+	//gravity
+	gravityConductor, gravityRouter, electricalCoil, thermalCoil, phaseNanoCoil,
+	
 	//walls
-	ironWall, ironWallLarge, polycarbonateWall, polycarbonateWallLarge, tantalumWall, tantalumWallLarge, gate, polytalumWall, polytalumWallLarge, uraniumWall, uraniumWallLarge, nanoAlloyWall, nanoAlloyWallLarge,
+	ironWall, ironWallLarge, polycarbonateWall, polycarbonateWallLarge, tantalumWall, tantalumWallLarge, gate, 
+	polytalumWall, polytalumWallLarge, uraniumWall, uraniumWallLarge, nanoAlloyWall, nanoAlloyWallLarge,
 	
 	//transport
-	ironDuct, tantalumDuct, ironRouter, ironBridge, ironDistributor, /*ironJunction,*/ ironOverflow, ironUnderflow, ironSorter, ironInvertedSorter, ironUnloader,
+	ironDuct, tantalumDuct, ironRouter, ironBridge, ironDistributor, ironOverflow, ironUnderflow, ironSorter, ironInvertedSorter, ironUnloader,
 	
 	//liquid
 	bridgePipe, polycarbonateBridgePipe, pipeJunction, pipeRouter, polycarbonatePipe, pipe, methanePump, polycarbonateLiquidContainer, polycarbonateLiquidReserve,
 	
 	//power
-	lineNode, lineTower, lineLink, powerCapacitor, powerBank, reinforcedDiode, lightningRod, methaneBurner, geothermalGenerator, methaneCombustionChamber, thermalDifferenceGenerator, uraniumReactor,
+	lineNode, lineTower, lineLink, powerCapacitor, powerBank, reinforcedDiode, lightningRod, methaneBurner, 
+	geothermalGenerator, methaneCombustionChamber, thermalDifferenceGenerator, uraniumReactor, 
 	
 	//production
 	wallDrill, silicaAspirator, silicaTurbine, geothermalCondenser, undergroundWaterExtractor, reactionDrill, carbonicLaserDrill,
@@ -83,16 +88,17 @@ public class TektonBlocks {
 	corePrimal, coreDeveloped, capsule, vault,
 	
 	//defense
-	regenerator, regenerationDome,
+	regenerator, regenerationDome, gravitationalEmitter,
 	
 	//others
 	researchRadar, sensor,
 	
 	//turrets
-	one, duel, compass, skyscraper, spear, sword, interfusion, freezer, azure, havoc, tesla, prostrate,
+	one, duel, compass, skyscraper, spear, sword, interfusion, freezer, azure, havoc, tesla, prostrate, concentration,
 	
 	//units
-	primordialUnitFactory, unitDeveloper, tankRefabricator, airRefabricator, navalRefabricator, mechRefabricator, multiAssembler, tankAssemblerModule, airAssemblerModule, navalAssemblerModule, mechAssemblerModule,
+	primordialUnitFactory, unitDeveloper, tankRefabricator, airRefabricator, navalRefabricator, mechRefabricator, 
+	multiAssembler, tankAssemblerModule, airAssemblerModule, navalAssemblerModule, mechAssemblerModule,
 	
 	//payload
 	ironPayloadConveyor, ironPayloadRouter, deconstructor, constructor, payloadLoader, payloadUnloader, payloadLauncher,
@@ -289,7 +295,7 @@ public class TektonBlocks {
 			consumeItem(silica, 2);
 			craftTime = 140f;
 			size = 2;
-			health = 400;
+			health = 360;
 			hasItems = true;
 			squareSprite = false;
 
@@ -569,6 +575,88 @@ public class TektonBlocks {
             consumePower(0.50f);
             consumeLiquid(Liquids.hydrogen, 0.1f / 60f);
         }};
+        
+        //gravity stuff
+		
+		gravityConductor = new GravityConductor("gravity-conductor") {{
+			requirements(Category.crafting, with(iron, 20, Items.silicon, 10, polycarbonate, 15));
+			health = 280;
+			size = 2;
+			
+            researchCostMultiplier = 5f;
+			
+            group = BlockGroup.heat;
+            //drawer = new DrawMulti(new DrawDefault(), new DrawGravityOutput(), new DrawGravityInput() {{ drawSides = false; }});
+
+			//ambientSound = Sounds.electricHum;
+			//ambientSoundVolume = 0.1f;
+		}};
+		
+		gravityRouter = new GravityConductor("gravity-router"){{
+            requirements(Category.crafting, with(iron, 25, Items.silicon, 15, polycarbonate, 15));
+			health = 320;
+			
+            researchCostMultiplier = 10f;
+
+            group = BlockGroup.heat;
+            size = 2;
+            drawer = new DrawMulti(new DrawDefault(), new DrawGravityOutput(-1, false), new DrawGravityOutput(), new DrawGravityOutput(1, false), new DrawGravityInput());
+            regionRotated1 = 1;
+            splitGravity = true;
+
+			//ambientSound = Sounds.electricHum;
+			//ambientSoundVolume = 0.1f;
+        }};
+        
+        electricalCoil = new GravityProducer("electrical-coil") {{
+        	requirements(Category.crafting, with(iron, 75, Items.silicon, 40, Items.graphite, 25));
+			health = 320;
+			
+            researchCostMultiplier = 3f;
+            
+            drawer = new DrawMulti(new DrawDefault(), new DrawGravityOutput());
+            rotateDraw = false;
+            size = 2;
+            gravityOutput = 1f;
+            regionRotated1 = 1;
+            ambientSound = Sounds.hum;
+            itemCapacity = 0;
+            consumePower(100f / 60f);
+        }};
+        
+        thermalCoil = new GravityProducer("thermal-coil") {{
+        	requirements(Category.crafting, with(iron, 110, Items.silicon, 70, Items.graphite, 40, tantalum, 45));
+			health = 400;
+			
+            researchCostMultiplier = 2f;
+            
+            drawer = new DrawMulti(new DrawDefault(), new DrawGravityOutput());
+            rotateDraw = false;
+            size = 2;
+            gravityOutput = 4f;
+            regionRotated1 = 1;
+            ambientSound = Sounds.hum;
+            consumeItem(cryogenicCompound, 1);
+            craftTime = 60f * 4f;
+            consumePower(150f / 60f);
+        }};
+        
+        phaseNanoCoil = new GravityProducer("phase-nano-coil") {{
+        	requirements(Category.crafting, with(iron, 180, Items.silicon, 120, nanoAlloy, 50, polytalum, 80));
+			health = 820;
+			
+            researchCostMultiplier = 2f;
+            
+            drawer = new DrawMulti(new DrawDefault(), new DrawGravityOutput());
+            rotateDraw = false;
+            size = 3;
+            gravityOutput = 12f;
+            regionRotated1 = 1;
+            ambientSound = Sounds.hum;
+            consumeItem(Items.phaseFabric, 1);
+            craftTime = 60f * 8f;
+            consumePower(300f / 60f);
+        }};
 		
 		//defense
 		var ironLife = 400;
@@ -786,6 +874,20 @@ public class TektonBlocks {
 				timeScl = 2f;
 				color = col;
 			}}, new DrawWarmupRegion() {{ color = Color.sky; }});
+		}};
+		
+		gravitationalEmitter = new GravitationalTurret("gravitational-emitter"){{
+			requirements(Category.effect, with(Items.silicon, 450, tantalum, 200, iron, 500, polytalum, 200));
+			squareSprite = false;
+			outlineColor = tektonOutlineColor;
+			size = 4;
+            heatColor = TektonColor.gravityColor;
+            drawer = new DrawTurret("quad-") {{
+            	
+            }};
+            consumePower(640f / 60f);
+			
+			shootType = new BasicBulletType(1f, 1f);
 		}};
 		
 		//transport blocks
@@ -1469,8 +1571,11 @@ public class TektonBlocks {
 		}};
 		
 		//turrets
+        
+        var defCoolantMultiplier = 20f;
 		
 		one = new ItemTurret("one") {{
+            coolantMultiplier = defCoolantMultiplier;
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
 			drawer = new DrawTurret("quad-");
@@ -1516,12 +1621,12 @@ public class TektonBlocks {
 					}}
 				);
 			coolant = consumeCoolant(0.5f / 60f, true, true);
-			coolantMultiplier = 1f;
 			buildCostMultiplier = 1.4f;
 			alwaysUnlocked = true;
 		}};
 		
 		duel = new ItemTurret("duel") {{
+            coolantMultiplier = defCoolantMultiplier;
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
 			size = 2;
@@ -1617,7 +1722,6 @@ public class TektonBlocks {
 				};
 			}};
 			coolant = consumeCoolant(1f / 60f, true, true);
-			coolantMultiplier = 1f;
 			researchCostMultiplier = 0.4f;
 			buildCostMultiplier = 1.5f;
 		}};
@@ -1724,6 +1828,7 @@ public class TektonBlocks {
 		}};
 		
 		skyscraper = new ItemTurret("skyscraper") {{
+            coolantMultiplier = defCoolantMultiplier;
 			unitSort = UnitSorts.weakest;
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
@@ -1819,12 +1924,12 @@ public class TektonBlocks {
 				shots = 2;
 			}};
 			coolant = consumeCoolant(1f / 60f, true, true);
-			coolantMultiplier = 1f;
 			researchCostMultiplier = 0.4f;
 			buildCostMultiplier = 1.5f;
 		}};
 		
 		spear = new ItemTurret("spear") {{
+            coolantMultiplier = defCoolantMultiplier;
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
 			size = 3;
@@ -1923,7 +2028,6 @@ public class TektonBlocks {
 						}};
 					}});
 			coolant = consumeCoolant(2f / 60f, true, true);
-			coolantMultiplier = 0.65f;
 			researchCostMultiplier = 0.8f;
 			buildCostMultiplier = 1.8f;
 		}};
@@ -2276,6 +2380,7 @@ public class TektonBlocks {
 		}};
 		
 		azure = new ItemTurret("azure") {{
+            coolantMultiplier = defCoolantMultiplier;
 			unitSort = UnitSorts.closest;
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
@@ -2319,7 +2424,7 @@ public class TektonBlocks {
 			requirements(Category.turret, with(iron, 100, zirconium, 100, Items.graphite, 40));
 			health = 1000;
 			reload = 5f;
-			range = 180f;
+			var brange = range = 220f;
 			//shootSound = Sounds.pew;
 			maxAmmo = 10;
 			inaccuracy = 14;
@@ -2361,18 +2466,55 @@ public class TektonBlocks {
 							collidesGround = false;
 						}};
 						ammoMultiplier = 1;
+					}},
+					
+					polytalum, new FlakBulletType(9f, 6){{
+						rangeChange = 80f;
+						width = 7f;
+						height = 9f;
+						lifetime = 30f;
+						shootEffect = Fx.shootSmall;
+						shootEffect = Fx.shootSmallSmoke;
+						sprite = "tekton-basic-bullet";
+						backSprite = "tekton-basic-bullet-back";
+						frontColor = backColor = trailColor = polytalum.color;
+						lightRadius = 15;
+						lightOpacity = 0.5f;
+						lightColor = polytalum.color;
+						trailChance = -1;
+						trailWidth = 2;
+						trailLength = 7;
+						reloadMultiplier = 1f;
+						buildingDamageMultiplier = 0.25f;
+						hitEffect = Fx.flakExplosion;
+						splashDamage = 40;
+						splashDamageRadius = 22f;
+						explodeRange = 11f;
+
+						fragBullets = 7;
+						fragBullet = new BasicBulletType(3f, 7){{
+							width = 5f;
+							height = 12f;
+							shrinkY = 1f;
+							lifetime = 27f;
+							backColor = frontColor = polytalum.color;
+							despawnEffect = Fx.none;
+							collidesGround = false;
+						}};
+						ammoMultiplier = 1;
 					}}
 				);
 			coolant = consumeCoolant(1f / 60f, true, true);
-			coolantMultiplier = 1f;
 			researchCostMultiplier = 0.4f;
 			buildCostMultiplier = 1.5f;
 		}};
 		
 		havoc = new ItemTurret("havoc"){{
 			requirements(Category.turret, with(Items.silicon, 220, tantalum, 200, zirconium, 160, uranium, 180));
+            coolantMultiplier = defCoolantMultiplier;
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
+            coolantMultiplier = 2f;
 			heatColor = Color.valueOf("ff3333df");
 			//heat = PartProgress.warmup;
 			drawer = new DrawTurret("quad-") {{
@@ -2454,7 +2596,6 @@ public class TektonBlocks {
 
 			consumeLiquid(Liquids.hydrogen, 3f / 60f);
             coolant = consume(new ConsumeLiquid(Liquids.water, 4f / 60f));
-            coolantMultiplier = 3.75f;
 			
 			ammo(
 					uranium, new ArtilleryBulletType(3f, 250, "shell"){{
@@ -2704,11 +2845,13 @@ public class TektonBlocks {
 			size = 4;
 			health = 2900;
 			recoil = 0f;
-			reload = 120f;
+			reload = 20f;
 			shake = 2f;
 			smokeEffect = Fx.none;
 			heatColor = Color.red;
-			shootSound = Sounds.plasmaboom;
+			shootSound = Sounds.none;
+            loopSound = Sounds.glow;
+            loopSoundVolume = 0.8f;
 			soundPitchMin = 0.6f;
 			soundPitchMax = 0.8f;
 			shootWarmupSpeed = 0.08f;
@@ -2744,20 +2887,15 @@ public class TektonBlocks {
 				statusDuration = 10f;
 				status = StatusEffects.shocked;
 				hitColor = Color.valueOf("ff5959");
-				damage = 350f;
+				damage = 100f;
 				radius = rad + 10f;
 				splashDamageRadius = rad + 10f;
-				splashDamage = 350f;
-				unitDamageScl = 0f;
+				splashDamage = 1f;
+				unitDamageScl = 1f;
 				chainEffect = Fx.chainEmp.wrap(hitColor);
 				hitPowerEffect.wrap(hitColor);
                 applyEffect.wrap(hitColor);
 				hitEffect = new Effect(50f, 100f, e -> {
-                    e.scaled(7f, b -> {
-                        color(e.color, b.fout());
-                        Fill.circle(e.x, e.y, rad);
-                    });
-
                     color(e.color);
                     stroke(e.fout() * 3f);
                     Lines.circle(e.x, e.y, rad);
@@ -2776,11 +2914,192 @@ public class TektonBlocks {
                     Fill.circle(e.x, e.y, 6f * e.fout());
                     Drawf.light(e.x, e.y, rad * 1.6f, e.color, e.fout());
                 });
-			}};
+			}
+			
+			@Override
+		    public float continuousDamage(){
+		        return damage * 100f / reload * 3f;
+		    }
+			
+			@Override
+		    public float estimateDPS(){
+		        return damage * 100f / reload * 3f;
+		    }
+			
+			};
 			
 			buildCostMultiplier = 2.3f;
 			researchCostMultiplier = 1f;
 		}};
+		
+		concentration = new ItemTurret("concentration"){{
+			squareSprite = false;
+			outlineColor = tektonOutlineColor;
+			var div = 1.4f;
+
+            requirements(Category.turret, with(iron, 400, polycarbonate, 300, uranium, 300, polytalum, 200, Items.silicon, 400));
+            ammo(
+            		Items.silicon, new BasicBulletType(14f, 550f){{
+        			lifetime /= div;
+        			sprite = "tekton-big-circle-bullet";
+        			height = width = 14f;
+        			shrinkX = shrinkY = 0f;
+                    shootEffect = TektonFx.instShoot;
+                    hitEffect = TektonFx.instHit;
+                    smokeEffect = Fx.smokeCloud;
+                    despawnEffect = TektonFx.instBomb;
+
+                    hitSound = Sounds.none;
+                    despawnSound = Sounds.shotgun;
+                    
+                    trailEffect = TektonFx.sparks;
+                    trailChance = 10f;
+                    frontColor = Color.white;
+                    backColor = trailColor = lightColor = lightningColor = hitColor = Pal.techBlue;
+                    
+                    buildingDamageMultiplier = 0.2f;
+                    pierce = true;
+                    pierceArmor = true;
+                    pierceDamageFactor = 1f / 15f;
+                    pierceCap = 14;
+                    hitShake = 5f;
+                    ammoMultiplier = 1f;
+                    fragBullets = 1;
+                    fragAngle = 0f;
+                    fragRandomSpread = 0f;
+                    fragBullet = 
+                		new ShrapnelBulletType() {{
+	                    	damage = 70f;
+	                    	length = 50f;
+	                    	keepVelocity = false;
+	                    	pierce = true;
+	                    	pierceArmor = false;
+	                    	lightColor = lightningColor = hitColor = fromColor = Pal.techBlue;
+	                    	toColor = Color.white;
+	                    	despawnSound = Sounds.none;
+                			hitSound = Sounds.shotgun;
+	                    	hitSoundPitch = 1f;
+	                    	hitSoundVolume = 0.3f;
+	                    }};
+            		}},
+            		
+            		nanoAlloy, new BasicBulletType(14f, 1000f){{
+            			lifetime /= div;
+            			sprite = "tekton-big-circle-bullet";
+            			height = width = 14f;
+            			shrinkX = shrinkY = 0f;
+                        shootEffect = TektonFx.instShoot;
+                        hitEffect = TektonFx.instHit;
+                        smokeEffect = Fx.smokeCloud;
+                        despawnEffect = TektonFx.instBomb;
+                        
+                        hitSound = Sounds.none;
+                        despawnSound = Sounds.shotgun;
+                        
+                        trailEffect = TektonFx.sparks;
+                        trailChance = 10f;
+                        frontColor = Color.white;
+                        backColor = trailColor = lightColor = lightningColor = hitColor = Pal.lightOrange;
+                        
+                        buildingDamageMultiplier = 0.2f;
+                        pierce = true;
+                        pierceArmor = true;
+                        pierceDamageFactor = 1f / 28f;
+                        pierceCap = 27;
+                        hitShake = 7f;
+                        ammoMultiplier = 1f;
+                        fragBullets = 1;
+                        fragAngle = 0f;
+                        fragRandomSpread = 0f;
+                        fragBullet = 
+                    		new ShrapnelBulletType() {{
+    	                    	damage = 140f;
+    	                    	length = 50f;
+    	                    	keepVelocity = false;
+    	                    	pierce = true;
+    	                    	pierceArmor = true;
+    	                        buildingDamageMultiplier = 0.5f;
+    	                    	lightColor = lightningColor = hitColor = fromColor = Pal.lightOrange;
+    	                    	toColor = Color.white;
+    	                    	despawnSound = Sounds.none;
+                    			hitSound = Sounds.shotgun;
+    	                    	hitSoundPitch = 1f;
+    	                    	hitSoundVolume = 0.3f;
+    	                    }};
+                		}}
+            );
+            
+            var col = Pal.techBlue;
+            var mov = 9f;
+            
+            heatColor = Pal.turretHeat;
+            drawer = new DrawTurret("quad-") {{
+            	//((RegionPart)parts.get(0)).outlineLayerOffset = -0.01f;
+				parts.addAll(
+						new RegionPart("-blade") {{
+							progress = PartProgress.warmup;
+							mirror = true;
+							x = 0;
+							y = 0;
+							moveX = mov / 2f;
+							moveY = 0;
+							under = true;
+							layerOffset = -0.00001f;
+							outlineLayerOffset = -0.01f;
+							
+							moveRot = -30f;
+							heatColor = col;
+							heatProgress = PartProgress.warmup;
+						}},
+						new RegionPart("-blade2") {{
+							progress = PartProgress.warmup;
+							mirror = true;
+							x = 0;
+							y = 0;
+							moveX = mov;
+							moveY = 0;
+							under = true;
+							layerOffset = -0.00002f;
+							outlineLayerOffset = -0.01f;
+							
+							moveRot = -60f;
+							heatColor = col;
+							heatProgress = PartProgress.warmup;
+						}},
+						new RegionPart("-glow") {{
+							progress = PartProgress.warmup;
+							mirror = false;
+							x = 0;
+							y = 0;
+							heatColor = col;
+							heatProgress = PartProgress.warmup;
+						}}
+				);
+			}};
+			
+			range = 580f / div;
+			minWarmup = 0.9f;
+            maxAmmo = 40;
+            ammoPerShot = 4;
+            rotateSpeed = 2f;
+            reload = 200f;
+            ammoUseEffect = Fx.casing3Double;
+            recoil = 3f;
+            cooldownTime = reload;
+            shake = 4f;
+            size = 4;
+            shootCone = 2f;
+            shootSound = Sounds.railgun;
+            unitSort = UnitSorts.strongest;
+            envEnabled |= Env.space;
+
+            scaledHealth = 150;
+
+			consumeLiquid(Liquids.hydrogen, 3.5f / 60f);
+            consumePower(10f);
+        }};
+        
+        
 		
 		//units
 		

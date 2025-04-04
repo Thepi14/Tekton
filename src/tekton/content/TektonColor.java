@@ -12,6 +12,8 @@ public class TektonColor {
 	oxygen = Color.valueOf("b48fff"),
 	metazotoplasm = Color.valueOf("aaccaa"),
 	zirconiumSpark = Color.valueOf("fdff8c"),
-	tektonOutlineColor = Color.valueOf("3d352f")
+	tektonOutlineColor = Color.valueOf("3d352f"),
+	gravityColor = Color.valueOf("639bff"),
+	antiGravityColor = Color.valueOf("d95763")
 	;
 }

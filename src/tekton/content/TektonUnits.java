@@ -8,7 +8,6 @@ import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Rect;
 import arc.struct.Seq;
-import ent.anno.Annotations.EntityDef;
 import mindustry.Vars;
 import mindustry.ai.types.*;
 import mindustry.entities.Effect;
@@ -102,7 +101,7 @@ public class TektonUnits {
             trailLength = 14;
             lowAltitude = true;
             hitSize = 5.5f;
-            targetAir = false;
+            targetAir = true;
             //singleTarget = true;
             //autoFindTarget = false;
             
@@ -118,7 +117,6 @@ public class TektonUnits {
             }});
             
             weapons.add(new Weapon() {{
-                targetAir = false;
                 shootCone = 360f;
                 mirror = false;
                 reload = 1f;
@@ -126,7 +124,7 @@ public class TektonUnits {
             	shootY = 1f;
                 
                 bullet = new ExplosionBulletType(70f * 2f, 35f) {{
-                    collidesAir = false;
+                    collidesAir = true;
                 	range = 1f;
                 	hitShake = 3f;
                 	shootEffect = new MultiEffect(Fx.massiveExplosion, new WrapEffect(Fx.dynamicSpikes, Pal.techBlue, 24f), new WaveEffect() {{
@@ -1105,9 +1103,8 @@ public class TektonUnits {
 			
             this.constructor = UnitEntity::create;
             targetAir = true;
-            //targetFlags = new BlockFlag[]{BlockFlag.battery, BlockFlag.factory, null};
+            targetFlags = new BlockFlag[]{BlockFlag.reactor, BlockFlag.battery, BlockFlag.core, null};
             rotateSpeed = 2.5f;
-			targetPriority = 1;
 			strafePenalty = 0.5f;
 			speed = 1.2f;
             lowAltitude = false;
@@ -1126,21 +1123,23 @@ public class TektonUnits {
             var xPos = 19f;
             var yPos = 12.5f;
             aimDst = xPos + 20f;
+            range = xPos + 100f;
             
             for (float i : Mathf.signs) {
             	abilities.add(new SuppressionFieldAbility() {{
                     orbRadius = 9.5f;
-                    range = 60f;
+                    range = 320f;
                     x = xPos * i;
                     y = yPos;
-                    active = i > 0;
                 }});
                 abilities.add(wavePart(xPos * i, yPos, false, 9.5f * 2.2f, 3f, 120f / 2f, 10f, 9.5f));
             }
+            ((SuppressionFieldAbility)abilities.get(0)).active = false;
+            abilities.get(0).display = false;
             
             var bulletImperatoris = new ContinuousFlameBulletType() {{
             	//layer = Layer.flyingUnit + 0.1f;
-                damage = 500f / 12f;
+                damage = 400f / 12f;
                 length = 300f;
                 drawSize = 0f;
                 lifetime = 200f;
@@ -1165,6 +1164,7 @@ public class TektonUnits {
                 pierceBuilding = true;
                 pierceArmor = true;
                 pierceCap = 2;
+                //pierceDamageFactor = 0.15f;
                 incendChance = 0.05f;
                 incendAmount = 2;
                 incendSpread = 3f;
@@ -1176,7 +1176,7 @@ public class TektonUnits {
             var imperatorisWeapon = new Weapon(name + "-weapon") {{
             	x = xPos - 6;
             	y = yPos + 19f;
-                mirror = true;
+                mirror = false;
                 top = false;
                 layerOffset = -0.0001f;
                 shake = 4f;
@@ -1214,7 +1214,7 @@ public class TektonUnits {
                 heatColor = lightColor = Pal.sapBullet.cpy().mul(1.15f);
             }};
             
-            weapons.add(imperatorisWeapon, new Weapon(name + "-weapon") {{
+            weapons.add(imperatorisWeapon.copy(), new Weapon(name + "-weapon") {{
             	x = 0f;
             	y = yPos + 14f;
                 mirror = false;
@@ -1243,7 +1243,8 @@ public class TektonUnits {
                 bullet = bulletImperatoris;
 
                 heatColor = lightColor = imperatorisWeapon.heatColor;
-            }});
+            }}, imperatorisWeapon);
+            weapons.get(0).x = -imperatorisWeapon.x;
             
             researchCostMultiplier = 0f;
 		}};

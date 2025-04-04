@@ -83,6 +83,91 @@ public class TektonFx {
         sparkStroke = 3f;
     }},
     
+	instShoot = new Effect(24f, e -> {
+        e.scaled(10f, b -> {
+            color(Color.white, b.color, b.fin());
+            stroke(b.fout() * 3f + 0.2f);
+            Lines.circle(b.x, b.y, b.fin() * 50f);
+        });
+
+        color(e.color);
+
+        for(int i : Mathf.signs){
+            Drawf.tri(e.x, e.y, 13f * e.fout(), 85f, e.rotation + 90f * i);
+            Drawf.tri(e.x, e.y, 13f * e.fout(), 50f, e.rotation + 20f * i);
+        }
+
+        Drawf.light(e.x, e.y, 180f, e.color, 0.9f * e.fout());
+    }),
+	
+	instHit = new Effect(20f, 200f, e -> {
+        color(e.color);
+
+        for(int i = 0; i < 2; i++){
+            color(i == 0 ? e.color : e.color);
+
+            float m = i == 0 ? 1f : 0.5f;
+
+            for(int j = 0; j < 5; j++){
+                float rot = e.rotation + Mathf.randomSeedRange(e.id + j, 50f);
+                float w = 23f * e.fout() * m;
+                Drawf.tri(e.x, e.y, w, (80f + Mathf.randomSeedRange(e.id + j, 40f)) * m, rot);
+                Drawf.tri(e.x, e.y, w, 20f * m, rot + 180f);
+            }
+        }
+
+        e.scaled(10f, c -> {
+            color(e.color);
+            stroke(c.fout() * 2f + 0.2f);
+            Lines.circle(e.x, e.y, c.fin() * 30f);
+        });
+
+        e.scaled(12f, c -> {
+            color(e.color);
+            randLenVectors(e.id, 25, 5f + e.fin() * 80f, e.rotation, 60f, (x, y) -> {
+                Fill.square(e.x + x, e.y + y, c.fout() * 3f, 45f);
+            });
+        });
+    }),
+	
+	instBomb = new Effect(15f, 100f, e -> {
+        color(e.color);
+        stroke(e.fout() * 4f);
+        Lines.circle(e.x, e.y, 4f + e.finpow() * 20f);
+
+        for(int i = 0; i < 4; i++){
+            Drawf.tri(e.x, e.y, 6f, 80f * e.fout(), i*90 + 45);
+        }
+
+        color();
+        for(int i = 0; i < 4; i++){
+            Drawf.tri(e.x, e.y, 3f, 30f * e.fout(), i*90 + 45);
+        }
+
+        Drawf.light(e.x, e.y, 150f, e.color, 0.9f * e.fout());
+    }),
+	
+	sparks = new Effect(30f, 20f, e -> {
+        rand.setSeed(e.id + 1);
+		color(e.color);
+        stroke(e.fout() * 2f);
+        float circleRad = 0.3f + e.finpow() * e.rotation;
+        float range = 5.5f;
+        float ex = rand.range(range);
+        float ey = rand.range(range);
+
+        for(int i = 0; i < 4; i++){
+            Drawf.tri(e.x + ex, e.y + ey, 5f, e.rotation * 1.5f * e.fout(), i*90);
+        }
+
+        color();
+        for(int i = 0; i < 4; i++){
+            Drawf.tri(e.x + ex, e.y + ey, 2.5f, e.rotation * 1.45f / 3f * e.fout(), i*90);
+        }
+
+        Drawf.light(e.x + ex, e.y + ey, circleRad * 1.6f, Pal.heal, e.fout());
+    }),
+    
 	lancerLaserCharge = copyEffect(Fx.lancerLaserCharge),
 	lancerLaserChargeBegin = copyEffect(Fx.lancerLaserChargeBegin),
 	
