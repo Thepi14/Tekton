@@ -1,6 +1,6 @@
 # Tekton
 
-I forgot to change de description 🔥
+I forgot to change the description 🔥
 
 ## Pi
 
