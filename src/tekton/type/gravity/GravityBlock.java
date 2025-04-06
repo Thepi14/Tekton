@@ -5,7 +5,7 @@ import arc.util.Nullable;
 
 public interface GravityBlock {
 	float gravity();
-    /** @return heat as a fraction of max heat */
+    /** @return gravity as a fraction of max gravity */
     float gravityFrac();
     float calculateGravity(float[] sideGravity, @Nullable IntSet cameFrom);
 }

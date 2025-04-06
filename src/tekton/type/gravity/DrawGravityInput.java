@@ -33,8 +33,8 @@ public class DrawGravityInput extends DrawBlock {
 
     @Override
     public void draw(Building build){
-
         Draw.z(Layer.blockAdditive);
+        
         if(build instanceof GravityConsumer hc){
             float[] side = hc.sideGravity();
             if (drawSides)
@@ -55,7 +55,10 @@ public class DrawGravityInput extends DrawBlock {
                 Draw.color();
             }
         }
+        
         Draw.z(Layer.block);
+        
+        Draw.reset();
     }
 
     @Override

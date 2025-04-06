@@ -8,29 +8,32 @@ import arc.struct.IntSet;
 import arc.util.Nullable;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
+import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import tekton.content.*;
 import mindustry.Vars;
-import mindustry.gen.Building;
 import tekton.type.gravity.GravityConductor.GravityConductorBuild;
 
 public class GravitationalTurret extends PowerTurret {
-	public int minGravity = 2;
-	public int maxGravity = 10;
+	public int minGravity = 10;
+	public int maxGravity = 20;
 	
 	public GravitationalTurret(String name) {
 		super(name);
-		
+
+        coolantMultiplier = 1f;
+        envEnabled |= Env.space;
+        displayAmmoMultiplier = false;
 	}
 	
 	@Override
     public void setBars() {
         super.setBars();
         addBar("gravity", (GravitationalTurretBuild entity) -> new Bar(
-        		() -> Core.bundle.format(entity.gravity >= 0 ? "bar.gravityPercent" : "bar.antiGravityPercent", (int)(Math.abs(entity.gravity) + 0.01f), (int)(entity.efficiency() * 100 + 0.01f)), 
+        		() -> Core.bundle.format(entity.gravity >= 0 ? "bar.gravityPercent" : "bar.antiGravityPercent", (int)(Math.abs(entity.gravity) + 0.01f), (float)(entity.efficiency() * 100)), 
         		() -> entity.gravity >= 0 ? TektonColor.gravityColor : TektonColor.antiGravityColor, 
-				() -> ((float)Math.abs(entity.gravity)) / (float)maxGravity));
+				() -> ((float)Math.abs(entity.gravity)) / (float)minGravity));
     }
 	
 	@Override
@@ -38,12 +41,21 @@ public class GravitationalTurret extends PowerTurret {
         super.setStats();
         
         stats.add(Stat.maxEfficiency, (maxGravity / minGravity) * 100f, StatUnit.percent);
-        stats.add(TektonStat.gravityUse, maxGravity, TektonStat.gravityPower);
+        stats.add(TektonStat.gravityUse, minGravity, TektonStat.gravityPower);
+
+        stats.remove(Stat.reload);
+        stats.remove(Stat.inaccuracy);
     }
 	
 	public class GravitationalTurretBuild extends PowerTurretBuild implements GravityConsumer {
 		public int gravity = 0;
         public float[] sideGravity = new float[4];
+        
+    	@Override
+        public float estimateDps(){
+            if(!hasAmmo()) return 0f;
+            return shootType.damage * 60f / (shootType instanceof WaveBulletType c ? c.damageInterval : 5f);
+        }
         
         @Override
         public void updateTile(){
@@ -62,12 +74,12 @@ public class GravitationalTurret extends PowerTurret {
         }
         
         public float warmupTarget(){
-            return Mathf.clamp(Math.abs(gravity) / minGravity);
+            return Mathf.clamp(Math.abs((float)gravity) / (float)minGravity);
         }
         
         @Override
         public float efficiency(){
-        	return Math.min(Math.abs(gravity) / minGravity, maxGravity);
+        	return Math.min(Math.abs((float)gravity) / (float)minGravity, (float)maxGravity);
         }
         
         public float calculateGravity(float[] sideGravity){
@@ -78,6 +90,11 @@ public class GravitationalTurret extends PowerTurret {
         protected float baseReloadSpeed(){
             return super.baseReloadSpeed() * efficiency();
         }
+
+		@Override
+		public float gravity() {
+			return gravity;
+		}
         
         public float calculateGravity(float[] sideGravity, @Nullable IntSet cameFrom){
             Arrays.fill(sideGravity, 0f);

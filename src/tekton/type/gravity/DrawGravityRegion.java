@@ -33,17 +33,19 @@ public class DrawGravityRegion extends DrawBlock{
     @Override
     public void draw(Building build){
         Draw.z(Layer.blockAdditive);
-        if(build instanceof GravityCrafterBuild hc && hc.gravity > 0){
-
+        
+        if(build instanceof GravityConsumer hc && hc.gravity() > 0){
             float z = Draw.z();
             if(layer > 0) Draw.z(layer);
             Draw.blend(Blending.additive);
-            Draw.color(color, Mathf.clamp(hc.gravity / hc.gravityRequirement()) * (color.a * (1f - pulse + Mathf.absin(pulseScl, pulse))));
+            Draw.color(color, Mathf.clamp(hc.gravity() / hc.gravityRequirement()) * (color.a * (1f - pulse + Mathf.absin(pulseScl, pulse))));
             Draw.rect(gravity, build.x, build.y);
             Draw.blend();
             Draw.color();
             Draw.z(z);
         }
+        
+        Draw.reset();
     }
 
     @Override

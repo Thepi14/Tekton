@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
 
 public class TektonSounds {
 	
-	public static Sound laserred, laserredsmall, pyon, tchau, shotheavy, sonarloop, sonarping, freezer, lightningstrike, tesla;
+	public static Sound laserred, laserredsmall, pyon, tchau, shotheavy, sonarloop, sonarping, freezer, lightningstrike, tesla, gravity, gravityemission;
 	
 	public static void load(){
 		Class<?> c = TektonSounds.class;

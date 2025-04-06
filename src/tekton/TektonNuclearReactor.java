@@ -59,8 +59,8 @@ public class TektonNuclearReactor extends PowerGenerator {
         hasItems = true;
         hasLiquids = true;
         rebuildable = false;
-        flags = EnumSet.of(BlockFlag.reactor, BlockFlag.generator);
         schematicPriority = -5;
+        flags = EnumSet.of(BlockFlag.reactor, BlockFlag.generator);
         envEnabled = Env.any;
 
         explosionShake = 6f;

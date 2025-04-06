@@ -14,6 +14,7 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.draw.*;
+import mindustry.world.meta.BlockGroup;
 import tekton.content.TektonColor;
 import tekton.content.TektonVars;
 import tekton.type.gravity.GravitationalTurret.GravitationalTurretBuild;
@@ -26,9 +27,14 @@ public class GravityConductor extends Block {
 
     public GravityConductor(String name){
         super(name);
+        group = BlockGroup.heat;
+        
         update = solid = rotate = true;
         rotateDraw = false;
-        size = 3;
+        drawArrow = true;
+        replaceable = true;
+        //alwaysReplace = true;
+        size = 2;
         
         drawer = new DrawMulti(new DrawDefault(), new DrawGravityOutput(), new DrawGravityInput());
     }

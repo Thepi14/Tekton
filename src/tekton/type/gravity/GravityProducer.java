@@ -22,12 +22,15 @@ public class GravityProducer extends GenericCrafter{
 
     public GravityProducer(String name){
         super(name);
+        group = BlockGroup.heat;
 
-        drawer = new DrawMulti(new DrawDefault(), new DrawHeatOutput() {{ heatColor = TektonColor.gravityColor; }});
+        drawer = new DrawMulti(new DrawDefault(), new DrawGravityOutput());
         rotateDraw = false;
         rotate = true;
         canOverdrive = false;
         drawArrow = true;
+        replaceable = true;
+        //alwaysReplace = true;
     }
 
     @Override

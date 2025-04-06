@@ -1,11 +1,8 @@
 package tekton;
 
-import static arc.graphics.g2d.Draw.color;
-import static arc.graphics.g2d.Lines.lineAngle;
-import static arc.graphics.g2d.Lines.stroke;
-import static arc.math.Angles.randLenVectors;
-
-import javax.print.attribute.standard.MediaSize.Other;
+import static arc.graphics.g2d.Draw.*;
+import static arc.graphics.g2d.Lines.*;
+import static arc.math.Angles.*;
 
 import arc.math.Mathf;
 import mindustry.Vars;

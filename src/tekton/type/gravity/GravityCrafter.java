@@ -10,18 +10,23 @@ public class GravityCrafter extends GenericCrafter {
 	}
 
 	public class GravityCrafterBuild extends GenericCrafterBuild implements GravityConsumer {
-		public int gravity;
+		public float gravity;
+		public float minGravity = 2;
+        public float[] sideGravity = new float[4];
+
+        @Override
+        public float[] sideGravity(){
+            return sideGravity;
+        }
+
+        @Override
+        public float gravityRequirement(){
+            return minGravity;
+        }
 
 		@Override
-		public float[] sideGravity() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public float gravityRequirement() {
-			// TODO Auto-generated method stub
-			return 0;
+		public float gravity() {
+			return gravity;
 		}
 	}
 }

@@ -43,6 +43,8 @@ public class DrawGravityOutput extends DrawBlock {
             Draw.blend();
             Draw.color();
         }
+        
+        Draw.reset();
     }
 
     @Override
