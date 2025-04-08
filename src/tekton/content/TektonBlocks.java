@@ -500,8 +500,8 @@ public class TektonBlocks {
 			ambientSound = Sounds.bioLoop;
 			ambientSoundVolume = 0.08f;
 			
-			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawItemFulness(Items.sand) {{ alpha = 0.5f; }}, 
-					new DrawLiquidTile(Liquids.water), new DrawItemFulness(silica) {{ alpha = 0.5f; }}, 
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawItemFulness(Items.sand) {{ alpha = 0.65f; }}, 
+					new DrawLiquidTile(Liquids.water) {{ alpha = 0.85f; }}, new DrawItemFulness(silica) {{ alpha = 0.75f; }}, 
 					new DrawRegion("-rotator", 0.8f, true), new DrawDefault());
 			
 			researchCostMultiplier = 0.3f;
@@ -1125,7 +1125,7 @@ public class TektonBlocks {
 		}};
 		
 		lineLink = new LongPowerNodeLink("line-link"){{
-			requirements(Category.power, with(zirconium, 300, Items.silicon, 250, tantalum, 150, polytalum, 150, uranium, 80));
+			requirements(Category.power, with(nanoAlloy, 100, Items.silicon, 200, tantalum, 200, polytalum, 120, uranium, 80));
 			health = 2000;
 			size = 4;
 			laserRange = 120f;
@@ -1142,7 +1142,7 @@ public class TektonBlocks {
 		
 		powerCapacitor = new Battery("power-capacitor") {{
 			health = 140 / 2;
-			requirements(Category.power, with(iron, 5, zirconium, 20));
+			requirements(Category.power, with(iron, 40, Items.graphite, 20));
 			size = 2;
 			emptyLightColor = Color.valueOf("fa6666");
 			fullLightColor = Color.valueOf("f8c266");
@@ -1152,7 +1152,7 @@ public class TektonBlocks {
 		
 		powerBank = new Battery("power-bank") {{
 			health = 1040 / 2;
-			requirements(Category.power, with(tantalum, 20, zirconium, 50, Items.silicon, 30));
+			requirements(Category.power, with(tantalum, 30, Items.graphite, 50, Items.silicon, 30));
 			size = 3;
 			emptyLightColor = Color.valueOf("fa6666");
 			fullLightColor = Color.valueOf("f8c266");
@@ -1629,7 +1629,7 @@ public class TektonBlocks {
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
 			drawer = new DrawTurret("quad-");
-			requirements(Category.turret, with(iron, 45, zirconium, 35));
+			requirements(Category.turret, with(iron, 40, zirconium, 30));
 			health = 250;
 			reload = 60;
 			range = 150;
@@ -1701,7 +1701,7 @@ public class TektonBlocks {
 					under = false;
 				}}});
 			}};
-			requirements(Category.turret, with(iron, 100, zirconium, 120, Items.graphite, 60));
+			requirements(Category.turret, with(iron, 100, zirconium, 60, Items.graphite, 40));
 			health = 800;
 			reload = 40;
 			range = 160;
@@ -1781,7 +1781,7 @@ public class TektonBlocks {
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
 			drawer = new DrawTurret("quad-");
-			requirements(Category.turret, with(Items.silicon, 150, iron, 80, zirconium, 60));
+			requirements(Category.turret, with(Items.silicon, 100, iron, 40, zirconium, 30));
 			range = 176f;
 			size = 2;
 			health = 900;
@@ -1898,7 +1898,7 @@ public class TektonBlocks {
 					progress = PartProgress.constant(0);
 				}}});
 			}};
-			requirements(Category.turret, with(iron, 100, zirconium, 100, Items.graphite, 40));
+			requirements(Category.turret, with(iron, 60, zirconium, 70, Items.graphite, 40));
 			health = 600;
 			reload = 25f;
 			range = 180f;
@@ -2009,7 +2009,7 @@ public class TektonBlocks {
 			}};
 			unitSort = UnitSorts.strongest;
 			shoot.firstShotDelay = 20f;
-			requirements(Category.turret, with(Items.silicon, 150, tantalum, 200, Items.graphite, 150));
+			requirements(Category.turret, with(Items.silicon, 100, tantalum, 180, Items.graphite, 120));
 			health = 1900;
 			reload = 100f;
 			range = 260f;
@@ -2124,7 +2124,7 @@ public class TektonBlocks {
 							heatProgress = PartProgress.warmup;
 						}});
 			}};
-			requirements(Category.turret, with(Items.silicon, 200, iron, 300, tantalum, 120, polycarbonate, 100));
+			requirements(Category.turret, with(Items.silicon, 180, iron, 170, tantalum, 110, polycarbonate, 80));
 			range = 255f;
 
 			shoot = new ShootPattern() {{
@@ -2287,7 +2287,7 @@ public class TektonBlocks {
 			shootY = 5f;
 			recoils = 3;
 			recoil = 0.5f;
-			requirements(Category.turret, with(iron, 100, zirconium, 100, Items.graphite, 40));
+			requirements(Category.turret, with(iron, 180, zirconium, 120, Items.graphite, 80));
 			health = 1000;
 			reload = 5f;
 			var brange = range = 220f;
@@ -2413,7 +2413,7 @@ public class TektonBlocks {
 					under = false;
 				}});
 			}};
-			requirements(Category.turret, with(Items.silicon, 90, tantalum, 200, Items.graphite, 100, zirconium, 150));
+			requirements(Category.turret, with(Items.silicon, 100, tantalum, 180, Items.graphite, 110, zirconium, 200));
 			health = 2100;
 			reload = 80f;
 			range = 120f;
@@ -2455,7 +2455,7 @@ public class TektonBlocks {
 		}};
 		
 		freezer = new ItemLiquidTurret("freezer") {{
-			requirements(Category.turret, with(Items.silicon, 90, tantalum, 100, Items.graphite, 170, polycarbonate, 120));
+			requirements(Category.turret, with(Items.silicon, 110, tantalum, 80, Items.graphite, 140, polycarbonate, 100));
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
 			size = 3;
@@ -2560,7 +2560,7 @@ public class TektonBlocks {
 		}};
 		
 		havoc = new ItemTurret("havoc"){{
-			requirements(Category.turret, with(Items.silicon, 220, tantalum, 200, zirconium, 160, uranium, 180));
+			requirements(Category.turret, with(Items.silicon, 220, tantalum, 320, zirconium, 160, uranium, 250));
             coolantMultiplier = defCoolantMultiplier;
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
@@ -2623,7 +2623,7 @@ public class TektonBlocks {
             range = 390f;
 			shootY = 14f;
 			size = 4;
-			health = 3700;
+			health = 3200;
 			shootCone = 1;
 			recoil = 1f;
 			reload = 150f;
@@ -2987,7 +2987,7 @@ public class TektonBlocks {
 			outlineColor = tektonOutlineColor;
 			var div = 1.4f;
 
-            requirements(Category.turret, with(iron, 400, polycarbonate, 300, uranium, 300, polytalum, 200, Items.silicon, 400));
+            requirements(Category.turret, with(iron, 300, nanoAlloy, 80, uranium, 120, polytalum, 160, Items.silicon, 220));
             ammo(
             		Items.silicon, new BasicBulletType(14f, 550f){{
         			lifetime /= div;
@@ -3143,14 +3143,14 @@ public class TektonBlocks {
             unitSort = UnitSorts.strongest;
             envEnabled |= Env.space;
 
-            scaledHealth = 150;
+			health = 3100;
 
 			consumeLiquid(Liquids.hydrogen, 3.5f / 60f);
             consumePower(10f);
         }};
 		
 		repulsion = new GravitationalTurret("repulsion"){{
-			requirements(Category.turret, with(Items.silicon, 450, tantalum, 200, iron, 500, polytalum, 200));
+			requirements(Category.turret, with(Items.silicon, 250, tantalum, 200, iron, 300, polytalum, 120));
 			health = 2700;
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;

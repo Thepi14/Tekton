@@ -23,6 +23,7 @@ import arc.struct.ObjectSet;
 import arc.struct.Seq;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.core.Renderer;
@@ -90,7 +91,18 @@ public class LongPowerNodeLink extends PowerBlock {
     public TextureRegion glow;
     public Color glowColor = Color.valueOf("cbfd81").a(0.45f);
     public float glowScl = 16f, glowMag = 0.6f;
+    
+    public int returnLinkSize(Building entity) {
+    	PowerModule power = entity.power;
+    	int num = 0;
+    	for (var node : power.links.toArray()) {
+    		if (Vars.world.build(node).block() instanceof LongPowerNodeLink)
+    			num++;
+    	}
+    	return num;
+    }
 
+	@SuppressWarnings({ "unchecked" })
 	public LongPowerNodeLink(String name) {
 		super(name);
 		
@@ -122,7 +134,7 @@ public class LongPowerNodeLink extends PowerBlock {
                     //reflow from other end
                     og.reflow(other);
                 }
-            }else if(linkValid(entity, other) && valid && power.links.size < maxNodes){
+            }else if(linkValid(entity, other) && valid && returnLinkSize(entity) < maxNodes){
 
                 power.links.addUnique(other.pos());
 
@@ -312,9 +324,9 @@ public class LongPowerNodeLink extends PowerBlock {
         addBar("batteries", makeBatteryBalance());
 
         addBar("connections", entity -> new Bar(() ->
-        Core.bundle.format("bar.powerlines", entity.power.links.size, maxNodes),
+        Core.bundle.format("bar.powerlines", returnLinkSize(entity), maxNodes),
             () -> Pal.items,
-            () -> (float)entity.power.links.size / (float)maxNodes
+            () -> (float)returnLinkSize(entity) / (float)maxNodes
         ));
     }
 
@@ -359,7 +371,8 @@ public class LongPowerNodeLink extends PowerBlock {
             overlaps(tile.x * tilesize + offset, tile.y * tilesize + offset, other.tile, laserRange * tilesize) && other.team == team &&
             !graphs.contains(other.power.graph) &&
             !PowerNode.insulated(tile, other.tile) &&
-            !(other instanceof PowerNodeBuild obuild && obuild.power.links.size >= ((PowerNode)obuild.block).maxNodes) &&
+            //!(other instanceof PowerNodeBuild obuild && obuild.power.links.size >= ((PowerNode)obuild.block).maxNodes) &&
+            (other instanceof LongPowerNodeLinkBuild obuild && returnLinkSize(obuild) <= ((LongPowerNodeLink)obuild.block).maxNodes) &&
             !Structs.contains(Edges.getEdges(size), p -> { //do not link to adjacent buildings
                 var t = world.tile(tile.x + p.x, tile.y + p.y);
                 return t != null && t.build == other;
@@ -406,58 +419,6 @@ public class LongPowerNodeLink extends PowerBlock {
         });
     }
 
-    //TODO code duplication w/ method above?
-    /** Iterates through linked nodes of a block at a tile. All returned buildings are power nodes. */
-    /*public static void getNodeLinks(Tile tile, Block block, Team team, Cons<Building> others){
-        Boolf<Building> valid = other -> other != null && other.tile != tile && other.block instanceof PowerNode node &&
-        node.autolink &&
-        other.power.links.size < node.maxNodes &&
-        node.overlaps(other.x, other.y, tile, block, node.laserRange * tilesize) && other.team == team
-        && !graphs.contains(other.power.graph) &&
-        !PowerNode.insulated(tile, other.tile) &&
-        !Structs.contains(Edges.getEdges(block.size), p -> { //do not link to adjacent buildings
-            var t = world.tile(tile.x + p.x, tile.y + p.y);
-            return t != null && t.build == other;
-        });
-
-        tempBuilds.clear();
-        graphs.clear();
-
-        //add conducting graphs to prevent double link
-        for(var p : Edges.getEdges(block.size)){
-            Tile other = tile.nearby(p);
-            if(other != null && other.team() == team && other.build != null && other.build.power != null
-                && !(block.consumesPower && other.block().consumesPower && !block.outputsPower && !other.block().outputsPower)){
-                graphs.add(other.build.power.graph);
-            }
-        }
-
-        if(tile.build != null && tile.build.power != null){
-            graphs.add(tile.build.power.graph);
-        }
-
-        var rangeWorld = maxRange * tilesize;
-        var tree = team.data().buildingTree;
-        if(tree != null){
-            tree.intersect(tile.worldx() - rangeWorld, tile.worldy() - rangeWorld, rangeWorld * 2, rangeWorld * 2, build -> {
-                if(valid.get(build) && !tempBuilds.contains(build)){
-                    tempBuilds.add(build);
-                }
-            });
-        }
-
-        tempBuilds.sort((a, b) -> {
-            int type = -Boolean.compare(a.block instanceof PowerNode, b.block instanceof PowerNode);
-            if(type != 0) return type;
-            return Float.compare(a.dst2(tile), b.dst2(tile));
-        });
-
-        tempBuilds.each(valid, t -> {
-            graphs.add(t.power.graph);
-            others.get(t);
-        });
-    }*/
-
     @Override
     public void drawPlanConfigTop(BuildPlan plan, Eachable<BuildPlan> list){
         if(plan.config instanceof Point2[] ps){
@@ -481,7 +442,7 @@ public class LongPowerNodeLink extends PowerBlock {
         }
     }
 
-    public boolean linkValid(Building tile, Building link){
+    /*public boolean linkValid(Building tile, Building link){
         return linkValid(tile, link, true);
     }
 
@@ -495,7 +456,7 @@ public class LongPowerNodeLink extends PowerBlock {
             return true;
         }
         return false;
-    }
+    }*/
 
     public static boolean insulated(Tile tile, Tile other){
         return insulated(tile.x, tile.y, other.x, other.y);
@@ -511,23 +472,25 @@ public class LongPowerNodeLink extends PowerBlock {
             return tile != null && tile.isInsulated();
         });
     }
+    
+    public boolean linkValid(Building tile, Building link){
+        return linkValid(tile, link, true);
+    }
+
+    public boolean linkValid(Building tile, Building link, boolean checkMaxNodes){
+        if(tile == link || link == null || !link.block.hasPower || !link.block.connectedPower || tile.team != link.team) return false;
+        if(checkMaxNodes && tile.block instanceof LongPowerNodeLink && link.block instanceof LongPowerNodeLink && overlaps(link, tile, (laserRange * tilesize) + (size / 2f))){
+            return true;
+        }
+        return false;
+    }
 	
 	public class LongPowerNodeLinkBuild extends Building{
 
         public float warmup = 0f;
 		public LongPowerNodeLinkBuild lastOther;
 		
-        public boolean linkValid(Building tile, Building link){
-            return linkValid(tile, link, true);
-        }
-
-        public boolean linkValid(Building tile, Building link, boolean checkMaxNodes){
-            if(tile == link || link == null || !link.block.hasPower || !link.block.connectedPower || tile.team != link.team) return false;
-            if(checkMaxNodes && tile.block instanceof LongPowerNodeLink && link.block instanceof LongPowerNodeLink && overlaps(link, tile, (laserRange * tilesize) + (size / 2f))){
-                return true;
-            }
-            return false;
-        }
+        
         
         @Override
         public boolean onConfigureBuildTapped(Building other){
@@ -537,7 +500,7 @@ public class LongPowerNodeLink extends PowerBlock {
             }
 
             if(this == other){ //double tapped
-                if(other.power.links.size == 0){ //find links
+                if(returnLinkSize(other) == 0){ //find links
                     Seq<Point2> points = new Seq<>();
                     getPotentialLinks(tile, team, link -> {
                         if(!insulated(this, link) && points.size < maxNodes){
@@ -559,7 +522,7 @@ public class LongPowerNodeLink extends PowerBlock {
         public void updateTile(){
             super.updateTile();
 
-            warmup = Mathf.lerpDelta(warmup, power.links.size > 0 ? 1f : 0f, 0.05f);
+            warmup = Mathf.lerpDelta(warmup, returnLinkSize(this) > 0 ? 1f : 0f, 0.05f);
         }
         
         @Override
