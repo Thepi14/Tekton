@@ -500,7 +500,9 @@ public class TektonBlocks {
 			ambientSound = Sounds.bioLoop;
 			ambientSoundVolume = 0.08f;
 			
-			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water), new DrawRegion("-rotator", 0.8f, true), new DrawDefault());
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawItemFulness(Items.sand) {{ alpha = 0.5f; }}, 
+					new DrawLiquidTile(Liquids.water), new DrawItemFulness(silica) {{ alpha = 0.5f; }}, 
+					new DrawRegion("-rotator", 0.8f, true), new DrawDefault());
 			
 			researchCostMultiplier = 0.3f;
 		}};
@@ -1241,7 +1243,7 @@ public class TektonBlocks {
 		thermalDifferenceGenerator = new ConsumeGenerator("thermal-difference-generator"){{
 			requirements(Category.power, with(iron, 70, tantalum, 50, zirconium, 100, Items.silicon, 65, polycarbonate, 50));
 			health = 800;
-			powerProduction = 1400f / 60f;
+			powerProduction = 1100f / 60f;
 			itemDuration = 2.1f * 60f;
 			squareSprite = false;
 			hasLiquids = true;
@@ -1286,7 +1288,7 @@ public class TektonBlocks {
 			size = 4;
 			health = 1400;
 			itemDuration = 140f;
-			powerProduction = 4800 / 60;
+			powerProduction = 4000 / 60;
 			heating = 0.005f;
 			explosionRadius = 25;
 			explosionDamage = 4000;
@@ -1322,20 +1324,24 @@ public class TektonBlocks {
 			liquidCapacity = 100f;
 
             ambientSound = Sounds.pulse;
-            ambientSoundVolume = 0.082f;
+            ambientSoundVolume = 0.085f;
+            
+            //regionRotated1 = 1;
             
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawPlasma() {{ plasma1 = Color.valueOf("ff6ea3"); plasma2 = Color.valueOf("b300ff"); }}, 
-            		new DrawRegion("-middle"), new DrawItemLiquidRegion(Liquids.cryofluid, cryogenicCompound), new DrawDefault(), 
-            		new DrawGravityRegion("-gravity"), new DrawGlowRegion() {{ color = Color.valueOf("ff6ea3").a(0.75f); }});
+            		new DrawRegion("-middle"), new DrawItemLiquidTile(Liquids.cryofluid, cryogenicCompound, 4f * 3f), new DrawDefault(), 
+            		new DrawGravityInput(), new DrawGravityRegion() {{ color.a(0.5f); }}, new DrawGlowRegion() {{ color = Color.valueOf("ff6ea3").a(0.6f); }});
+            
+            lightColor = Color.valueOf("ff6ea3");
 			
 			explosionRadius = 60;
-			explosionDamage = 12000;
+			explosionDamage = 14000;
 			
-			powerProduction = 12000 / 60;
+			powerProduction = 15000 / 60;
 			
 			consumePower(3000 / 60);
-			consumeItem(cryogenicCompound, 0).update(false);
-			consumeLiquid(Liquids.hydrogen, 6f / 60f);
+			consumeItem(cryogenicCompound, 1).update(false);
+			consumeLiquid(Liquids.hydrogen, 6f / 60f).update(false);
 		}};
 		
 		//production
@@ -3161,6 +3167,7 @@ public class TektonBlocks {
             shootCone = 90f;
             
             drawer = new DrawTurret("quad-") {{ 
+            	parts.clear();
             	parts.add(
 					new RegionPart(""){{
 						progress = PartProgress.warmup;

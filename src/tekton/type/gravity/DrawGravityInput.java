@@ -25,6 +25,7 @@ public class DrawGravityInput extends DrawBlock {
     }
 
     public DrawGravityInput(){
+    	
     }
 
     @Override

@@ -41,7 +41,6 @@ public class TektonNuclearReactor extends PowerGenerator {
     public float overheatEfficiency = 1f;
     
     public Color heatColor = Pal.lightFlame;
-    public Color coolColor = new Color(1, 1, 1, 0f);
     public Color hotColor = Color.valueOf("ff9575a3");
 
     public float alpha = 0.9f, glowScale = 10f, glowIntensity = 0.5f;
@@ -116,11 +115,11 @@ public class TektonNuclearReactor extends PowerGenerator {
             float coolantFullness = coolant / liquidCapacity;
             productionEfficiency = fullness * (fullness > fuelThreshold ? 1f : 0f);
             
-            if (fullness > fuelThreshold) {
+            if (fullness >= fuelThreshold) {
             	if(timer(timerFuel, itemDuration / timeScale)) {
                     consume();
                 }
-            	if (coolantFullness > coolantThreshold) {
+            	if (coolantFullness >= coolantThreshold) {
                 	heat -= (heating / 2f) * ((coolantFullness - coolantThreshold) + 0.1f);
                 }
             	else {
@@ -131,7 +130,7 @@ public class TektonNuclearReactor extends PowerGenerator {
             	heat -= (heating / 2f) * (coolantFullness + 0.1f);
             }
             
-            if(heat > heatThreshold) {
+            if(heat >= heatThreshold) {
             	float smoke = 0.1f + (heat / 1f);
                 if(Mathf.chance(smoke / 20.0 * delta())) {
                     Fx.reactorsmoke.at

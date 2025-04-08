@@ -1,10 +1,14 @@
 package tekton;
 
+import static mindustry.Vars.tilesize;
+
 import java.util.Arrays;
 
 import arc.Core;
 import arc.Events;
+import arc.graphics.Blending;
 import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.EnumSet;
@@ -22,6 +26,7 @@ import mindustry.content.Liquids;
 import mindustry.game.EventType.Trigger;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.logic.LAccess;
 import mindustry.type.Item;
@@ -35,6 +40,7 @@ import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import tekton.content.TektonColor;
+import tekton.content.TektonFx;
 import tekton.content.TektonItems;
 import tekton.content.TektonStat;
 import tekton.type.gravity.GravityBlock;
@@ -48,17 +54,21 @@ public class FusionReactor extends PowerGenerator {
     public Liquid fuelLiquid = Liquids.hydrogen;
     
     public float itemDuration = 120f;
-    public float fuelConsumption = 6f / 60f;
+    public float fuelConsumption = (6f / 60f) / 3f;
     public float warmupSpeed = 0.001f;
 	public int requiredGravity = 48;
 	public int minGravity = requiredGravity / 2;
 	public int maxGravity = requiredGravity;
-	public int minimalCoolant = 2;
+	public int minimalCoolant = 5;
 	
 	public float ticksToExplosion = 5f * 60f;
 	public float explosionThreshold = 0.5f;
 
-    public TextureRegion lightsRegion;
+    public float alpha = 0.9f, glowScale = 10f, glowIntensity = 0.5f;
+
+    public Color hotColor = Color.valueOf("ff9575a3");
+    public Color heatColor = Pal.lightFlame;
+
     public TextureRegion overheatRegion;
 
 	public FusionReactor(String name) {
@@ -82,20 +92,18 @@ public class FusionReactor extends PowerGenerator {
         explosionShakeDuration = 26f;
         explosionDamage = 1900 * 4;
         explosionMinWarmup = 0.15f;
-        explodeEffect = Fx.impactReactorExplosion;
+        explodeEffect = TektonFx.nuclearFusionExplosion;
         explodeSound = Sounds.explosionbig;
 	}
 	
 	@Override
-    public void load(){
+    public void load() {
         super.load();
-        
-        lightsRegion = Core.atlas.find(name + "-lights");
         overheatRegion = Core.atlas.find(name + "-overheat");
     }
 	
 	@Override
-    public void setBars(){
+    public void setBars() {
         super.setBars();
 
         addBar("power", (GeneratorBuild entity) -> new Bar(
@@ -104,7 +112,7 @@ public class FusionReactor extends PowerGenerator {
         		() -> entity.productionEfficiency));
         addBar("instability", (FusionReactorBuild entity) -> new Bar("bar.instability", Pal.negativeStat, () -> entity.instability));
         addBar("gravity", (FusionReactorBuild entity) -> new Bar(
-        		() -> Core.bundle.format("bar.gravityPercent", Math.min(maxGravity, entity.gravity), (float)((maxGravity / requiredGravity) * 100)), 
+        		() -> Core.bundle.format("bar.gravityPercent", Math.min(maxGravity, entity.gravity), ((float)maxGravity / (float)requiredGravity) * 100), 
         		() -> TektonColor.gravityColor, 
 				() -> (float)entity.gravity / (float)requiredGravity));
     }
@@ -126,6 +134,8 @@ public class FusionReactor extends PowerGenerator {
         public float totalProgress, warmup;
         public float timer = 0f;
         
+		private float instabilityIncrease = 1f / (ticksToExplosion * 5f);
+		
         public float[] sideGravity = new float[4];
         
 		@Override
@@ -142,19 +152,22 @@ public class FusionReactor extends PowerGenerator {
             float currentCoolant = items.get(coolantItem);
             float currentFuel = liquids.get(fuelLiquid);
             float gravityFrac = Math.min((float)gravity, (float)maxGravity) / (float)requiredGravity;
-            float fuelFulness = currentFuel / liquidCapacity;
+            float fuelFulness = Mathf.equal(currentFuel / liquidCapacity, 1f, 0.002f) ? 1f : currentFuel / liquidCapacity;
             boolean cool = false;
+            float coolingMul = minimalCoolant / currentCoolant;
     		boolean prevOut = getPowerProduction() <= consPower.requestedPower(this);
     		
-            Log.info(efficiency + ", " + power.status);
+            Log.info(warmup + ", " + fuelFulness + ", " + gravityFrac);
+            
+            efficiency = power.status >= 0.99f && currentFuel >= explosionThreshold ? 1f : 0f;
             
             if (gravity >= minGravity) {
-            	liquids.remove(fuelLiquid, fuelConsumption);
-                
-            	if (efficiency >= 0.9999f && power.status >= 0.99f && currentFuel >= 0.01f) {
+            	if (efficiency >= 0.9999f) {
+                	liquids.remove(fuelLiquid, fuelConsumption);
+                	//consume();
 
                     warmup = Mathf.lerpDelta(warmup, 1f, warmupSpeed * timeScale);
-                    if(Mathf.equal(warmup, 1f, 0.005f)){
+                    if(Mathf.equal(warmup, 1f, 0.001f)){
                         warmup = 1f;
                     }
 
@@ -168,11 +181,10 @@ public class FusionReactor extends PowerGenerator {
                     if (timer >= itemDuration / gravityFrac) {
                     	timer = 0;
             			items.remove(new ItemStack(coolantItem, 1));
-                    	consume();
                     }
                     
             		if (currentCoolant <= minimalCoolant) {
-            			instability += (1f / ticksToExplosion) * (1f + (currentCoolant / itemCapacity)) * gravityFrac;
+            			instability += ((1f + (currentCoolant / itemCapacity)) * gravityFrac * coolingMul) * instabilityIncrease;
             		}
             		else cool = true;
             	}
@@ -185,12 +197,22 @@ public class FusionReactor extends PowerGenerator {
             }
         	
         	//productionEfficiency = fuelFulness;
-        	productionEfficiency = Mathf.pow(warmup * fuelFulness, 5f) * gravityFrac;
+        	productionEfficiency = Mathf.pow(warmup, 5f) * gravityFrac * fuelFulness;
         	
         	//totalProgress += productionEfficiency * Time.delta;
-        	totalProgress += warmup * Time.delta * gravityFrac;
+        	totalProgress += warmup * Time.delta * gravityFrac * fuelFulness;
         	
+        	warmup = Mathf.clamp(warmup);
         	instability = Mathf.clamp(instability);
+        	
+        	if(instability > explosionThreshold) {
+            	float smoke = 0.1f + (instability / 1f);
+                if(Mathf.chance(smoke / 20.0 * delta())) {
+                    Fx.reactorsmoke.at
+                    (x + Mathf.range(size * tilesize / 2f),
+                    y + Mathf.range(size * tilesize / 2f));
+                }
+            }
         	
         	if(instability >= 0.999f){
                 Events.fire(Trigger.thoriumReactorOverheat);
@@ -198,7 +220,7 @@ public class FusionReactor extends PowerGenerator {
                 return;
             }
         	if (cool) {
-    			instability -= (1f / ticksToExplosion);
+    			instability -= (currentCoolant / minimalCoolant) * instabilityIncrease;
     		}
         }
         
@@ -216,7 +238,6 @@ public class FusionReactor extends PowerGenerator {
         public float totalProgress() {
             return totalProgress;
         }
-        
 
         @Override
         public float efficiency() {
@@ -242,12 +263,47 @@ public class FusionReactor extends PowerGenerator {
         public float getPowerProduction() {
             return productionEfficiency * powerProduction;
         }
+        
+        @Override
+        public void draw() {
+            super.draw();
+            
+        	float layer = Layer.blockAdditive + 0.1f;
+            float z = Draw.z();
+            if(layer > 0)
+            	Draw.z(layer);
+
+            Draw.blend(Blending.additive);
+            Draw.color(Color.clear, hotColor, instability);
+            Draw.alpha(0.3f);
+            Draw.rect(overheatRegion, x, y);
+            Draw.blend();
+            
+            if (instability > explosionThreshold) {
+            	if(instability <= 0.001f) return;
+                Draw.blend(Blending.additive);
+                Draw.color(heatColor);
+                Draw.alpha((Mathf.absin(totalProgress(), glowScale, alpha) * glowIntensity + 1f - glowIntensity) * instability * alpha);
+                Draw.rect(region, x, y, (rotate ? rotdeg() : 0f));
+                Draw.blend();
+            }
+            
+            /*if(instability > explosionThreshold){
+                flash += (1f + ((instability - explosionThreshold) / (1f - explosionThreshold)) * 5.4f) * Time.delta;
+                Draw.color(Color.red, Color.yellow, Mathf.absin(flash, 9f, 1f));
+                Draw.alpha(0.3f);
+                Draw.rect(lightsRegion, x, y);
+            }*/
+
+            Draw.z(z);
+            Draw.blend();
+            Draw.reset();
+		};
 		
 		@Override
         public void drawLight() {
-            float fract = productionEfficiency;
-            smoothLight = Mathf.lerpDelta(smoothLight, fract, 0.08f);
-            Drawf.light(x, y, (90f + Mathf.absin(5, 5f)) * smoothLight, Tmp.c1.set(lightColor).lerp(Color.scarlet, instability), 0.6f * smoothLight);
+            smoothLight = Mathf.lerpDelta(smoothLight, warmup, 0.08f);
+            Drawf.light(x, y, (90f + Mathf.absin(5, 5f)) * smoothLight, Tmp.c1.set(lightColor).lerp(Color.scarlet, instability), smoothLight);
         }
 
         @Override

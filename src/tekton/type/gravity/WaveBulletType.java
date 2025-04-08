@@ -3,6 +3,7 @@ package tekton.type.gravity;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 
+import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.math.Interp;
 import arc.math.Mathf;
@@ -55,7 +56,8 @@ public class WaveBulletType extends BulletType {
     public void load(){
         super.load();
         waveEffect = new Effect(lifetime, e -> {
-        	color(e.color);
+        	color(e.color.a(1f));
+        	//blend(Blending.additive);
             
             stroke(e.fout() * strokeThickness);
             float deg = circleDeegres / linePoints;
@@ -71,6 +73,7 @@ public class WaveBulletType extends BulletType {
             }
             
             color();
+        	//blend();
         });
     }
 	
