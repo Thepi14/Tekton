@@ -339,7 +339,7 @@ public class TektonFx {
     
     incinerateHydrogen = new Effect(34, e -> {
         randLenVectors(e.id, 4, e.finpow() * 5f, (x, y) -> {
-            color(Pal.slagOrange, Color.gray, e.fin());
+            color(Pal.techBlue, Color.gray, e.fin());
             Fill.circle(e.x + x, e.y + y, e.fout() * 1.7f);
         });
     }),

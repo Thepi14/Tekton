@@ -61,7 +61,8 @@ public class FusionReactor extends PowerGenerator {
 	public int maxGravity = requiredGravity;
 	public int minimalCoolant = 5;
 	
-	public float ticksToExplosion = 5f * 60f;
+	public float heatingPerTick = 0.005f;
+	public float maxHeatingPerTick = 0.01f;
 	public float explosionThreshold = 0.5f;
 
     public float alpha = 0.9f, glowScale = 10f, glowIntensity = 0.5f;
@@ -133,8 +134,6 @@ public class FusionReactor extends PowerGenerator {
         public float flash;
         public float totalProgress, warmup;
         public float timer = 0f;
-        
-		private float instabilityIncrease = 1f / (ticksToExplosion * 5f);
 		
         public float[] sideGravity = new float[4];
         
@@ -157,7 +156,7 @@ public class FusionReactor extends PowerGenerator {
             float coolingMul = minimalCoolant / currentCoolant;
     		boolean prevOut = getPowerProduction() <= consPower.requestedPower(this);
     		
-            Log.info(warmup + ", " + fuelFulness + ", " + gravityFrac);
+            //Log.info(warmup + ", " + fuelFulness + ", " + gravityFrac);
             
             efficiency = power.status >= 0.99f && currentFuel >= explosionThreshold ? 1f : 0f;
             
@@ -184,7 +183,7 @@ public class FusionReactor extends PowerGenerator {
                     }
                     
             		if (currentCoolant <= minimalCoolant) {
-            			instability += ((1f + (currentCoolant / itemCapacity)) * gravityFrac * coolingMul) * instabilityIncrease;
+            			instability += Math.min(((1f + (currentCoolant / itemCapacity)) * gravityFrac * coolingMul) * heatingPerTick, maxHeatingPerTick);
             		}
             		else cool = true;
             	}
@@ -220,7 +219,7 @@ public class FusionReactor extends PowerGenerator {
                 return;
             }
         	if (cool) {
-    			instability -= (currentCoolant / minimalCoolant) * instabilityIncrease;
+    			instability -= (currentCoolant / minimalCoolant) * heatingPerTick;
     		}
         }
         

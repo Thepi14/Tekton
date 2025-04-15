@@ -1,4 +1,4 @@
-package tekton;
+package tekton.type.draw;
 
 import mindustry.content.Items;
 import mindustry.gen.*;

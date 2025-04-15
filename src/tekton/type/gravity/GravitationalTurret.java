@@ -8,6 +8,7 @@ import arc.struct.IntSet;
 import arc.util.Nullable;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.turrets.PowerTurret;
+import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
@@ -34,8 +35,8 @@ public class GravitationalTurret extends PowerTurret {
     public void setBars() {
         super.setBars();
         addBar("gravity", (GravitationalTurretBuild entity) -> new Bar(
-        		() -> Core.bundle.format(entity.gravity >= 0 ? "bar.gravityPercent" : "bar.antiGravityPercent", (int)(Math.abs(entity.gravity) + 0.01f), (float)(entity.efficiency() * 100)), 
-        		() -> entity.gravity >= 0 ? TektonColor.gravityColor : TektonColor.antiGravityColor, 
+        		() -> Core.bundle.format("bar.gravityPercent", (int)(Math.abs(entity.gravity) + 0.01f), (float)(entity.efficiency() * 100)), 
+        		() -> TektonColor.gravityColor, 
 				() -> ((float)Math.abs(entity.gravity)) / (float)minGravity));
     }
 	
@@ -59,6 +60,14 @@ public class GravitationalTurret extends PowerTurret {
             if(!hasAmmo()) return 0f;
             return shootType.damage * 60f / (shootType instanceof WaveBulletType c ? c.damageInterval : 5f);
         }
+    	
+    	/*@Override
+        public BlockStatus status(){
+            float balance = power.graph.getPowerBalance();
+            if(balance > 0f) return BlockStatus.active;
+            if(balance < 0f && power.graph.getLastPowerStored() > 0) return BlockStatus.noOutput;
+            return BlockStatus.noInput;
+        }*/
         
         @Override
         public void updateTile(){

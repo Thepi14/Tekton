@@ -5,6 +5,7 @@ import java.util.Arrays;
 import arc.Core;
 import arc.math.*;
 import arc.struct.IntSet;
+import arc.util.Log;
 import arc.util.io.*;
 import mindustry.Vars;
 import mindustry.graphics.*;
@@ -14,6 +15,7 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import tekton.content.TektonColor;
 import tekton.content.TektonStat;
+import tekton.type.draw.DrawGravityOutput;
 import tekton.type.gravity.GravityConductor.GravityConductorBuild;
 
 public class GravityProducer extends GenericCrafter{
@@ -56,8 +58,8 @@ public class GravityProducer extends GenericCrafter{
         @Override
         public void updateTile(){
             super.updateTile();
-
-            //heat approaches target at the same speed regardless of efficiency
+            
+            //gravity approaches target at the same speed regardless of efficiency
             gravity = Mathf.approachDelta(gravity, gravityOutput * efficiency, warmupRate * delta());
         }
 

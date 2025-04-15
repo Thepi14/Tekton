@@ -11,8 +11,6 @@ public final class TekMath {
 		tx = tx < 0f ? tx * -1f : tx;
 		ty = ty < 0f ? ty * -1f : ty;
 		
-		Log.info("x, y: " + x + ", " + y + ". dx, dy: " + dx + ", " + dy + ", size: " + size + ", true pos: " + tx + ", " + ty);
-		
 		return tx + ty <= size;
 	}
 }

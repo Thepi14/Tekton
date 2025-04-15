@@ -1,4 +1,4 @@
-package tekton.type.gravity;
+package tekton.type.draw;
 
 import arc.*;
 import arc.graphics.*;
@@ -11,6 +11,7 @@ import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.draw.DrawBlock;
 import tekton.content.TektonColor;
+import tekton.type.gravity.GravityBlock;
 
 public class DrawGravityOutput extends DrawBlock {
 	public TextureRegion gravity, glow, top1, top2;

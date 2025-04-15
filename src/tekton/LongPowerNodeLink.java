@@ -3,35 +3,27 @@ package tekton;
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.stroke;
 import static arc.math.Angles.randLenVectors;
-import static mindustry.Vars.net;
-import static mindustry.Vars.tilesize;
-import static mindustry.Vars.world;
+import static mindustry.Vars.*;
 
 import arc.Core;
-import arc.func.Func;
+import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
-import arc.graphics.g2d.TextureRegion;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Point2;
 import arc.struct.EnumSet;
 import arc.struct.IntSeq;
-import arc.struct.ObjectSet;
 import arc.struct.Seq;
-import arc.util.Time;
-import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Fx;
-import mindustry.content.StatusEffects;
 import mindustry.core.Renderer;
 import mindustry.entities.Effect;
 import mindustry.entities.TargetPriority;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.effect.MultiEffect;
-import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
@@ -39,60 +31,25 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.power.LongPowerNode;
-import mindustry.world.blocks.power.PowerBlock;
 import mindustry.world.blocks.power.PowerGraph;
 import mindustry.world.blocks.power.PowerNode;
-import mindustry.world.blocks.power.PowerNode.PowerNodeBuild;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Env;
-import mindustry.world.meta.Stat;
-import mindustry.world.meta.StatUnit;
 import mindustry.world.modules.PowerModule;
-import arc.*;
 import arc.func.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.math.geom.*;
-import arc.struct.*;
 import arc.util.*;
-import mindustry.core.*;
-import mindustry.entities.units.*;
 import mindustry.game.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.input.*;
-import mindustry.ui.*;
 import mindustry.world.*;
-import mindustry.world.meta.*;
-import mindustry.world.modules.*;
 import tekton.content.TektonFx;
+import tekton.content.TektonItems;
+import tekton.content.TektonStatusEffects;
 
-import static mindustry.Vars.*;
+public class LongPowerNodeLink extends LongPowerNode {
 
-public class LongPowerNodeLink extends PowerBlock {
+    public float alpha = 0.9f, glowScale = 10f, glowIntensity = 0.5f;
+    public Color color = TektonItems.nanoAlloy.color.cpy();
 	
-	protected static BuildPlan otherReq;
-    protected static int returnInt = 0;
-    protected final static ObjectSet<PowerGraph> graphs = new ObjectSet<>();
-    /** The maximum range of all power nodes on the map */
-    protected static float maxRange;
-    
-    public TextureRegion laser;
-    public TextureRegion laserEnd;
-    
-    public float laserRange = 6;
-    public int maxNodes = 3;
-    public boolean autolink = true, drawRange = true;
-    public float laserScale = 0.25f;
-    public Color laserColor1 = Color.white;
-    public Color laserColor2 = Pal.powerLight;
-	
-    public TextureRegion glow;
-    public Color glowColor = Color.valueOf("cbfd81").a(0.45f);
-    public float glowScl = 16f, glowMag = 0.6f;
-    
-    public int returnLinkSize(Building entity) {
+	public int returnLinkSize(Building entity) {
     	PowerModule power = entity.power;
     	int num = 0;
     	for (var node : power.links.toArray()) {
@@ -102,23 +59,21 @@ public class LongPowerNodeLink extends PowerBlock {
     	return num;
     }
 
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings("unchecked")
 	public LongPowerNodeLink(String name) {
 		super(name);
 		
 		configurable = true;
         swapDiagonalPlacement = true;
         destructible = true;
-
-        //nodes do not even need to update
-        update = false;
 		
 		config(Integer.class, (entity, value) -> {
             PowerModule power = entity.power;
             Building other = world.build(value);
             boolean contains = power.links.contains(value), valid = other != null && other.power != null;
 
-            if(contains){
+            if(contains)
+            {
                 //unlink
                 power.links.removeValue(value);
                 if(valid) other.power.links.removeValue(entity.pos());
@@ -134,8 +89,9 @@ public class LongPowerNodeLink extends PowerBlock {
                     //reflow from other end
                     og.reflow(other);
                 }
-            }else if(linkValid(entity, other) && valid && returnLinkSize(entity) < maxNodes){
-
+            }
+            else if(linkValid(entity, other) && valid && returnLinkSize(entity) < maxNodes)
+            {
                 power.links.addUnique(other.pos());
 
                 if(other.team == entity.team){
@@ -148,19 +104,20 @@ public class LongPowerNodeLink extends PowerBlock {
 
         config(Point2[].class, (tile, value) -> {
             IntSeq old = new IntSeq(tile.power.links);
-
+            
             //clear old
             for(int i = 0; i < old.size; i++){
                 configurations.get(Integer.class).get(tile, old.get(i));
             }
-
+            
             //set new
             for(Point2 p : value){
                 configurations.get(Integer.class).get(tile, Point2.pack(p.x + tile.tileX(), p.y + tile.tileY()));
             }
         });
 		
-        solid = true;
+        autolink = false;
+		solid = true;
         update = true;
         outputsPower = connectedPower = conductivePower = hasPower = consumesPower = true;
         sync = true;
@@ -233,8 +190,8 @@ public class LongPowerNodeLink extends PowerBlock {
                 hitSound = Sounds.shockBlast;
             	despawnShake = 4f;
             }};
-            status = StatusEffects.blasted;
-            statusDuration = 5f;
+            status = TektonStatusEffects.shortCircuit;
+            statusDuration = 10f * 60f;
             lightning = 20;
             lightningLength = 10;
             lightningLengthRand = 10;
@@ -252,69 +209,28 @@ public class LongPowerNodeLink extends PowerBlock {
 	@Override
     public void load(){
         super.load();
-
+        
         glow = Core.atlas.find(name + "-glow", Core.atlas.find("tekton-line-node-beam-end"));
         laser = Core.atlas.find(name + "-beam", Core.atlas.find("tekton-line-node-beam"));
         laserEnd = Core.atlas.find(name + "-beam-end", Core.atlas.find("tekton-line-node-beam-end"));
     }
 	
-	@Override
-    public void drawPlace(int x, int y, int rotation, boolean valid){
-        //super.drawPlace(x, y, rotation, valid);
-        
-        Tile tile = world.tile(x, y);
+    @Override
+    public void init(){
+        super.init();
 
-        if(tile == null || !autolink) return;
-
-        Lines.stroke(1f);
-        Draw.color(Pal.placing);
-        Drawf.circles(x * tilesize + offset, y * tilesize + offset, laserRange * tilesize);
-
-        getPotentialLinks(tile, player.team(), other -> {
-            Draw.color(laserColor1, Renderer.laserOpacity * 0.5f);
-            drawLaser(x * tilesize + offset, y * tilesize + offset, other.x, other.y, size, other.block.size);
-
-            Drawf.square(other.x, other.y, other.block.size * tilesize / 2f + 2f, Pal.place);
-        });
-
-        Draw.reset();
-
-        Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, (laserRange * tilesize), Pal.accent);
+        clipSize = Math.max(clipSize, laserRange * tilesize);
+    }
+	
+	public void drawLaser(float x1, float y1, float x2, float y2, float mult){
+        Drawf.laser(laser, laserEnd, x1, y1, x2, y2, laserScale * (1f - glowMag + Mathf.absin(glowScl, glowMag) * mult));
     }
 	
 	@Override
-    public void changePlacementPath(Seq<Point2> points, int rotation){
-        Placement.calculateNodes(points, this, rotation, (point, other) -> overlaps(world.tile(point.x, point.y), world.tile(other.x, other.y)));
-    }
+    public void drawPlace(int x, int y, int rotation, boolean valid){
+        super.drawPlace(x, y, rotation, valid);
 
-    protected void setupColor(float satisfaction){
-        Draw.color(Tmp.c1.set(laserColor1).lerp(laserColor2, (1f - satisfaction) * 0.86f + Mathf.absin(3f, 0.1f)).a(Renderer.laserOpacity));
-    }
-    
-    public void drawLaser(float x1, float y1, float x2, float y2, int size1, int size2){
-        Drawf.laser(laser, laserEnd, x1, y1, x2, y2, laserScale * (1f - glowMag + Mathf.absin(glowScl, glowMag)));
-    }
-    
-    protected boolean overlaps(float srcx, float srcy, Tile other, Block otherBlock, float range){
-        return Intersector.overlaps(Tmp.cr1.set(srcx, srcy, range), Tmp.r1.setCentered(other.worldx() + otherBlock.offset, other.worldy() + otherBlock.offset,
-            otherBlock.size * tilesize, otherBlock.size * tilesize));
-    }
-
-    protected boolean overlaps(float srcx, float srcy, Tile other, float range){
-        return Intersector.overlaps(Tmp.cr1.set(srcx, srcy, range), other.getHitbox(Tmp.r1));
-    }
-
-    protected boolean overlaps(Building src, Building other, float range){
-        return overlaps(src.x, src.y, other.tile, range);
-    }
-
-    protected boolean overlaps(Tile src, Tile other, float range){
-        return overlaps(src.drawx(), src.drawy(), other, range);
-    }
-
-    public boolean overlaps(@Nullable Tile src, @Nullable Tile other){
-        if(src == null || other == null) return true;
-        return Intersector.overlaps(Tmp.cr1.set(src.worldx() + offset, src.worldy() + offset, laserRange * tilesize), Tmp.r1.setSize(size * tilesize).setCenter(other.worldx() + offset, other.worldy() + offset));
+        Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, (laserRange * tilesize), Pal.accent);
     }
 	
 	@Override
@@ -329,50 +245,17 @@ public class LongPowerNodeLink extends PowerBlock {
             () -> (float)returnLinkSize(entity) / (float)maxNodes
         ));
     }
-
-    public static Func<Building, Bar> makePowerBalance(){
-        return entity -> new Bar(() ->
-        Core.bundle.format("bar.powerbalance",
-            ((entity.power.graph.getPowerBalance() >= 0 ? "+" : "") + UI.formatAmount((long)(entity.power.graph.getPowerBalance() * 60)))),
-            () -> Pal.powerBar,
-            () -> Mathf.clamp(entity.power.graph.getLastPowerProduced() / entity.power.graph.getLastPowerNeeded())
-        );
-    }
-
-    public static Func<Building, Bar> makeBatteryBalance(){
-        return entity -> new Bar(() ->
-        Core.bundle.format("bar.powerstored",
-            (UI.formatAmount((long)entity.power.graph.getLastPowerStored())), UI.formatAmount((long)entity.power.graph.getLastCapacity())),
-            () -> Pal.powerBar,
-            () -> Mathf.clamp(entity.power.graph.getLastPowerStored() / entity.power.graph.getLastCapacity())
-        );
-    }
-
-    @Override
-    public void setStats(){
-        super.setStats();
-
-        stats.add(Stat.powerRange, laserRange, StatUnit.blocks);
-        stats.add(Stat.powerConnections, maxNodes, StatUnit.none);
-    }
-    
-    @Override
-    public void init(){
-        super.init();
-
-        clipSize = Math.max(clipSize, laserRange * tilesize);
-    }
-    
-    protected void getPotentialLinks(Tile tile, Team team, Cons<Building> others){
+	
+	@Override
+	protected void getPotentialLinks(Tile tile, Team team, Cons<Building> others){
         if(!autolink) return;
 
         Boolf<Building> valid = other -> other != null && other.tile != tile && other.block.connectedPower && other.power != null &&
-            (other.block.outputsPower || other.block.consumesPower || other.block instanceof PowerNode) &&
+            //(other.block.outputsPower || other.block.consumesPower || other.block instanceof PowerNode) &&
             overlaps(tile.x * tilesize + offset, tile.y * tilesize + offset, other.tile, laserRange * tilesize) && other.team == team &&
             !graphs.contains(other.power.graph) &&
             !PowerNode.insulated(tile, other.tile) &&
-            //!(other instanceof PowerNodeBuild obuild && obuild.power.links.size >= ((PowerNode)obuild.block).maxNodes) &&
-            (other instanceof LongPowerNodeLinkBuild obuild && returnLinkSize(obuild) <= ((LongPowerNodeLink)obuild.block).maxNodes) &&
+            !(other instanceof LongPowerNodeLinkBuild obuild && (((LongPowerNodeLink)obuild.block).returnLinkSize(obuild)) >= ((LongPowerNodeLink)obuild.block).maxNodes) &&
             !Structs.contains(Edges.getEdges(size), p -> { //do not link to adjacent buildings
                 var t = world.tile(tile.x + p.x, tile.y + p.y);
                 return t != null && t.build == other;
@@ -420,77 +303,23 @@ public class LongPowerNodeLink extends PowerBlock {
     }
 
     @Override
-    public void drawPlanConfigTop(BuildPlan plan, Eachable<BuildPlan> list){
-        if(plan.config instanceof Point2[] ps){
-            setupColor(1f);
-            for(Point2 point : ps){
-                int px = plan.x + point.x, py = plan.y + point.y;
-                otherReq = null;
-                list.each(other -> {
-                    if(other.block != null
-                        && (px >= other.x - ((other.block.size-1)/2) && py >= other.y - ((other.block.size-1)/2) && px <= other.x + other.block.size/2 && py <= other.y + other.block.size/2)
-                        && other != plan && other.block.hasPower){
-                        otherReq = other;
-                    }
-                });
-
-                if(otherReq == null || otherReq.block == null) continue;
-
-                drawLaser(plan.drawx(), plan.drawy(), otherReq.drawx(), otherReq.drawy(), size, otherReq.block.size);
-            }
-            Draw.color();
-        }
-    }
-
-    /*public boolean linkValid(Building tile, Building link){
-        return linkValid(tile, link, true);
-    }
-
-    public boolean linkValid(Building tile, Building link, boolean checkMaxNodes){
-        if(tile == link || link == null || !link.block.hasPower || !link.block.connectedPower || tile.team != link.team) return false;
-
-        if(overlaps(tile, link, laserRange * tilesize) || (link.block instanceof PowerNode node && overlaps(link, tile, node.laserRange * tilesize))){
-            if(checkMaxNodes && link.block instanceof PowerNode node){
-                return link.power.links.size < node.maxNodes || link.power.links.contains(tile.pos());
-            }
-            return true;
-        }
-        return false;
-    }*/
-
-    public static boolean insulated(Tile tile, Tile other){
-        return insulated(tile.x, tile.y, other.x, other.y);
-    }
-
-    public static boolean insulated(Building tile, Building other){
-        return insulated(tile.tileX(), tile.tileY(), other.tileX(), other.tileY());
-    }
-
-    public static boolean insulated(int x, int y, int x2, int y2){
-        return World.raycast(x, y, x2, y2, (wx, wy) -> {
-            Building tile = world.build(wx, wy);
-            return tile != null && tile.isInsulated();
-        });
-    }
-    
     public boolean linkValid(Building tile, Building link){
         return linkValid(tile, link, true);
     }
-
+    
+    @Override
     public boolean linkValid(Building tile, Building link, boolean checkMaxNodes){
-        if(tile == link || link == null || !link.block.hasPower || !link.block.connectedPower || tile.team != link.team) return false;
-        if(checkMaxNodes && tile.block instanceof LongPowerNodeLink && link.block instanceof LongPowerNodeLink && overlaps(link, tile, (laserRange * tilesize) + (size / 2f))){
-            return true;
+        if(tile == link || link == null || tile.team != link.team)
+        	return false;
+        if(link.block instanceof LongPowerNodeLink node && overlaps(link, tile, (laserRange * tilesize) + (size / 2f))){
+            return checkMaxNodes ? (returnLinkSize(link) < node.maxNodes) || link.power.links.contains(tile.pos()) : false;
         }
         return false;
     }
 	
-	public class LongPowerNodeLinkBuild extends Building{
-
-        public float warmup = 0f;
-		public LongPowerNodeLinkBuild lastOther;
+	public class LongPowerNodeLinkBuild extends LongPowerNodeBuild{
 		
-        
+		public LongPowerNodeLinkBuild lastOther;
         
         @Override
         public boolean onConfigureBuildTapped(Building other){
@@ -499,48 +328,42 @@ public class LongPowerNodeLink extends PowerBlock {
                 return false;
             }
 
-            if(this == other){ //double tapped
-                if(returnLinkSize(other) == 0){ //find links
-                    Seq<Point2> points = new Seq<>();
-                    getPotentialLinks(tile, team, link -> {
-                        if(!insulated(this, link) && points.size < maxNodes){
-                            points.add(new Point2(link.tileX() - tile.x, link.tileY() - tile.y));
-                        }
-                    });
-                    configure(points.toArray(Point2.class));
-                }else{ //clear links
-                    configure(new Point2[0]);
-                }
+            if(this == other){
                 deselect();
                 return false;
             }
 
             return true;
         }
-        
-        @Override
-        public void updateTile(){
-            super.updateTile();
 
-            warmup = Mathf.lerpDelta(warmup, returnLinkSize(this) > 0 ? 1f : 0f, 0.05f);
-        }
-        
         @Override
         public void created(){ // Called when one is placed/loaded in the world
             if(autolink && laserRange > maxRange) maxRange = laserRange;
 
             super.created();
         }
+        
+        @Override
+        public void updateTile(){
+            super.updateTile();
+            
+            warmup = Mathf.lerpDelta(warmup, returnLinkSize(this) > 0 ? 1f : 0f, 0.05f) * efficiencyScale();
+        }
+        
+        @Override
+        public float efficiencyScale() {
+        	return power.status;
+        }
 
         @Override
         public void placed(){
             if(net.client() || power.links.size > 0) return;
 
-            getPotentialLinks(tile, team, other -> {
+            /*getPotentialLinks(tile, team, other -> {
                 if(!power.links.contains(other.pos())){
                     configureAny(other.pos());
                 }
-            });
+            });*/
 
             super.placed();
         }
@@ -567,6 +390,7 @@ public class LongPowerNodeLink extends PowerBlock {
 
         @Override
         public void drawConfigure(){
+        	var check = true;
             Drawf.circles(x, y, tile.block().size * tilesize / 2f + 1f + Mathf.absin(Time.time, 4f, 1f));
             Drawf.dashCircle(x, y, laserRange * tilesize, Pal.accent);
 
@@ -577,7 +401,7 @@ public class LongPowerNodeLink extends PowerBlock {
                     for(int y = (int)(tile.y - laserRange - 2); y <= tile.y + laserRange + 2; y++){
                         Building link = world.build(x, y);
 
-                        if(link != this && linkValid(this, link, false)){
+                        if(link != this && linkValid(this, link, check)){
                             boolean linked = linked(link);
 
                             if(linked){
@@ -591,7 +415,7 @@ public class LongPowerNodeLink extends PowerBlock {
             }else{
                 power.links.each(i -> {
                     var link = world.build(i);
-                    if(link != null && linkValid(this, link, false)){
+                    if(link != null && linkValid(this, link, check)){
                         Drawf.square(link.x, link.y, link.block.size * tilesize / 2f + 1f, Pal.place);
                     }
                 });
@@ -600,32 +424,37 @@ public class LongPowerNodeLink extends PowerBlock {
 
         @Override
         public void draw(){
-            super.draw();
+            //super.draw();
+            Draw.rect(region, x, y);
+            var z = Draw.z();
             
-            if(warmup > 0.001f){
-                Drawf.additive(glow, Tmp.c1.set(glowColor).mula(warmup).mula(1f - glowMag + Mathf.absin(glowScl, glowMag)), x, y);
-            }
+            Drawf.additive(glow, glowColor, (1f - glowMag + Mathf.absin(glowScl, glowMag)) * efficiency, x, y, 0f, Layer.blockAdditive);
             
             if(Mathf.zero(Renderer.laserOpacity) || isPayload()) return;
-
-            Draw.z(Layer.power);
+            
+            Draw.z(Layer.power + 0.1f);
             setupColor(power.graph.getSatisfaction());
-
+            
             for(int i = 0; i < power.links.size; i++){
                 Building link = world.build(power.links.get(i));
 
                 if(!linkValid(this, link)) continue;
-
                 if(link.block instanceof LongPowerNodeLink && link.id >= id) continue;
-
-                drawLaser(x, y, link.x, link.y, size, link.block.size);
+                
+                drawLaser(x, y, link.x, link.y, efficiencyScale());
             }
-
+            
+            Draw.z(z);
             Draw.reset();
+        }
+		
+		@Override
+        public void drawLight(){
+            Drawf.light(x, y, lightRadius, glowColor, 0.7f * efficiency);
         }
 
         protected boolean linked(Building other){
-            return power.links.contains(other.pos());
+            return power.links.contains(other.pos()) && other.block instanceof LongPowerNodeLink;
         }
 
         @Override

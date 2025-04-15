@@ -13,6 +13,7 @@ import mindustry.type.*;
 import mindustry.type.Weather.WeatherEntry;
 import mindustry.world.*;
 import mindustry.world.meta.*;
+import tekton.TektonPlanetGenerator;
 import mindustry.content.*;
 
 import arc.func.*;
@@ -27,7 +28,7 @@ public class TektonPlanets {
 	public static TektonPlanet tekton;
 	
 	public static void load(){
-		tekton = new TektonPlanet("tekton", Planets.sun, 1f, 2) {{
+		tekton = new TektonPlanet("tekton", Planets.sun, 1.1f, 2) {{
 			generator = new TektonPlanetGenerator();
 			description = "A extremely cold planet with unknown threats and possibilities.";
 			alwaysUnlocked = true;
@@ -42,9 +43,9 @@ public class TektonPlanets {
 			orbitSpacing = 1;
 			orbitRadius = 140;
 			//minZoom = 0.9f;
-			totalRadius += 2.6f;
-			atmosphereRadIn = 0.02f;
-			atmosphereRadOut = 0.3f;
+			totalRadius += 2f;
+			atmosphereRadIn = 0.04f;
+			atmosphereRadOut = 0.4f;
 			updateLighting = false;
 			//sectorSeed = 77147;
 			bloom = true;
@@ -87,7 +88,7 @@ public class TektonPlanets {
 			defaultCore = TektonBlocks.corePrimal;
             unlockedOnLand.add(TektonBlocks.corePrimal);
             
-            meshLoader = () -> new MultiMesh(
+            /*meshLoader = () -> new MultiMesh(
             		//zirconium
             		new NoiseMesh(this, 64, 5, 1.01f, 8, 0.79f, 1f, 0.7f, 
             				Color.valueOf("948881"), 
@@ -108,7 +109,9 @@ public class TektonPlanets {
             				Color.valueOf("57592b"), 
             				Color.valueOf("4d4f24"), 
             				1, 0.5f, 1f, 0.5f)
-            		);
+            		);*/
+            
+            meshLoader = () -> new HexMesh(this, 5);
             
             cloudMeshLoader = () -> new MultiMesh(
             		//fast
@@ -136,12 +139,6 @@ public class TektonPlanets {
 		
 		public TektonPlanet(String name, Planet parent, float radius){
 			super(name, parent, radius);
-		}
-	}
-	public static class TektonPlanetGenerator extends SerpuloPlanetGenerator{
-	    {
-			baseSeed = 7;
-			defaultLoadout = TektonLoadouts.corePrimal;
 		}
 	}
 }

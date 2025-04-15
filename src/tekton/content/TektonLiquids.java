@@ -22,6 +22,7 @@ public class TektonLiquids {
 		}};
 		
 		oxygen = new Liquid("oxygen", TektonColor.oxygen) {{
+            coolant = false;
 			gas = true;
 			temperature = 0.5f;
 			heatCapacity = 0.6f;
@@ -32,6 +33,7 @@ public class TektonLiquids {
 		}};
 		
 		methane = new Liquid("methane", TektonColor.methane) {{
+            coolant = false;
 			gas = true;
 			temperature = 0.5f;
 			heatCapacity = 0.6f;
@@ -45,6 +47,7 @@ public class TektonLiquids {
 		}};
 		
 		liquidMethane = new Liquid("liquid-methane", TektonColor.liquidMethane) {{
+            coolant = false;
 			gas = false;
 			temperature = 0.1f;
 			heatCapacity = 0.8f;
@@ -69,6 +72,7 @@ public class TektonLiquids {
 		}};
 		
 		metazotoplasm = new CellLiquid("metazotoplasm", TektonColor.metazotoplasm){{
+            coolant = false;
             heatCapacity = 1f;
             temperature = 0.25f;
             viscosity = 0.7f;
@@ -86,6 +90,7 @@ public class TektonLiquids {
         }};
         
         cobweb = new Liquid("cobweb", Color.valueOf("d6d6d6")) {{
+            coolant = false;
         	hidden = false;
             coolant = false;
 			gas = false;

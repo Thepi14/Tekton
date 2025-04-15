@@ -61,17 +61,10 @@ public class LightningRod extends PowerGenerator {
         else if (squareArea)
         	Drawf.dashSquare(Pal.accent, x * tilesize + offset, y * tilesize + offset, protectionRadius * 2f);
         else if (diamondArea)
-        	drawDiamond(x * tilesize + offset, y * tilesize + offset, protectionRadius);
+        	Drawt.dashDiamond(x * tilesize + offset, y * tilesize + offset, protectionRadius);
         
         super.drawPlace(x, y, rotation, valid);
     }
-	
-	public void drawDiamond(float x, float y, float radius) {
-        Drawf.dashLine(Pal.accent, x, y + radius, x + radius, y);
-        Drawf.dashLine(Pal.accent, x + radius, y, x, y - radius);
-        Drawf.dashLine(Pal.accent, x, y - radius, x - radius, y);
-        Drawf.dashLine(Pal.accent, x - radius, y, x, y + radius);
-	}
 	
 	@Override
     public TextureRegion[] icons(){
@@ -125,7 +118,7 @@ public class LightningRod extends PowerGenerator {
 			else if (squareArea)
 	        	Drawf.dashSquare(Pal.accent, x * tilesize + offset, y * tilesize + offset, protectionRadius * 2f);
 			else if (diamondArea)
-				drawDiamond(x + offset * tilesize, y + offset * tilesize, protectionRadius);
+				Drawt.dashDiamond(x + offset * tilesize, y + offset * tilesize, protectionRadius);
         }
 		
 		@Override

@@ -1,4 +1,4 @@
-package tekton.type.gravity;
+package tekton.type.draw;
 
 import arc.*;
 import arc.graphics.*;
@@ -9,7 +9,7 @@ import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.draw.DrawBlock;
 import tekton.content.TektonColor;
-import tekton.type.gravity.GravityCrafter.GravityCrafterBuild;
+import tekton.type.gravity.GravityConsumer;
 
 public class DrawGravityRegion extends DrawBlock{
 	public Color color = TektonColor.gravityColor;

@@ -1,4 +1,4 @@
-package tekton;
+package tekton.type.draw;
 
 import arc.Core;
 import arc.graphics.g2d.TextureRegion;

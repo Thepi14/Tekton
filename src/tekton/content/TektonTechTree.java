@@ -89,8 +89,10 @@ public class TektonTechTree {
         		
         		//liquid
             	node(methanePump, Seq.with(new SectorComplete(satus)), () -> {
+            		node(pressurePump, Seq.with(new SectorComplete(proelium)), () -> {
+            			
+    				});
             		node(pipe, () -> {
-                		
             			node(pipeJunction, () -> {
             				node(pipeRouter, () -> {
             					node(polycarbonateLiquidContainer, () -> {
@@ -131,11 +133,16 @@ public class TektonTechTree {
         					node(coldElectrolyzer, Seq.with(new OnSector(scintilla)), () -> {
         						node(polycarbonateSynthesizer, () -> {
         							node(polytalumFuser, () -> {
-                                		
+        								node(phasePrinter, Seq.with(new SectorComplete(river)), () -> { //change
+        			            			
+        			    				});
                                 	});
             						node(cryogenicMixer, () -> {
                                 		
                                 	});
+        							node(nanoAlloyCrucible, Seq.with(new SectorComplete(river)), () -> { //change
+    			            			
+    			    				});
                             	});
         						node(electricalCoil, () -> {
         							node(gravityConductor, () -> {
@@ -144,7 +151,7 @@ public class TektonTechTree {
                 						});
             						});
         							node(thermalCoil, () -> {
-        								node(phaseNanoCoil, () -> {
+        								node(phaseNanoCoil, Seq.with(new Research(nanoAlloyCrucible), new Research(phasePrinter)), () -> {
                 							
                 						});
             						});
@@ -352,9 +359,9 @@ public class TektonTechTree {
         	        		});
         				});
 						node(mechAssemblerModule, Seq.with(new SectorComplete(proelium)), () -> {
-							/*node(TektonUnits.impact, Seq.with(new Research(mechAssemblerModule)), () -> {
+							node(TektonUnits.impact, Seq.with(new Research(mechAssemblerModule)), () -> {
         	        			
-        	        		});*/
+        	        		});
         				});
     				});
             	});

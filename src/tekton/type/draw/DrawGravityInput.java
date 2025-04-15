@@ -1,4 +1,4 @@
-package tekton.type.gravity;
+package tekton.type.draw;
 
 import arc.*;
 import arc.graphics.*;
@@ -11,6 +11,7 @@ import mindustry.graphics.*;
 import mindustry.world.*;
 import mindustry.world.draw.DrawBlock;
 import tekton.content.TektonColor;
+import tekton.type.gravity.GravityConsumer;
 
 public class DrawGravityInput extends DrawBlock {
 	public String suffix = "-gravity";

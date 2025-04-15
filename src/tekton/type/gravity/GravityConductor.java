@@ -17,6 +17,8 @@ import mindustry.world.draw.*;
 import mindustry.world.meta.BlockGroup;
 import tekton.content.TektonColor;
 import tekton.content.TektonVars;
+import tekton.type.draw.DrawGravityInput;
+import tekton.type.draw.DrawGravityOutput;
 import tekton.type.gravity.GravitationalTurret.GravitationalTurretBuild;
 import tekton.type.gravity.GravityConductor.GravityConductorBuild;
 
