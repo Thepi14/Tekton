@@ -3790,10 +3790,12 @@ public class TektonBlocks {
 			consumePower(0.6f);
             researchCostMultiplier = 0.7f;
 		}};
+		
+		var bioVisibility = BuildVisibility.sandboxOnly;
 
 		//biological
 		glowPod = new GlowPod("glow-pod") {{
-			requirements(Category.logic, BuildVisibility.sandboxOnly, with());
+			requirements(Category.logic, bioVisibility, with());
 			health = 100;
             brightness = 0.75f;
             radius = 90f;
@@ -3803,7 +3805,7 @@ public class TektonBlocks {
 		}};
 		
 		smallNest = new Nest("small-nest") {{
-			requirements(Category.logic, BuildVisibility.sandboxOnly, with());
+			requirements(Category.logic, bioVisibility, with());
 			creatures.add(TektonUnits.formica, TektonUnits.diptera);
 			size = 2;
 			health = 300;
@@ -3824,7 +3826,7 @@ public class TektonBlocks {
 		}};
 		
 		mediumNest = new Nest("medium-nest") {{
-			requirements(Category.logic, BuildVisibility.sandboxOnly, with());
+			requirements(Category.logic, bioVisibility, with());
 			creatures.add(TektonUnits.gracilipes, TektonUnits.polyphaga, TektonUnits.colobopsis);
 			health = 700;
 			fogRadius = 8;
@@ -3835,7 +3837,7 @@ public class TektonBlocks {
 		}};
 		
 		largeNest = new Nest("large-nest") {{
-			requirements(Category.logic, BuildVisibility.sandboxOnly, with());
+			requirements(Category.logic, bioVisibility, with());
 			creatures.add(TektonUnits.carabidae, TektonUnits.lepidoptera, TektonUnits.isoptera);
 			size = 4;
 			health = 1200;
@@ -3856,7 +3858,7 @@ public class TektonBlocks {
 		}};
 		
 		artery = new BioNode("artery") {{
-			requirements(Category.logic, BuildVisibility.sandboxOnly, with());
+			requirements(Category.logic, bioVisibility, with());
 			health = 200;
 			fogRadius = 6;
 			maxNodes = 7;
@@ -3865,7 +3867,7 @@ public class TektonBlocks {
 		}};
 		
 		cerebellum = new BioTurret("cerebellum") {{
-			requirements(Category.logic, with());
+			requirements(Category.logic, bioVisibility, with());
 			squareSprite = false;
 			heatColor = TektonColor.acid.cpy();
 			drawer = new DrawTurret("nest-") {{
@@ -3985,7 +3987,7 @@ public class TektonBlocks {
 		var cobwebLife = 300;
 		
 		cobwebWall = new StatusEffectWall("cobweb-wall"){{
-			requirements(Category.logic, BuildVisibility.sandboxOnly, with());
+			requirements(Category.logic, bioVisibility, with());
 			health = cobwebLife;
 			armor = 4;
 			status = TektonStatusEffects.cobwebbed;
@@ -3993,7 +3995,7 @@ public class TektonBlocks {
 		}};
 		
 		cobwebWallLarge = new StatusEffectWall("cobweb-wall-large"){{
-			requirements(Category.logic, BuildVisibility.sandboxOnly, with());
+			requirements(Category.logic, bioVisibility, with());
 			health = cobwebLife * 4;
 			armor = 4;
 			size = 2;

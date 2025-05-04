@@ -37,6 +37,7 @@ public class TektonBioUnit extends UnitType {
 		useUnitCap = false;
 		drawBuildBeam = false;
 		drawCell = false;
+		hidden = true;
         researchCostMultiplier = 0f;
         outlineColor = TektonColor.tektonOutlineColor;
         envDisabled = Env.space | Env.scorching;

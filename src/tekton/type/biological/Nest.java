@@ -141,6 +141,7 @@ public class Nest extends Block implements BiologicalBlock {
             sparkLen = 3f;
             sparkStroke = 0f;
 		}};
+		hideDetails = true;
 		destroyEffect = TektonFx.biologicalDynamicExplosion;
 	}
 	

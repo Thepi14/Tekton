@@ -58,6 +58,7 @@ public class TektonStatusEffects {
 		
 		wetInAcid = new StatusEffect("status-wet-in-acid") {{
 			show = true;
+			alwaysUnlocked = false;
 			hideDetails = false;
 			outline = false;
 	        color = Color.valueOf("82d629");
@@ -80,6 +81,7 @@ public class TektonStatusEffects {
 		
 		acidified = new StatusEffect("status-acidified") {{
 			show = true;
+			alwaysUnlocked = false;
 			hideDetails = false;
 			outline = false;
 	        color = Color.valueOf("82d629");
@@ -184,6 +186,7 @@ public class TektonStatusEffects {
 	    
 	    cobwebbed = new StatusEffect("status-cobwebbed") {{
 			show = true;
+			alwaysUnlocked = false;
 			hideDetails = false;
 			outline = false;
 	        color = Color.valueOf("d6d6d6");
