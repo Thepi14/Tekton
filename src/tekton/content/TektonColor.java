@@ -14,6 +14,9 @@ public class TektonColor {
 	zirconiumSpark = Color.valueOf("fdff8c"),
 	tektonOutlineColor = Color.valueOf("3d352f"),
 	gravityColor = Color.valueOf("639bff"),
-	antiGravityColor = Color.valueOf("d95763")
+	antiGravityColor = Color.valueOf("d95763"),
+	neurospora = Color.valueOf("46617d"),
+	acid = Color.valueOf("82d629"),
+	cobweb = Color.valueOf("d6d6d6")
 	;
 }

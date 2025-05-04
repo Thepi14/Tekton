@@ -23,10 +23,10 @@ public class TektonPlanetGenerator extends PlanetGenerator {
 		defaultLoadout = TektonLoadouts.corePrimal;
 	}
     
-    @Override
+    /*@Override
     public void generateSector(Sector sector) {
     	
-    }
+    }*/
 
     @Override
     public float getHeight(Vec3 position) {

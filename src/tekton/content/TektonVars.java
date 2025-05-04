@@ -1,7 +1,7 @@
 package tekton.content;
 
 public class TektonVars {
-	public static int 
+	public static final int 
 	visualMaxGravity = 16
 			;
 }

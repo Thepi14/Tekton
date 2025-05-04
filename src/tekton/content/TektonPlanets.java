@@ -73,7 +73,7 @@ public class TektonPlanets {
                 r.weather = new Seq<WeatherEntry>().addAll(
                 		new WeatherEntry(Weathers.fog) {{ always = true; }},
                 		new WeatherEntry(TektonWeathers.methaneRain),
-                		new WeatherEntry(TektonWeathers.darkSandStorm));
+                		new WeatherEntry(TektonWeathers.darkSandstorm));
                 r.coreDestroyClear = true;
                 r.onlyDepositCore = true;
                 //r.teams.get(Team.blue).rtsAi = true;
@@ -113,19 +113,20 @@ public class TektonPlanets {
             
             meshLoader = () -> new HexMesh(this, 5);
             
+            var increaseCloudRad = 0.040f;
             cloudMeshLoader = () -> new MultiMesh(
             		//fast
-            		new HexSkyMesh(this, 3377, 1.8f, 0.095f, 7, Color.valueOf("57592b5e"), 3, 0.3f, 1, 0.6f),
-            		new HexSkyMesh(this, 714, -1.7f, 0.105f, 6, Color.valueOf("57592b5e"), 3, 0.3f, 1, 0.6f),
+            		new HexSkyMesh(this, 3377, 1.8f, 0.095f + increaseCloudRad, 7, Color.valueOf("57592b5e"), 3, 0.3f, 1, 0.6f),
+            		new HexSkyMesh(this, 714, -1.7f, 0.105f + increaseCloudRad, 6, Color.valueOf("57592b5e"), 3, 0.3f, 1, 0.6f),
             		//middle
-            		new HexSkyMesh(this, 7777, 1.34f, 0.112f, 6, Color.valueOf("3e401f5e"), 3, 0.3f, 1, 0.6f),
+            		new HexSkyMesh(this, 7777, 1.34f, 0.112f + increaseCloudRad, 6, Color.valueOf("3e401f5e"), 3, 0.3f, 1, 0.6f),
             		//big
-            		new HexSkyMesh(this, 1777, -1.1f, 0.12f, 5, Color.valueOf("3e401f5e"), 2, 0.4f, 1, 0.6f),
-            		new HexSkyMesh(this, 1414, -0.88f, 0.13f, 5, Color.valueOf("3e401f5e"), 2, 0.4f, 1, 0.6f),
+            		new HexSkyMesh(this, 1777, -1.1f, 0.12f + increaseCloudRad, 5, Color.valueOf("3e401f5e"), 2, 0.4f, 1, 0.6f),
+            		new HexSkyMesh(this, 1414, -0.88f, 0.13f + increaseCloudRad, 5, Color.valueOf("3e401f5e"), 2, 0.4f, 1, 0.6f),
             		//outer
-            		new HexSkyMesh(this, 1477, 0.74f, 0.145f, 5, Color.valueOf("7a7d3c33"), 4, 0.67f, 1, 0.6f));
+            		new HexSkyMesh(this, 1477, 0.74f, 0.145f + increaseCloudRad, 5, Color.valueOf("7a7d3c33"), 4, 0.67f, 1, 0.6f));
             
-            hiddenItems.addAll(Items.copper, Items.lead, Items.titanium, Items.plastanium, Items.thorium, Items.surgeAlloy, Items.metaglass, Items.carbide, Items.beryllium, Items.oxide, Items.tungsten);
+            hiddenItems.addAll(Items.copper, Items.lead, Items.titanium, Items.plastanium, Items.thorium, Items.surgeAlloy, Items.metaglass, Items.carbide, Items.beryllium, Items.oxide, Items.tungsten/*, Items.sporePod, Items.pyratite, Items.blastCompound, Items.coal*/);
 		}};
 
         Planets.serpulo.hiddenItems.addAll(TektonItems.tektonItems);

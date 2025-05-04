@@ -121,17 +121,20 @@ public class TektonTechTree {
     				node(carbonicLaserDrill, () -> {
                 		
                 	});
+    				node(plasmaWallDrill, () -> {
+        				
+                	});
             	});
             	node(silicaAspirator, () -> {
             		
                 	//crafting
-                	node(siliconFilter, Seq.with(new Research(silicaAspirator)), () -> {
+                	node(siliconFilter, () -> {
         				node(siliconSmelter, () -> {
                     		
                     	});
         				node(graphiteConcentrator, Seq.with(new SectorComplete(satus)), () -> {
         					node(coldElectrolyzer, Seq.with(new OnSector(scintilla)), () -> {
-        						node(polycarbonateSynthesizer, () -> {
+        						node(polycarbonateSynthesizer, Seq.with(new SectorComplete(river)), () -> {
         							node(polytalumFuser, () -> {
         								node(phasePrinter, Seq.with(new SectorComplete(river)), () -> { //change
         			            			
@@ -222,13 +225,13 @@ public class TektonTechTree {
             	//wall
             	node(ironWall, () -> {
                     node(ironWallLarge, () -> {
-
+                    	
                     });
                     //resistance
                     node(tantalumWall, () -> {
                         node(tantalumWallLarge, () -> {
                         	node(gate, () -> {
-
+                        		
                             });
                         });
                         node(uraniumWall, () -> {
@@ -363,6 +366,8 @@ public class TektonTechTree {
         	        			
         	        		});
         				});
+						//tier 5
+						
     				});
             	});
         	});
@@ -409,6 +414,8 @@ public class TektonTechTree {
     		        	});
     	        	});
 	        	});
+    			
+    			//liquids
     			nodeProduce(TektonLiquids.methane, () -> {
     				nodeProduce(TektonLiquids.liquidMethane, () -> {
                 		
@@ -418,6 +425,7 @@ public class TektonTechTree {
                 			nodeProduce(TektonLiquids.ammonia, () -> {
                 				
                         	});
+                			
                 			//biological session
             				nodeProduce(TektonLiquids.acid, () -> {
             					node(TektonUnits.formica, () -> {
@@ -441,6 +449,8 @@ public class TektonTechTree {
                     					});
                 					});
             					});
+            					
+                    			//alien session
                     			nodeProduce(TektonLiquids.metazotoplasm, () -> {
                             		
                             	});

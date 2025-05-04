@@ -16,6 +16,7 @@ import tekton.content.*;
 import mindustry.Vars;
 import mindustry.gen.Sounds;
 import mindustry.logic.LAccess;
+import tekton.type.bullets.WaveBulletType;
 import tekton.type.gravity.GravityConductor.GravityConductorBuild;
 
 public class GravitationalTurret extends PowerTurret {

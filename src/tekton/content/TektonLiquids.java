@@ -59,11 +59,11 @@ public class TektonLiquids {
             effect = TektonStatusEffects.tarredInMethane;
 		}};
 		
-		acid = new Liquid("acid", Color.valueOf("82d629")) {{
+		acid = new Liquid("acid", TektonColor.acid) {{
             coolant = false;
 			gas = false;
 			temperature = 1f;
-            viscosity = 0.3f;
+            viscosity = 0.6f;
             effect = TektonStatusEffects.acidified;
             lightColor = Color.valueOf("82d629").a(0.3f);
             boilPoint = 0.9f;
@@ -89,12 +89,12 @@ public class TektonLiquids {
             colorTo = Color.valueOf("55ff55");
         }};
         
-        cobweb = new Liquid("cobweb", Color.valueOf("d6d6d6")) {{
+        cobweb = new Liquid("cobweb", TektonColor.cobweb) {{
             coolant = false;
         	hidden = false;
             coolant = false;
 			gas = false;
-			temperature = 1f;
+			temperature = 0.25f;
             viscosity = 0.9f;
             effect = TektonStatusEffects.cobwebbed;
             lightColor = Color.valueOf("d6d6d6").a(0.3f);

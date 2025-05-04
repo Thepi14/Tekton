@@ -1,5 +1,7 @@
 package tekton;
 
+import static mindustry.Vars.*;
+
 import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -30,9 +32,11 @@ import mindustry.type.weather.ParticleWeather;
 import mindustry.type.weather.RainWeather;
 import mindustry.world.Tile;
 import mindustry.world.Tiles;
-import tekton.LightningRod.LightningRodBuild;
 import tekton.content.TektonFx;
 import tekton.content.TektonSounds;
+import tekton.type.defense.LightningAbsorber;
+import tekton.type.power.LightningRod;
+import tekton.type.power.LightningRod.LightningRodBuild;
 
 public class StormWeather extends ParticleWeather {
 	/** big numbers causes amargeddon */
@@ -144,35 +148,45 @@ public class StormWeather extends ParticleWeather {
 		if (absorbableByLightningRods) {
 			var pos = new Vec2(x, y);
 			for (Tile tile : Vars.world.tiles) {
-				if (tile.block() instanceof LightningRod rodBlock) {
-					if (tile.build instanceof LightningRodBuild rod)
+				if (tile.build instanceof LightningAbsorber rod) {
+					if (tile.block() instanceof LightningRod rodBlock) {
 						if (rodBlock.circleArea) {
-							if (pos.dst(new Vec2(rod.getX(), rod.getY())) <= rodBlock.protectionRadius) {
-								rod.hit = true;
-								lightningBoltEffect.at(rod.getX(), rod.getY());
-								lightningBullet.hitSound.at(rod.getX(), rod.getY());
+							if (pos.dst(new Vec2(tile.getX(), tile.getY())) <= rodBlock.protectionRadius) {
+								rod.absorbLightning();
+								lightningBoltEffect.at(tile.getX(), tile.getY());
+								lightningBullet.hitSound.at(tile.getX(), tile.getY());
 								return;
 							}
 						}
 						else if (rodBlock.squareArea) {
-							if ((rod.getX() <= x + rodBlock.protectionRadius && rod.getY() <= y + rodBlock.protectionRadius) || 
-								(rod.getX() >= x - rodBlock.protectionRadius && rod.getY() >= y - rodBlock.protectionRadius)) {
-								rod.hit = true;
-								lightningBoltEffect.at(rod.getX(), rod.getY());
-								lightningBullet.hitSound.at(rod.getX(), rod.getY());
+							if ((tile.getX() <= x + rodBlock.protectionRadius && tile.getY() <= y + rodBlock.protectionRadius) || 
+								(tile.getX() >= x - rodBlock.protectionRadius && tile.getY() >= y - rodBlock.protectionRadius)) {
+								rod.absorbLightning();
+								lightningBoltEffect.at(tile.getX(), tile.getY());
+								lightningBullet.hitSound.at(tile.getX(), tile.getY());
 								return;
 							}
 						}
 						else if (rodBlock.diamondArea) {
-							if (TekMath.insideDiamond(x, y, rod.getX(), rod.getY(), rodBlock.protectionRadius)) {
-								rod.hit = true;
-								lightningBoltEffect.at(rod.getX(), rod.getY());
-								lightningBullet.hitSound.at(rod.getX(), rod.getY());
+							if (TekMath.insideDiamond(x, y, tile.getX(), tile.getY(), rodBlock.protectionRadius)) {
+								rod.absorbLightning();
+								lightningBoltEffect.at(tile.getX(), tile.getY());
+								lightningBullet.hitSound.at(tile.getX(), tile.getY());
 								return;
 							}
 						}
 					}
+					else {
+						var a = world.tile((int)(x / tilesize), (int)(y / tilesize));
+						if (new Vec2(a.getX(), a.getY()).dst(tile) <= rod.getRadius()) {
+							rod.absorbLightning();
+							lightningBoltEffect.at(tile.getX(), tile.getY());
+							lightningBullet.hitSound.at(tile.getX(), tile.getY());
+						}
+						return;
+					}
 				}
+			}
 		}
 		//yeah, i don't like it too.
 		lightningBullet.create(Groups.unit.first(), Team.derelict, x, y, 0f);

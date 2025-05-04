@@ -20,21 +20,19 @@ import static mindustry.Vars.*;
 
 
 public class TektonStatusEffects {
-	public static StatusEffect tarredInMethane, wetInAcid, acidified, shortCircuit, incineration, radioactiveContamination, radiationAbsorption, foggerStatus, cobwebbed;
+	public static StatusEffect tarredInMethane, wetInAcid, acidified, shortCircuit, incineration, radioactiveContamination, radiationAbsorption, cobwebbed, neurosporaSlowed, foggerStatus;
 	
 	public static void load(){
-		
 		tarredInMethane = new StatusEffect("status-tarred-in-methane") {{
 			show = true;
 			hideDetails = false;
 			outline = false;
-			color = Color.valueOf("57592b");
-			applyColor = Color.valueOf("57592b");
+			color = applyColor = Color.valueOf("57592b");
 			speedMultiplier = 0.9f;
 			transitionDamage = 5f;
-			dragMultiplier = 0.9f;
+			dragMultiplier = 1.1f;
 			effect = new Effect(42f, e -> {
-		        color(TektonColor.methane);
+		        color(TektonColor.liquidMethane);
 
 		        randLenVectors(e.id, 2, 1f + e.fin() * 2f, (x, y) -> {
 		            Fill.circle(e.x + x, e.y + y, e.fout());
@@ -46,6 +44,17 @@ public class TektonStatusEffects {
                 affinity(StatusEffects.blasted, (unit, result, time) -> result.set(StatusEffects.blasted, result.time + time));
             });
 		}};
+	    
+		neurosporaSlowed = new StatusEffect("status-neurospora-slowed") {{
+			show = true;
+			hideDetails = false;
+			outline = false;
+	    	color = applyColor = TektonColor.neurospora;
+            speedMultiplier = 0.9f;
+			dragMultiplier = 1.1f;
+            effect = TektonFx.neurosporaContaminationSapped;
+            effectChance = 0.04f;
+	    }};
 		
 		wetInAcid = new StatusEffect("status-wet-in-acid") {{
 			show = true;
@@ -128,10 +137,9 @@ public class TektonStatusEffects {
         	}); 
 	    }};
 	    
-	    float rspeedMultiplier = 0.8f,
+	    float rspeedMultiplier = 0.5f,
     		rbuildSpeedMultiplier = 0.6f,
     		rdamageMultiplier = 0.8f,
-    		rhealthMultiplier = 1f,
     		rdragMultiplier = 1.4f;
 	    
 	    radioactiveContamination = new StatusEffect("status-radioactive-contamination") {{
@@ -144,7 +152,6 @@ public class TektonStatusEffects {
 	        speedMultiplier = rspeedMultiplier;
 	        buildSpeedMultiplier = rbuildSpeedMultiplier;
 	        damageMultiplier = rdamageMultiplier;
-	        healthMultiplier = rhealthMultiplier;
 	        dragMultiplier = rdragMultiplier;
 	        damage = 10f / 60f;
 	        effect = new Effect(40f, e -> {
@@ -166,10 +173,13 @@ public class TektonStatusEffects {
 	        speedMultiplier = 2f - rspeedMultiplier;
 	        buildSpeedMultiplier = 2f - rbuildSpeedMultiplier;
 	        damageMultiplier = 2f - rdamageMultiplier;
-	        healthMultiplier = 2f - rhealthMultiplier;
-	        dragMultiplier = -rdragMultiplier;
+	        healthMultiplier = 1.3f;
+	        //dragMultiplier = -rdragMultiplier;
 	        damage = -40f / 60f;
 	        effect = Fx.none;
+	        init(() -> {
+	        	opposite(radioactiveContamination);
+	        });
 	    }};
 	    
 	    cobwebbed = new StatusEffect("status-cobwebbed") {{
@@ -180,7 +190,7 @@ public class TektonStatusEffects {
 			applyColor = Color.valueOf("d6d6d6");
 	        speedMultiplier = 0.1f;
 	        dragMultiplier = 1.2f;
-	        effect = Fx.none;
+	        effect = TektonFx.cobwebbed;
 	    }};
 	    
 	    foggerStatus = new StatusEffect("status-fogger") {{

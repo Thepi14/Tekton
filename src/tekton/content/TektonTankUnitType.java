@@ -4,6 +4,7 @@ import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.type.ammo.ItemAmmoType;
+import mindustry.type.ammo.PowerAmmoType;
 import mindustry.type.unit.TankUnitType;
 import mindustry.world.meta.Env;
 
@@ -16,19 +17,7 @@ public class TektonTankUnitType extends TektonUnitType {
         rotateSpeed = 1.3f;
         envDisabled = Env.none;
         speed = 0.8f;
-        ammoType = new ItemAmmoType(TektonItems.iron);
+        ammoType = new PowerAmmoType();
         outlineColor = TektonColor.tektonOutlineColor;
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        float maxWeaponRange = 0;
-        for (Weapon weapon : weapons) {
-            if (weapon.range() > maxWeaponRange) {
-                maxWeaponRange = weapon.range();
-            }
-        }
-        fogRadius = maxWeaponRange / 8;
     }
 }

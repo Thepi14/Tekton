@@ -3,6 +3,8 @@ package tekton;
 import ent.anno.Annotations.EntityDef;
 import mindustry.gen.Unitc;
 import mindustry.type.UnitType;
+import tekton.type.distanceMissile.DistanceKillComp;
+import tekton.type.distanceMissile.DistanceMissileUnitEntity;
 
 public class EntityDefinitions{
     // This will generate `MyUnit` entity class that implements both `MyComp` and `Unit` in `mymod.gen.entities`.
