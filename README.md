@@ -24,7 +24,7 @@
 ## Overview
 </div>
 
-- Over 180 pieces of unique and fresh content, including blocks, units, items and more!
+- Currently 218 pieces of content, including blocks, units, items and liquids.
 - 3 sectors at the moment of the creation of this README
 - Almost 4 completed unit trees with unique units.
 
