@@ -56,6 +56,7 @@ import static arc.graphics.g2d.Lines.stroke;
 import static arc.math.Angles.randLenVectors;
 import static tekton.content.TektonColor.*;
 import static tekton.content.TektonItems.*;
+
 import static mindustry.Vars.tilesize;
 import static mindustry.type.ItemStack.*;
 
@@ -134,7 +135,7 @@ public class TektonBlocks {
 	gravitySource, nullBlock 
 	;
 	
-	public static void load(){
+	public static void load() {
 		nullBlock = new Block("null"){{
 			requirements(Category.defense, BuildVisibility.debugOnly, with(iron, 1));
 			health = 1;

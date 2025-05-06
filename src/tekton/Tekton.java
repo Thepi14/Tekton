@@ -1,10 +1,16 @@
 package tekton;
 
+import java.lang.reflect.Field;
+
+import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Time;
 import mindustry.game.Team;
 import mindustry.mod.Mod;
+import mindustry.type.Item;
+import mindustry.type.Liquid;
 import mindustry.type.UnitType;
+import mindustry.world.Block;
 import tekton.content.*;
 import ent.anno.Annotations.*;
 import tekton.EntityDefinitions;
@@ -53,6 +59,29 @@ protected static boolean contentLoadComplete = false;
         Team.blue.emoji = "hapax";
         Team.blue.name = "hapax";
         
+        Log.info(returnResourcesSize());
+        
 		contentLoadComplete = true;
     }
+	
+	public static int returnResourcesSize() {
+		int currentTests = 2;
+		Class<?> bloc = TektonBlocks.class;
+		Seq<Field> blocFields = new Seq<>(bloc.getFields());
+		blocFields.retainAll(f -> Block.class.equals(f.getType()));
+		
+		Class<?> uni = TektonUnits.class;
+		Seq<Field> uniFields = new Seq<>(uni.getFields());
+		uniFields.retainAll(f -> UnitType.class.equals(f.getType()));
+
+		Class<?> ite = TektonItems.class;
+		Seq<Field> iteFields = new Seq<>(ite.getFields());
+		iteFields.retainAll(f -> Item.class.equals(f.getType()));
+
+		Class<?> liq = TektonLiquids.class;
+		Seq<Field> liqFields = new Seq<>(liq.getFields());
+		liqFields.retainAll(f -> Liquid.class.equals(f.getType()));
+		
+		return blocFields.size + uniFields.size + iteFields.size + liqFields.size - currentTests;
+	}
 }
