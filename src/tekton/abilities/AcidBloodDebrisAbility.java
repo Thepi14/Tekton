@@ -1,4 +1,4 @@
-package tekton.type.biological;
+package tekton.abilities;
 
 import static mindustry.Vars.*;
 import static tekton.Drawt.*;

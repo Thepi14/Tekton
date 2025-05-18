@@ -81,14 +81,16 @@ public class TektonTechTree {
         	
         	//cores
         	node(coreDeveloped, () -> {
-        		
+        		node(corePerfected, () -> {
+            		
+            	});
         	});
         	
         	//production
         	node(wallDrill, () -> {
         		
         		//liquid
-            	node(methanePump, Seq.with(new SectorComplete(satus)), () -> {
+            	node(pneumaticPump, Seq.with(new SectorComplete(satus)), () -> {
             		node(pressurePump, Seq.with(new SectorComplete(proelium)), () -> {
             			
     				});
@@ -179,7 +181,7 @@ public class TektonTechTree {
             	});
             	
             	//energy
-        		node(methaneBurner, Seq.with(new Research(methanePump)), () -> {
+        		node(methaneBurner, Seq.with(new Research(pneumaticPump)), () -> {
         			node(lineNode, () -> {
                 		node(geothermalGenerator, Seq.with(new OnSector(proelium)), () -> {
                     		node(methaneCombustionChamber, Seq.with(new SectorComplete(proelium)), () -> {
@@ -431,21 +433,29 @@ public class TektonTechTree {
             					node(TektonUnits.formica, () -> {
             						node(TektonUnits.gracilipes, () -> {
             							node(TektonUnits.carabidae, () -> {
-            								node(TektonUnits.latrodectus, () -> {
-            									node(TektonLiquids.cobweb, Seq.with(new Research(latrodectus)), () -> {
-                            						
-                            					});
-                        					});
+            								
                     					});
                 					});
-            						node(TektonUnits.isoptera, () -> {
-                						
+    								node(TektonUnits.danaus, () -> {
+            							node(TektonUnits.antheraea, () -> {
+                    						
+                    					});
+                					});
+            						node(TektonUnits.colobopsis, () -> {
+                						node(TektonUnits.isoptera, () -> {
+                    						
+                    					});
                 					});
             						node(TektonUnits.diptera, () -> {
             							node(TektonUnits.polyphaga, () -> {
             								node(TektonUnits.lepidoptera, () -> {
                         						
                         					});
+                    					});
+                					});
+    								node(TektonUnits.latrodectus, () -> {
+    									node(TektonLiquids.cobweb, Seq.with(new Research(latrodectus)), () -> {
+                    						
                     					});
                 					});
             					});

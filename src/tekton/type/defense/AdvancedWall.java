@@ -50,6 +50,14 @@ public class AdvancedWall extends Wall {
 	}
 	
 	@Override
+    public void setStats(){
+        super.setStats();
+        
+        if (healPercent > 0f)
+		    stats.add(Stat.healing, ((health * (healPercent / 100f)) / reload) * 60f * 60f, StatUnit.perMinute);
+    }
+	
+	@Override
 	public void load() {
 		super.load();
 		

@@ -177,7 +177,7 @@ public class BioNode extends PowerNode implements BiologicalBlock {
                 float ex = x + Mathf.range(block.size * tilesize / 2f), ey = y + Mathf.range(block.size * tilesize / 2f);
                 float lx = link.x + Mathf.range(link.block.size * tilesize / 2f), ly = link.y + Mathf.range(link.block.size * tilesize / 2f);
                 
-                if (effectReloadProgress >= effectReload) {
+                if (effectReloadProgress >= effectReload && !state.isPaused()) {
                     if (link.getPowerProduction() > 0f) {
                         TektonFx.arteryPowerTransfer.at(ex, ey, 0f, effectColor, link);
                     }

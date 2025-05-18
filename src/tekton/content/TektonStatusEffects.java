@@ -4,11 +4,13 @@ import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.Fill;
 import arc.math.*;
+import arc.struct.Seq;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.type.StatusEffect;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.Liquids;
 import mindustry.content.StatusEffects;
@@ -203,5 +205,26 @@ public class TektonStatusEffects {
 			permanent = true;
 	        effect = Fx.none;
 	    }};
+	}
+	
+	public static Seq<StatusEffect> returnAllTektonStatus() {
+    	var b = new Seq<StatusEffect>();
+		if (!Vars.headless) {
+	    	var a = TektonStatusEffects.class.getFields();
+	    	
+	    	for (var c : a) {
+	    		c.setAccessible(true);
+	            try {
+	            	Object d = c.get(c);
+	            	if (d instanceof StatusEffect e) {
+	            		b.add(e);
+	            	}
+	            }
+	    		catch (IllegalAccessException e) {
+	    			e.printStackTrace();
+	    		}
+	    	}
+		}
+		return b;
 	}
 }

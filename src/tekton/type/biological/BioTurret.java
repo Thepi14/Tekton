@@ -54,7 +54,7 @@ public class BioTurret extends PowerTurret implements BiologicalBlock {
 			needRegen = damaged();
 			
 			if (needRegen)
-				regenCharge += Time.delta * timeScale * efficiency;
+				regenCharge += Time.delta * timeScale * power.status;
 			
 			if (regenCharge >= regenReload && needRegen) {
 				regenCharge = 0f;

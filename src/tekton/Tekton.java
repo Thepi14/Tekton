@@ -14,6 +14,7 @@ import mindustry.world.Block;
 import tekton.content.*;
 import ent.anno.Annotations.*;
 import tekton.EntityDefinitions;
+import mindustry.type.*;
 
 public class Tekton extends Mod{
 	
@@ -23,6 +24,8 @@ protected static boolean contentLoadComplete = false;
 	public static final String MOD_REPO = "Thepi14/Tekton";
 	public static final String MOD_GITHUB_URL = "https://github.com/Thepi14/Tekton.git";
 	public static final String MOD_NAME = "tekton";
+	
+	public static boolean hideContent = false;
 
 	public static final boolean loadedComplete(){
 		return contentLoadComplete;

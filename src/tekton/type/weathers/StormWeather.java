@@ -1,4 +1,4 @@
-package tekton;
+package tekton.type.weathers;
 
 import static mindustry.Vars.*;
 
@@ -32,6 +32,7 @@ import mindustry.type.weather.ParticleWeather;
 import mindustry.type.weather.RainWeather;
 import mindustry.world.Tile;
 import mindustry.world.Tiles;
+import tekton.TekMath;
 import tekton.content.TektonFx;
 import tekton.content.TektonSounds;
 import tekton.type.defense.LightningAbsorber;
@@ -50,28 +51,24 @@ public class StormWeather extends ParticleWeather {
 	public int minLines = 6, maxLines = 12;
 	public boolean absorbableByLightningRods = true;
 	
-	public Seq<Vec2[]> positionsList = new Seq<Vec2[]>().addAll(
-			new Vec2[] { new Vec2(60, 150), new Vec2(20, 120), new Vec2(-25, 100), new Vec2(20, 70), new Vec2(-40, 40) },
-			new Vec2[] { new Vec2(-60, 150), new Vec2(40, 120), new Vec2(-34, 80), new Vec2(10, 50), new Vec2(-20, 30) },
-			new Vec2[] { new Vec2(-70, 150), new Vec2(60, 100), new Vec2(50, 90), new Vec2(-10, 60), new Vec2(30, 50) },
-			new Vec2[] { new Vec2(50, 150), new Vec2(-40, 90), new Vec2(20, 110), new Vec2(0, 80), new Vec2(-20, 40) }
-			);
-	
 	public Effect lightningHitEffect = Fx.titanExplosion, lightningBoltEffect = 
 		new Effect(30f, 300f, e -> {
 		rand.setSeed(e.id);
-		Tmp.p1.x = rand.random(0, positionsList.size - 1);
+		float size = rand.random(100f, 180f);
+		int points = (int)size / 15;
+		float pointMul = size / points;
 		
         Lines.stroke(10f * e.fout());
         Draw.color(lightningsColor, Color.white, e.fin());
         
         Lines.beginLine();
         
-        for (var pos : positionsList.get(Tmp.p1.x)) {
-            Lines.linePoint(e.x + pos.x, e.y + pos.y);
-        }
-        
         Lines.linePoint(e.x, e.y);
+        float bi = rand.range(5f);
+        for (int i = 1; i < points; i++) {
+        	bi = (bi + rand.range(7f * i)) / 2f;
+            Lines.linePoint(e.x + bi, (e.y + (i * pointMul)) + rand.range(15f));
+        }
         
         Lines.endLine();
     }).followParent(false).rotWithParent(false);
@@ -81,48 +78,50 @@ public class StormWeather extends ParticleWeather {
 
 	public StormWeather(String name) {
 		super(name);
-		lightningBullet = new BasicBulletType(0f, 0f) {{
-			/*lifetime = 20f;
-			width = height = 20f;*/
-			instantDisappear = true;
-			
-			splashDamage = lightningSplashDamage;
-			splashDamageRadius = lightningSplashDamageRadius;
-			scaledSplashDamage = true;
-			
-			lightning = lightningRays;
-            lightningLength = lightningLengthMin;
-            lightningLengthRand = lightningRandExtension;
-            lightningDamage = lightningsDamage;
-            
-            hitColor = hitsColor;
-            lightningColor = lightningsColor;
-            lightRadius = lightningLightRadius;
-            lightColor = lightningLightColor;
-
-            hitShake = despawnShake = lightningShake;
-			absorbable = false;
-            reflectable = false;
-            hittable = false;
-            pierce = true;
-            pierceBuilding = true;
-            pierceArmor = true;
-            
-            hitSoundPitch = 1f;
-            hitSoundVolume = lightningVolume;
-            
-            despawnSound = hitSound = lightningHitSound;
-            
-            despawnEffect = hitEffect = lightningHitEffect;
-            
-			buildingDamageMultiplier = 0.5f;
-		}};
 	}
 
 	@Override
     public void update(WeatherState state){
+		if (lightningBullet == null) {
+			lightningBullet = new BasicBulletType(0f, 0f) {{
+				/*lifetime = 20f;
+				width = height = 20f;*/
+				instantDisappear = true;
+				
+				splashDamage = lightningSplashDamage;
+				splashDamageRadius = lightningSplashDamageRadius;
+				scaledSplashDamage = true;
+				
+				lightning = lightningRays;
+	            lightningLength = lightningLengthMin;
+	            lightningLengthRand = lightningRandExtension;
+	            lightningDamage = lightningsDamage;
+	            
+	            hitColor = hitsColor;
+	            lightningColor = lightningsColor;
+	            lightRadius = lightningLightRadius;
+	            lightColor = lightningLightColor;
+
+	            hitShake = despawnShake = lightningShake;
+				absorbable = false;
+	            reflectable = false;
+	            hittable = false;
+	            pierce = true;
+	            pierceBuilding = true;
+	            pierceArmor = true;
+	            
+	            hitSoundPitch = 1f;
+	            hitSoundVolume = lightningVolume;
+	            
+	            despawnSound = hitSound = lightningHitSound;
+	            
+	            despawnEffect = hitEffect = lightningHitEffect;
+	            
+				buildingDamageMultiplier = 0.5f;
+			}};
+		}
 		super.update(state);
-		if (Groups.unit.isEmpty())
+		if (Groups.unit.isEmpty() || Vars.state.isPaused())
 			return;
 		lightningBullet.hitSoundPitch = Mathf.random(lightningHitSoundPitchMin, lightningHitSoundPitchMax);
 		
@@ -148,44 +147,46 @@ public class StormWeather extends ParticleWeather {
 		if (absorbableByLightningRods) {
 			var pos = new Vec2(x, y);
 			for (Tile tile : Vars.world.tiles) {
-				if (tile.build instanceof LightningAbsorber rod) {
-					if (tile.block() instanceof LightningRod rodBlock) {
-						if (rodBlock.circleArea) {
-							if (pos.dst(new Vec2(tile.getX(), tile.getY())) <= rodBlock.protectionRadius) {
-								rod.absorbLightning();
-								lightningBoltEffect.at(tile.getX(), tile.getY());
-								lightningBullet.hitSound.at(tile.getX(), tile.getY());
-								return;
+				if (tile.build != null)
+					if (tile.build instanceof LightningAbsorber rod) {
+						float bx = tile.build.getX(), by = tile.build.getY();
+						if (tile.block() instanceof LightningRod rodBlock) {
+							if (rodBlock.circleArea) {
+								if (pos.dst(new Vec2(bx, by)) <= rodBlock.protectionRadius) {
+									rod.absorbLightning();
+									lightningBoltEffect.at(bx, by);
+									lightningBullet.hitSound.at(bx, by);
+									return;
+								}
+							}
+							else if (rodBlock.squareArea) {
+								if ((bx <= x + rodBlock.protectionRadius && by <= y + rodBlock.protectionRadius) || 
+									(bx >= x - rodBlock.protectionRadius && by >= y - rodBlock.protectionRadius)) {
+									rod.absorbLightning();
+									lightningBoltEffect.at(bx, by);
+									lightningBullet.hitSound.at(bx, by);
+									return;
+								}
+							}
+							else if (rodBlock.diamondArea) {
+								if (TekMath.insideDiamond(x, y, bx, by, rodBlock.protectionRadius)) {
+									rod.absorbLightning();
+									lightningBoltEffect.at(bx, by);
+									lightningBullet.hitSound.at(bx, by);
+									return;
+								}
 							}
 						}
-						else if (rodBlock.squareArea) {
-							if ((tile.getX() <= x + rodBlock.protectionRadius && tile.getY() <= y + rodBlock.protectionRadius) || 
-								(tile.getX() >= x - rodBlock.protectionRadius && tile.getY() >= y - rodBlock.protectionRadius)) {
+						else {
+							var a = world.tile((int)(x / tilesize), (int)(y / tilesize));
+							if (new Vec2(a.getX(), a.getY()).dst(tile.build) <= rod.getRadius()) {
 								rod.absorbLightning();
 								lightningBoltEffect.at(tile.getX(), tile.getY());
 								lightningBullet.hitSound.at(tile.getX(), tile.getY());
-								return;
 							}
-						}
-						else if (rodBlock.diamondArea) {
-							if (TekMath.insideDiamond(x, y, tile.getX(), tile.getY(), rodBlock.protectionRadius)) {
-								rod.absorbLightning();
-								lightningBoltEffect.at(tile.getX(), tile.getY());
-								lightningBullet.hitSound.at(tile.getX(), tile.getY());
-								return;
-							}
+							return;
 						}
 					}
-					else {
-						var a = world.tile((int)(x / tilesize), (int)(y / tilesize));
-						if (new Vec2(a.getX(), a.getY()).dst(tile) <= rod.getRadius()) {
-							rod.absorbLightning();
-							lightningBoltEffect.at(tile.getX(), tile.getY());
-							lightningBullet.hitSound.at(tile.getX(), tile.getY());
-						}
-						return;
-					}
-				}
 			}
 		}
 		//yeah, i don't like it too.

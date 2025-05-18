@@ -71,7 +71,7 @@ public class TektonPlanets {
                 r.ambientLight = Color.valueOf("101805a4");
                 r.weather.clear();
                 r.weather = new Seq<WeatherEntry>().addAll(
-                		new WeatherEntry(Weathers.fog) {{ always = true; }},
+                		new WeatherEntry(TektonWeathers.tektonFog) {{ always = true; }},
                 		new WeatherEntry(TektonWeathers.methaneRain),
                 		new WeatherEntry(TektonWeathers.darkSandstorm));
                 r.coreDestroyClear = true;

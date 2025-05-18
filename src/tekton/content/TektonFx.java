@@ -176,6 +176,111 @@ public class TektonFx {
             });
         });
     }),
+	
+	biologicalFallingEgg = new Effect(60f, e -> {
+        String regionName = "tekton-egg";
+        TextureRegion region = Core.atlas.find(regionName);
+        float scale = region.scale;
+        float rw = (region.width * scale) / 4f, rh = (region.height * scale) / 4f;
+        
+        float 
+        		tx = e.x + 50f + Mathf.randomSeedRange(e.id, 20f),
+        		ty = e.y + 160f + Mathf.randomSeedRange(e.id, 60f),
+        		cx = Mathf.lerp(tx, e.x, e.fin()),
+				cy = Mathf.lerp(ty, e.y, e.fin()),
+        		rotation = (Mathf.atan2(cx - e.x, cy - e.y) * Mathf.radDeg) - 90f;
+        
+        Draw.z(Layer.effect + 1f);
+        if (Mathf.chance(e.id * 8) && Mathf.chance(e.id))
+	        new Effect(110, f -> {
+	            color(TektonColor.acid.cpy().a(f.color.a), TektonColor.methane.cpy().a(f.color.a), f.rotation);
+	            Fill.circle(f.x, f.y, f.fout() * 3.5f);
+	        }).wrap(Color.white.cpy().a(e.fin() + 0.1f)).at(cx + Mathf.range(7f), cy + Mathf.range(7f));
+        
+        Draw.alpha(e.fin());
+        
+        Draw.rect(region, cx, cy, rw, rh, rotation);
+        
+        //Fill.light(cx, cy, 10, 25f, Color.white, Color.white);
+        
+        Draw.color();
+        Draw.alpha(e.fin());
+        
+        
+        Draw.z();
+        Draw.color();
+
+        Draw.reset();
+        if (e.fin() >= 0.99f) {
+        	new ExplosionEffect() {{
+                lifetime = 40f;
+                waveStroke = 4f;
+                waveColor = sparkColor = smokeColor = TektonColor.acid.cpy();
+                waveRad = 15f;
+                smokeSize = 5f;
+                smokes = 8;
+                smokeSizeBase = 0f;
+                sparks = 8;
+                sparkRad = 40f;
+                sparkLen = 4f;
+                sparkStroke = 3f;
+            }}.at(e.x, e.y);
+        }
+    }),
+	
+	shootBig = new Effect(9, e -> {
+        color(e.color.cpy(), Color.gray, e.fin());
+        float w = 1.2f + 7 * e.fout();
+        Drawf.tri(e.x, e.y, w, 25f * e.fout(), e.rotation);
+        Drawf.tri(e.x, e.y, w, 4f * e.fout(), e.rotation + 180f);
+    }),
+	
+	shootBig2 = new Effect(11, e -> {
+        color(e.color.cpy(), Color.gray, e.fin());
+        float w = 1.2f +9 * e.fout();
+        Drawf.tri(e.x, e.y, w, 32f * e.fout(), e.rotation);
+        Drawf.tri(e.x, e.y, w, 3f * e.fout(), e.rotation + 180f);
+    }),
+	
+	shootBigSmoke = new Effect(17f, e -> {
+        color(e.color.cpy().mul(1.2f), e.color, Color.gray, e.fin());
+
+        randLenVectors(e.id, 8, e.finpow() * 19f, e.rotation, 10f, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fout() * 2f + 0.2f);
+        });
+    }),
+
+    shootBigSmoke2 = new Effect(18f, e -> {
+        color(e.color.cpy().mul(1.2f), e.color, Color.gray, e.fin());
+
+        randLenVectors(e.id, 9, e.finpow() * 23f, e.rotation, 20f, (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fout() * 2.4f + 0.2f);
+        });
+    }),
+    
+	blastExplosionColor = new Effect(22, e -> {
+        color(e.color.cpy().mul(1.2f));
+
+        e.scaled(6, i -> {
+            stroke(3f * i.fout());
+            Lines.circle(e.x, e.y, 3f + i.fin() * 15f);
+        });
+
+        color(Color.gray);
+
+        randLenVectors(e.id, 5, 2f + 23f * e.finpow(), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fout() * 4f + 0.5f);
+        });
+
+        color(e.color);
+        stroke(e.fout());
+
+        randLenVectors(e.id + 1, 4, 1f + 23f * e.finpow(), (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 3f);
+        });
+
+        Drawf.light(e.x, e.y, 45f, e.color, 0.8f * e.fout());
+    }),
     
 	regenParticleOxygen = new Effect(120f, e -> {
         color(TektonColor.oxygen);
@@ -503,8 +608,8 @@ public class TektonFx {
     
     ;
     
-	public static void load(){
-		
+	public static void load() {
+		biologicalFallingEgg.clip = 10000f;
 	}
 	
 	private static Effect copyEffect(Effect effect) {

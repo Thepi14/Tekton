@@ -4,6 +4,7 @@ import arc.graphics.Color;
 import mindustry.content.Liquids;
 import mindustry.type.CellLiquid;
 import mindustry.type.Liquid;
+import tekton.Tekton;
 
 public class TektonLiquids {
 	public static Liquid ammonia, oxygen, methane, liquidMethane, metazotoplasm, acid, cobweb;
@@ -47,7 +48,7 @@ public class TektonLiquids {
 		}};
 		
 		liquidMethane = new Liquid("liquid-methane", TektonColor.liquidMethane) {{
-        	hidden = true;
+        	hidden = Tekton.hideContent;
             coolant = false;
 			gas = false;
 			temperature = 0.1f;
@@ -61,7 +62,7 @@ public class TektonLiquids {
 		}};
 		
 		acid = new Liquid("acid", TektonColor.acid) {{
-        	hidden = true;
+        	hidden = Tekton.hideContent;
             coolant = false;
 			gas = false;
 			temperature = 1f;
@@ -74,7 +75,7 @@ public class TektonLiquids {
 		}};
 		
 		metazotoplasm = new CellLiquid("metazotoplasm", TektonColor.metazotoplasm){{
-        	hidden = true;
+        	hidden = Tekton.hideContent;
             coolant = false;
             heatCapacity = 1f;
             temperature = 0.25f;
@@ -94,7 +95,7 @@ public class TektonLiquids {
         
         cobweb = new Liquid("cobweb", TektonColor.cobweb) {{
             coolant = false;
-        	hidden = true;
+        	hidden = Tekton.hideContent;
             coolant = false;
 			gas = false;
 			temperature = 0.25f;

@@ -1,7 +1,7 @@
 {
     "displayName": "Tekton",
-    "description": "A Mindustry Java mod adding a new planet.",
-    "version": "v0.1.0",
+    "description": "A Mindustry Java mod adding a new planet called Tekton, with lots of hazards and other things.",
+    "version": "v1.0.0",
     "minGameVersion": "146",
     "author": "ThePi14",
     "java": true,

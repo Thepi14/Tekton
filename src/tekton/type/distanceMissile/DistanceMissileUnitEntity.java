@@ -30,6 +30,7 @@ public class DistanceMissileUnitEntity extends TimedKillUnit {
     }
 	
 	protected DistanceMissileUnitEntity() {
+		super();
     }
 
     //called last so pooling and removal happens then.

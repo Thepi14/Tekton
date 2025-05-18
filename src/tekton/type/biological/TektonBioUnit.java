@@ -14,10 +14,13 @@ import mindustry.entities.abilities.*;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
 import mindustry.type.ammo.*;
 import mindustry.world.meta.Env;
+import tekton.Tekton;
+import tekton.abilities.AcidBloodDebrisAbility;
 import tekton.content.TektonColor;
 import tekton.content.TektonFx;
 import tekton.content.TektonLiquids;
@@ -37,7 +40,7 @@ public class TektonBioUnit extends UnitType {
 		useUnitCap = false;
 		drawBuildBeam = false;
 		drawCell = false;
-		hidden = true;
+		hidden = Tekton.hideContent;
         researchCostMultiplier = 0f;
         outlineColor = TektonColor.tektonOutlineColor;
         envDisabled = Env.space | Env.scorching;
@@ -48,19 +51,11 @@ public class TektonBioUnit extends UnitType {
         			liquid = TektonLiquids.acid;
 	        	}},
         		new RegenAbility() {{
-                    //fully regen in 70 seconds
-                    percentAmount = 1f / (70f * 60f) * 100f;
+                    //fully regen in 180 seconds
+                    percentAmount = 1f / (180f * 60f) * 100f;
                 }},
         		new AcidBloodDebrisAbility());
-        immunities.addAll(
-        		TektonStatusEffects.radioactiveContamination, 
-        		TektonStatusEffects.wetInAcid, 
-        		TektonStatusEffects.shortCircuit, 
-        		TektonStatusEffects.acidified, 
-        		/*TektonStatusEffects.tarredInMethane,*/ 
-        		TektonStatusEffects.neurosporaSlowed, 
-        		StatusEffects.freezing
-        		);
+        immunities.addAll(getDefaultImmunities());
         ammoType = new PowerAmmoType(0f);
         engineSize = 0f;
         itemCapacity = 0;
@@ -69,6 +64,16 @@ public class TektonBioUnit extends UnitType {
             Fill.circle(e.x, e.y, e.fout() * 3.5f);
         });
         deathExplosionEffect = TektonFx.biologicalDynamicExplosion;
+	}
+	
+	public static StatusEffect[] getDefaultImmunities() {
+		return new StatusEffect[] { TektonStatusEffects.radioactiveContamination, 
+        		TektonStatusEffects.wetInAcid, 
+        		TektonStatusEffects.shortCircuit, 
+        		TektonStatusEffects.acidified, 
+        		/*TektonStatusEffects.tarredInMethane,*/ 
+        		TektonStatusEffects.neurosporaSlowed, 
+        		StatusEffects.freezing };
 	}
 
     @Override

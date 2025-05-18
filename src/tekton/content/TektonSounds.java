@@ -25,7 +25,7 @@ public class TektonSounds {
 	}
 	
 	private static Sound loadSound(String soundName){
-		if(!Vars.headless){
+		if (!Vars.headless) {
 			String name = "sounds/" + soundName;
 			String path = Vars.tree.get(name + ".ogg").exists() ? name + ".ogg" : name + ".mp3";
 			
@@ -34,6 +34,7 @@ public class TektonSounds {
 			AssetDescriptor<?> desc = Core.assets.load(path, Sound.class, new SoundLoader.SoundParameter(sound));
 			desc.errored = Throwable::printStackTrace;
 			return sound;
-		}else return new Sound();
+		}
+		else return new Sound();
 	}
 }
