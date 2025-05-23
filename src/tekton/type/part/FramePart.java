@@ -1,4 +1,4 @@
-package tekton;
+package tekton.type.part;
 
 import arc.*;
 import arc.graphics.Color;

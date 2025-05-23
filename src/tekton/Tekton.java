@@ -1,17 +1,26 @@
 package tekton;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
+import arc.math.Mathf;
+import arc.struct.IntSet;
 import arc.struct.Seq;
 import arc.util.Log;
+import arc.util.Nullable;
 import arc.util.Time;
+import mindustry.Vars;
 import mindustry.game.Team;
+import mindustry.gen.Building;
 import mindustry.mod.Mod;
 import mindustry.type.Item;
 import mindustry.type.Liquid;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
 import tekton.content.*;
+import tekton.type.gravity.GravityBlock;
+import tekton.type.gravity.GravityConductor;
+import tekton.type.gravity.GravityConductor.GravityConductorBuild;
 import ent.anno.Annotations.*;
 import tekton.EntityDefinitions;
 import mindustry.type.*;

@@ -110,6 +110,16 @@ public class TektonFx {
         });
     }),
 	
+	pointShockwave = new Effect(20, e -> {
+		if (e.data instanceof Float size) {
+	        color(e.color);
+	        stroke(e.fout() * 2f);
+	        Lines.circle(e.x, e.y, e.finpow() * e.rotation);
+	        randLenVectors(e.id + 1, 8, (size / tilesize) * e.finpow(), (x, y) ->
+	            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 3f));
+		}
+    }),
+	
 	buildingBiologicalRegeneration = new Effect(35f, e -> {
         color(e.color, TektonColor.acid, e.fin());
 

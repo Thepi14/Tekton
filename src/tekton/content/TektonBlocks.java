@@ -44,6 +44,7 @@ import tekton.type.defense.*;
 import tekton.type.draw.*;
 import tekton.type.draw.DrawLinesToCenter;
 import tekton.type.gravity.*;
+import tekton.type.part.FramePart;
 import tekton.type.payloads.*;
 import tekton.type.power.FusionReactor;
 import tekton.type.power.LightningRod;
@@ -107,23 +108,23 @@ public class TektonBlocks {
 	geothermalGenerator, methaneCombustionChamber, thermalDifferenceGenerator, uraniumReactor, fusionReactor, 
 	
 	//production
-	wallDrill, plasmaWallDrill, silicaAspirator, silicaTurbine, geothermalCondenser, undergroundWaterExtractor, reactionDrill, carbonicLaserDrill, 
+	wallDrill, plasmaWallDrill, silicaAspirator, silicaTurbine, geothermalCondenser, undergroundWaterExtractor, reactionDrill, gravitationalDrill, 
 	
 	//storage
 	corePrimal, coreDeveloped, corePerfected, capsule, vault, 
 	
 	//defense
-	lamp, regenerator, regenerationDome, gravitationalShieldProjector, 
+	lamp, regenerator, regenerationDome, 
 	
 	//others
 	researchRadar, sensor, 
 	
 	//turrets
-	one, duel, compass, skyscraper, spear, sword, azure, interfusion, freezer, havoc, tesla, prostrate, concentration, repulsion, 
+	one, duel, compass, skyscraper, spear, sword, azure, interfusion, freezer, havoc, tesla, prostrate, concentration, repulsion, //
 	
 	//units
 	primordialUnitFactory, unitDeveloper, tankRefabricator, airRefabricator, navalRefabricator, mechRefabricator, 
-	multiAssembler, tankAssemblerModule, airAssemblerModule, navalAssemblerModule, mechAssemblerModule, 
+	multiAssembler, ultimateAssembler, tankAssemblerModule, airAssemblerModule, navalAssemblerModule, mechAssemblerModule, 
 	
 	//payload
 	ironPayloadConveyor, ironPayloadRouter, deconstructor, constructor, payloadLoader, payloadUnloader, payloadLauncher, 
@@ -679,7 +680,7 @@ public class TektonBlocks {
 			researchCostMultiplier = 0.3f;
 		}};
 		
-		polytalumFuser = new GenericCrafter("polytalum-fuser") {{
+		polytalumFuser = new GravityCrafter("polytalum-fuser") {{
 			requirements(Category.crafting, with(Items.graphite, 70, zirconium, 120, Items.silicon, 90, tantalum, 80, polycarbonate, 80));
 			consumePower(350f / 60f);
 			size = 3;
@@ -689,14 +690,17 @@ public class TektonBlocks {
 			hasLiquids = true;
             fogRadius = 3;
 
+        	requiredGravity = 8;
+        	maxGravity = requiredGravity * 2;
+
 			consumeItems(with(polycarbonate, 2, tantalum, 1));
-			consumeLiquids(LiquidStack.with(TektonLiquids.oxygen, 1f / 60f, TektonLiquids.ammonia, 3f / 60f));
+			consumeLiquids(LiquidStack.with(TektonLiquids.oxygen, 1f / 60f, TektonLiquids.methane, 6f / 60f));
 			
 			outputItem = new ItemStack(polytalum, 1);
 			
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidRegion(TektonLiquids.oxygen), 
 					new DrawLiquidRegion(TektonLiquids.ammonia) {{ suffix = "-liquid2"; }}, new DrawDefault(), new DrawGlowRegion(), new DrawGlowRegion("-glow2") {{ glowScale = -glowScale; }}, 
-					new DrawGlowRegion("-glow3") {{ glowScale = 0; color = TektonLiquids.oxygen.color; }}, new DrawLight(TektonLiquids.oxygen.color));
+					new DrawGlowRegion("-glow3") {{ glowScale = 0; color = TektonLiquids.oxygen.color; }}, new DrawLight(TektonLiquids.oxygen.color), new DrawGravityRegion("-gravity-glow"), new DrawGravityInput());
 
 			craftEffect = new Effect(40, e -> {
 				randLenVectors(e.id, 6, 5f + e.fin() * 8f, (x, y) -> {
@@ -738,7 +742,7 @@ public class TektonBlocks {
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawArcSmelt() {{ flameColor = midColor = Color.valueOf("f57627"); }}, 
             		new DrawLinesToCenter() {{ lineColor = particleColor = Color.valueOf("f57627"); distanceCenter = 8f * 2.5f; lineRadiusMag = 0.6f; }}, 
             		new DrawGlowRegion() {{ color = Color.valueOf("f57627"); layer = Layer.block; }}, 
-            		new DrawDefault(), new DrawGravityRegion() {{ suffix = "-gravity-glow"; }}, new DrawGlowRegion("-glow2"), new DrawGravityInput(), 
+            		new DrawDefault(), new DrawGravityRegion("-gravity-glow"), new DrawGlowRegion("-glow2"), new DrawGravityInput(), 
             		new DrawLight(Color.valueOf("f57627"), 45f) {{ lightSinMag = 4f; }});
 
 			outputItem = new ItemStack(nanoAlloy, 1);
@@ -1173,15 +1177,6 @@ public class TektonBlocks {
 				color = col;
 			}}, new DrawWarmupRegion() {{ color = TektonColor.oxygen; }});
 		}};
-        
-        gravitationalShieldProjector = new BaseShield("large-shield-projector") {{
-            requirements(Category.effect, BuildVisibility.hidden, with());
-            size = 4;
-            radius = 400f;
-            sides = 3;
-
-            consumePower(5f);
-        }};
 		
 		//transport blocks
 		
@@ -1277,18 +1272,15 @@ public class TektonBlocks {
 			floating = true;
 			pumpAmount = 10f / 60f / 4f;
 			
-			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(TektonLiquids.methane, 2f), new DrawCultivator() {{
-				plantColor = Color.valueOf("57592b");
-				plantColorLight = Color.valueOf("7a7d3c");
-				bottomColor = Color.valueOf("7a7d3c");
-				recurrence = 6.0f;
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawPumpLiquidDynamic() {{
+				padding = 2f;
 			}}, new DrawRegion("-sub"), new DrawRegion("-rotator", 0.8f, true), new DrawDefault());
 			
 			researchCostMultiplier = 0.2f;
 		}};
 		
 		pressurePump = new Pump("pressure-pump") {{
-			requirements(Category.liquid, with(Items.graphite, 40, zirconium, 60, tantalum, 40));
+			requirements(Category.liquid, with(Items.graphite, 40, zirconium, 80, tantalum, 50));
 			health = 550;
 			size = 3;
 			squareSprite = false;
@@ -1297,11 +1289,8 @@ public class TektonBlocks {
 			floating = true;
 			pumpAmount = 40f / 60f / 9f;
 			
-			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(TektonLiquids.methane, 3f), new DrawCultivator() {{
-				plantColor = Color.valueOf("57592b");
-				plantColorLight = Color.valueOf("7a7d3c");
-				bottomColor = Color.valueOf("7a7d3c");
-				recurrence = 10.0f;
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawPumpLiquidDynamic() {{
+				padding = 4f;
 			}}, new DrawRegion("-sub"), new DrawPistons() {{ angleOffset = 45f; }}, new DrawRegion("-rotator", 4f, true), new DrawDefault());
 			consumePower(1f);
 			
@@ -1570,7 +1559,7 @@ public class TektonBlocks {
 			lightLiquid = Liquids.cryofluid;
 
 			consumeItem(cryogenicCompound);
-			consumeLiquids(LiquidStack.with(Liquids.hydrogen, 2.9f / 60f));
+			consumeLiquids(LiquidStack.with(TektonLiquids.oxygen, 3f / 60f));
 		}};
 
 		uraniumReactor = new TektonNuclearReactor("uranium-reactor") {{
@@ -1810,6 +1799,7 @@ public class TektonBlocks {
 		
 		reactionDrill = new BurstDrill("reaction-drill") {{
 			requirements(Category.production, with(Items.silicon, 70, TektonItems.zirconium, 120, iron, 120));
+			health = 980;
 			drillTime = 60f * 11f;
 			size = 4;
 			squareSprite = false;
@@ -1837,19 +1827,29 @@ public class TektonBlocks {
 			consumeLiquid(TektonLiquids.ammonia, 2f / 60f).boost();
 		}};
 		
-		carbonicLaserDrill = new Drill("carbonic-laser-drill") {{
-			requirements(Category.production, with(iron, 140, Items.silicon, 80, tantalum, 80, Items.graphite, 120, polytalum, 70));
+		gravitationalDrill = new GravitationalDrill("gravitational-drill") {{
+			requirements(Category.production, with(iron, 140, Items.silicon, 200, uranium, 120, polytalum, 120));
+			health = 2360;
 			drillTime = 60f * 5;
 			size = 5;
 			drawRim = true;
 			hasPower = true;
 			tier = 5;
-			updateEffect = Fx.pulverizeRed;
+			updateEffect = new Effect(40, e -> {
+		        randLenVectors(e.id, 5, 3f + e.fin() * 8f, (x, y) -> {
+		            color(TektonColor.gravityColor, Pal.stoneGray, e.fin());
+		            Fill.square(e.x + x, e.y + y, e.fout() * 2f + 0.5f, 45);
+		        });
+		    });
 			updateEffectChance = 0.03f;
 			drillEffect = Fx.mineHuge;
 			rotateSpeed = 10f;
 			warmupSpeed = 0.01f;
 			itemCapacity = 50;
+			heatColor = TektonColor.gravityColor;
+			
+			requiredGravity = 6;
+			maxGravity = 12;
 
 	        ambientSoundVolume = 0.044f;
 			
@@ -1860,11 +1860,11 @@ public class TektonBlocks {
 			blockedItem = Items.sand;
 			//drillMultipliers.put(Items.sand, multiCarbonicDrill(0.5f));
 			
-			liquidBoostIntensity = 1.6f;
+			liquidBoostIntensity = 1f;
 			
 			consumePower(480f / 60f);
 			consumeLiquid(Liquids.hydrogen, 5f / 60f);
-			consumeLiquid(TektonLiquids.ammonia, 3f / 60f).boost();
+			//consumeLiquid(TektonLiquids.ammonia, 3f / 60f).boost();
 		}};
 		
 		//storage
@@ -1946,11 +1946,11 @@ public class TektonBlocks {
         var defCoolantMultiplier = 0.5f;
 		
 		one = new ItemTurret("one") {{
+			requirements(Category.turret, with(iron, 40, zirconium, 30));
 			size = 1;
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
 			drawer = new DrawTurret("quad-");
-			requirements(Category.turret, with(iron, 40, zirconium, 30));
 			health = 250;
 			reload = 60;
 			shootSound = Sounds.pew;
@@ -2000,6 +2000,7 @@ public class TektonBlocks {
 		}};
 		
 		duel = new ItemTurret("duel") {{
+			requirements(Category.turret, with(iron, 100, zirconium, 60, Items.graphite, 40));
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
 			size = 2;
@@ -2024,7 +2025,6 @@ public class TektonBlocks {
 					under = false;
 				}}});
 			}};
-			requirements(Category.turret, with(iron, 100, zirconium, 60, Items.graphite, 40));
 			health = 800;
 			reload = 40;
 			range = 160;
@@ -2103,11 +2103,11 @@ public class TektonBlocks {
 		}};
 		
 		compass = new PowerTurret("compass") {{
+			requirements(Category.turret, with(Items.silicon, 100, iron, 40, zirconium, 30));
 			var theCol = Color.valueOf("ff4733");
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
 			drawer = new DrawTurret("quad-");
-			requirements(Category.turret, with(Items.silicon, 100, iron, 40, zirconium, 30));
 			range = 176f;
 			size = 2;
 			health = 900;
@@ -2145,6 +2145,7 @@ public class TektonBlocks {
 			//consumeLiquid(Liquids.water, 0.5f);
 
 			shootType = new BasicBulletType(5.5f, 0) {{
+				hittable = false;
 				sprite = "large-orb";
 				smokeEffect = Fx.shootBigSmoke;
 				width = 9f;
@@ -2204,6 +2205,7 @@ public class TektonBlocks {
 		}};
 		
 		skyscraper = new ItemTurret("skyscraper") {{
+			requirements(Category.turret, with(iron, 60, zirconium, 70, Items.graphite, 40));
 			unitSort = UnitSorts.weakest;
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
@@ -2223,7 +2225,6 @@ public class TektonBlocks {
 					progress = PartProgress.constant(0);
 				}}});
 			}};
-			requirements(Category.turret, with(iron, 60, zirconium, 70, Items.graphite, 40));
 			health = 600;
 			reload = 25f;
 			range = 180f;
@@ -2309,6 +2310,7 @@ public class TektonBlocks {
 		}};
 		
 		spear = new ItemTurret("spear") {{
+			requirements(Category.turret, with(Items.silicon, 100, tantalum, 180, iron, 240, Items.graphite, 120));
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
 			size = 3;
@@ -2339,17 +2341,16 @@ public class TektonBlocks {
 			shootY = 6.4f;
 			unitSort = UnitSorts.strongest;
 			shoot.firstShotDelay = 20f;
-			requirements(Category.turret, with(Items.silicon, 100, tantalum, 180, iron, 240, Items.graphite, 120));
 			health = 1900;
 			reload = 100f;
 			range = 260f;
-			shootSound = Sounds.mediumCannon;
+			shootSound = TektonSounds.laserred;
+			soundPitchMin = 0.7f;
+			soundPitchMax = 0.85f;
 			maxAmmo = 10;
 			inaccuracy = 1;
 			accurateDelay = true;
 			ammoPerShot = 2;
-			soundPitchMin = 0.9f;
-			soundPitchMax = 1f;
 			ammo(
 					tantalum, new BasicBulletType(10f, 250) {{
 						Color col = tantalum.color.cpy().lerp(Color.white, 0.5f);
@@ -2471,6 +2472,7 @@ public class TektonBlocks {
 		}};
 		
 		sword = new PowerTurret("sword") {{
+			requirements(Category.turret, with(Items.silicon, 180, iron, 170, tantalum, 110, polycarbonate, 80));
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
 			heatColor = Color.valueOf("ff3333df");
@@ -2512,7 +2514,6 @@ public class TektonBlocks {
 							heatProgress = PartProgress.warmup;
 						}});
 			}};
-			requirements(Category.turret, with(Items.silicon, 180, iron, 170, tantalum, 110, polycarbonate, 80));
 			range = 255f;
 
 			shoot = new ShootPattern() {{
@@ -2634,6 +2635,7 @@ public class TektonBlocks {
 		}};
 		
 		azure = new ItemTurret("azure") {{
+			requirements(Category.turret, with(iron, 180, zirconium, 120, Items.graphite, 80));
 			unitSort = UnitSorts.closest;
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
@@ -2674,7 +2676,6 @@ public class TektonBlocks {
 			shootY = 5f;
 			recoils = 3;
 			recoil = 0.5f;
-			requirements(Category.turret, with(iron, 180, zirconium, 120, Items.graphite, 80));
 			health = 1000;
 			reload = 5f;
 			var brange = range = 220f;
@@ -2766,6 +2767,7 @@ public class TektonBlocks {
 		}};
 		
 		interfusion = new ItemTurret("interfusion") {{
+			requirements(Category.turret, with(Items.silicon, 100, tantalum, 180, Items.graphite, 110, zirconium, 200));
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
 			size = 3;
@@ -2803,7 +2805,6 @@ public class TektonBlocks {
 					under = false;
 				}});
 			}};
-			requirements(Category.turret, with(Items.silicon, 100, tantalum, 180, Items.graphite, 110, zirconium, 200));
 			health = 2100;
 			reload = 80f;
 			range = 120f;
@@ -3588,6 +3589,8 @@ public class TektonBlocks {
 			range = (shootType.lifetime * ((WaveBulletType)shootType).waveSpeed) + ((WaveBulletType)shootType).minRadius;
 		}};
 		
+		
+		
 		//units
 		
 		primordialUnitFactory = new TektonUnitFactory("unit-factory") {{
@@ -3720,6 +3723,7 @@ public class TektonBlocks {
             requirements(Category.units, with(uranium, 500, polytalum, 400, Items.silicon, 800, tantalum, 500));
             regionSuffix = "-iron";
             size = 5;
+            health = 3000;
             plans.addAll(
             		//a null one is needed because modules must make sense i think
             new AssemblerUnitPlan(TektonUnits.none, 0f, PayloadStack.list(nullBlock, 1)),
@@ -3731,14 +3735,41 @@ public class TektonBlocks {
             areaSize = 13;
             
             droneType = TektonUnits.assemblyDrone;
-
-            consumePower(200f / 60f);
-            consumeLiquid(Liquids.hydrogen, 10f / 60f);
+            
+            consumePower(360f / 60f);
+            consumeLiquid(Liquids.hydrogen, 12f / 60f);
             consumeItem(cryogenicCompound, 1);
             itemDuration = 90f;
             itemCapacity = 40;
             
             researchCostMultiplier = 0.3f;
+        }};
+        
+        ultimateAssembler = new GravitationalUnitAssembler("ultimate-assembler") {{
+            requirements(Category.units, with(uranium, 700, polytalum, 600, Items.silicon, 1000, tantalum, 700, Items.phaseFabric, 150));
+            regionSuffix = "-iron";
+            health = 5200;
+            size = 7;
+            maxGravity = 24;
+            plans.addAll(
+            		//a null one is needed because modules must make sense i think 2
+            new AssemblerUnitPlan(TektonUnits.none, 0f, PayloadStack.list(nullBlock, 1)),
+            new AssemblerUnitPlan(TektonUnits.supernova, 160f * 60f, PayloadStack.list(TektonUnits.electret, 6, TektonBlocks.uraniumWallLarge, 20)),
+            new AssemblerUnitPlan(TektonUnits.imperatoris, 160f * 60f, PayloadStack.list(TektonUnits.bellator, 7, TektonBlocks.uraniumWallLarge, 18)),
+            new AssemblerUnitPlan(TektonUnits.castelo, 160f * 60f, PayloadStack.list(TektonUnits.sagres, 6, TektonBlocks.polytalumWallLarge, 24)),
+            new AssemblerUnitPlan(TektonUnits.impact, 160f * 60f, PayloadStack.list(TektonUnits.strike, 7, TektonBlocks.uraniumWallLarge, 18))
+            );
+            areaSize = 15;
+            
+            droneType = TektonUnits.ultimateAssemblyDrone;
+            
+            consumePower(860f / 60f);
+            consumeLiquid(TektonLiquids.oxygen, 12f / 60f);
+            consumeItem(cryogenicCompound, 1);
+            itemDuration = 30f;
+            itemCapacity = 80;
+            
+            researchCostMultiplier = 0.5f;
         }};
         
         tankAssemblerModule = new TektonUnitAssemblerModule("tank-assembler-module") {{
@@ -3855,7 +3886,8 @@ public class TektonBlocks {
 			range = 700f;
 			maxPayloadSize = 2.5f;
 			fogRadius = 5;
-			consumePower(0.6f);
+			consumePower(0.4f);
+			maxGravity = 4;
             researchCostMultiplier = 0.7f;
 		}};
 		

@@ -11,6 +11,10 @@ import arc.math.Mathf;
 
 public class AcidBloodDebrisAbility extends Ability {
 	
+	public AcidBloodDebrisAbility() {
+		display = false;
+	}
+	
 	@Override
     public void death(Unit unit){
         if(headless || unit.tileOn() == null) return;

@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
 
 public class TektonSounds {
 	
-	public static Sound laserred, laserredsmall, pyon, tchau, shotheavy, sonarloop, sonarping, freezer, lightningstrike, tesla, gravity, gravityemission;
+	public static Sound plasmared, plasmablue, firered, electricorbshoot, machinegunsound, redlasercharge, laserred, laserredsmall, pyon, tchau, shotheavy, shoothuge, sonarloop, sonarping, freezer, lightningstrike, tesla, gravity, gravityemission;
 	
 	public static void load(){
 		Class<?> c = TektonSounds.class;
@@ -26,7 +26,7 @@ public class TektonSounds {
 	
 	private static Sound loadSound(String soundName){
 		if (!Vars.headless) {
-			String name = "sounds/" + soundName;
+			String name = "sounds/" + soundName.toLowerCase();
 			String path = Vars.tree.get(name + ".ogg").exists() ? name + ".ogg" : name + ".mp3";
 			
 			Sound sound = new Sound();

@@ -120,7 +120,7 @@ public class TektonTechTree {
                 	});
             	});
     			node(reactionDrill, Seq.with(new OnSector(scintilla), new Research(coldElectrolyzer)), () -> {
-    				node(carbonicLaserDrill, () -> {
+    				node(gravitationalDrill, () -> {
                 		
                 	});
     				node(plasmaWallDrill, () -> {

@@ -1,4 +1,4 @@
-package tekton.type.draw;
+package tekton.type.part;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
