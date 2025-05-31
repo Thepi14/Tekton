@@ -20,11 +20,11 @@ import mindustry.type.Weapon;
 import mindustry.type.ammo.*;
 import mindustry.world.meta.Env;
 import tekton.Tekton;
-import tekton.abilities.AcidBloodDebrisAbility;
 import tekton.content.TektonColor;
 import tekton.content.TektonFx;
 import tekton.content.TektonLiquids;
 import tekton.content.TektonStatusEffects;
+import tekton.type.abilities.AcidBloodDebrisAbility;
 
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
@@ -69,6 +69,7 @@ public class TektonBioUnit extends UnitType {
 	public static StatusEffect[] getDefaultImmunities() {
 		return new StatusEffect[] { TektonStatusEffects.radioactiveContamination, 
         		TektonStatusEffects.wetInAcid, 
+        		TektonStatusEffects.weaponLock,
         		TektonStatusEffects.shortCircuit, 
         		TektonStatusEffects.acidified, 
         		/*TektonStatusEffects.tarredInMethane,*/ 

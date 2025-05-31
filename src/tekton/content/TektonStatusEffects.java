@@ -22,7 +22,7 @@ import static mindustry.Vars.*;
 
 
 public class TektonStatusEffects {
-	public static StatusEffect tarredInMethane, wetInAcid, acidified, shortCircuit, incineration, radioactiveContamination, radiationAbsorption, cobwebbed, neurosporaSlowed, foggerStatus;
+	public static StatusEffect tarredInMethane, wetInAcid, acidified, shortCircuit, weaponLock, incineration, radioactiveContamination, radiationAbsorption, cobwebbed, neurosporaSlowed, foggerStatus;
 	
 	public static void load(){
 		tarredInMethane = new StatusEffect("status-tarred-in-methane") {{
@@ -118,6 +118,16 @@ public class TektonStatusEffects {
 	            });
 	        });
 	    }};
+	    
+	    weaponLock = new StatusEffect("status-weapon-lock") {{
+	    	disarm = true;
+			outline = false;
+	        color = Pal.techBlue.cpy();
+			applyColor = Pal.techBlue.cpy();
+			
+			effect = TektonFx.weaponLockEffect;
+			effectChance = 0.6f;
+	    }};
 		
 		incineration = new StatusEffect("status-incineration") {{
 			show = true;
@@ -128,6 +138,7 @@ public class TektonStatusEffects {
 	        speedMultiplier = 0.4f;
 	        healthMultiplier = 0.8f;
 	        damage = 4f;
+	        
 	        effect = new Effect(40f, e -> {
 	            color(Pal.redSpark, Liquids.slag.color, e.fout() / 5f + Mathf.randomSeedRange(e.id, 0.12f));
 	
@@ -135,6 +146,7 @@ public class TektonStatusEffects {
 	                Fill.circle(e.x + x, e.y + y, .2f + e.fout() * 1.2f);
 	            });
 	        });
+	        
 	        init(() -> {
 	        	opposite(StatusEffects.freezing);
 	        	opposite(StatusEffects.wet);

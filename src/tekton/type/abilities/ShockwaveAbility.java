@@ -1,4 +1,4 @@
-package tekton.abilities;
+package tekton.type.abilities;
 
 import arc.Core;
 import arc.Events;

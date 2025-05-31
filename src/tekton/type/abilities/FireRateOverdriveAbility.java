@@ -1,4 +1,4 @@
-package tekton.abilities;
+package tekton.type.abilities;
 
 import arc.*;
 import arc.graphics.Blending;
@@ -31,8 +31,8 @@ public class FireRateOverdriveAbility extends Ability {
 	
 	protected float currentBoost = 0f;
 	
-	private static int divisions = 200;
-	public static Seq<StatusEffect> boosts;
+	/*private static int divisions = 200;
+	public static Seq<StatusEffect> boosts;*/
 
     @Override
     public void addStats(Table t) {
@@ -49,7 +49,7 @@ public class FireRateOverdriveAbility extends Ability {
 
 	@Override
 	public void init(UnitType type){
-		if (boosts == null) {
+		/*if (boosts == null) {
 			boosts = new Seq<StatusEffect>();
 			float mul = 4f / (float)divisions;
 			for (int i = 1; i <= divisions; i++) {
@@ -60,14 +60,14 @@ public class FireRateOverdriveAbility extends Ability {
 					show = false;
 				}});
 			}
-		}
+		}*/
 	}
 	
 	@Override
 	public void update(Unit unit)
 	{
-		if (boosts == null || boosts.size == 0)
-			return;
+		/*if (boosts == null || boosts.size == 0)
+			return;*/
 		if (unit.isShooting() && (unit.hasEffect(statusCondition) || statusCondition == StatusEffects.none)) {
 			currentBoost += boostIncrease / 60f;
 		}
@@ -78,11 +78,11 @@ public class FireRateOverdriveAbility extends Ability {
 		currentBoost = Mathf.clamp(currentBoost, minBoost, maxBoost);
 		heat = (currentBoost - minBoost) / (maxBoost - minBoost);
 		
-		int currentIndex = Math.min((int)(currentBoost * (200 / 4)), 199);
-		
+		//int currentIndex = Math.min((int)(currentBoost * (200 / 4)), 199);
 		//Log.info(currentBoost + ", " + currentIndex + ", " + boosts.get(currentIndex).reloadMultiplier);
+		//unit.apply(boosts.get(currentIndex));
 		
-		unit.apply(boosts.get(currentIndex));
+		unit.reloadMultiplier *= currentBoost;
 	}
 	
 	@Override

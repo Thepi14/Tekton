@@ -15,7 +15,7 @@ import tekton.type.gravity.GravityConsumer;
 import tekton.type.gravity.GravitationalUnitAssembler.GravitationalUnitAssemblerBuild;
 
 public class TektonPayloadMassDriver extends PayloadMassDriver {
-	public int maxGravity = 12;
+	public int maxGravity = 4;
 
 	public TektonPayloadMassDriver(String name) {
 		super(name);

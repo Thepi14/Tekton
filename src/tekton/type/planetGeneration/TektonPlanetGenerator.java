@@ -1,4 +1,4 @@
-package tekton;
+package tekton.type.planetGeneration;
 
 import arc.graphics.Color;
 import arc.math.geom.Vec3;

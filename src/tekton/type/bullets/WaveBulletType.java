@@ -63,15 +63,18 @@ public class WaveBulletType extends BulletType {
         	//blend(Blending.additive);
             
             stroke(e.fout() * strokeThickness);
-            float deg = circleDeegres / linePoints;
-            float currentSize = (e.time * waveSpeed) + minRadius;
+            float 
+            deg = circleDeegres / linePoints,
+            currentSize = (e.time * waveSpeed) + minRadius;
             
             for (int i = -linePoints / 2; i < linePoints / 2; i++) {
-            	var x = e.x + ((Mathf.cosDeg((deg * i) + e.rotation) * currentSize));
-            	var y = e.y + (Mathf.sinDeg((deg * i) + e.rotation) * currentSize);
+            	float 
+            	x = e.x + (Mathf.cosDeg((deg * i) + e.rotation) * currentSize),
+            	y = e.y + (Mathf.sinDeg((deg * i) + e.rotation) * currentSize);
                 line(
                 		x, y, 
-                		e.x + ((Mathf.cosDeg((deg * (i + 1)) + e.rotation) * currentSize)), e.y + (Mathf.sinDeg((deg * (i + 1)) + e.rotation) * currentSize));
+                		e.x + (Mathf.cosDeg((deg * (i + 1)) + e.rotation) * currentSize), 
+                		e.y + (Mathf.sinDeg((deg * (i + 1)) + e.rotation) * currentSize));
                 Drawf.light(x, y, lightRadius, lightColor, lightOpacity * e.fout());
             }
             

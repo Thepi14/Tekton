@@ -9,6 +9,7 @@ import arc.util.Nullable;
 import mindustry.Vars;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.turrets.ItemTurret;
+import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import tekton.content.TektonColor;
@@ -28,7 +29,7 @@ public class GravitationalItemTurret extends ItemTurret {
     public void setBars() {
         super.setBars();
         addBar("gravity", (GravitationalItemTurretBuild entity) -> new Bar(
-        		() -> Core.bundle.format("bar.gravityPercent", (int)(Math.abs(entity.gravity) + 0.01f), (float)(entity.gravityFrac() * 100)), 
+        		() -> Core.bundle.format("bar.gravityPercent", (int)(Math.abs(entity.gravity) + 0.01f), (int)(entity.gravityFrac() * 100)), 
         		() -> TektonColor.gravityColor, 
 				() -> ((float)Math.abs(entity.gravity)) / (float)minGravity));
     }
@@ -55,6 +56,14 @@ public class GravitationalItemTurret extends ItemTurret {
         }
         
         @Override
+        public BlockStatus status() {
+            float balance = power.status;
+            if(balance > 0.001f && hasAmmo() && !isShooting()) return BlockStatus.noOutput;
+            if(balance > 0.001f && hasAmmo() && isShooting()) return BlockStatus.active;
+            return BlockStatus.noInput;
+        }
+        
+        @Override
         public float warmup(){
             return super.warmup() * Mathf.clamp(gravityFrac());
         }
@@ -62,6 +71,12 @@ public class GravitationalItemTurret extends ItemTurret {
         @Override
         public float efficiency(){
         	return super.efficiency() * gravityFrac();
+        }
+        
+        @Override
+        public void updateEfficiencyMultiplier() {
+        	super.updateEfficiencyMultiplier();
+            efficiency *= Math.min(Math.max(gravityFrac(), cheating() ? 1f : 0f), maxGravity / minGravity);
         }
         
         @Override

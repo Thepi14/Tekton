@@ -23,7 +23,8 @@ public class TektonMissileUnitType extends MissileUnitType {
 				TektonStatusEffects.shortCircuit, 
 				TektonStatusEffects.tarredInMethane, 
 				TektonStatusEffects.neurosporaSlowed, 
-				TektonStatusEffects.radiationAbsorption
+				TektonStatusEffects.radiationAbsorption,
+				TektonStatusEffects.weaponLock
 				);
 		return a;
 	}

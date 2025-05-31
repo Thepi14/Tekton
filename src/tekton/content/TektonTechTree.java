@@ -114,11 +114,6 @@ public class TektonTechTree {
                     	});
                 	});
             	});
-        		node(geothermalCondenser, () -> {
-        			node(undergroundWaterExtractor, () -> {
-        				
-                	});
-            	});
     			node(reactionDrill, Seq.with(new OnSector(scintilla), new Research(coldElectrolyzer)), () -> {
     				node(gravitationalDrill, () -> {
                 		
@@ -184,6 +179,11 @@ public class TektonTechTree {
         		node(methaneBurner, Seq.with(new Research(pneumaticPump)), () -> {
         			node(lineNode, () -> {
                 		node(geothermalGenerator, Seq.with(new OnSector(proelium)), () -> {
+                    		node(geothermalCondenser, () -> {
+                    			node(undergroundWaterExtractor, () -> {
+                    				
+                            	});
+                        	});
                     		node(methaneCombustionChamber, Seq.with(new SectorComplete(proelium)), () -> {
                     			node(thermalDifferenceGenerator, Seq.with(new SectorComplete(proelium)), () -> {
                     				node(uraniumReactor, Seq.with(new SectorComplete(proelium)), () -> {
@@ -369,7 +369,20 @@ public class TektonTechTree {
         	        		});
         				});
 						//tier 5
-						
+						node(ultimateAssembler, Seq.with(new Research(TektonBlocks.nanoAlloyWallLarge)), () -> {
+							node(TektonUnits.supernova, Seq.with(new Research(tankAssemblerModule)), () -> {
+        	        			
+        	        		});
+							node(TektonUnits.imperatoris, Seq.with(new Research(airAssemblerModule)), () -> {
+        	        			
+        	        		});
+							node(TektonUnits.castelo, Seq.with(new Research(navalAssemblerModule)), () -> {
+        	        			
+        	        		});
+							node(TektonUnits.earthquake, Seq.with(new Research(mechAssemblerModule)), () -> {
+        	        			
+        	        		});
+	    				});
     				});
             	});
         	});

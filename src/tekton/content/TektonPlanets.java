@@ -13,7 +13,7 @@ import mindustry.type.*;
 import mindustry.type.Weather.WeatherEntry;
 import mindustry.world.*;
 import mindustry.world.meta.*;
-import tekton.TektonPlanetGenerator;
+import tekton.type.planetGeneration.*;
 import mindustry.content.*;
 
 import arc.func.*;
@@ -25,7 +25,7 @@ import mindustry.world.meta.*;
 import static mindustry.Vars.*;
 
 public class TektonPlanets {
-	public static TektonPlanet tekton;
+	public static TektonPlanet tekton, mirera;
 	
 	public static void load(){
 		tekton = new TektonPlanet("tekton", Planets.sun, 1.1f, 2) {{
@@ -128,7 +128,71 @@ public class TektonPlanets {
             
             hiddenItems.addAll(Items.copper, Items.lead, Items.titanium, Items.plastanium, Items.thorium, Items.surgeAlloy, Items.metaglass, Items.carbide, Items.beryllium, Items.oxide, Items.tungsten/*, Items.sporePod, Items.pyratite, Items.blastCompound, Items.coal*/);
 		}};
-
+		mirera = new TektonPlanet("mirera", tekton, 0.25f, 1) {{
+			generator = new TektonMoonGenerator();
+			description = "Tekton's moon, has no atmosphere.";
+			alwaysUnlocked = false;
+			orbitRadius = 7;
+			allowLaunchSchematics = false;
+			allowLaunchToNumbered = false;
+			allowLaunchLoadout = false;
+			allowSectorInvasion = false;
+			startSector = 0;
+			minZoom = 1;
+			drawOrbit = true;
+			atmosphereRadIn = 0;
+			atmosphereRadOut = 0.3f;
+			accessible = false;
+			updateLighting = true;
+			sectorSeed = 14513;
+			bloom = false;
+			visible = true;
+			landCloudColor = Color.valueOf("666359");
+			atmosphereColor = Color.valueOf("666359");
+			iconColor = Color.valueOf("666359");
+			hasAtmosphere = false;
+			allowWaveSimulation = true;
+			clearSectorOnLose = true;
+			allowWaves = true;
+			prebuildBase = false;
+			defaultCore = TektonBlocks.corePrimal;
+            unlockedOnLand.add(TektonBlocks.corePrimal);
+			solarSystem = Planets.sun;
+			
+			meshLoader = () -> new HexMesh(this, 3);
+			cloudMeshLoader = () -> new MultiMesh();
+			
+			defaultEnv = Env.terrestrial;
+			
+			ruleSetter = r -> {
+                r.waveTeam = Team.blue;
+                r.staticColor = new Color(0f, 0f, 0f, 1f);
+                r.dynamicColor = new Color(0f, 0f, 0f, 0.7f);
+                r.cloudColor = Color.valueOf("3e401f");
+                r.placeRangeCheck = false;
+                r.showSpawns = false;
+                r.fog = true;
+                r.staticFog = true;
+                r.lighting = true;
+                r.fire = false;
+                r.ambientLight = Color.valueOf("101805a4");
+                r.weather.clear();
+                r.weather = new Seq<WeatherEntry>().addAll(
+                		new WeatherEntry(TektonWeathers.tektonFog) {{ always = true; }},
+                		new WeatherEntry(TektonWeathers.methaneRain),
+                		new WeatherEntry(TektonWeathers.darkSandstorm));
+                r.coreDestroyClear = true;
+                r.onlyDepositCore = true;
+                //r.teams.get(Team.blue).rtsAi = true;
+                r.teams.get(Team.blue).buildAi = false;
+                r.coreIncinerates = true;
+                r.solarMultiplier = 0.1f;
+                r.bannedBlocks.addAll(Blocks.phaseWall, Blocks.phaseWallLarge);
+                r.hideBannedBlocks = true;
+                r.loadout = new Seq<ItemStack>().add(new ItemStack(TektonItems.iron, 200));
+            };
+		}};
+		
         Planets.serpulo.hiddenItems.addAll(TektonItems.tektonItems);
         Planets.erekir.hiddenItems.addAll(TektonItems.tektonItems);
 	}

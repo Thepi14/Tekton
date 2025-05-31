@@ -40,7 +40,7 @@ import mindustry.world.meta.Env;
 import static mindustry.Vars.*;
 
 public class TektonUnitAssembler extends UnitAssembler {
-	
+	public int itemConsumption = 1;
 	public float itemDuration = 60f;
 
 	public TektonUnitAssembler(String name) {
@@ -73,7 +73,7 @@ public class TektonUnitAssembler extends UnitAssembler {
             itemTimer += edelta() * efficiency;
             
             if (itemTimer >= itemDuration) {
-                items.remove(item, 1);
+                items.remove(item, itemConsumption);
                 itemTimer = 0f;
             }
         }

@@ -419,10 +419,94 @@ public class TektonFx {
 	                });
 	            });
 	        }
-		}) 
+		})
 	    {{followParent = false;}}
 	)
 	{{followParent = false;}},
+	
+	techSmoke = new MultiEffect(
+			new Effect(60f, 160f, e -> {
+		        color(Pal.techBlue);
+		        stroke(e.fout() * 3f);
+		        float circleRad = 6f + e.finpow() * 60f;
+		        Lines.circle(e.x, e.y, circleRad);
+		
+		        rand.setSeed(e.id);
+		        for(int i = 0; i < 16; i++){
+		            float angle = rand.random(360f);
+		            float lenRand = rand.random(0.5f, 1f);
+		            Lines.lineAngle(e.x, e.y, angle, e.foutpow() * 50f * rand.random(1f, 0.6f) + 2f, e.finpow() * 70f * lenRand + 6f);
+		        }
+		    }) 
+			{{followParent = false;}},
+			new Effect(360f, 250f, b -> {
+		        float intensity = 2.5f;
+		
+		        color(Pal.techBlue, 0.7f);
+		        for(int i = 0; i < 4; i++){
+		            rand.setSeed(b.id*2 + i);
+		            float lenScl = rand.random(0.5f, 1f);
+		            int fi = i;
+		            b.scaled(b.lifetime * lenScl, e -> {
+		                randLenVectors(e.id + fi - 1, e.fin(Interp.pow10Out), (int)(2.9f * intensity), 20f * intensity, (x, y, in, out) -> {
+		                    float fout = e.fout(Interp.pow5Out) * rand.random(0.5f, 1f);
+		                    float rad = fout * ((2f + intensity) * 1.74f);
+		
+		                    Fill.circle(e.x + x, e.y + y, rad);
+		                    Drawf.light(e.x + x, e.y + y, rad * 2f, b.color, 0.5f);
+		                });
+		            });
+		        }
+			})
+		    {{followParent = false;}}
+		)
+		{{followParent = false;}},
+	
+	techCharge = new Effect(80f, 80f, e -> {
+        color(Pal.techBlue);
+        stroke(e.fin() * 2f);
+        Lines.circle(e.x, e.y, 4f + e.fout() * 50f);
+
+        Fill.circle(e.x, e.y, e.fin() * 10f);
+
+        randLenVectors(e.id, 20, 40f * e.fout(), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fin() * 5f);
+            Drawf.light(e.x + x, e.y + y, e.fin() * 15f, Pal.techBlue, 0.7f);
+        });
+
+        color();
+
+        Fill.circle(e.x, e.y, e.fin() * 10);
+        Drawf.light(e.x, e.y, e.fin() * 20f, Pal.techBlue, 0.7f);
+    }).followParent(true).rotWithParent(true),
+	
+	weaponLockEffect = new Effect(40f, e -> {
+        color(Pal.techBlue, Pal.techBlue, e.fin());
+        
+        stroke(1f * e.fslope());
+        Lines.square(e.x, e.y, 7f, 45f);
+        Drawf.light(e.x, e.y, 9f, e.color, e.fout() * 0.7f);
+    }),
+	
+	waveTechTrail = new Effect(20f, e -> {
+        Draw.z(Layer.bullet - 0.0001f);
+        color(Pal.techBlue);
+        //Lines.beginLine();
+        stroke(2f * e.fslope());
+        
+        var width = 10f;
+        float 
+        	x1 = e.x + (Mathf.cosDeg(e.rotation + 90f) * width * e.fout()), 
+        	y1 = e.y + (Mathf.sinDeg(e.rotation + 90f) * width * e.fout()), 
+        	x2 = e.x + (Mathf.cosDeg(e.rotation + 90f*-1f) * width * e.fout()), 
+        	y2 = e.y + (Mathf.sinDeg(e.rotation + 90f*-1f) * width * e.fout());
+        
+        line(x1, y1, x2, y2);
+        
+        color();
+    	//blend();
+        Draw.z();
+    }),
     
 	nuclearExplosion = new Effect(30, 700f, b -> {
         float intensity = 6.8f;

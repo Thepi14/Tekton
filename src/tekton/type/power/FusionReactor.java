@@ -122,7 +122,8 @@ public class FusionReactor extends PowerGenerator {
     public void setStats(){
         super.setStats();
 
-        stats.add(Stat.maxEfficiency, (maxGravity / requiredGravity) * 100f, StatUnit.percent);
+        stats.add(Stat.productionTime, itemDuration / 60f, StatUnit.seconds);
+        //stats.add(Stat.maxEfficiency, (maxGravity / requiredGravity) * 100f, StatUnit.percent);
         stats.add(TektonStat.gravityUse, requiredGravity, TektonStat.gravityPower);
     }
 	

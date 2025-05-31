@@ -1,4 +1,4 @@
-package tekton.abilities;
+package tekton.type.abilities;
 
 import static mindustry.Vars.*;
 import static tekton.Drawt.*;

@@ -8,6 +8,7 @@ public class EmptyBulletType extends BulletType{
 	public static EmptyBulletType empty = new EmptyBulletType();
 
     public EmptyBulletType(){
+    	damage = 0f;
         reflectable = absorbable = hittable = collidesGround = collidesAir = collidesTiles = false;
         speed = 0f;
         keepVelocity = false;
