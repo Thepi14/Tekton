@@ -74,10 +74,15 @@ public class GravitationalItemTurret extends ItemTurret {
         }
         
         @Override
+        public boolean shouldConsume() {
+            return super.shouldConsume() && gravityFrac() > 0.001f;
+        }
+        
+        /*@Override
         public void updateEfficiencyMultiplier() {
         	super.updateEfficiencyMultiplier();
             efficiency *= Math.min(Math.max(gravityFrac(), cheating() ? 1f : 0f), maxGravity / minGravity);
-        }
+        }*/
         
         @Override
         public boolean hasAmmo(){

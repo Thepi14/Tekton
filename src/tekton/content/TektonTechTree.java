@@ -474,9 +474,9 @@ public class TektonTechTree {
             					});
             					
                     			//alien session
-                    			nodeProduce(TektonLiquids.metazotoplasm, () -> {
+                    			/*nodeProduce(TektonLiquids.metazotoplasm, () -> {
                             		
-                            	});
+                            	});*/
                         	});
                     	});
             			nodeProduce(TektonLiquids.oxygen, () -> {

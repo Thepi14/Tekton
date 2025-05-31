@@ -75,7 +75,7 @@ public class TektonLiquids {
 		}};
 		
 		metazotoplasm = new CellLiquid("metazotoplasm", TektonColor.metazotoplasm){{
-        	hidden = Tekton.hideContent;
+        	hidden = true;
             coolant = false;
             heatCapacity = 1f;
             temperature = 0.25f;

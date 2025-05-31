@@ -95,7 +95,7 @@ public class TektonBlocks {
 	ironDuct, tantalumDuct, ironRouter, ironBridge, ironDistributor, ironOverflow, ironUnderflow, ironSorter, ironInvertedSorter, ironUnloader, 
 	
 	//liquid
-	pneumaticPump, pressurePump, bridgePipe, polycarbonateBridgePipe, pipeJunction, pipeRouter, polycarbonatePipe, pipe, polycarbonateLiquidContainer, polycarbonateLiquidReserve, 
+	pneumaticPump, pressurePump, pipe, pipeJunction, bridgePipe, polycarbonateBridgePipe, pipeRouter, polycarbonatePipe, polytalumPipe, polycarbonateLiquidContainer, polycarbonateLiquidReserve, 
 	
 	//power
 	lineNode, lineTower, lineLink, powerCapacitor, powerBank, reinforcedDiode, lightningRod, methaneBurner, 
@@ -129,7 +129,7 @@ public class TektonBlocks {
 	
 	public static void load() {
 		nullBlock = new Block("null") {{
-			requirements(Category.defense, BuildVisibility.debugOnly, with(iron, 1));
+			requirements(Category.effect, BuildVisibility.hidden, with(iron, 1));
 			health = 1;
 		}};
 		
@@ -672,7 +672,7 @@ public class TektonBlocks {
 		}};
 		
 		polytalumFuser = new GravityCrafter("polytalum-fuser") {{
-			requirements(Category.crafting, with(Items.graphite, 70, zirconium, 120, Items.silicon, 90, tantalum, 80, polycarbonate, 80));
+			requirements(Category.crafting, with(uranium, 80, Items.silicon, 100, tantalum, 120, polycarbonate, 100));
 			consumePower(350f / 60f);
 			size = 3;
 			craftTime = 80f;
@@ -712,7 +712,7 @@ public class TektonBlocks {
 		}};
         
         nanoAlloyCrucible = new GravityCrafter("nano-alloy-crucible") {{
-            requirements(Category.crafting, with(zirconium, 240, tantalum, 200, Items.silicon, 180, uranium, 150));
+            requirements(Category.crafting, with(zirconium, 240, tantalum, 200, Items.silicon, 180, uranium, 160, Items.graphite, 120));
             health = 1080;
             size = 4;
         	
@@ -746,7 +746,7 @@ public class TektonBlocks {
         }};
 		
 		phasePrinter = new GravityCrafter("phase-printer") {{
-            requirements(Category.crafting, with(polytalum, 100, tantalum, 140, Items.silicon, 240, Items.graphite, 200));
+            requirements(Category.crafting, with(polytalum, 100, tantalum, 140, Items.silicon, 240, Items.graphite, 200, uranium, 140));
             health = 820;
             size = 4;
 			
@@ -1289,24 +1289,38 @@ public class TektonBlocks {
 		}};
 		
 		pipe = new Conduit("zirconium-pipe") {{
-			requirements(Category.liquid, with(zirconium, 2));
-			health = 100;
+			requirements(Category.liquid, with(zirconium, 1));
+			health = 90;
 			leaks = true;
-			junctionReplacement = pipeJunction;
-			rotBridgeReplacement = bridgePipe;
-			liquidCapacity = 10;
+			liquidCapacity = 20f;
 			underBullets = true;
-			researchCostMultiplier = 0.5f;
+            researchCostMultiplier = 3;
+			botColor = Color.valueOf("3d352f");
+            //explosivenessScale = flammabilityScale = 20f/50f;
 		}};
 		
 		polycarbonatePipe = new Conduit("polycarbonate-pipe") {{
-			requirements(Category.liquid, with(zirconium, 2, polycarbonate, 1));
-			health = 120;
+			requirements(Category.liquid, with(zirconium, 1, polycarbonate, 1));
+			health = 160;
 			leaks = true;
-			liquidCapacity = 20;
+			liquidCapacity = 30f;
 			underBullets = true;
 			liquidPressure = 1.025f;
-			researchCostMultiplier = 0.8f;
+            researchCostMultiplier = 3;
+			botColor = Color.valueOf("3d352f");
+            //explosivenessScale = flammabilityScale = 20f/50f;
+		}};
+		
+		polytalumPipe = new ArmoredConduit("polytalum-pipe") {{
+			requirements(Category.liquid, with(polycarbonate, 1, polytalum, 1));
+			health = 250;
+			leaks = false;
+			liquidCapacity = 30f;
+			underBullets = true;
+			liquidPressure = 1.025f;
+            researchCostMultiplier = 3;
+			botColor = Color.valueOf("3d352f");
+            //explosivenessScale = flammabilityScale = 20f/50f;
 		}};
 		
 		pipeJunction = new LiquidJunction("pipe-junction") {{
