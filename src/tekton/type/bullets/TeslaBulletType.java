@@ -87,8 +87,11 @@ public class TeslaBulletType extends BulletType{
         
         Effect.shake(hitShake, hitShake, b);
     }
-    
-    public void hitAt(Bullet b, float posX, float posY) {
+
+    @Override
+    public void hit(Bullet b, float x, float y){}
+	
+    public void hitAt(Bullet b, float posX, float posY){
         hitSound.at(b.x, b.y, hitSoundPitch, hitSoundVolume);
         hitSound.at(posX, posY, hitSoundPitch, hitSoundVolume);
         applyEffect.at(posX, posY, b.rotation(), hitColor);
@@ -110,9 +113,5 @@ public class TeslaBulletType extends BulletType{
         createUnits(b, posX, posY);
 
         createSplashDamage(b, posX, posY);
-    }
-    
-    public void hit(Bullet b, float x, float y){
-    	
     }
 }

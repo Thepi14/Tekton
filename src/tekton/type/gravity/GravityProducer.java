@@ -19,7 +19,7 @@ import tekton.type.draw.DrawGravityOutput;
 import tekton.type.gravity.GravityConductor.GravityConductorBuild;
 
 public class GravityProducer extends GenericCrafter{
-    public float gravityOutput = 10f;
+    public int gravityOutput = 10;
     public float warmupRate = 0.15f;
 
     public GravityProducer(String name){

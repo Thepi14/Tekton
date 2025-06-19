@@ -23,7 +23,7 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 
 public class FireRateOverdriveAbility extends Ability {
-	public float minBoost = 0f, maxBoost = 2f, boostIncrease = 0.04f, boostDecrease = 0.2f;
+	public float minBoost = 0.1f, maxBoost = 2f, boostIncrease = 0.04f, boostDecrease = 0.2f;
 	public StatusEffect statusCondition = StatusEffects.slow;
 	public Color heatColor = Pal.turretHeat.cpy();
 	public TextureRegion heatRegion;

@@ -9,6 +9,7 @@ import arc.graphics.g2d.Draw;
 import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Tmp;
 import mindustry.content.Fx;
@@ -16,6 +17,7 @@ import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.effect.WaveEffect;
+import mindustry.game.Team;
 import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.gen.Unit;
@@ -32,11 +34,24 @@ public class WaveBulletType extends BulletType {
 	public float interval = 10f;
 	public float waveSpeed = 2f;
 	
+	public float healAmount = 1f;
+	public boolean impulseTeam = false, statusTeam = false;
+	
 	public Effect waveEffect = new Effect();
 	public Effect unitWaveEffect = Fx.none;
 	
 	public WaveBulletType(){
         super();
+        hittable = absorbable = false;
+        pierce = pierceBuilding = true;
+        lightColor = hitColor = TektonColor.gravityColor;
+        lightOpacity = 0.6f;
+        hitEffect = despawnEffect = trailEffect = shootEffect = smokeEffect = Fx.none;
+        hitSound = despawnSound = Sounds.none;
+        range = 200f;
+        knockback = 10f;
+        ammoMultiplier = 1f;
+        lightRadius *= 2f;
     }
 	
 	public WaveBulletType(float speed, float damage){
@@ -50,8 +65,9 @@ public class WaveBulletType extends BulletType {
         range = 200f;
         knockback = 10f;
         ammoMultiplier = 1f;
-        waveSpeed = speed;
         lightRadius *= 2f;
+        
+        waveSpeed = speed;
     }
 	
     @Override
@@ -89,6 +105,7 @@ public class WaveBulletType extends BulletType {
     @Override
     public void init(Bullet b) {
     	super.init(b);
+    	//the actual visual representation of the wave
         waveEffect.at(b.x, b.y, b.rotation(), hitColor);
     	maxRadius = lifetime * waveSpeed;
         waveEffect.clip = maxRadius * 2f;
@@ -100,20 +117,49 @@ public class WaveBulletType extends BulletType {
         
         if (b.timer.get(5, damageInterval)) {
         	Units.nearbyEnemies(b.team, b.x, b.y, currentSize, other -> {
+        		
             	var angle = Mathf.atan2(other.x - b.x, other.y - b.y);
             	var absAngle = angle + 0f;
             	if (angle < 0f)
             		absAngle = angle + (360f * Mathf.degRad);
             	var abs = Math.abs(b.rotation() - (absAngle * Mathf.radDeg));
-            	//Log.info(Mathf.floor(abs) + ", bull: " + Mathf.floor(b.rotation()) + ", unit: " + Mathf.floor(angle * Mathf.radDeg));
-                if(other.team != b.team && other.hittable() && ((other.type.flying && collidesAir) || (!other.type.flying && collidesGround)) &&
-                		!Mathf.within(other.x, other.y, currentSize - strokeThickness) && abs < circleDeegres / 2f){
-                	var direction = new Vec2(Mathf.cos(angle), Mathf.sin(angle)).scl((knockback * 80f * b.fout()));
+            	//Log.info(Mathf.floor(abs) + ", bull: " + Mathf.floor(b.rotation()) + ", unit: " + Mathf.floor(angle * Mathf.radDeg))
+            	;
+                if(other.team != b.team && other.hittable() && ((other.isFlying() && collidesAir) || (other.isGrounded() && collidesGround)) &&
+                		!Mathf.within(other.x, other.y, currentSize - strokeThickness) && abs < circleDeegres / 2f) {
+                	
                     unitWaveEffect.at(other.x, other.y, angle * Mathf.radDeg, hitColor, new GravWaveEffectContainer(other, knockback * b.fout(), waveSpeed * 0.8f));
+                    
                     other.damage(damage);
                     other.apply(status, statusDuration);
-                    Tmp.v3.set(direction);
-                    other.impulse(Tmp.v3);
+                    
+                	var direction = new Vec2(Mathf.cos(angle), Mathf.sin(angle)).scl((knockback * 80f * b.fout()));
+                    other.impulse(direction);
+                }
+            });
+        	//hate to do a different iteration
+        	Units.nearbyEnemies(Team.derelict, b.x, b.y, currentSize, other -> {
+        		var angle = Mathf.atan2(other.x - b.x, other.y - b.y);
+            	var absAngle = angle + 0f;
+            	if (angle < 0f)
+            		absAngle = angle + (360f * Mathf.degRad);
+            	var abs = Math.abs(b.rotation() - (absAngle * Mathf.radDeg));
+            	;
+                if (other.team == b.team && ((other.isFlying() && collidesAir) || (other.isGrounded() && collidesGround)) &&
+                		!Mathf.within(other.x, other.y, currentSize - strokeThickness) && abs < circleDeegres / 2f && collidesTeam) {
+                	
+                	unitWaveEffect.at(other.x, other.y, angle * Mathf.radDeg, hitColor, new GravWaveEffectContainer(other, knockback * b.fout(), waveSpeed * 0.8f));
+                	
+                	if (healAmount > 0)
+                		other.heal(healAmount);
+                	
+                	if (statusTeam)
+                        other.apply(status, statusDuration);
+                	
+                	if (impulseTeam) {
+                    	var direction = new Vec2(Mathf.cos(angle), Mathf.sin(angle)).scl((knockback * 80f * b.fout()));
+                        other.impulse(direction);
+                	}
                 }
             });
         }

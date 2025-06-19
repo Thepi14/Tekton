@@ -41,37 +41,53 @@ import tekton.type.power.LightningRod.LightningRodBuild;
 
 public class StormWeather extends ParticleWeather {
 	/** big numbers causes amargeddon */
-	public float lightningChance = 0.01f, unitLightningChance = 0.0001f;
-	public float lightningSplashDamage = 50f, lightningSplashDamageRadius = 60f, lightningsDamage = 60f, lightningVolume = 2f, lightningHitSoundPitchMin = 0.8f, lightningHitSoundPitchMax = 1f, lightningShake = 8f, lightningLightRadius = 70f;
+	public float 
+			lightningChance = 0.01f, 
+			unitLightningChance = 0.0001f, 
+			lightningSplashDamage = 50f, 
+			lightningSplashDamageRadius = 60f, 
+			lightningsDamage = 60f, 
+			lightningVolume = 2f, 
+			lightningHitSoundPitchMin = 0.8f, 
+			lightningHitSoundPitchMax = 1f, 
+			lightningShake = 8f, 
+			lightningLightRadius = 70f;
+	
 	public int lightningRays = 12, lightningLengthMin = 6, lightningRandExtension = 16;
-	public Color lightningsColor = Color.valueOf("ffe047");
-	public Color hitsColor = Color.valueOf("ffea82");
-	public Color lightningLightColor = Color.valueOf("ffea82");
+	
+	public Color 
+			lightningsColor = Color.valueOf("ffe047"),
+			hitsColor = Color.valueOf("ffea82"),
+			lightningLightColor = Color.valueOf("ffea82");
+	
 	public Sound lightningHitSound = TektonSounds.lightningstrike;
 	public int minLines = 6, maxLines = 12;
 	public boolean absorbableByLightningRods = true;
 	
-	public Effect lightningHitEffect = Fx.titanExplosion, lightningBoltEffect = 
+	public Effect 
+		lightningHitEffect = Fx.titanExplosion, 
+		lightningBoltEffect = 
 		new Effect(30f, 300f, e -> {
-		rand.setSeed(e.id);
-		float size = rand.random(100f, 180f);
-		int points = (int)size / 15;
-		float pointMul = size / points;
-		
-        Lines.stroke(10f * e.fout());
-        Draw.color(lightningsColor, Color.white, e.fin());
-        
-        Lines.beginLine();
-        
-        Lines.linePoint(e.x, e.y);
-        float bi = rand.range(5f);
-        for (int i = 1; i < points; i++) {
-        	bi = (bi + rand.range(7f * i)) / 2f;
-            Lines.linePoint(e.x + bi, (e.y + (i * pointMul)) + rand.range(15f));
-        }
-        
-        Lines.endLine();
-    }).followParent(false).rotWithParent(false);
+			rand.setSeed(e.id);
+			float size = rand.random(100f, 180f);
+			int points = (int)size / 15;
+			float pointMul = size / points;
+			
+	        Lines.stroke(10f * e.fout());
+	        Draw.color(lightningsColor, Color.white, e.fin());
+	        
+	        Lines.beginLine();
+	        
+	        Lines.linePoint(e.x, e.y);
+	        float bi = rand.range(5f);
+	        for (int i = 1; i < points; i++) {
+	        	bi = (bi + rand.range(7f * i)) / 2f;
+	            Lines.linePoint(e.x + bi, (e.y + (i * pointMul)) + rand.range(15f));
+	        }
+	        
+	        Lines.endLine();
+	    }).followParent(false).rotWithParent(false);
+	
 	public BasicBulletType lightningBullet;
 	
 	private float trand = 0f;
@@ -179,7 +195,7 @@ public class StormWeather extends ParticleWeather {
 						}
 						else {
 							var a = world.tile((int)(x / tilesize), (int)(y / tilesize));
-							if (new Vec2(a.getX(), a.getY()).dst(tile.build) <= rod.getRadius()) {
+							if (new Vec2(a.getX(), a.getY()).dst(tile.build) <= rod.lightningProtectionRadius()) {
 								rod.absorbLightning();
 								lightningBoltEffect.at(tile.getX(), tile.getY());
 								lightningBullet.hitSound.at(tile.getX(), tile.getY());

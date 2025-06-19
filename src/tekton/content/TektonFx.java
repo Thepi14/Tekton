@@ -40,8 +40,8 @@ public class TektonFx {
     	lenTo = 0;
     	strokeFrom = 1;
     	strokeTo = 0;
-    	colorFrom = Color.valueOf("ffffff");
-    	colorTo = Color.valueOf("4a9eff");
+    	colorFrom = Color.white;
+    	colorTo = Pal.lancerLaser;
     }},
     
     electricPulseBig = new MultiEffect() {{
@@ -52,8 +52,8 @@ public class TektonFx {
         	    	lifetime = 10;
         	    	strokeFrom = 2;
         	    	strokeTo = 0;
-        	    	colorFrom = Color.valueOf("ffffff");
-        	    	colorTo = Color.valueOf("4a9eff");
+        	    	colorFrom = Color.white;
+        	    	colorTo = Pal.lancerLaser;
         	    }},
         		new ParticleEffect() {{
         			particles = 6;
@@ -64,8 +64,8 @@ public class TektonFx {
         			lenTo = 0;
         			strokeFrom = 1;
         			strokeTo = 0;
-        			colorFrom = Color.valueOf("ffffff");
-        			colorTo = Color.valueOf("4a9eff");
+        			colorFrom = Color.white;
+        			colorTo = Pal.lancerLaser;
         		}}
     	};
     }},
@@ -507,6 +507,27 @@ public class TektonFx {
     	//blend();
         Draw.z();
     }),
+	
+	concentrationChargeEffect = new Effect(60f, 100f, e -> {
+    	TektonFx.rand.setSeed(e.id + 1);
+		color(e.color);
+        stroke(e.fin() * 2f);
+        float circleRad = 0.3f + e.finpow() * e.rotation;
+        float range = 1f;
+        float ex = TektonFx.rand.range(range);
+        float ey = TektonFx.rand.range(range);
+
+        for(int i = 0; i < 4; i++){
+            Drawf.tri(e.x + ex, e.y + ey, 5f, 20f * e.fin(), i*90);
+        }
+
+        color();
+        for(int i = 0; i < 4; i++){
+            Drawf.tri(e.x + ex, e.y + ey, 2.5f, 20f / 3f * e.fin(), i*90);
+        }
+
+        Drawf.light(e.x + ex, e.y + ey, circleRad * 1.6f, e.color, e.fin());
+    }),
     
 	nuclearExplosion = new Effect(30, 700f, b -> {
         float intensity = 6.8f;
@@ -589,6 +610,45 @@ public class TektonFx {
             });
         });
     }),
+	
+	tempestChain = new Effect(30f, 300f, e -> {
+                if(!(e.data instanceof Position p)) return;
+                float tx = p.getX(), ty = p.getY(), dst = Mathf.dst(e.x, e.y, tx, ty);
+                Tmp.v1.set(p).sub(e.x, e.y).nor();
+
+                float normx = Tmp.v1.x, normy = Tmp.v1.y;
+                float range = 10f;
+                int links = Mathf.ceil(dst / range);
+                float spacing = dst / links;
+
+                Lines.stroke(5f * e.fout());
+                Draw.color(Pal.lightishOrange, e.color, e.fin());
+                Fill.circle(e.x, e.y, e.fout() * 6f);
+
+                Lines.beginLine();
+
+                Lines.linePoint(e.x, e.y);
+
+                rand.setSeed(e.id);
+
+                for(int i = 0; i < links; i++){
+                    float nx, ny;
+                    if(i == links - 1){
+                        nx = tx;
+                        ny = ty;
+                        Fill.circle(e.x, e.y, e.fout() * 6f);
+                    }else{
+                        float len = (i + 1) * spacing;
+                        Tmp.v1.setToRandomDirection(rand).scl(range/2f);
+                        nx = e.x + normx * len + Tmp.v1.x;
+                        ny = e.y + normy * len + Tmp.v1.y;
+                    }
+
+                    Lines.linePoint(nx, ny);
+                }
+
+                Lines.endLine();
+            }).followParent(false).rotWithParent(false),
 
     blockExplosionSmoke = new Effect(30, e -> {
         color(Color.gray);
@@ -704,6 +764,7 @@ public class TektonFx {
     
 	public static void load() {
 		biologicalFallingEgg.clip = 10000f;
+		concentrationChargeEffect.followParent = true;
 	}
 	
 	private static Effect copyEffect(Effect effect) {

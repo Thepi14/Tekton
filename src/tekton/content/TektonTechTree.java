@@ -35,6 +35,13 @@ public class TektonTechTree {
         	
         	//distribution
         	node(ironDuct, tektonSector, () -> {
+        		node(ironBridge, () -> {
+        			node(tantalumDuct, () -> {
+        				node(nanoConveyor, () -> {
+        					
+        				});
+    				});
+				});
         		node(ironRouter, () -> {
         			node(ironSorter, () -> {
         				node(ironInvertedSorter, () -> {
@@ -54,10 +61,12 @@ public class TektonTechTree {
             				});
         				});
                 	});
+        			node(ironMessage, () -> {
+        				node(ironCanvas, () -> {
+                    		
+                    	});
+                	});
             	});
-        		node(ironBridge, () -> {
-					
-				});
         		
         		//payloads
 				node(ironPayloadConveyor, () -> {
@@ -110,6 +119,9 @@ public class TektonTechTree {
             					node(polycarbonateBridgePipe, () -> {
                 					
                 				});
+            					node(polytalumPipe, () -> {
+            						
+                            	});
                         	});
                     	});
                 	});
@@ -126,53 +138,53 @@ public class TektonTechTree {
             		
                 	//crafting
                 	node(siliconFilter, () -> {
-        				node(siliconSmelter, () -> {
-                    		
-                    	});
         				node(graphiteConcentrator, Seq.with(new SectorComplete(satus)), () -> {
+            				node(siliconCompressor, () -> {
+                        		
+                        	});
         					node(coldElectrolyzer, Seq.with(new OnSector(scintilla)), () -> {
-        						node(polycarbonateSynthesizer, Seq.with(new SectorComplete(river)), () -> {
-        							node(polytalumFuser, () -> {
-        								node(phasePrinter, Seq.with(new SectorComplete(river)), () -> { //change
-        			            			
-        			    				});
+            					node(atmosphericMethaneConcentrator, () -> {
+            						node(polycarbonateSynthesizer, Seq.with(new SectorComplete(river)), () -> {
+                						node(cryogenicMixer, () -> {
+                                    		
+                                    	});
                                 	});
-            						node(cryogenicMixer, () -> {
-                                		
-                                	});
-        							node(nanoAlloyCrucible, Seq.with(new SectorComplete(river)), () -> { //change
-    			            			
-    			    				});
                             	});
-        						node(electricalCoil, () -> {
+            					node(magnetizer, Seq.with(new OnSector(scintilla)), () -> {
         							node(gravityConductor, () -> {
-        								node(gravityRouter, () -> {
-                							
+                						node(electricalCoil, () -> {
+                							node(thermalCoil, Seq.with(new Research(cryogenicMixer)), () -> {
+                								
+                    						});
+                							node(polytalumFuser, Seq.with(new Research(polycarbonateSynthesizer)), () -> {
+                    							node(phasePrinter, Seq.with(new SectorComplete(river)), () -> { //change
+                			            			
+                			    				});
+                                        	});
+                							node(nanoAlloyCrucible, Seq.with(new SectorComplete(river)), () -> { //change
+                								node(phaseNanoCoil, Seq.with(new Research(nanoAlloyCrucible), new Research(phasePrinter)), () -> {
+                        							
+                        						});
+            			    				});
+            								node(gravityRouter, () -> {
+                    							
+                    						});
                 						});
             						});
-        							node(thermalCoil, () -> {
-        								node(phaseNanoCoil, Seq.with(new Research(nanoAlloyCrucible), new Research(phasePrinter)), () -> {
-                							
-                						});
-            						});
-        						});
+            					});
         						node(hydrogenIncinerator, () -> {
         							node(ammoniaCatalyst, () -> {
                                 		
                                 	});
                             	});
                         	});
-        					node(atmosphericMethaneConcentrator, () -> {
+            			});
+        				node(silicaTurbine, () -> {
+            				node(sandFilter, () -> {
                         		
                         	});
-            			});
-        				node(sandFilter, () -> {
-                    		
                     	});
         			});
-    				node(silicaTurbine, () -> {
-                		
-                	});
             	});
             	
             	//energy
@@ -207,14 +219,11 @@ public class TektonTechTree {
                         		
                         	});
                     	});
-                		node(researchRadar, Seq.with(new OnSector(scintilla)), () -> {
-                			node(sensor, Seq.with(new SectorComplete(proelium)), () -> {
-                				
-                			});
-            			});
                 		node(regenerator, Seq.with(new Research(coldElectrolyzer), new SectorComplete(scintilla)), () -> {
                 			node(regenerationDome, () -> {
-                    			
+                				node(builderDroneCenter, () -> {
+                        			
+                            	});
                         	});
                     	});
                 	});
@@ -263,36 +272,42 @@ public class TektonTechTree {
         		node(duel, Seq.with(new OnSector(scintilla)),  () -> {
     				node(skyscraper, Seq.with(new SectorComplete(scintilla)),  () -> {
     					node(azure, Seq.with(new OnSector(aequor)),  () -> {
-                    		
+            				node(prostrate, Seq.with(new SectorComplete(aequor), new Research(magnetizer)),  () -> {
+        						
+                        	});
                     	});
-                	});
-    				node(interfusion, Seq.with(new OnSector(scintilla)),  () -> {
-                		
                 	});
         			node(spear, Seq.with(new OnSector(scintilla)),  () -> {
-        				node(havoc, Seq.with(new SectorComplete(aequor)),  () -> {
-                    		
-                    	});
-        				node(concentration, Seq.with(new SectorComplete(aequor), new Research(electricalCoil)),  () -> {
-                    		
+        				node(interfusion, Seq.with(new OnSector(scintilla)),  () -> {
+            				node(havoc, Seq.with(new SectorComplete(aequor)),  () -> {
+                				node(concentration, Seq.with(new SectorComplete(aequor), new Research(magnetizer)),  () -> {
+                            		
+                            	});
+                        	});
                     	});
                 	});
             	});
         		node(compass, Seq.with(new OnSector(proelium)),  () -> {
         			node(sword, Seq.with(new SectorComplete(aequor)),  () -> {
         				node(tesla, Seq.with(new SectorComplete(aequor)),  () -> {
-                    		
-                    	});
-        				node(prostrate, Seq.with(new SectorComplete(aequor)),  () -> {
-                    		
+            				node(radiance, Seq.with(new SectorComplete(aequor), new Research(magnetizer)),  () -> {
+                        		
+                        	});
                     	});
                 	});
+        			node(freezer, Seq.with(new SectorComplete(aequor), new Research(cryogenicMixer)),  () -> {
+            			node(repulsion, Seq.with(new SectorComplete(aequor), new Research(magnetizer)), () -> {
+    						
+    					});
+                	});
             	});
-        		node(freezer, Seq.with(new SectorComplete(aequor), new Research(cryogenicMixer)),  () -> {
-        			node(repulsion, Seq.with(new SectorComplete(aequor), new Research(electricalCoil)), () -> {
-						
-					});
-            	});
+        		
+        		//radar
+        		node(researchRadar, Seq.with(new OnSector(scintilla)), () -> {
+        			node(sensor, Seq.with(new SectorComplete(proelium)), () -> {
+        				
+        			});
+    			});
         	});
         	
         	//units tier 1
@@ -307,6 +322,9 @@ public class TektonTechTree {
         			
         		});
 				node(TektonUnits.nail, Seq.with(new SectorComplete(river)), () -> {
+        			
+        		});
+				node(unitRepairTurret, () -> {
         			
         		});
 				//tier 2 & 3
@@ -409,24 +427,25 @@ public class TektonTechTree {
     	        		
     	        	});
     				nodeProduce(Items.silicon, () -> {
-    	        		
-    	        	});
-    				nodeProduce(Items.graphite, () -> {
-    	        		
+    					nodeProduce(TektonItems.magnet, () -> {
+        	        		
+        	        	});
     	        	});
             	});
     			nodeProduce(TektonItems.zirconium, () -> {
-    				nodeProduce(TektonItems.tantalum, () -> {
-    					nodeProduce(TektonItems.uranium, () -> {
-    						nodeProduce(Items.phaseFabric, () -> {
-    							nodeProduce(TektonItems.nanoAlloy, () -> {
-    	        	        		
-    	        	        	});
+    				nodeProduce(Items.graphite, () -> {
+    					nodeProduce(TektonItems.tantalum, () -> {
+        					nodeProduce(TektonItems.uranium, () -> {
+        						nodeProduce(Items.phaseFabric, () -> {
+        							nodeProduce(TektonItems.nanoAlloy, () -> {
+        	        	        		
+        	        	        	});
+                	        	});
             	        	});
+        	    			nodeProduce(TektonItems.cryogenicCompound, () -> {
+        		        		
+        		        	});
         	        	});
-    	    			nodeProduce(TektonItems.cryogenicCompound, () -> {
-    		        		
-    		        	});
     	        	});
 	        	});
     			

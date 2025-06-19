@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
 
 public class TektonSounds {
 	
-	public static Sound plasmared, plasmablue, firered, electricorbshoot, machinegunsound, redlasercharge, laserred, laserredsmall, pyon, tchau, shotheavy, shoothuge, sonarloop, sonarping, freezer, lightningstrike, tesla, gravity, gravityemission;
+	public static Sound exterminationbeam, plasmared, firered, electricorbshoot, machinegunsound, redlasercharge, greencharge, laserred, laserredsmall, pyon, tchau, shotheavy, shoothuge, sonarloop, sonarping, freezer, lightningstrike, tesla, gravity, gravityemission;
 	
 	public static void load(){
 		Class<?> c = TektonSounds.class;

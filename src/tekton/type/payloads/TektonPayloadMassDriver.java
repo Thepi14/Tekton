@@ -10,7 +10,10 @@ import mindustry.ui.Bar;
 import mindustry.world.blocks.payloads.Payload;
 import mindustry.world.blocks.payloads.PayloadMassDriver;
 import mindustry.world.meta.Env;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import tekton.content.TektonColor;
+import tekton.content.TektonStat;
 import tekton.type.gravity.GravityConsumer;
 import tekton.type.gravity.GravitationalUnitAssembler.GravitationalUnitAssemblerBuild;
 
@@ -36,6 +39,13 @@ public class TektonPayloadMassDriver extends PayloadMassDriver {
         		() -> Core.bundle.format("bar.gravityPercent", (int)(Math.abs(entity.gravity) + 0.01f), (int)(entity.gravityFrac() * 100)), 
         		() -> TektonColor.gravityColor, 
 				() -> entity.gravityFrac()));
+    }
+	
+	@Override
+    public void setStats() {
+        super.setStats();
+
+        stats.add(TektonStat.gravityUse, maxGravity, TektonStat.gravityPower);
     }
     
     public class TektonPayloadDriverBuild extends PayloadDriverBuild implements GravityConsumer {

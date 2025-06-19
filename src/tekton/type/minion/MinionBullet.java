@@ -21,6 +21,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
+import tekton.type.ai.MinionAI;
 import mindustry.entities.bullet.BulletType;
 
 import static mindustry.Vars.*;

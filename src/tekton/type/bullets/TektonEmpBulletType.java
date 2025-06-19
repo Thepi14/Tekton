@@ -52,7 +52,7 @@ public class TektonEmpBulletType extends BasicBulletType{
 	
 	                    if(other.power != null && other.power.graph.getLastPowerProduced() > 0f && !(other.block instanceof Wall) && !(other.block instanceof BiologicalBlock)){
 	                        other.applySlowdown(powerSclDecrease, timeDuration);
-	                        other.damage(damage * powerDamageScl);
+	                        other.damage(damage * powerDamageScl * buildingDamageMultiplier);
 	                        hitPowerEffect.at(other.x, other.y, b.angleTo(other), hitColor);
 	                        chainEffect.at(x, y, 0, hitColor, other);
 	                    }

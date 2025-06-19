@@ -34,7 +34,7 @@ public class LightningRod extends PowerGenerator {
 	public LightningRod(String name) {
 		super(name);
 		powerProduction = 10f;
-		outlineIcon = true;
+		//outlineIcon = true;
 	}
 	
 	@Override
@@ -116,9 +116,9 @@ public class LightningRod extends PowerGenerator {
 		@Override
         public void drawSelect() {
 			if (circleArea)
-	            Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, protectionRadius, Pal.accent);
+	            Drawf.dashCircle(x + offset, y + offset, protectionRadius, Pal.accent);
 			else if (squareArea)
-	        	Drawf.dashSquare(Pal.accent, x * tilesize + offset, y * tilesize + offset, protectionRadius * 2f);
+	        	Drawf.dashSquare(Pal.accent, x + offset, y + offset, protectionRadius * 2f);
 			else if (diamondArea)
 				Drawt.dashDiamond(x + offset * tilesize, y + offset * tilesize, protectionRadius);
         }

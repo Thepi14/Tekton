@@ -10,6 +10,7 @@ import tekton.type.bullets.EmptyBulletType;
 public class SpawnBulletAbility extends Ability {
 	
 	public BulletType bullet = new EmptyBulletType();
+	public int quantity = 1;
 	
 	public SpawnBulletAbility() {
 		display = false;
@@ -17,6 +18,7 @@ public class SpawnBulletAbility extends Ability {
 	
 	@Override
     public void death(Unit unit){
-        bullet.create(unit, unit.team, unit.x, unit.y, 0f);
+		for (int i = 1; i <= quantity; i++)
+			bullet.create(unit, unit.team, unit.x, unit.y, 0f);
     }
 }

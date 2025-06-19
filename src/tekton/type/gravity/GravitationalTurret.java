@@ -91,7 +91,8 @@ public class GravitationalTurret extends PowerTurret {
         
         @Override
         public void updateEfficiencyMultiplier() {
-            efficiency *= Math.min(Math.max(gravityFrac(), cheating() ? 1f : 0f), maxGravity / minGravity);
+        	super.updateEfficiencyMultiplier();
+            efficiency *= gravityFrac();
         }
         
         public float gravityFrac() {
@@ -123,7 +124,7 @@ public class GravitationalTurret extends PowerTurret {
 
         @Override
         public boolean shouldActiveSound() {
-            return shootWarmup * gravityFrac() > 0.001f && loopSound != Sounds.none;
+            return shootWarmup > 0.01f && gravityFrac() > 0.001f && loopSound != Sounds.none && isShooting();
         }
         
         @Override

@@ -27,6 +27,7 @@ import tekton.type.power.TektonNuclearReactor.TektonNuclearReactorBuild;
 import static mindustry.Vars.*;
 
 import arc.func.Boolf;
+import arc.math.Mathf;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
 import arc.util.io.Reads;
@@ -56,30 +57,33 @@ public class ItemLiquidTurret extends LiquidTurret {
 
 	@Override
     public void init(){
-        consume(new ConsumeItemFilter(i -> 
-        		{
-        			return i.id == itemAmmo.id;
-	        	}
-	        ) {
-	        	@Override
-	            public void build(Building build, Table table){
-	                MultiReqImage image = new MultiReqImage();
-	                image.add(new ReqImage(new Image(itemAmmo.uiIcon), () -> { return true; }));
-	                table.add(image).size(8 * 4);
+		consume(new ConsumeItemFilter(i -> 
+		{
+			return i.id == itemAmmo.id;
+    	}
+	    ) {
+	    	@Override
+	        public void build(Building build, Table table){
+	            MultiReqImage image = new MultiReqImage();
+	            if (build instanceof ItemLiquidTurretBuild buildT) {
+	            	int ammo = buildT.items.get(((ItemLiquidTurret)buildT.block).itemAmmo);
+		            image.add(new ReqImage(new Image(itemAmmo.uiIcon), () -> { return ammo > 0; }));
 	            }
-	
-	            @Override
-	            public float efficiency(Building build){
-	            	return super.efficiency(build);
-	            }
-	
-	            @Override
-	            public void display(Stats stats){
-	                //don't display
-	            }
+	            table.add(image).size(8 * 4);
 	        }
+
+	        @Override
+	        public float efficiency(Building build){
+	        	return super.efficiency(build);
+	        }
+
+	        @Override
+	        public void display(Stats stats){
+	            //don't display
+	        }
+		    }
 		);
-        
+		
         super.init();
     }
 	
@@ -107,6 +111,15 @@ public class ItemLiquidTurret extends LiquidTurret {
             
             super.updateTile();
         }*/
+        
+        @Override
+        public double sense(LAccess sensor) {
+            return switch(sensor){
+                case ammo -> Mathf.clamp(((float)items.get(itemAmmo) / (float)itemMax) * liquids.get(liquids.current()));
+                case ammoCapacity -> 1;
+                default -> super.sense(sensor);
+            };
+        }
 
         @Override
         public BulletType useAmmo(){

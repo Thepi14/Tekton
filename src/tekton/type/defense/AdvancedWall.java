@@ -47,6 +47,11 @@ public class AdvancedWall extends Wall {
         envEnabled = Env.any;
         lightRadius = 3f;
         update = true;
+        
+        outputsPower = false;
+        hasPower = true;
+        consumesPower = true;
+        conductivePower = true;
 	}
 	
 	@Override

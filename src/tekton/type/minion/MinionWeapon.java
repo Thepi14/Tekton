@@ -21,7 +21,7 @@ import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.meta.*;
-
+import tekton.type.ai.MinionAI;
 import mindustry.type.Weapon;
 
 import static mindustry.Vars.*;
