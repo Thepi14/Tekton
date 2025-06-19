@@ -154,20 +154,22 @@ public class TektonTechTree {
         							node(gravityConductor, () -> {
                 						node(electricalCoil, () -> {
                 							node(thermalCoil, Seq.with(new Research(cryogenicMixer)), () -> {
-                								
-                    						});
-                							node(polytalumFuser, Seq.with(new Research(polycarbonateSynthesizer)), () -> {
-                    							node(phasePrinter, Seq.with(new SectorComplete(river)), () -> { //change
-                			            			
-                			    				});
-                                        	});
-                							node(nanoAlloyCrucible, Seq.with(new SectorComplete(river)), () -> { //change
                 								node(phaseNanoCoil, Seq.with(new Research(nanoAlloyCrucible), new Research(phasePrinter)), () -> {
                         							
                         						});
+                    						});
+                							node(polytalumFuser, Seq.with(new Research(polycarbonateSynthesizer)), () -> {
+                    							node(phasePrinter, Seq.with(new SectorComplete(river)), () -> { //change
+                    								
+                			    				});
+                                        	});
+                							node(nanoAlloyCrucible, Seq.with(new SectorComplete(river)), () -> { //change
+            									
             			    				});
             								node(gravityRouter, () -> {
-                    							
+            									node(nanoGravityConductor, Seq.with(new Research(nanoAlloyCrucible)), () -> {
+                        							
+                        						});
                     						});
                 						});
             						});
@@ -281,7 +283,9 @@ public class TektonTechTree {
         				node(interfusion, Seq.with(new OnSector(scintilla)),  () -> {
             				node(havoc, Seq.with(new SectorComplete(aequor)),  () -> {
                 				node(concentration, Seq.with(new SectorComplete(aequor), new Research(magnetizer)),  () -> {
-                            		
+                					node(tempest, Seq.with(new SectorComplete(aequor)),  () -> {
+                                		
+                                	});
                             	});
                         	});
                     	});
@@ -290,7 +294,7 @@ public class TektonTechTree {
         		node(compass, Seq.with(new OnSector(proelium)),  () -> {
         			node(sword, Seq.with(new SectorComplete(aequor)),  () -> {
         				node(tesla, Seq.with(new SectorComplete(aequor)),  () -> {
-            				node(radiance, Seq.with(new SectorComplete(aequor), new Research(magnetizer)),  () -> {
+            				node(radiance, Seq.with(new SectorComplete(aequor)),  () -> {
                         		
                         	});
                     	});

@@ -73,6 +73,8 @@ public class TektonBlocks {
 	
 	neurosporaFloor, neurosporaEvolvedFloor, neurosporaFlower, neurosporaWall, neurosporaCluster, neurosporaVent, //6
 	
+	uraniniteFloor, uraniniteWall, trinitite, //3
+	
 	metalIronFloor, metalIronFloor2, metalIronFloor3, metalIronFloor4, metalIronFloor5, metalIronVent, metalIronExhaust, //7
 	metalIronDarkFloor, metalIronDarkFloor2, metalIronDarkFloor3, metalIronDarkFloor4, metalIronDarkFloor5, metalIronWall, //6
 	
@@ -206,7 +208,7 @@ public class TektonBlocks {
 		
 		brownSand = new Floor("brown-sand", 3) {{
 			itemDrop = Items.sand;
-			attributes.set(TektonAttributes.silica, 0.7f);
+			attributes.set(TektonAttributes.silica, 0.6f);
 			playerUnmineable = true;
 			attributes.set(Attribute.water, 0.7f);
 		}};
@@ -314,6 +316,26 @@ public class TektonBlocks {
 			variants = 2;
 			status = TektonStatusEffects.neurosporaSlowed;
 			statusDuration = 100f;
+		}};
+		
+		//uraninite
+		
+		uraniniteFloor = new Floor("uraninite-floor", 4) {{
+			attributes.set(Attribute.water, -0.5f);
+			status = TektonStatusEffects.radioactiveContamination;
+			statusDuration = 30f;
+		}};
+		
+		uraniniteWall = new StaticWall("uraninite-wall") {{
+			variants = 3;
+			uraniniteFloor.asFloor().wall = this;
+		}};
+		
+		trinitite = new Floor("trinitite", 3) {{
+			itemDrop = Items.sand;
+			attributes.set(TektonAttributes.silica, 0.25f);
+			playerUnmineable = true;
+			//attributes.set(Attribute.water, 0.7f);
 		}};
 		
 		//metal iron
@@ -1539,6 +1561,8 @@ public class TektonBlocks {
 			crushDamageMultiplier = 0.7f;
 			ambientSound = Sounds.pulse;
 			ambientSoundVolume = 0.07f;
+			
+	    	consumePower(300f / 60f);
 		}};
 		
 		powerCapacitor = new Battery("power-capacitor") {{

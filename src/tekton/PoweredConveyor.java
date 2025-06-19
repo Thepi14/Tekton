@@ -115,7 +115,8 @@ public class PoweredConveyor extends Conveyor {
             }else{
                 clogHeat = 0f;
             }
-            
+
+            changedAlphaState = false;
             //noSleep();
         }
 		
@@ -124,7 +125,7 @@ public class PoweredConveyor extends Conveyor {
             if (!changedAlphaState)
             	setAlphaGlowProgress();
             int frame = enabled && clogHeat <= 0.5f ? (int)(((Time.time * currentSpeed * 8f * timeScale)) % 4) : 0;
-
+            float z = Draw.z();
             //draw extra conveyors facing this one for non-square tiling purposes
             Draw.z(Layer.blockUnder);
             for(int i = 0; i < 4; i++){
@@ -161,14 +162,14 @@ public class PoweredConveyor extends Conveyor {
                 Draw.z(layer + (ix / wwidth + iy / wheight) * scaling);
                 Draw.rect(item.fullIcon, ix, iy, itemSize, itemSize);
             }
-            
-            changedAlphaState = false;
+
+            Draw.z(z);
+            Draw.reset();
         }
 		
 		@Override
         public void unitOn(Unit unit){
-
-            if(/*!pushUnits || */clogHeat > 0.5f || !enabled) return;
+			if(/*!pushUnits || */clogHeat > 0.5f || !enabled) return;
 
             //noSleep();
 

@@ -123,7 +123,6 @@ public class LongPowerNodeLink extends LongPowerNode {
         update = true;
         outputsPower = connectedPower = conductivePower = hasPower = consumesPower = true;
         sync = true;
-    	consumePower(500f / 60f);
     	//consumePowerBuffered(100f);
         priority = TargetPriority.base;
         drawDisabled = false;

@@ -844,7 +844,7 @@ public class TektonUnits {
                 reload = 350f;
                 recoil = 0f;
                 rotateSpeed = 0;
-                inaccuracy = 0f;
+                inaccuracy = 0.1f;
                 rotate = false;
                 heatColor = Color.valueOf("4a9eff");
                 shootCone = 7f;
@@ -861,6 +861,8 @@ public class TektonUnits {
                     length = 330f;
                     damage = 1400f;
                     width = 75f;
+                    
+                    inaccuracy = 0f;
 
                     lifetime = 65f;
 
