@@ -180,14 +180,14 @@ public class TektonBlocks {
 		
 		silicaSand = new Floor("silica-sand-floor", 2) {{
 			itemDrop = Items.sand;
-			attributes.set(TektonAttributes.silica, 2f);
+			attributes.set(TektonAttributes.silica, 1.2f);
 			playerUnmineable = true;
 			attributes.set(Attribute.water, 0.3f);
 		}};
 		
 		darkSilicaSand = new Floor("dark-silica-sand-floor", 2) {{
 			itemDrop = Items.sand;
-			attributes.set(TektonAttributes.silica, 1f);
+			attributes.set(TektonAttributes.silica, 0.8f);
 			playerUnmineable = true;
 			attributes.set(Attribute.water, 0.3f);
 		}};
@@ -208,9 +208,9 @@ public class TektonBlocks {
 		
 		brownSand = new Floor("brown-sand", 3) {{
 			itemDrop = Items.sand;
-			attributes.set(TektonAttributes.silica, 0.6f);
+			attributes.set(TektonAttributes.silica, 0.4f);
 			playerUnmineable = true;
-			attributes.set(Attribute.water, 0.7f);
+			attributes.set(Attribute.water, 0.5f);
 		}};
 		
 		brownStone = new Floor("brown-stone", 3) {{
@@ -333,7 +333,7 @@ public class TektonBlocks {
 		
 		trinitite = new Floor("trinitite", 3) {{
 			itemDrop = Items.sand;
-			attributes.set(TektonAttributes.silica, 0.25f);
+			attributes.set(TektonAttributes.silica, 0.2f);
 			playerUnmineable = true;
 			//attributes.set(Attribute.water, 0.7f);
 		}};
@@ -2949,7 +2949,7 @@ public class TektonBlocks {
 		}};
 		
 		interfusion = new ItemTurret("interfusion") {{
-			requirements(Category.turret, with(Items.silicon, 140, Items.graphite, 100, zirconium, 200));
+			requirements(Category.turret, with(Items.silicon, 140, polycarbonate, 100, tantalum, 120));
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
 			size = 3;
@@ -3028,7 +3028,7 @@ public class TektonBlocks {
 		}};
 		
 		freezer = new ItemLiquidTurret("freezer") {{
-			requirements(Category.turret, with(Items.silicon, 120, tantalum, 80, polycarbonate, 80));
+			requirements(Category.turret, with(Items.silicon, 120, Items.graphite, 80, polycarbonate, 80));
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
 			size = 3;
@@ -4177,7 +4177,7 @@ public class TektonBlocks {
             shootWarmupSpeed = 0.035f;
             //minRange = shootY;
             targetUnderBlocks = false;
-            unitSort = UnitSorts.strongest;
+            //unitSort = UnitSorts.farthest;
     		shootCone = 90f;
             inaccuracy = 45f / 2f;
             shake = 3f;

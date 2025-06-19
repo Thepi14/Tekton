@@ -104,6 +104,7 @@ public class Nest extends Block implements BiologicalBlock {
 	
 	public Nest(String name) {
 		super(name);
+		unitCapModifier = 5;
         envEnabled |= Env.space;
 		creatures = new Seq<UnitType>();
 		buildVisibility = BuildVisibility.sandboxOnly;
@@ -280,6 +281,8 @@ public class Nest extends Block implements BiologicalBlock {
     			spawnEffect.at(position);
         	var creature = unitType.spawn(position, team());
         	creature.rotation = Mathf.atan2(creature.x - x, creature.y - y) * Mathf.radDeg;
+        	creature.command().attackTarget = creature.command().findTarget(x, y, 1000f * tilesize, creature.type.targetAir, creature.type.targetGround);
+        	
 			return creature;
         }
         

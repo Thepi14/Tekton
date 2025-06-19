@@ -71,13 +71,15 @@ protected static boolean contentLoadComplete = false;
         Team.blue.emoji = "hapax";
         Team.blue.name = "hapax";
         
-        Log.info(returnResourcesSize());
+        Log.info("Tekton loaded, non-hidden content: " + returnResourcesSize());
         
 		contentLoadComplete = true;
     }
 	
 	public static int returnResourcesSize() {
-		int currentTests = 2;
+		int environment = 46;
+		int hidden = 5;
+		int currentTests = environment + hidden;
 		Class<?> bloc = TektonBlocks.class;
 		Seq<Field> blocFields = new Seq<>(bloc.getFields());
 		blocFields.retainAll(f -> Block.class.equals(f.getType()));

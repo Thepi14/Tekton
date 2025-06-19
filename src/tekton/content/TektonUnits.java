@@ -2328,6 +2328,7 @@ public class TektonUnits {
             rotateSpeed = 2f;
             health = 2300;
             armor = 6f;
+            targetAir = false;
         	weapons.add(new Weapon(name + "-weapon") {{
         		layerOffset = -0.000002f;
         		top = false;
@@ -2340,6 +2341,7 @@ public class TektonUnits {
                 shootSound = Sounds.dullExplosion;
                 bullet = new ArtilleryBulletType(7f, 40f) {{
                     collidesTiles = collides = true;
+                	collidesAir = false;
                     sprite = "missile-large";
                     width = 7.5f;
                     height = 13f;
@@ -2359,6 +2361,7 @@ public class TektonUnits {
                     fragBullets = 5;
 
                     fragBullet = new BasicBulletType(5f, 30f) {{
+                    	collidesAir = false;
                         sprite = "missile-large";
                         width = 5f;
                         height = 7f;
