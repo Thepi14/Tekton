@@ -30,17 +30,22 @@ public class MinionAI extends AIController {
         float distanceTarget = shooter != null ? new Vec2(unit.x, unit.y).dst(new Vec2(shooter.aimX, shooter.aimY)) : 0f;
         float attackDistance = unit.type.range * attackDistanceMul;
         
-        if (distance > maxDistance) {
+        //remove before missile kills itself
+        if (distance > maxDistance || time >= unit.type.lifetime - 0.5f) {
         	if (unit.type instanceof MinionUnitType v) {
         		v.despawnEffect.at(unit);
         	}
         	unit.remove();
+        	return;
         }
 
         if (shooter != null) {
         	if(time >= unit.type.homingDelay && !shooter.dead()){
 	            unit.lookAt(shooter.aimX, shooter.aimY);
 	        }
+            
+            unit.aimX = shooter.aimX;
+            unit.aimY = shooter.aimY;
         	
         	if (distanceTarget >= attackDistance)
         		moveTo(new Vec2(shooter.aimX, shooter.aimY), attackDistance, 0.5f, true, null, true);

@@ -205,6 +205,7 @@ public class TektonUnits {
 			playerControllable = false;
 			logicControllable = false;
 			useUnitCap = false;
+			isEnemy = false;
 			createScorch = createWreck = false;
 			drawShields = false;
 			float rang = 100f, weapY = -0.1f;
@@ -229,7 +230,7 @@ public class TektonUnits {
             autoFindTarget = true;
             faceTarget = true;
             physics = true;
-            bounded = true;
+            bounded = false;
             homingDelay = 0f;
             missileAccelTime = 0f;
             
@@ -832,6 +833,10 @@ public class TektonUnits {
             
             var weapPos = -9f;
             
+            for (int i : Mathf.signs) {
+            	abilities.add(new MinionSpawnAbility(electron, 60f, 16f * i, -1f));
+            }
+            
             weapons.add(new Weapon(name + "-weapon") {{
             	shootSound = Sounds.laserblast;
                 chargeSound = Sounds.lasercharge;
@@ -884,7 +889,7 @@ public class TektonUnits {
                 }};
             }});
             
-            weapons.add(new MinionWeapon(name + "-spawner") {{
+            /*weapons.add(new MinionWeapon(name + "-spawner") {{
             	parts.add(new RegionPart("-breech") {{
             		mirror = true;
             		under = false;
@@ -940,7 +945,7 @@ public class TektonUnits {
                     collidesGround = collidesAir = true;
                     spawnUnit = electron;
                 }};
-            }});
+            }});*/
             
             parts.add(new HaloPart() {{
             	color = Pal.lancerLaser;
