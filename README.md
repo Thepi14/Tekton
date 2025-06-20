@@ -24,11 +24,11 @@
 ## Overview
 </div>
 
-- Currently 218 pieces of content, including blocks, units, items and liquids.
-- 3 sectors at the moment of the creation of this README
-- Almost 4 completed unit trees with unique units.
+- Currently 190 pieces of content, including blocks, units, items and liquids (excluding environment and ores).
+- 3 sectors at the moment of the creation of this README.
+- 4 completed unit trees with unique units.
 
-Keep in mind that this mod is still in development, so there will be bugs, faulty mechanics and strange things used for tests.
+Keep in mind that this mod is still in development, so there will be bugs, missing things and other strange things.
 <br>
 <br>
 
@@ -52,6 +52,7 @@ Keep in mind that this mod is still in development, so there will be bugs, fault
 </div>
 
 - English
+- Brazilian Portuguese
 <br>
 <br>
 
