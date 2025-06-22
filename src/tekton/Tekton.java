@@ -48,8 +48,6 @@ protected static boolean contentLoadComplete = false;
 		Log.info("Loaded Tekton constructor.");
 	}
 	
-	public static UnitType myUnitType;
-	
     @Override
     public void loadContent(){
 		contentLoadComplete = false;
@@ -68,10 +66,12 @@ protected static boolean contentLoadComplete = false;
         TektonTechTree.load();
         TektonFx.load();
         
-        Team.blue.emoji = "hapax";
+        Team.blue.emoji = "tekton-hapax";
         Team.blue.name = "hapax";
         
         Log.info("Tekton loaded, non-hidden content: " + returnResourcesSize());
+        TektonPlanets.tekton.defaultCore = TektonBlocks.corePrimal;
+        Log.info(TektonPlanets.tekton.defaultCore.name);
         
 		contentLoadComplete = true;
     }

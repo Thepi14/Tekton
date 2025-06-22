@@ -8,11 +8,11 @@ import static tekton.content.TektonPlanets.*;
 import arc.struct.Seq;
 
 public class TektonSectors {
-	public static SectorPreset satus, scintilla, river, lake, proelium, aequor, test;
+	public static SectorPreset satus, scintilla, proelium, river, lake/*, aequor*/;
 	public static Seq<SectorPreset> all = new Seq<SectorPreset>();
 	//63
 	public static void load(){
-		satus = new TektonSectorPreset("satus", tekton, 1){{
+		satus = new TektonSectorPreset("satus", tekton, 0){{
             alwaysUnlocked = true;
             overrideLaunchDefaults = true;
             addStartingItems = true;
@@ -69,7 +69,7 @@ public class TektonSectors {
 			};
         }};
         
-        aequor = new TektonSectorPreset("aequor", tekton, 3){{
+        /*aequor = new TektonSectorPreset("aequor", tekton, 3){{
             difficulty = 2;
             rules = r -> {
 				r.hiddenBuildItems.clear();
@@ -77,19 +77,9 @@ public class TektonSectors {
 				r.waves = false;
 				r.placeRangeCheck = false;
 			};
-        }};
+        }};*/
         
-        test = new TektonSectorPreset("test", tekton, 33){{
-            difficulty = 0;
-            rules = r -> {
-				r.hiddenBuildItems.clear();
-				r.attackMode = false;
-				r.waves = false;
-				r.placeRangeCheck = false;
-			};
-        }};
-        
-        all.addAll(new SectorPreset[] {satus, scintilla, river, proelium, aequor, test});
+        all.addAll(new SectorPreset[] {satus, scintilla, river, proelium/*, aequor*/});
 	}
 	
 	public static class TektonSectorPreset extends SectorPreset{

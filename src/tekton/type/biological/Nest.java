@@ -144,6 +144,7 @@ public class Nest extends Block implements BiologicalBlock {
 		}};
 		hideDetails = true;
 		destroyEffect = TektonFx.biologicalDynamicExplosion;
+		alwaysUnlocked = false;
 	}
 	
 	@Override

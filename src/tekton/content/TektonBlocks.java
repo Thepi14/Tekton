@@ -422,20 +422,20 @@ public class TektonBlocks {
 			variants = 3;
 		}};
 		
-		oreTantalum = new OreBlock("ore-uranium", uranium) {{
+		oreUranium = new OreBlock("ore-uranium", uranium) {{
 			oreDefault = true;
 			oreThreshold = 0.864f;
 			oreScale = 24.904762f;
 			variants = 3;
 		}};
 		
-		zirconWall = new StaticWall("zircon-wall") {{
-			itemDrop = zirconium;
+		ferricIronWall = new StaticWall("ferric-iron-wall") {{
+			itemDrop = iron;
 			variants = 3;
 		}};
 		
-		ferricIronWall = new StaticWall("ferric-iron-wall") {{
-			itemDrop = iron;
+		zirconWall = new StaticWall("zircon-wall") {{
+			itemDrop = zirconium;
 			variants = 3;
 		}};
 		
@@ -1603,7 +1603,7 @@ public class TektonBlocks {
 			requirements(Category.power, with(iron, 45, zirconium, 15));
 			health = 200;
 			size = 2;
-			consumeLiquid(TektonLiquids.methane, 6.5f / 60f);
+			consumeLiquid(TektonLiquids.methane, 10f / 60f);
 			powerProduction = 1;
 			//itemDuration = 80;
 			liquidCapacity = 35f;
@@ -1931,7 +1931,7 @@ public class TektonBlocks {
 			itemCapacity = 0;
 			liquidCapacity = 15;
 			maxBoost = 1f;
-			minEfficiency = 0.01f;
+			minEfficiency = 5f;
 			baseEfficiency = 0f;
 			boostScale = (1f / 9f) * 0.5f;
 			ignoreLiquidFullness = false;
@@ -2154,7 +2154,7 @@ public class TektonBlocks {
 			var coolantConsumption = 0.5f / 60f;
             coolant = consume(new ConsumeLiquid(TektonLiquids.ammonia, coolantConsumption));
             coolantMultiplier = defCoolantMultiplier / coolantConsumption;
-			buildCostMultiplier = 1.4f;
+			buildCostMultiplier = 4f;
 			alwaysUnlocked = true;
 		}};
 		
@@ -2279,7 +2279,7 @@ public class TektonBlocks {
             coolant = consume(new ConsumeLiquid(TektonLiquids.ammonia, coolantConsumption));
             coolantMultiplier = defCoolantMultiplier / coolantConsumption;
 			researchCostMultiplier = 0.4f;
-			buildCostMultiplier = 1.5f;
+			buildCostMultiplier = 2.1f;
 		}};
 		
 		compass = new PowerTurret("compass") {{
@@ -2380,7 +2380,7 @@ public class TektonBlocks {
 				buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 			}};
 			
-			buildCostMultiplier = 1.4f;
+			buildCostMultiplier = 2.5f;
 			researchCostMultiplier = 0.8f;
 		}};
 		
@@ -2486,7 +2486,7 @@ public class TektonBlocks {
             coolantMultiplier = defCoolantMultiplier / coolantConsumption;
             
 			researchCostMultiplier = 0.4f;
-			buildCostMultiplier = 1.5f;
+			buildCostMultiplier = 1.8f;
 		}};
 		
 		spear = new ItemTurret("spear") {{
@@ -2650,7 +2650,7 @@ public class TektonBlocks {
             coolantMultiplier = defCoolantMultiplier / coolantConsumption;
             
 			researchCostMultiplier = 0.6f;
-			buildCostMultiplier = 1.8f;
+			buildCostMultiplier = 0.9f;
 		}};
 		
 		sword = new PowerTurret("sword") {{
@@ -2812,7 +2812,7 @@ public class TektonBlocks {
 				lightningColor = Color.valueOf("ff5959");
 			}};
 			
-			buildCostMultiplier = 2.3f;
+			buildCostMultiplier = 1.15f;
 			researchCostMultiplier = 0.7f;
 		}};
 		
@@ -3024,7 +3024,7 @@ public class TektonBlocks {
 			//coolant = consumeCoolant(0.3f, true, true);
 			coolantMultiplier = 0.5f;
 			researchCostMultiplier = 0.5f;
-			buildCostMultiplier = 2f;
+			buildCostMultiplier = 1.4f;
 		}};
 		
 		freezer = new ItemLiquidTurret("freezer") {{
@@ -3129,7 +3129,7 @@ public class TektonBlocks {
 			
 			coolantMultiplier = 0f;
 			researchCostMultiplier = 0.4f;
-			buildCostMultiplier = 1.4f;
+			buildCostMultiplier = 2f;
 		}};
 		
 		havoc = new ItemTurret("havoc") {{
@@ -3292,7 +3292,7 @@ public class TektonBlocks {
 			
             //unitSort = UnitSorts.weakest;
 			
-			buildCostMultiplier = 2f;
+			buildCostMultiplier = 0.6f;
 			researchCostMultiplier = 1f;
 		}};
 		
@@ -3437,12 +3437,12 @@ public class TektonBlocks {
             	    );
 			}};
 			
-			buildCostMultiplier = 2f;
+			buildCostMultiplier = 0.8f;
 			researchCostMultiplier = 1f;
 		}};
 		
 		prostrate = new PowerTurret("prostrate") {{
-			requirements(Category.turret, with(Items.silicon, 250, tantalum, 250, zirconium, 200, iron, 80));
+			requirements(Category.turret, with(Items.silicon, 250, magnet, 100, zirconium, 200, uranium, 100));
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
 			heatColor = Color.valueOf("ff3333df");
@@ -3589,7 +3589,7 @@ public class TektonBlocks {
                 });
 			}};
 			
-			buildCostMultiplier = 2.3f;
+			buildCostMultiplier = 1.1f;
 			researchCostMultiplier = 1f;
 		}};
 		
@@ -4147,7 +4147,7 @@ public class TektonBlocks {
             }};
             
             consumePower(10f);
-			consumeLiquid(TektonLiquids.ammonia, 8f / 60f);
+			//consumeLiquid(TektonLiquids.ammonia, 6f / 60f);
             buildCostMultiplier = 0.5f;
 		}};
 		
@@ -4781,7 +4781,7 @@ public class TektonBlocks {
 			maxPayloadSize = 2.5f;
 			fogRadius = 5;
 			consumePower(0.2f);
-			maxGravity = 2;
+			maxGravity = 1;
             researchCostMultiplier = 0.7f;
 		}};
 		
@@ -4801,7 +4801,7 @@ public class TektonBlocks {
             health = 80;
         }};
         
-		var bioVisibility = BuildVisibility.sandboxOnly;
+		var bioVisibility = BuildVisibility.shown;
 		
 		//biological
 		
@@ -4826,7 +4826,6 @@ public class TektonBlocks {
 			fogRadius = 5;
 			lightRadius = 2f;
 			powerProduction = 0.4f;
-			hideDetails = true;
 			explosionShake = 1f;
 			explosionPuddleRange = tilesize * 2f;
 			explosionPuddles = 10;
@@ -4841,7 +4840,6 @@ public class TektonBlocks {
 			creatures.add(TektonUnits.gracilipes, TektonUnits.polyphaga, TektonUnits.colobopsis);
 			health = 700;
 			fogRadius = 8;
-			hideDetails = true;
 			explosionShake = 2f;
 			explosionRadius = 10;
 		    explosionDamage = 250;
@@ -4858,7 +4856,6 @@ public class TektonBlocks {
 			fogRadius = 14;
 			lightRadius = 7f;
 			powerProduction = 2f;
-			hideDetails = true;
 			explosionShake = 4f;
 			explosionShakeDuration = 10f;
 			explosionPuddleRange = tilesize * 4f;
@@ -5003,6 +5000,7 @@ public class TektonBlocks {
 			armor = 4;
 			status = TektonStatusEffects.cobwebbed;
 			statusDuration = 60f * 3f;
+			alwaysUnlocked = false;
 		}};
 		
 		cobwebWallLarge = new StatusEffectWall("cobweb-wall-large") {{
@@ -5012,6 +5010,7 @@ public class TektonBlocks {
 			size = 2;
 			status = TektonStatusEffects.cobwebbed;
 			statusDuration = 60f * 3f;
+			alwaysUnlocked = false;
 		}};
 	}
 

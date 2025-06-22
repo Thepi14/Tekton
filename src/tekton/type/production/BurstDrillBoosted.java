@@ -18,7 +18,7 @@ import tekton.content.TektonLiquids;
 
 //TODO Eliminate this class on the Build 149, or not
 public class BurstDrillBoosted extends BurstDrill {
-	public TextureRegion topBoostRegion;
+	public TextureRegion topInvertRegion, arrowRegion, arrowBlurRegion, topBoostRegion;
     public float alpha = 0.9f, glowScale = 10f, glowIntensity = 0.5f;
     public Liquid boostLiquid = Liquids.water;
     public float boostConsumptionAmount = 2f / 60f;
@@ -31,6 +31,9 @@ public class BurstDrillBoosted extends BurstDrill {
     @Override
     public void load() {
     	super.load();
+    	topInvertRegion = Core.atlas.find(name + "-top-invert");
+    	arrowRegion = Core.atlas.find(name + "-arrow");
+    	arrowBlurRegion = Core.atlas.find(name + "-arrow-blur");
     	topBoostRegion = Core.atlas.find(name + "-boost");
     	consumeLiquid(boostLiquid, boostConsumptionAmount).boost();
     }
@@ -42,7 +45,6 @@ public class BurstDrillBoosted extends BurstDrill {
 
         @Override
         public void updateTile() {
-        	
             if(dominantItem == null){
                 return;
             }
@@ -90,7 +92,53 @@ public class BurstDrillBoosted extends BurstDrill {
 
         @Override
         public void draw(){
-            super.draw();
+            //super.draw();
+        	Draw.rect(region, x, y);
+            drawDefaultCracks();
+
+            Draw.rect(topRegion, x, y);
+            if(invertTime > 0 && topInvertRegion.found()){
+                Draw.alpha(Interp.pow3Out.apply(invertTime));
+                Draw.rect(topInvertRegion, x, y);
+                Draw.color();
+            }
+
+            if(dominantItem != null && drawMineItem){
+                Draw.color(dominantItem.color);
+                Draw.rect(itemRegion, x, y);
+                Draw.color();
+            }
+
+            float fract = smoothProgress;
+            Draw.color(arrowColor);
+            for(int i = 0; i < 4; i++){
+                for(int j = 0; j < arrows; j++){
+                    float arrowFract = (arrows - 1 - j);
+                    float a = Mathf.clamp(fract * arrows - arrowFract);
+                    Tmp.v1.trns(i * 90 + 45, j * arrowSpacing + arrowOffset);
+
+                    //TODO maybe just use arrow alpha and draw gray on the base?
+                    Draw.z(Layer.block);
+                    Draw.color(baseArrowColor, arrowColor, a);
+                    Draw.rect(arrowRegion, x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
+
+                    Draw.color(arrowColor);
+
+                    if(arrowBlurRegion.found()){
+                        Draw.z(Layer.blockAdditive);
+                        Draw.blend(Blending.additive);
+                        Draw.alpha(Mathf.pow(a, 10f));
+                        Draw.rect(arrowBlurRegion, x + Tmp.v1.x, y + Tmp.v1.y, i * 90);
+                        Draw.blend();
+                    }
+                }
+            }
+            Draw.color();
+
+            if(glowRegion.found()){
+                Drawf.additive(glowRegion, Tmp.c2.set(glowColor).a(Mathf.pow(fract, 3f) * glowColor.a), x, y);
+            }
+            
             if (!topBoostRegion.found())
             	return;
             Draw.blend(Blending.additive);

@@ -126,7 +126,7 @@ public class TektonPlanets {
             		//outer
             		new HexSkyMesh(this, 1477, 0.74f, 0.145f + increaseCloudRad, 5, Color.valueOf("7a7d3c33"), 4, 0.67f, 1, 0.6f));
             
-            hiddenItems.addAll(Items.copper, Items.lead, Items.titanium, Items.plastanium, Items.thorium, Items.surgeAlloy, Items.metaglass, Items.carbide, Items.beryllium, Items.oxide, Items.tungsten/*, Items.sporePod, Items.pyratite, Items.blastCompound, Items.coal*/);
+            hiddenItems.addAll(Items.copper, Items.lead, Items.titanium, Items.plastanium, Items.thorium, Items.surgeAlloy, Items.metaglass, Items.carbide, Items.beryllium, Items.oxide, Items.tungsten, Items.sporePod, Items.pyratite, Items.blastCompound, Items.coal, Items.scrap);
 		}};
 		mirera = new TektonPlanet("mirera", tekton, 0.25f, 1) {{
 			generator = new TektonMoonGenerator();

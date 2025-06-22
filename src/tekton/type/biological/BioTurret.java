@@ -41,6 +41,7 @@ public class BioTurret extends PowerTurret implements BiologicalBlock {
 		hideDetails = true;
 
 		destroyEffect = TektonFx.biologicalDynamicExplosion;
+		alwaysUnlocked = false;
 	}
 
 	public class BioTurretBuild extends PowerTurretBuild {

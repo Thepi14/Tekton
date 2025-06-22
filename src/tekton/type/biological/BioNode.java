@@ -77,6 +77,7 @@ public class BioNode extends PowerNode implements BiologicalBlock {
 		destroyEffect = TektonFx.biologicalDynamicExplosion;
         
 		update = true;
+		alwaysUnlocked = false;
 	}
 	
 	@Override

@@ -61,6 +61,7 @@ public class GlowPod extends TeamLight implements BiologicalBlock {
 		drawTeamOverlay = false;
 		createRubble = drawCracks = false;
 		destroyEffect = TektonFx.biologicalDynamicExplosion;
+		alwaysUnlocked = false;
 	}
 	
 	@Override
