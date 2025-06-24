@@ -79,7 +79,7 @@ public class TektonSectors {
 			};
         }};*/
         
-        all.addAll(new SectorPreset[] {satus, scintilla, river, proelium/*, aequor*/});
+        all.addAll(new SectorPreset[] {satus, scintilla, river, proelium, lake/*, aequor*/});
 	}
 	
 	public static class TektonSectorPreset extends SectorPreset{

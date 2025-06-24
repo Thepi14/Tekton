@@ -2027,7 +2027,7 @@ public class TektonBlocks {
 		//storage
 		
 		corePrimal = new CoreBlock("core-primal") {{
-			requirements(Category.effect, with(iron, 1000, zirconium, 600, Items.silicon, 600));
+			requirements(Category.effect, with(iron, 1000, zirconium, 600, Items.silicon, 600), true);
 			alwaysUnlocked = true;
 			isFirstTier = true;
 			unitType = TektonUnits.delta;
@@ -2385,7 +2385,7 @@ public class TektonBlocks {
 		}};
 		
 		skyscraper = new ItemTurret("skyscraper") {{
-			requirements(Category.turret, with(zirconium, 60, Items.graphite, 40));
+			requirements(Category.turret, with(zirconium, 80, Items.graphite, 40));
 			unitSort = UnitSorts.weakest;
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;

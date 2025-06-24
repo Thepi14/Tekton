@@ -78,14 +78,14 @@ public class TektonUnits {
 		;
 
 	public static void missileDistance(String id) {
-		mapMissileDist = EntityMapping.register("tekton-" + id, DistanceMissileUnitEntity::create);
+		mapMissileDist = EntityMapping.register(id, DistanceMissileUnitEntity::create);
     }
 	public static void missileDistance(String... ids) {
         for (String id : ids) missileDistance(id);
     }
 
 	public static void crushWaterMove(String id) {
-		mapCrushWaterMov = EntityMapping.register("tekton-" + id, CrushWaterMoveUnitEntity::create);
+		mapCrushWaterMov = EntityMapping.register(id, CrushWaterMoveUnitEntity::create);
     }
 	public static void crushWaterMove(String... ids) {
         for (String id : ids) crushWaterMove(id);
@@ -141,6 +141,7 @@ public class TektonUnits {
             targetPriority = -2;
             fogRadius = 0;
             hoverable = false;
+            playerControllable = false;
             hidden = true;
 		}};
 		

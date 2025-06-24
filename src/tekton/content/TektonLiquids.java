@@ -32,8 +32,9 @@ public class TektonLiquids {
 			explosiveness = 0.5f;
 			alwaysUnlocked = false;
 		}};
-		
-		methane = new Liquid("methane", TektonColor.methane) {{
+
+        var add = 0.1f;
+		methane = new Liquid("methane", TektonColor.methane.cpy().add(add, add, add)) {{
             coolant = false;
 			gas = true;
 			temperature = 0.5f;
@@ -43,7 +44,7 @@ public class TektonLiquids {
 			explosiveness = 0.5f;
 			alwaysUnlocked = true;
             lightColor = TektonColor.methane.cpy().a(0.3f);
-            gasColor = TektonColor.methane.cpy().mul(1.1f);
+            gasColor = TektonColor.methane.cpy().add(add, add, add);
             effect = TektonStatusEffects.tarredInMethane;
 		}};
 		

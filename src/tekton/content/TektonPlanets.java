@@ -33,7 +33,7 @@ public class TektonPlanets {
 			description = "A extremely cold planet with unknown threats and possibilities.";
 			alwaysUnlocked = true;
 			allowLaunchSchematics = false;
-			allowLaunchToNumbered = true;
+			allowLaunchToNumbered = false;
 			allowLaunchLoadout = false;
 			allowSectorInvasion = false;
 			allowWaveSimulation = true;
@@ -128,6 +128,7 @@ public class TektonPlanets {
             
             hiddenItems.addAll(Items.copper, Items.lead, Items.titanium, Items.plastanium, Items.thorium, Items.surgeAlloy, Items.metaglass, Items.carbide, Items.beryllium, Items.oxide, Items.tungsten, Items.sporePod, Items.pyratite, Items.blastCompound, Items.coal, Items.scrap);
 		}};
+		
 		mirera = new TektonPlanet("mirera", tekton, 0.25f, 1) {{
 			generator = new TektonMoonGenerator();
 			description = "Tekton's moon, has no atmosphere.";
