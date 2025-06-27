@@ -492,6 +492,9 @@ public class TektonUnits {
 
                 bullet = piezoBullet;
             }});
+            
+            //piezo is first so
+            researchCostMultiplier = 0f;
 		}};
 		
 		electret = new TektonTankUnitType("electret") {{
@@ -594,7 +597,7 @@ public class TektonUnits {
                 shake = 5f;
                 //cooldownTime = 30f;
                 shoot.firstShotDelay = 0f;
-                bullet = new LaserBulletType(230) {{
+                bullet = new LaserBulletType(180) {{
                     lightColor = lightningColor = Pal.lancerLaser;
                     colors = new Color[]{Pal.lancerLaser.cpy().a(0.4f), Pal.lancerLaser, Color.white};
                     //chargeEffect = new MultiEffect(TektonFx.lancerLaserCharge, TektonFx.lancerLaserChargeBegin);
@@ -717,7 +720,7 @@ public class TektonUnits {
                     float rad = 72f;
                     radius = rad;
                 	speed = 3f;
-                	damage = 100f;
+                	damage = 400f;
                 	width = 17f;
                 	height = 17f;
                 	shrinkX = shrinkY = 0f;
@@ -737,7 +740,7 @@ public class TektonUnits {
                     despawnSound = hitSound = Sounds.plasmaboom;
                     hitColor = backColor = trailColor = Pal.lancerLaser;
                     frontColor = Color.white;
-                    splashDamage = 70f;
+                    splashDamage = 40f;
                     splashDamageRadius = rad;
                     
                     trailEffect = new Effect(32f, e -> {
@@ -990,7 +993,7 @@ public class TektonUnits {
 		
 		martyris = new TektonUnitType("martyris") {{
 			this.constructor = UnitEntity::create;
-            fogRadiusMultipliyer = 0.6f;
+            fogRadiusMultipliyer = 0f;
 			createWreck = false;
 			speed = 3.5f;
             accel = 0.06f;
@@ -1161,6 +1164,7 @@ public class TektonUnits {
                     });
                 }};
             }});
+            researchCostMultiplier = 0f;
 		}};
 		
 		eques = new TektonUnitType("eques") {{
@@ -1782,6 +1786,7 @@ public class TektonUnits {
                     trailLength = 4;
                 }};
             }});
+            researchCostMultiplier = 0f;
         }};
         
         argos = new TektonUnitType("argos") {{
@@ -2324,6 +2329,7 @@ public class TektonUnits {
                     }};
                 }});
             }
+            researchCostMultiplier = 0f;
         }};
         
         hammer = new TektonUnitType("hammer") {{

@@ -8,16 +8,16 @@ import static tekton.content.TektonPlanets.*;
 import arc.struct.Seq;
 
 public class TektonSectors {
-	public static SectorPreset satus, scintilla, proelium, river, lake/*, aequor*/;
+	public static SectorPreset satus, middle, scintilla, proelium, pit, river, lake/*, aequor*/;
 	public static Seq<SectorPreset> all = new Seq<SectorPreset>();
 	//63
 	public static void load(){
 		satus = new TektonSectorPreset("satus", tekton, 0){{
+            difficulty = 1;
             alwaysUnlocked = true;
             overrideLaunchDefaults = true;
             addStartingItems = true;
             captureWave = 6;
-            difficulty = 1;
             alwaysUnlocked = true;
             
             rules = r -> {
@@ -30,22 +30,40 @@ public class TektonSectors {
 			};
         }};
         
-        scintilla = new TektonSectorPreset("scintilla", tekton, 35){{
+        middle = new TektonSectorPreset("middle", tekton, 35){{
+            difficulty = 1;
+            captureWave = 10;
+            rules = r -> {
+				r.hiddenBuildItems.clear();
+				r.waves = true;
+			};
+        }};
+        
+        scintilla = new TektonSectorPreset("scintilla", tekton, 48){{
             difficulty = 1;
             rules = r -> {
 				r.hiddenBuildItems.clear();
 				r.attackMode = true;
 				r.waves = false;
-				r.placeRangeCheck = false;
 			};
         }};
         
         proelium = new TektonSectorPreset("proelium", tekton, 37){{
-            captureWave = 20;
             difficulty = 2;
+            captureWave = 20;
             rules = r -> {
 				r.hiddenBuildItems.clear();
 				r.attackMode = false;
+				r.waves = true;
+			};
+        }};
+        
+        pit = new TektonSectorPreset("pit", tekton, 16){{
+            difficulty = 2;
+            //captureWave = 20;
+            rules = r -> {
+				r.hiddenBuildItems.clear();
+				r.attackMode = true;
 				r.waves = true;
 			};
         }};
@@ -56,7 +74,6 @@ public class TektonSectors {
 				r.hiddenBuildItems.clear();
 				r.attackMode = true;
 				r.waves = false;
-				r.placeRangeCheck = false;
 			};
         }};
         
@@ -88,6 +105,9 @@ public class TektonSectors {
 			super(name, planet, sector);
 	        noLighting = true;
             overrideLaunchDefaults = false;
+            rules = r -> {
+                r.placeRangeCheck = false;
+            };
 		}
 	}
 }

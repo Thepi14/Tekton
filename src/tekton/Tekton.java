@@ -31,7 +31,7 @@ import mindustry.type.*;
 
 public class Tekton extends Mod{
 	
-protected static boolean contentLoadComplete = false;
+	protected static boolean contentLoadComplete = false;
 	
 	public static final String MOD_RELEASES = "https://github.com/Thepi14/Tekton/releases";
 	public static final String MOD_REPO = "Thepi14/Tekton";
@@ -52,7 +52,7 @@ protected static boolean contentLoadComplete = false;
 		Log.info("Loaded Tekton constructor.");
 		
 		//listen for game load event
-        Events.on(ClientLoadEvent.class, e -> {
+        /*Events.on(ClientLoadEvent.class, e -> {
             //show dialog upon startup
             Time.runTask(5f * 60f, () -> {
                 BaseDialog dialog = new BaseDialog("frog");
@@ -67,7 +67,7 @@ protected static boolean contentLoadComplete = false;
                 dialog.cont.button("I see", dialog::hide).size(100f, 50f);
                 dialog.show();
             });
-        });
+        });*/
 	}
 	
     @Override
@@ -93,41 +93,17 @@ protected static boolean contentLoadComplete = false;
         Team.blue.name = "hapax";
         
         Log.info("Tekton loaded, non-hidden content: " + returnResourcesSize());
-        TektonPlanets.tekton.defaultCore = TektonBlocks.corePrimal;
         
 		contentLoadComplete = true;
     }
 	
 	public static int returnResourcesSize() {
 		int environment = 46;
-		int hidden = 5;
+		int hidden = 6;
 		int currentTests = environment + hidden;
 		Class<?> bloc = TektonBlocks.class;
 		Seq<Field> blocFields = new Seq<>(bloc.getFields());
-		Seq<String> blocNames = new Seq<String>();
 		blocFields.retainAll(f -> Block.class.equals(f.getType()));
-		
-		for (var blocField : blocFields) {
-			blocField.setAccessible(true);
-			Object value = null;
-			try {
-				value = blocField.get(null);
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (value instanceof Block b) {
-				var str = blocNames.find(n -> n == b.name);
-				if (str != null) {
-					Log.warn(str);
-				}
-				blocNames.add(b.name);
-			}
-				
-		}
 		
 		Class<?> uni = TektonUnits.class;
 		Seq<Field> uniFields = new Seq<>(uni.getFields());

@@ -24,11 +24,11 @@ public class TektonTechTree {
 		var costMultipliers = new ObjectFloatMap<Item>();
         for(var item : content.items()) costMultipliers.put(item, 0.8f);
 
-        costMultipliers.put(TektonItems.polycarbonate, 0.8f);
-        costMultipliers.put(TektonItems.polytalum, 0.7f);
-        costMultipliers.put(TektonItems.uranium, 0.6f);
+        costMultipliers.put(TektonItems.magnet, 0.5f);
+        costMultipliers.put(TektonItems.polytalum, 0.6f);
+        costMultipliers.put(TektonItems.uranium, 0.8f);
         costMultipliers.put(Items.phaseFabric, 0.3f);
-        costMultipliers.put(TektonItems.nanoAlloy, 0.5f);
+        costMultipliers.put(TektonItems.nanoAlloy, 0.6f);
         
         TektonPlanets.tekton.techTree = nodeRoot("tekton", corePrimal, true, () -> {
         	context().researchCostMultipliers = costMultipliers;
@@ -190,9 +190,9 @@ public class TektonTechTree {
             	});
             	
             	//energy
-        		node(methaneBurner, Seq.with(new Research(pneumaticPump)), () -> {
+        		node(methaneBurner, Seq.with(new Research(pneumaticPump), new OnSector(middle)), () -> {
         			node(lineNode, () -> {
-                		node(geothermalGenerator, Seq.with(new OnSector(proelium)), () -> {
+                		node(geothermalGenerator, Seq.with(new SectorComplete(middle)), () -> {
                     		node(geothermalCondenser, () -> {
                     			node(undergroundWaterExtractor, () -> {
                     				
@@ -208,11 +208,11 @@ public class TektonTechTree {
                             	});
                         	});
             			});
-                		node(powerCapacitor, Seq.with(new OnSector(scintilla)), () -> {
+                		node(powerCapacitor, Seq.with(new SectorComplete(middle)), () -> {
                 			node(powerBank, Seq.with(new SectorComplete(proelium)), () -> {
                         		
                         	});
-                			node(reinforcedDiode, Seq.with(new SectorComplete(scintilla)), () -> {
+                			node(reinforcedDiode, Seq.with(), () -> {
                         		
                         	});
                     	});
@@ -271,17 +271,17 @@ public class TektonTechTree {
                     });
                 });
             	
-        		node(duel, Seq.with(new OnSector(scintilla)),  () -> {
-    				node(skyscraper, Seq.with(new SectorComplete(scintilla)),  () -> {
+        		node(duel, Seq.with(new SectorComplete(satus)),  () -> {
+    				node(skyscraper, Seq.with(new SectorComplete(satus)),  () -> {
     					node(azure, Seq.with(new OnSector(lake)),  () -> {
             				node(prostrate, Seq.with(new SectorComplete(lake), new Research(magnetizer)),  () -> {
         						
                         	});
                     	});
                 	});
-        			node(spear, Seq.with(new OnSector(scintilla)),  () -> {
+        			node(spear, Seq.with(new SectorComplete(pit)),  () -> {
         				node(interfusion, Seq.with(new OnSector(scintilla)),  () -> {
-            				node(havoc, Seq.with(new SectorComplete(lake)),  () -> {
+            				node(havoc, Seq.with(new SectorComplete(lake), new Research(coldElectrolyzer)),  () -> {
                 				node(concentration, Seq.with(new SectorComplete(lake), new Research(magnetizer)),  () -> {
                 					node(tempest, Seq.with(new SectorComplete(lake)),  () -> {
                                 		
@@ -291,7 +291,7 @@ public class TektonTechTree {
                     	});
                 	});
             	});
-        		node(compass, Seq.with(new OnSector(proelium)),  () -> {
+        		node(compass, Seq.with(new SectorComplete(middle)),  () -> {
         			node(sword, Seq.with(new SectorComplete(lake)),  () -> {
         				node(tesla, Seq.with(new SectorComplete(lake)),  () -> {
             				node(radiance, Seq.with(new SectorComplete(lake)),  () -> {
@@ -322,106 +322,120 @@ public class TektonTechTree {
     			node(TektonUnits.martyris, Seq.with(new SectorComplete(scintilla)), () -> {
         			
         		});
-				node(TektonUnits.caravela, Seq.with(new OnSector(river)), () -> {
+				node(TektonUnits.caravela, Seq.with(new SectorComplete(proelium)), () -> {
         			
         		});
-				node(TektonUnits.nail, Seq.with(new SectorComplete(river)), () -> {
+				node(TektonUnits.nail, Seq.with(new SectorComplete(proelium)), () -> {
         			
         		});
 				node(unitRepairTurret, () -> {
         			
         		});
 				//tier 2 & 3
-        		node(unitDeveloper, Seq.with(new SectorComplete(proelium)), () -> {
-        			node(TektonUnits.electret, () -> {
+				node(tankDeveloper, Seq.with(new SectorComplete(proelium)), () -> {
+					node(TektonUnits.electret, () -> {
         				node(tankRefabricator, Seq.with(new SectorComplete(proelium)), () -> {
         					node(TektonUnits.discharge, Seq.with(new Research(tankRefabricator)), () -> {
         	        			
         	        		});
         				});
             		});
-    				node(TektonUnits.bellator, () -> {
-        				node(airRefabricator, Seq.with(new SectorComplete(proelium)), () -> {
-    						node(TektonUnits.eques, Seq.with(new Research(airRefabricator)), () -> {
-        	        			
-        	        		});
-        				});
-            		});
-    				node(TektonUnits.sagres, Seq.with(new SectorComplete(river)), () -> {
-    					node(navalRefabricator, Seq.with(new SectorComplete(proelium)), () -> {
-    						node(TektonUnits.argos, Seq.with(new Research(navalRefabricator)), () -> {
-        	        			
-        	        		});
-        				});
-            		});
-    				node(TektonUnits.sagres, Seq.with(new SectorComplete(river)), () -> {
-    					node(navalRefabricator, Seq.with(new SectorComplete(proelium)), () -> {
-    						node(TektonUnits.argos, Seq.with(new Research(navalRefabricator)), () -> {
-        	        			
-        	        		});
-        				});
-            		});
-    				node(TektonUnits.strike, Seq.with(new SectorComplete(river)), () -> {
-    					node(mechRefabricator, Seq.with(new SectorComplete(proelium)), () -> {
-    						node(TektonUnits.hammer, Seq.with(new Research(mechRefabricator)), () -> {
-        	        			
-        	        		});
-        				});
-            		});
-    				//tier 4
-					node(multiAssembler, Seq.with(new SectorComplete(proelium)), () -> {
-						node(tankAssemblerModule, Seq.with(new SectorComplete(proelium)), () -> {
-							node(TektonUnits.hysteresis, Seq.with(new Research(tankAssemblerModule)), () -> {
-        	        			
-        	        		});
-        				});
-						node(airAssemblerModule, Seq.with(new SectorComplete(proelium)), () -> {
-							node(TektonUnits.phalanx, Seq.with(new Research(airAssemblerModule)), () -> {
-        	        			
-        	        		});
-        				});
-						node(navalAssemblerModule, Seq.with(new SectorComplete(proelium)), () -> {
-							node(TektonUnits.ariete, Seq.with(new Research(navalAssemblerModule)), () -> {
-        	        			
-        	        		});
-        				});
-						node(mechAssemblerModule, Seq.with(new SectorComplete(proelium)), () -> {
-							node(TektonUnits.impact, Seq.with(new Research(mechAssemblerModule)), () -> {
-        	        			
-        	        		});
-        				});
-						//tier 5
-						node(ultimateAssembler, Seq.with(new Research(TektonBlocks.nanoAlloyWallLarge)), () -> {
-							node(TektonUnits.supernova, Seq.with(new Research(tankAssemblerModule)), () -> {
-        	        			
-        	        		});
-							node(TektonUnits.imperatoris, Seq.with(new Research(airAssemblerModule)), () -> {
-        	        			
-        	        		});
-							node(TektonUnits.castelo, Seq.with(new Research(navalAssemblerModule)), () -> {
-        	        			
-        	        		});
-							node(TektonUnits.earthquake, Seq.with(new Research(mechAssemblerModule)), () -> {
-        	        			
-        	        		});
-	    				});
-    				});
-            	});
+					node(airDeveloper, Seq.with(new SectorComplete(proelium)), () -> {
+	        			node(TektonUnits.bellator, () -> {
+	        				node(airRefabricator, Seq.with(new SectorComplete(proelium)), () -> {
+	    						node(TektonUnits.eques, Seq.with(new Research(airRefabricator)), () -> {
+	        	        			
+	        	        		});
+	        				});
+	            		});
+						node(navalDeveloper, Seq.with(new SectorComplete(proelium)), () -> {
+							node(TektonUnits.sagres, Seq.with(new SectorComplete(river)), () -> {
+		    					node(navalRefabricator, Seq.with(new SectorComplete(proelium)), () -> {
+		    						node(TektonUnits.argos, Seq.with(new Research(navalRefabricator)), () -> {
+		        	        			
+		        	        		});
+		        				});
+		            		});
+							node(mechDeveloper, Seq.with(new SectorComplete(proelium)), () -> {
+								node(TektonUnits.strike, Seq.with(new SectorComplete(river)), () -> {
+			    					node(mechRefabricator, Seq.with(new SectorComplete(proelium)), () -> {
+			    						node(TektonUnits.hammer, Seq.with(new Research(mechRefabricator)), () -> {
+			        	        			
+			        	        		});
+			        				});
+			            		});
+								//tier 4
+								node(multiAssembler, Seq.with(new SectorComplete(proelium)), () -> {
+									node(tankAssemblerModule, Seq.with(new SectorComplete(proelium)), () -> {
+										node(TektonUnits.hysteresis, Seq.with(new Research(tankAssemblerModule)), () -> {
+			        	        			
+			        	        		});
+			        				});
+									node(airAssemblerModule, Seq.with(new SectorComplete(proelium)), () -> {
+										node(TektonUnits.phalanx, Seq.with(new Research(airAssemblerModule)), () -> {
+			        	        			
+			        	        		});
+			        				});
+									node(navalAssemblerModule, Seq.with(new SectorComplete(proelium)), () -> {
+										node(TektonUnits.ariete, Seq.with(new Research(navalAssemblerModule)), () -> {
+			        	        			
+			        	        		});
+			        				});
+									node(mechAssemblerModule, Seq.with(new SectorComplete(proelium)), () -> {
+										node(TektonUnits.impact, Seq.with(new Research(mechAssemblerModule)), () -> {
+			        	        			
+			        	        		});
+			        				});
+									//tier 5
+									node(ultimateAssembler, Seq.with(new Research(TektonBlocks.nanoAlloyWallLarge)), () -> {
+										node(TektonUnits.supernova, Seq.with(new Research(tankAssemblerModule)), () -> {
+			        	        			
+			        	        		});
+										node(TektonUnits.imperatoris, Seq.with(new Research(airAssemblerModule)), () -> {
+			        	        			
+			        	        		});
+										node(TektonUnits.castelo, Seq.with(new Research(navalAssemblerModule)), () -> {
+			        	        			
+			        	        		});
+										node(TektonUnits.earthquake, Seq.with(new Research(mechAssemblerModule)), () -> {
+			        	        			
+			        	        		});
+				    				});
+			    				});
+							});
+						});
+					});
+				});
         	});
+        	
+        	/*
+        	 * Satus - start, iron & zirconium, final: silicon, duel, skycraper
+        	 * middle - preparation, unit Factory, piezo, final: graphite, compass, piezo
+        	 * scintilla - attack, final: martyris
+        	 * proelium - survival, tantalum, final: electret, nail
+        	 * pit - survival, final: spear
+        	 * river - 
+        	 * lake - 
+        	 * */
         	
         	//sectors
         	node(satus, () -> {
-        		node(scintilla, Seq.with(new SectorComplete(satus), new Research(primordialUnitFactory)), () -> {
-        			node(proelium, Seq.with(new SectorComplete(scintilla), new Research(duel)), () -> {
-        				node(river, Seq.with(new SectorComplete(proelium)), () -> {
-        					node(lake, Seq.with(new SectorComplete(river), new Research(reactionDrill)), () -> {
-        						/*node(aequor, Seq.with(new SectorComplete(lake), new Research(reactionDrill)), () -> {
-                            		
-                            	});*/
+        		node(middle, Seq.with(new SectorComplete(satus), new Research(siliconFilter)), () -> {
+        			node(scintilla, Seq.with(new SectorComplete(middle), new Research(primordialUnitFactory)), () -> {
+            			node(proelium, Seq.with(new SectorComplete(scintilla), new Research(duel)), () -> {
+            				node(pit, Seq.with(new SectorComplete(proelium), new Research(reactionDrill)), () -> {
+            					node(lake, Seq.with(new SectorComplete(river), new Research(reactionDrill)), () -> {
+            						/*node(aequor, Seq.with(new SectorComplete(lake), new Research(reactionDrill)), () -> {
+                                		
+                                	});*/
+                            	});
+                        	});
+            				node(river, Seq.with(new SectorComplete(proelium)), () -> {
+            					
                         	});
                     	});
                 	});
-            	});
+        		});
         	});
         	
         	//items

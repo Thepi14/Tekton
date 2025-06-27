@@ -12,6 +12,7 @@ import mindustry.maps.planet.*;
 import mindustry.type.*;
 import mindustry.type.Weather.WeatherEntry;
 import mindustry.world.*;
+import mindustry.world.blocks.Attributes;
 import mindustry.world.meta.*;
 import tekton.type.planetGeneration.*;
 import mindustry.content.*;
