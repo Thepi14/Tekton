@@ -168,7 +168,7 @@ public class StormWeather extends ParticleWeather {
 						float bx = tile.build.getX(), by = tile.build.getY();
 						if (tile.block() instanceof LightningRod rodBlock) {
 							if (rodBlock.circleArea) {
-								if (pos.dst(new Vec2(bx, by)) <= rodBlock.protectionRadius) {
+								if (pos.dst(new Vec2(bx, by)) <= rod.lightningProtectionRadius()) {
 									rod.absorbLightning();
 									lightningBoltEffect.at(bx, by);
 									lightningBullet.hitSound.at(bx, by);
@@ -176,8 +176,8 @@ public class StormWeather extends ParticleWeather {
 								}
 							}
 							else if (rodBlock.squareArea) {
-								if ((bx <= x + rodBlock.protectionRadius && by <= y + rodBlock.protectionRadius) || 
-									(bx >= x - rodBlock.protectionRadius && by >= y - rodBlock.protectionRadius)) {
+								if ((bx <= x + rod.lightningProtectionRadius() && by <= y + rod.lightningProtectionRadius()) || 
+									(bx >= x - rod.lightningProtectionRadius() && by >= y - rod.lightningProtectionRadius())) {
 									rod.absorbLightning();
 									lightningBoltEffect.at(bx, by);
 									lightningBullet.hitSound.at(bx, by);
@@ -185,7 +185,7 @@ public class StormWeather extends ParticleWeather {
 								}
 							}
 							else if (rodBlock.diamondArea) {
-								if (TekMath.insideDiamond(x, y, bx, by, rodBlock.protectionRadius)) {
+								if (TekMath.insideDiamond(x, y, bx, by, rod.lightningProtectionRadius())) {
 									rod.absorbLightning();
 									lightningBoltEffect.at(bx, by);
 									lightningBullet.hitSound.at(bx, by);
@@ -194,13 +194,12 @@ public class StormWeather extends ParticleWeather {
 							}
 						}
 						else {
-							var a = world.tile((int)(x / tilesize), (int)(y / tilesize));
-							if (new Vec2(a.getX(), a.getY()).dst(tile.build) <= rod.lightningProtectionRadius()) {
+							if (pos.dst(new Vec2(bx, by)) <= rod.lightningProtectionRadius()) {
 								rod.absorbLightning();
-								lightningBoltEffect.at(tile.getX(), tile.getY());
-								lightningBullet.hitSound.at(tile.getX(), tile.getY());
+								lightningBoltEffect.at(bx, by);
+								lightningBullet.hitSound.at(bx, by);
+								return;
 							}
-							return;
 						}
 					}
 			}

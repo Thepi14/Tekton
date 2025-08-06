@@ -1,6 +1,7 @@
 package tekton.type.power;
 
 import static mindustry.Vars.tilesize;
+import static tekton.content.TektonVars.*;
 
 import java.util.Arrays;
 
@@ -56,7 +57,7 @@ public class FusionReactor extends PowerGenerator {
     public float itemDuration = 120f;
     public float fuelConsumption = (6f / 60f) / 3f;
     public float warmupSpeed = 0.001f;
-	public int requiredGravity = 48;
+	public int requiredGravity = 48 * gravityMul;
 	public int minGravity = requiredGravity / 2;
 	public int maxGravity = requiredGravity;
 	public int minimalCoolant = 5;

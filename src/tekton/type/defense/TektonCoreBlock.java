@@ -36,7 +36,7 @@ public class TektonCoreBlock extends CoreBlock {
 	@Override
     public void drawPlace(int x, int y, int rotation, boolean valid) {
         super.drawPlace(x, y, rotation, valid);
-		Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, lightningProtectionRadius, Pal.accent);
+		Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, lightningProtectionRadius, Pal.lightOrange);
     }
 	
 	public class TektonCoreBlockBuild extends CoreBuild implements LightningAbsorber {
@@ -44,7 +44,7 @@ public class TektonCoreBlock extends CoreBlock {
 		@Override
         public void drawSelect(){
             super.drawSelect();
-        	Drawf.dashCircle(x, y, lightningProtectionRadius, Pal.accent);
+        	Drawf.dashCircle(x, y, lightningProtectionRadius, Pal.lightOrange);
 		}
 		
 		@Override

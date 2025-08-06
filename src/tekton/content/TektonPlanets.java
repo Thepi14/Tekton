@@ -2,6 +2,7 @@ package tekton.content;
 
 import arc.graphics.*;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Time;
 import mindustry.content.*;
 import mindustry.game.*;
@@ -14,6 +15,7 @@ import mindustry.type.Weather.WeatherEntry;
 import mindustry.world.*;
 import mindustry.world.blocks.Attributes;
 import mindustry.world.meta.*;
+import tekton.Tekton;
 import tekton.type.planetGeneration.*;
 import mindustry.content.*;
 
@@ -34,7 +36,7 @@ public class TektonPlanets {
 			description = "A extremely cold planet with unknown threats and possibilities.";
 			alwaysUnlocked = true;
 			allowLaunchSchematics = false;
-			allowLaunchToNumbered = false;
+			allowLaunchToNumbered = !Tekton.hideContent;
 			allowLaunchLoadout = false;
 			allowSectorInvasion = false;
 			allowWaveSimulation = true;
@@ -50,9 +52,9 @@ public class TektonPlanets {
 			updateLighting = false;
 			//sectorSeed = 77147;
 			bloom = true;
-			landCloudColor = Color.valueOf("3e401f");
-			atmosphereColor = Color.valueOf("57592b");
-			iconColor = Color.valueOf("57592b");
+			landCloudColor = Color.valueOf("c0ed42");
+			atmosphereColor = Color.valueOf("343b11");
+			iconColor = Color.valueOf("6e941e");
 			hasAtmosphere = true;
 			solarSystem = Planets.sun;
 			enemyBuildSpeedMultiplier = 0.4f;
@@ -85,6 +87,8 @@ public class TektonPlanets {
                 r.hideBannedBlocks = true;
                 r.loadout = new Seq<ItemStack>().add(new ItemStack(TektonItems.iron, 200));
             };
+            
+            accessible = true;
 
 			defaultCore = TektonBlocks.corePrimal;
             unlockedOnLand.add(TektonBlocks.corePrimal);
@@ -117,17 +121,24 @@ public class TektonPlanets {
             var increaseCloudRad = 0.040f;
             cloudMeshLoader = () -> new MultiMesh(
             		//fast
-            		new HexSkyMesh(this, 3377, 1.8f, 0.095f + increaseCloudRad, 7, Color.valueOf("57592b5e"), 3, 0.3f, 1, 0.6f),
-            		new HexSkyMesh(this, 714, -1.7f, 0.105f + increaseCloudRad, 6, Color.valueOf("57592b5e"), 3, 0.3f, 1, 0.6f),
+            		new HexSkyMesh(this, 3377, 1.8f, 0.12f + increaseCloudRad, 5, Color.valueOf("57592b5e"), 3, 0.3f, 1f, 0.6f),
+            		new HexSkyMesh(this, 714, -1.7f, 0.125f + increaseCloudRad, 5, Color.valueOf("57592b5e"), 3, 0.3f, 1f, 0.6f),
             		//middle
-            		new HexSkyMesh(this, 7777, 1.34f, 0.112f + increaseCloudRad, 6, Color.valueOf("3e401f5e"), 3, 0.3f, 1, 0.6f),
+            		/*new HexSkyMesh(this, 7777, 1.34f, 0.13f + increaseCloudRad, 5, Color.valueOf("3e401f5e"), 3, 0.3f, 1f, 0.6f),
             		//big
-            		new HexSkyMesh(this, 1777, -1.1f, 0.12f + increaseCloudRad, 5, Color.valueOf("3e401f5e"), 2, 0.4f, 1, 0.6f),
-            		new HexSkyMesh(this, 1414, -0.88f, 0.13f + increaseCloudRad, 5, Color.valueOf("3e401f5e"), 2, 0.4f, 1, 0.6f),
+            		new HexSkyMesh(this, 1777, -1.1f, 0.135f + increaseCloudRad, 5, Color.valueOf("3e401f5e"), 2, 0.4f, 1f, 0.6f),
+            		new HexSkyMesh(this, 1414, -0.88f, 0.14f + increaseCloudRad, 5, Color.valueOf("3e401f5e"), 2, 0.4f, 1f, 0.6f),*/
             		//outer
-            		new HexSkyMesh(this, 1477, 0.74f, 0.145f + increaseCloudRad, 5, Color.valueOf("7a7d3c33"), 4, 0.67f, 1, 0.6f));
+            		new HexSkyMesh(this, 1477, 0.14f, 0.145f + increaseCloudRad, 5, Color.valueOf("74800e").a(0.75f), 4, 0.42f, 1f, 0.43f),
+            		new HexSkyMesh(this, 7714, 0.7f, 0.16f + increaseCloudRad, 5, Color.valueOf("c2d175").a(0.75f), 4, 0.42f, 1.2f, 0.45f));
             
             hiddenItems.addAll(Items.copper, Items.lead, Items.titanium, Items.plastanium, Items.thorium, Items.surgeAlloy, Items.metaglass, Items.carbide, Items.beryllium, Items.oxide, Items.tungsten, Items.sporePod, Items.pyratite, Items.blastCompound, Items.coal, Items.scrap);
+            
+            for (var sector : sectors) {
+            	if (!TektonSectors.all.contains(sector.preset)) {
+            		sector.preset = TektonSectors.satus;
+            	}
+            }
 		}};
 		
 		mirera = new TektonPlanet("mirera", tekton, 0.25f, 1) {{

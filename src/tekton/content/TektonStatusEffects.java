@@ -105,7 +105,7 @@ public class TektonStatusEffects {
 			show = true;
 			hideDetails = false;
 			outline = false;
-	        color = Color.valueOf("82d629");
+	        color = Color.valueOf("ffe14a");
 			applyColor = Color.yellow.cpy();
 	        speedMultiplier = 0.8f;
 	        reloadMultiplier = 0.7f;

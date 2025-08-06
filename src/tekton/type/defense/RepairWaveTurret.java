@@ -166,13 +166,17 @@ public class RepairWaveTurret extends Block{
                 offset.setZero();
             }
 
-            if(target != null && efficiency > 0 && reloadTimer > reload){
+            if (target != null && efficiency > 0) {
                 float angle = Angles.angle(x, y, target.x + offset.x, target.y + offset.y);
-                float nx = x + (Mathf.cosDeg(rotation) * bulletOffset), ny = y + (Mathf.sinDeg(rotation) * bulletOffset);
-                if(Angles.angleDist(angle, rotation) < bullet.circleDeegres / 2f){
-                    bullet.create(this, team, nx, ny, rotation);
-                    reloadTimer = 0f;
+                
+                if(reloadTimer > reload){
+                    float nx = x + (Mathf.cosDeg(rotation) * bulletOffset), ny = y + (Mathf.sinDeg(rotation) * bulletOffset);
+                    if(Angles.angleDist(angle, rotation) < bullet.circleDeegres / 2f){
+                        bullet.create(this, team, nx, ny, rotation);
+                        reloadTimer = 0f;
+                    }
                 }
+                
                 rotation = Mathf.slerpDelta(rotation, angle, 0.5f * efficiency * timeScale);
             }
 

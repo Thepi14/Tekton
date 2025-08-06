@@ -26,6 +26,7 @@ import mindustry.content.Fx.*;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Puddles;
+import mindustry.entities.Units;
 import mindustry.entities.effect.*;
 import mindustry.game.Team;
 import mindustry.gen.Building;
@@ -197,6 +198,7 @@ public class Nest extends Block implements BiologicalBlock {
 		public boolean needRegen = false;
 		public float regenCharge = Mathf.random(regenReload);
 		public Seq<Vec2> spawnPositions = new Seq<Vec2>();
+		public Seq<Unit> spawnedCreatures = new Seq<Unit>();
         
         @Override
         public void created() {
@@ -206,6 +208,13 @@ public class Nest extends Block implements BiologicalBlock {
             	timer(timerSpawn, ftimer);
         	}
         	totalProgress = Mathf.random(0f, 1000f);
+        	
+        	Units.nearbyEnemies(team, x, y, 80f * tilesize, other -> {
+                if(other.team == team && other.hittable()){
+                	spawnedCreatures.add(other);
+                }
+            });
+        	
             super.created();
         }
         
@@ -222,6 +231,10 @@ public class Nest extends Block implements BiologicalBlock {
             		currentIndex = Mathf.random(creatures.size - 1);
             		spawnByCurrentIndex();
             		spawnEffect.at(this);
+            		
+            		for (var creature : spawnedCreatures) {
+                    	creature.command().attackTarget = creature.command().findTarget(x, y, 1000f * tilesize, creature.type.targetAir, creature.type.targetGround);
+            		}
                 }
             }
             
@@ -283,6 +296,7 @@ public class Nest extends Block implements BiologicalBlock {
         	var creature = unitType.spawn(position, team());
         	creature.rotation = Mathf.atan2(creature.x - x, creature.y - y) * Mathf.radDeg;
         	creature.command().attackTarget = creature.command().findTarget(x, y, 1000f * tilesize, creature.type.targetAir, creature.type.targetGround);
+        	spawnedCreatures.add(creature);
         	
 			return creature;
         }

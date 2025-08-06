@@ -2,15 +2,16 @@ package tekton.content;
 
 import mindustry.type.*;
 import mindustry.world.blocks.storage.CoreBlock;
+import tekton.Tekton;
 
 import static tekton.content.TektonPlanets.*;
 
 import arc.struct.Seq;
 
 public class TektonSectors {
-	public static SectorPreset satus, middle, scintilla, proelium, pit, river, lake/*, aequor*/;
+	public static SectorPreset satus, middle, scintilla, proelium, river, pit, lake, transit, rainforest, cave, aequor;
 	public static Seq<SectorPreset> all = new Seq<SectorPreset>();
-	//63
+	//92
 	public static void load(){
 		satus = new TektonSectorPreset("satus", tekton, 0){{
             difficulty = 1;
@@ -18,7 +19,6 @@ public class TektonSectors {
             overrideLaunchDefaults = true;
             addStartingItems = true;
             captureWave = 6;
-            alwaysUnlocked = true;
             
             rules = r -> {
                 //r.loadout = Seq.with();
@@ -39,7 +39,7 @@ public class TektonSectors {
 			};
         }};
         
-        scintilla = new TektonSectorPreset("scintilla", tekton, 48){{
+        scintilla = new TektonSectorPreset("scintilla", tekton, 37){{
             difficulty = 1;
             rules = r -> {
 				r.hiddenBuildItems.clear();
@@ -48,7 +48,7 @@ public class TektonSectors {
 			};
         }};
         
-        proelium = new TektonSectorPreset("proelium", tekton, 37){{
+        proelium = new TektonSectorPreset("proelium", tekton, 40){{
             difficulty = 2;
             captureWave = 20;
             rules = r -> {
@@ -58,7 +58,16 @@ public class TektonSectors {
 			};
         }};
         
-        pit = new TektonSectorPreset("pit", tekton, 16){{
+        river = new TektonSectorPreset("river", tekton, 39){{
+            difficulty = 3;
+            rules = r -> {
+				r.hiddenBuildItems.clear();
+				r.attackMode = true;
+				r.waves = false;
+			};
+        }};
+        
+        pit = new TektonSectorPreset("pit", tekton, 15){{
             difficulty = 2;
             //captureWave = 20;
             rules = r -> {
@@ -68,17 +77,8 @@ public class TektonSectors {
 			};
         }};
         
-        river = new TektonSectorPreset("river", tekton, 36){{
+        lake = new TektonSectorPreset("lake", tekton, 12){{
             difficulty = 3;
-            rules = r -> {
-				r.hiddenBuildItems.clear();
-				r.attackMode = true;
-				r.waves = false;
-			};
-        }};
-        
-        lake = new TektonSectorPreset("lake", tekton, 34){{
-            difficulty = 7;
             rules = r -> {
 				r.hiddenBuildItems.clear();
 				r.attackMode = false;
@@ -86,7 +86,33 @@ public class TektonSectors {
 			};
         }};
         
-        /*aequor = new TektonSectorPreset("aequor", tekton, 3){{
+        transit = new TektonSectorPreset("transit", tekton, 38){{
+            difficulty = 4;
+            rules = r -> {
+				r.hiddenBuildItems.clear();
+				r.waves = true;
+			};
+        }};
+        
+        rainforest = new TektonSectorPreset("rainforest", tekton, 52){{
+            difficulty = 4;
+            rules = r -> {
+				r.hiddenBuildItems.clear();
+				r.attackMode = true;
+			};
+        }};
+        
+        //beach
+        
+        cave = new TektonSectorPreset("cave", tekton, 63){{
+            difficulty = 4;
+            rules = r -> {
+				r.hiddenBuildItems.clear();
+				r.attackMode = true;
+			};
+        }};
+        
+        aequor = new TektonSectorPreset("aequor", tekton, 77){{
             difficulty = 2;
             rules = r -> {
 				r.hiddenBuildItems.clear();
@@ -94,9 +120,13 @@ public class TektonSectors {
 				r.waves = false;
 				r.placeRangeCheck = false;
 			};
-        }};*/
+        }};
         
         all.addAll(new SectorPreset[] {satus, scintilla, river, proelium, lake/*, aequor*/});
+        
+        for (var sectorPreset : all) {
+        	sectorPreset.alwaysUnlocked = !Tekton.hideContent;
+        }
 	}
 	
 	public static class TektonSectorPreset extends SectorPreset{

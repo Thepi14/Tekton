@@ -1,4 +1,4 @@
-package tekton;
+package tekton.type.transport;
 
 import arc.Core;
 import arc.graphics.Blending;
@@ -7,14 +7,20 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
+import arc.math.geom.Point2;
 import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.gen.Building;
 import mindustry.gen.Unit;
+import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
-import mindustry.world.blocks.distribution.Conveyor;
+import mindustry.world.Block;
+import mindustry.world.Edges;
+import mindustry.world.Tile;
+import mindustry.world.blocks.distribution.*;
 import mindustry.world.meta.BlockStatus;
 
 import static mindustry.Vars.*;
@@ -56,11 +62,11 @@ public class PoweredConveyor extends Conveyor {
 	public class PoweredConveyorBuild extends ConveyorBuild {
 		public float currentSpeed = 1f;
 		
-		@Override
+		/*@Override
 		public float efficiency() {
 			efficiency = 1f;
 			return 1f;
-		}
+		}*/
 		
 		@Override
         public BlockStatus status() {
@@ -122,10 +128,10 @@ public class PoweredConveyor extends Conveyor {
 		
 		@Override
         public void draw(){
+			var off = 0.001f;
             if (!changedAlphaState)
             	setAlphaGlowProgress();
             int frame = enabled && clogHeat <= 0.5f ? (int)(((Time.time * currentSpeed * 8f * timeScale)) % 4) : 0;
-            float z = Draw.z();
             //draw extra conveyors facing this one for non-square tiling purposes
             Draw.z(Layer.blockUnder);
             for(int i = 0; i < 4; i++){
@@ -140,12 +146,7 @@ public class PoweredConveyor extends Conveyor {
             Draw.z(Layer.block - 0.2f);
 
             Draw.rect(regions[blendbits][frame], x, y, tilesize * blendsclx, tilesize * blendscly, rotation * 90);
-            Draw.blend(Blending.additive);
-            Draw.color(glowColor);
-            Draw.alpha(power.status > 0.001f ? currentAlpha : 0f);
-        	Draw.rect(glowRegions[blendbits], x, y, tilesize * blendsclx, tilesize * blendscly, rotation * 90);
-            Draw.color();
-            Draw.blend();
+
             Draw.z(Layer.block - 0.1f);
             float layer = Layer.block - 0.1f, wwidth = world.unitWidth(), wheight = world.unitHeight(), scaling = 0.01f;
 
@@ -162,14 +163,15 @@ public class PoweredConveyor extends Conveyor {
                 Draw.z(layer + (ix / wwidth + iy / wheight) * scaling);
                 Draw.rect(item.fullIcon, ix, iy, itemSize, itemSize);
             }
-
-            Draw.z(z);
-            Draw.reset();
+            
+            Drawf.additive(glowRegions[blendbits], glowColor.cpy().a(power.status > 0.001f ? currentAlpha : 0f), x, y, 
+            		(rotation * 90) - 
+            		((blendsclx < 0 || blendscly < 0) && blendbits == 1 ? 90 : 0));
         }
 		
-		@Override
+		/*@Override
         public void unitOn(Unit unit){
-			if(/*!pushUnits || */clogHeat > 0.5f || !enabled) return;
+			if(!pushUnits || clogHeat > 0.5f || !enabled) return;
 
             //noSleep();
 
@@ -191,6 +193,27 @@ public class PoweredConveyor extends Conveyor {
             if(len * itemSpace < 0.9f){
                 unit.impulse((tx * mspeed + centerx) * delta(), (ty * mspeed + centery) * delta());
             }
-        }
+        }*/
+		
+		/*@Override
+	    public boolean blends(Tile tile, int rotation, int otherx, int othery, int otherrot, Block otherblock){
+	        return (otherblock.outputsItems() && blendsArmored(tile, rotation, otherx, othery, otherrot, otherblock)) ||
+	            (lookingAt(tile, rotation, otherx, othery, otherblock) && otherblock.hasItems);
+	    }
+
+	    @Override
+	    public boolean blendsArmored(Tile tile, int rotation, int otherx, int othery, int otherrot, Block otherblock){
+	        return Point2.equals(tile.x + Geometry.d4(rotation).x, tile.y + Geometry.d4(rotation).y, otherx, othery)
+	            || ((!otherblock.rotatedOutput(otherx, othery, tile) && Edges.getFacingEdge(otherblock, otherx, othery, tile) != null &&
+	            Edges.getFacingEdge(otherblock, otherx, othery, tile).relativeTo(tile) == rotation) ||
+	            (otherblock instanceof Conveyor && otherblock.rotatedOutput(otherx, othery, tile) && Point2.equals(otherx + Geometry.d4(otherrot).x, othery + Geometry.d4(otherrot).y, tile.x, tile.y)));
+	    }
+		
+		@Override
+        public boolean acceptItem(Building source, Item item){
+			//i know the router thing is bad but i don't care no one will see it anyways
+            return super.acceptItem(source, item) && ((source.block instanceof Conveyor || Edges.getFacingEdge(source.tile, tile).relativeTo(tile) == rotation) || 
+            		(source.block instanceof Router && source.block.conductivePower) || source.block instanceof PoweredJunction || source.block instanceof Duct);
+        }*/
 	}
 }

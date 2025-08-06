@@ -8,10 +8,12 @@ import arc.struct.*;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import mindustry.Vars;
+import mindustry.content.Blocks;
 import mindustry.content.Fx;
 import mindustry.content.Items;
 import mindustry.content.Liquids;
 import mindustry.content.StatusEffects;
+import mindustry.content.UnitTypes;
 import mindustry.entities.*;
 import mindustry.entities.bullet.*;
 import mindustry.entities.effect.*;
@@ -50,6 +52,7 @@ import tekton.type.part.FramePart;
 import tekton.type.payloads.*;
 import tekton.type.power.*;
 import tekton.type.production.*;
+import tekton.type.transport.*;
 
 import static arc.graphics.g2d.Draw.color;
 import static arc.graphics.g2d.Lines.lineAngle;
@@ -59,6 +62,7 @@ import static tekton.content.TektonColor.*;
 import static tekton.content.TektonItems.*;
 
 import static mindustry.Vars.tilesize;
+import static tekton.content.TektonVars.*;
 import static mindustry.type.ItemStack.*;
 
 public class TektonBlocks {
@@ -69,23 +73,25 @@ public class TektonBlocks {
 	
 	brownSand, brownStone, brownIce, brownStoneWall, brownStoneVent, //5
 	
-	diatomite, diatomiteWall, diatomiteVent, //3
+	diatomite, diatomiteWall, zirconCrystal, diatomiteVent, //3
 	
 	neurosporaFloor, neurosporaEvolvedFloor, neurosporaFlower, neurosporaWall, neurosporaCluster, neurosporaVent, //6
 	
-	uraniniteFloor, uraniniteWall, trinitite, //3
+	uraniniteFloor, uraniniteWall, uraniniteCrystal, trinitite, //3
 	
 	metalIronFloor, metalIronFloor2, metalIronFloor3, metalIronFloor4, metalIronFloor5, metalIronVent, metalIronExhaust, //7
 	metalIronDarkFloor, metalIronDarkFloor2, metalIronDarkFloor3, metalIronDarkFloor4, metalIronDarkFloor5, metalIronWall, //6
+	
+	methaneSnow, methaneIce, methaneIceWall, 
 	
 	//ores
 	oreIron, oreZirconium, oreTantalum, oreUranium, //4
 	
 	//wall ores
-	zirconWall, ferricIronWall, wallOreIron, wallOreUranium, //4
+	zirconWall, ferricIronWall, wallOreIron, wallOreTantalum, wallOreUranium, //4
 	
 	//boulders
-	diatomiteBoulder, brownStoneBoulder, //2
+	diatomiteBoulder, brownStoneBoulder, uraniniteBoulder, methaneSnowBoulder, //4
 	
 	//crafting
 	siliconFilter, siliconCompressor, graphiteConcentrator, coldElectrolyzer, polycarbonateSynthesizer, 
@@ -100,7 +106,7 @@ public class TektonBlocks {
 	polytalumWall, polytalumWallLarge, uraniumWall, uraniumWallLarge, nanoAlloyWall, nanoAlloyWallLarge, 
 	
 	//transport
-	ironDuct, tantalumDuct, ironRouter, ironBridge, ironDistributor, ironOverflow, ironUnderflow, ironSorter, ironInvertedSorter, ironUnloader, nanoConveyor,
+	ironDuct, tantalumDuct, ironRouter, ironBridge, ironDistributor, ironOverflow, ironUnderflow, ironSorter, ironInvertedSorter, ironUnloader, nanoConveyor, nanoJunction, nanoRouter, 
 	
 	//liquid
 	pneumaticPump, pressurePump, pipe, pipeJunction, bridgePipe, polycarbonateBridgePipe, pipeRouter, polycarbonatePipe, polytalumPipe, 
@@ -136,10 +142,11 @@ public class TektonBlocks {
 	ironCanvas, ironMessage,
 	
 	//debug / sandbox / config
-	gravitySource, nullBlock 
+	gravitySource, nullBlock
 	;
 	
 	public static void load() {
+		
 		nullBlock = new Block("null") {{
 			requirements(Category.effect, BuildVisibility.hidden, with(iron, 1));
 			health = 1;
@@ -147,35 +154,60 @@ public class TektonBlocks {
 		
 		//Environment
 		methane = new Floor("shallow-methane", 4) {{
-			speedMultiplier = 0.65f;
+			speedMultiplier = 0.7f;
 			liquidDrop = TektonLiquids.methane;
-			attributes.set(TektonAttributes.methane, 0.5f);
-			attributes.set(TektonAttributes.liquidMethane, 1f);
 			isLiquid = true;
 			cacheLayer = CacheLayer.water;
 			liquidMultiplier = 1f;
 			albedo = 0.2f;
 			supportsOverlay = true;
 			status = TektonStatusEffects.tarredInMethane;
-			statusDuration = 250f;
+			statusDuration = 240f;
 			attributes.set(Attribute.water, -1f);
 		}};
 		
 		deepMethane = new Floor("deep-methane", 4) {{
-			speedMultiplier = 0.25f;
-			liquidDrop = TektonLiquids.liquidMethane;
-			attributes.set(TektonAttributes.methane, 0.25f);
-			attributes.set(TektonAttributes.liquidMethane, 2f);
+			speedMultiplier = 0.3f;
+			liquidDrop = TektonLiquids.methane;
 			isLiquid = true;
 			cacheLayer = CacheLayer.water;
 			//balancing
-			liquidMultiplier = 0f;
+			liquidMultiplier = 0.5f;
 			albedo = 0.2f;
 			supportsOverlay = true;
-			drownTime = 300f;
+			drownTime = 240f;
 			status = TektonStatusEffects.tarredInMethane;
-			statusDuration = 700f;
+			statusDuration = 660f;
 			attributes.set(Attribute.water, -2f);
+		}};
+        
+        //diatomite
+		
+		diatomite = new Floor("diatomite-floor", 2) {{
+			attributes.set(Attribute.water, -0.2f);
+		}};
+		
+		diatomiteWall = new StaticWall("diatomite-wall") {{
+			variants = 4;
+			diatomite.asFloor().wall = this;
+			attributes.set(Attribute.sand, 1.5f);
+		}};
+		
+		zirconCrystal = new TallBlock("zircon-crystal"){{
+            variants = 3;
+            clipSize = 128f;
+			itemDrop = zirconium;
+        }};
+		
+		diatomiteVent = new SteamVent("diatomite-vent") {{
+            parent = blendGroup = diatomite;
+            attributes.set(Attribute.steam, 1f);
+			variants = 2;
+        }};
+		
+		diatomiteBoulder = new Prop("diatomite-boulder") {{
+			variants = 2;
+			diatomite.asFloor().decoration = this;
 		}};
 		
 		silicaSand = new Floor("silica-sand-floor", 2) {{
@@ -192,25 +224,32 @@ public class TektonBlocks {
 			attributes.set(Attribute.water, 0.3f);
 		}};
 		
-		acidFloor = new Floor("acid-floor", 0) {{
-			speedMultiplier = 0.4f;
-			liquidDrop = TektonLiquids.acid;
-			isLiquid = true;
-			cacheLayer = CacheLayer.water;
-			drownTime = 200f;
-			status = TektonStatusEffects.acidified;
-			statusDuration = 200f;
-			attributes.set(Attribute.water, 0.2f);
-            albedo = 0.9f;
+		silicaSand.asFloor().wall = diatomiteWall;
+		darkSilicaSand.asFloor().wall = diatomiteWall;
+		
+		//deprecated
+		methaneDarkSilicaSand = new ShallowLiquid("dark-silica-sand-methane") {{
+			//liquidDrop = TektonLiquids.methane;
+			speedMultiplier = 0.75f;
+			albedo = 0.2f;
+			liquidMultiplier = 1.5f;
+			supportsOverlay = true;
+			status = TektonStatusEffects.tarredInMethane;
+			statusDuration = 100f;
+			attributes.set(Attribute.water, -0.5f);
+			mapColor = Color.valueOf("514c3c");
 		}};
+		
+		((ShallowLiquid)methaneDarkSilicaSand).set(methane, darkSilicaSand);
 		
 		//brown
 		
 		brownSand = new Floor("brown-sand", 3) {{
 			itemDrop = Items.sand;
 			attributes.set(TektonAttributes.silica, 0.4f);
-			playerUnmineable = true;
 			attributes.set(Attribute.water, 0.5f);
+			
+			playerUnmineable = true;
 		}};
 		
 		brownStone = new Floor("brown-stone", 3) {{
@@ -233,52 +272,15 @@ public class TektonBlocks {
 		
 		brownStoneWall = new StaticWall("brown-stone-wall") {{
 			variants = 2;
+			
 			brownStone.asFloor().wall = this;
 			brownSand.asFloor().wall = this;
 			brownIce.asFloor().wall = this;
-		}};
-        
-        //diatomite
-		
-		diatomite = new Floor("diatomite-floor", 2) {{
-			attributes.set(Attribute.water, -0.2f);
-		}};
-		
-		methaneDarkSilicaSand = new ShallowLiquid("dark-silica-sand-methane") {{
-			//liquidDrop = TektonLiquids.methane;
-			speedMultiplier = 0.75f;
-			albedo = 0.2f;
-			liquidMultiplier = 1.5f;
-			attributes.set(TektonAttributes.methane, 1f);
-			attributes.set(TektonAttributes.liquidMethane, 0.5f);
-			supportsOverlay = true;
-			status = TektonStatusEffects.tarredInMethane;
-			statusDuration = 100f;
-			attributes.set(Attribute.water, -0.5f);
-			mapColor = Color.valueOf("514c3c");
-		}};
-		
-		((ShallowLiquid)methaneDarkSilicaSand).set(methane, darkSilicaSand);
-		
-		diatomiteWall = new StaticWall("diatomite-wall") {{
-			variants = 4;
-			diatomite.asFloor().wall = this;
-		}};
-		
-		diatomiteVent = new SteamVent("diatomite-vent") {{
-            parent = blendGroup = diatomite;
-            attributes.set(Attribute.steam, 1f);
-			variants = 2;
-        }};
-		
-		diatomiteBoulder = new Prop("diatomite-boulder") {{
-			variants = 2;
-			diatomite.asFloor().decoration = this;
+			
+			attributes.set(Attribute.sand, 1f);
 		}};
 		
 		//neurospora
-		
-		//1px outline + 4.50 gaussian shadow in gimp <- yes
 		
 		neurosporaFloor = new Floor("neurospora-floor", 3) {{
 			attributes.set(Attribute.water, 0.35f);
@@ -300,6 +302,8 @@ public class TektonBlocks {
         neurosporaWall = new StaticWall("neurospora-wall") {{
 			variants = 3;
 			neurosporaFloor.asFloor().wall = this;
+			
+			attributes.set(Attribute.sand, 0.25f);
 		}};
 		
 		neurosporaCluster = new NotRotatedTreeBlock("neurospora-cluster") {{
@@ -318,12 +322,24 @@ public class TektonBlocks {
 			statusDuration = 100f;
 		}};
 		
+		acidFloor = new Floor("acid-floor", 0) {{
+			speedMultiplier = 0.4f;
+			liquidDrop = TektonLiquids.acid;
+			isLiquid = true;
+			cacheLayer = CacheLayer.water;
+			drownTime = 200f;
+			status = TektonStatusEffects.acidified;
+			statusDuration = 200f;
+			attributes.set(Attribute.water, 0.2f);
+            albedo = 0.9f;
+		}};
+		
 		//uraninite
 		
 		uraniniteFloor = new Floor("uraninite-floor", 4) {{
 			attributes.set(Attribute.water, -0.5f);
 			status = TektonStatusEffects.radioactiveContamination;
-			statusDuration = 30f;
+			statusDuration = 60f;
 		}};
 		
 		uraniniteWall = new StaticWall("uraninite-wall") {{
@@ -331,11 +347,21 @@ public class TektonBlocks {
 			uraniniteFloor.asFloor().wall = this;
 		}};
 		
+		uraniniteCrystal = new TallBlock("uraninite-crystal"){{
+            variants = 3;
+            clipSize = 128f;
+        }};
+		
 		trinitite = new Floor("trinitite", 3) {{
 			itemDrop = Items.sand;
 			attributes.set(TektonAttributes.silica, 0.2f);
 			playerUnmineable = true;
 			//attributes.set(Attribute.water, 0.7f);
+		}};
+		
+		uraniniteBoulder = new Prop("uraninite-boulder") {{
+			variants = 2;
+			uraniniteFloor.asFloor().decoration = this;
 		}};
 		
 		//metal iron
@@ -399,8 +425,36 @@ public class TektonBlocks {
         
         Seq.with(metalIronFloor, metalIronFloor2, metalIronFloor3, metalIronFloor4, metalIronFloor5, 
         		metalIronDarkFloor, metalIronDarkFloor2, metalIronDarkFloor3, metalIronDarkFloor4, metalIronDarkFloor5).each(b -> b.asFloor().wall = metalIronWall);
+        
+        //methane ice
+        
+        methaneSnow = new Floor("methane-snow") {{
+            attributes.set(Attribute.water, -0.2f);
+            albedo = 0.7f;
+			attributes.set(TektonAttributes.methane, 0.2f);
+        }};
+        
+        methaneIce = new Floor("methane-ice") {{
+            dragMultiplier = 0.35f;
+            speedMultiplier = 0.9f;
+            attributes.set(Attribute.water, -0.4f);
+            albedo = 0.65f;
+			attributes.set(TektonAttributes.methane, 0.4f);
+        }};
+        
+        methaneIceWall = new StaticWall("methane-ice-wall") {{
+        	methaneIce.asFloor().wall = this;
+            albedo = 0.6f;
+        }};
+        
+        methaneSnowBoulder = new Prop("methane-snow-boulder") {{
+			variants = 2;
+			methaneSnow.asFloor().decoration = this;
+            albedo = 0.65f;
+		}};
 		
 		//ores
+        
 		oreIron = new OreBlock("ore-iron", iron) {{
 			oreDefault = true;
 			oreThreshold = 0.864f;
@@ -440,6 +494,11 @@ public class TektonBlocks {
 		}};
 		
 		wallOreIron = new OreBlock("ore-wall-iron", iron) {{
+			wallOre = true;
+			variants = 3;
+		}};
+		
+		wallOreTantalum = new OreBlock("ore-wall-tantalum", tantalum) {{
 			wallOre = true;
 			variants = 3;
 		}};
@@ -546,7 +605,7 @@ public class TektonBlocks {
 		coldElectrolyzer = new GenericCrafter("cold-electrolyzer") {{
 			requirements(Category.crafting, with(zirconium, 100, Items.silicon, 60, Items.graphite, 80));
 			consumePower(60f / 60f);
-			consumeLiquid(Liquids.water, 8f / 60f);
+			consumeLiquid(Liquids.water, 10f / 60f);
 			
 			craftTime = 10f;
 			size = 3;
@@ -590,7 +649,7 @@ public class TektonBlocks {
 			
 			attribute = TektonAttributes.methane;
 			baseEfficiency = 1f;
-			boostScale = 0f;
+			boostScale = 1f / 9f;
             fogRadius = 3;
 			
 			outputLiquid = new LiquidStack(TektonLiquids.methane, 10f / 60f);
@@ -625,7 +684,7 @@ public class TektonBlocks {
             fogRadius = 3;
 			
 			consumeLiquid(Liquids.water, 10f / 60f);
-			consumeLiquid(TektonLiquids.methane, 6f / 60f);
+			consumeLiquid(TektonLiquids.methane, 20f / 60f);
 			outputItem = new ItemStack(polycarbonate, 2);
 			
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(TektonLiquids.methane, 0.5f), new DrawRegion("-sub"), 
@@ -650,7 +709,7 @@ public class TektonBlocks {
 		}};
 		
 		magnetizer = new GravityProducer("magnetizer") {{
-			requirements(Category.crafting, with(iron, 120, tantalum, 100, zirconium, 80, Items.silicon, 100));
+			requirements(Category.crafting, with(iron, 120, tantalum, 80, Items.graphite, 60, Items.silicon, 100));
 			consumePower(120f / 60f);
 			squareSprite = true;
 			size = 3;
@@ -661,10 +720,10 @@ public class TektonBlocks {
             liquidCapacity = 20f;
             fogRadius = 3;
             
-            gravityOutput = 4;
+            gravityOutput = 4 * gravityMul;
 			
 			consumeItem(iron, 1);
-			consumeLiquid(TektonLiquids.oxygen, 1.5f / 60f);
+			consumeLiquid(TektonLiquids.oxygen, 1f / 60f);
 			outputItem = new ItemStack(magnet, 1);
 			
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(TektonLiquids.oxygen), 
@@ -699,7 +758,7 @@ public class TektonBlocks {
 			hasLiquids = true;
             fogRadius = 3;
 			
-			consumeLiquid(Liquids.water, 8f / 60f);
+			consumeLiquid(Liquids.water, 4f / 60f);
 			consumeItem(tantalum);
 			outputItem = new ItemStack(cryogenicCompound, 1);
 
@@ -729,7 +788,7 @@ public class TektonBlocks {
 			hasLiquids = true;
             fogRadius = 3;
 			
-			consumeLiquid(Liquids.water, 4f / 60f);
+			consumeLiquid(Liquids.water, 2f / 60f);
 			consumeItem(Items.sand, 3);
 			outputItem = new ItemStack(silica, 2);
 
@@ -756,8 +815,8 @@ public class TektonBlocks {
 			liquidCapacity = 30;
             fogRadius = 3;
 
-			consumeLiquid(TektonLiquids.ammonia, 3f / 60f);
-			outputLiquid = new LiquidStack(Liquids.hydrogen, 9f / 60f);
+			consumeLiquid(TektonLiquids.ammonia, 5f / 60f);
+			outputLiquid = new LiquidStack(Liquids.hydrogen, 6f / 60f);
 
 			ambientSound = Sounds.electricHum;
 			ambientSoundVolume = 0.08f;
@@ -778,17 +837,17 @@ public class TektonBlocks {
 			hasLiquids = true;
             fogRadius = 3;
 
-        	requiredGravity = 8;
-        	maxGravity = requiredGravity * 2;
+        	requiredGravity = 8 * gravityMul;
+        	maxGravity = requiredGravity * 2 * gravityMul;
 
-			consumeItems(with(polycarbonate, 2, tantalum, 1));
-			consumeLiquids(LiquidStack.with(TektonLiquids.oxygen, 1f / 60f, TektonLiquids.methane, 6f / 60f));
+			consumeItems(with(polycarbonate, 2, tantalum, 2));
+			consumeLiquids(LiquidStack.with(TektonLiquids.acid, 20f / 60f, TektonLiquids.methane, 40f / 60f));
 			
 			outputItem = new ItemStack(polytalum, 1);
 			
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(TektonLiquids.methane), new DrawRegion("-middle"), 
-					new DrawLiquidTile(TektonLiquids.oxygen, 7f), new DrawDefault(), new DrawGlowRegion(), new DrawGlowRegion("-glow2") {{ glowScale = -glowScale; }}, 
-					new DrawGlowRegion("-glow3") {{ glowScale = 0; color = TektonLiquids.oxygen.color; }}, new DrawLight(TektonLiquids.oxygen.color), 
+					new DrawLiquidTile(TektonLiquids.acid, 9f), new DrawDefault(), new DrawGlowRegion(), new DrawGlowRegion("-glow2") {{ glowScale = -glowScale; }}, 
+					new DrawGlowRegion("-glow3") {{ glowScale = 0; color = TektonLiquids.acid.color; }}, new DrawLight(TektonLiquids.acid.color), 
 					new DrawGravityRegion("-gravity-glow"), new DrawGravityInput());
 
 			craftEffect = new Effect(40, e -> {
@@ -814,8 +873,8 @@ public class TektonBlocks {
             health = 1080;
             size = 4;
         	
-        	requiredGravity = 12;
-        	maxGravity = requiredGravity * 4;
+        	requiredGravity = 12 * gravityMul;
+        	maxGravity = requiredGravity * 4 * gravityMul;
 			craftTime = 180f;
 			hasPower = true;
 
@@ -836,9 +895,10 @@ public class TektonBlocks {
 
 			outputItem = new ItemStack(nanoAlloy, 1);
         	
-			consumeItem(iron, 3);
-			consumeItem(tantalum, 2);
+			consumeItem(iron, 4);
+			consumeItem(zirconium, 2);
 			consumeItem(Items.silicon, 3);
+			consumeItem(tantalum, 2);
 
             consumePower(200f / 60f);
         }};
@@ -848,8 +908,8 @@ public class TektonBlocks {
             health = 820;
             size = 4;
 			
-        	requiredGravity = 8;
-        	maxGravity = requiredGravity * 4;
+        	requiredGravity = 8 * gravityMul;
+        	maxGravity = requiredGravity * 4 * gravityMul;
         	
         	
 			craftTime = 240f;
@@ -878,7 +938,7 @@ public class TektonBlocks {
             
             consumePower(320f / 60f);
             consumeItems(with(uranium, 2, TektonItems.silica, 8));
-			consumeLiquid(TektonLiquids.oxygen, 1.5f / 60f);
+			consumeLiquid(TektonLiquids.oxygen, 1f / 60f);
 			
 			outputItem = new ItemStack(Items.phaseFabric, 1);
 			
@@ -909,7 +969,7 @@ public class TektonBlocks {
             
             drawer = new DrawMulti(new DrawDefault(), new DrawGravityOutput());
             rotateDraw = false;
-            gravityOutput = 1;
+            gravityOutput = 1 * gravityMul;
             regionRotated1 = 1;
             itemCapacity = 0;
             consumePower(40f / 60f);
@@ -930,7 +990,7 @@ public class TektonBlocks {
             
             drawer = new DrawMulti(new DrawDefault(), new DrawGravityOutput());
             rotateDraw = false;
-            gravityOutput = 4;
+            gravityOutput = 4 * gravityMul;
             regionRotated1 = 1;
             consumeItem(cryogenicCompound, 1);
             craftTime = 60f * 4f;
@@ -952,7 +1012,7 @@ public class TektonBlocks {
             
             drawer = new DrawMulti(new DrawDefault(), new DrawGravityOutput());
             rotateDraw = false;
-            gravityOutput = 12;
+            gravityOutput = 12 * gravityMul;
             regionRotated1 = 1;
             consumeItem(Items.phaseFabric, 1);
             craftTime = 60f * 8f;
@@ -1016,7 +1076,7 @@ public class TektonBlocks {
             drawer = new DrawMulti(new DrawDefault(), new DrawGravityOutput());
             rotateDraw = false;
             size = 1;
-            gravityOutput = 1000;
+            gravityOutput = 1000 * gravityMul;
             warmupRate = 1000f;
             regionRotated1 = 1;
             itemCapacity = 0;
@@ -1202,7 +1262,7 @@ public class TektonBlocks {
 			squareSprite = false;
 
 			consumeLiquid(Liquids.hydrogen, 3f / 60f);
-			consumePower(360f / 60f);
+			consumePower(180f / 60f);
 		}};
 		
 		builderDroneCenter = new BuilderUnitFactory("builder-drone-center") {{
@@ -1221,10 +1281,11 @@ public class TektonBlocks {
 		var regenFactor = 0.5f;
 		
 		regenerator = new Regenerator("regenerator") {{
-			requirements(Category.effect, with(Items.silicon, 60, zirconium, 80, Items.graphite, 40, iron, 100));
+			requirements(Category.effect, with(Items.silicon, 60, Items.graphite, 40, iron, 80));
 			size = 2;
 			range = 22;
 			health = 140;
+			squareSprite = false;
 
 			itemCapacity = 10;
 			liquidCapacity = 15f;
@@ -1258,6 +1319,7 @@ public class TektonBlocks {
 			size = 3;
 			range = 44;
 			health = 360;
+			squareSprite = false;
 			
 			itemCapacity = 20;
 			liquidCapacity = 40f;
@@ -1290,7 +1352,7 @@ public class TektonBlocks {
 		
 		//transport blocks
 		
-		var ductSpeed = 15f;
+		var ductSpeed = 11.1f;
 		
 		ironDuct = new Duct("iron-duct") {{
 			requirements(Category.distribution, with(iron, 1));
@@ -1310,7 +1372,7 @@ public class TektonBlocks {
 			requirements(Category.distribution, with(iron, 4));
 			health = 100;
 			itemCapacity = 2;
-			speed = 17f;
+			speed = ductSpeed;
 			researchCostMultiplier = 0.1f;
 		}};
 		
@@ -1319,21 +1381,21 @@ public class TektonBlocks {
 			size = 2;
 			health = 400;
 			itemCapacity = 8;
-			speed = 17f;
+			speed = ductSpeed;
 			researchCostMultiplier = 0.2f;
 		}};
 		
 		ironOverflow = new OverflowGate("iron-duct-overflow-controller") {{
 			requirements(Category.distribution, with(iron, 4, zirconium, 2));
 			health = 100;
-			speed = 17f;
+			speed = ductSpeed;
 			researchCostMultiplier = 0.1f;
 		}};
 		
 		ironUnderflow = new OverflowGate("iron-duct-underflow-controller") {{
 			requirements(Category.distribution, with(iron, 4, zirconium, 2));
 			health = 100;
-			speed = 17f;
+			speed = ductSpeed;
 			researchCostMultiplier = 0.1f;
 			invert = true;
 		}};
@@ -1354,7 +1416,7 @@ public class TektonBlocks {
 		ironBridge = new DuctBridge("iron-duct-bridge") {{
 			requirements(Category.distribution, with(iron, 20, zirconium, 15));
 			health = 200;
-			speed = 20f;
+			speed = ductSpeed;
 			range = 4;
 			researchCostMultiplier = 0.1f;
 			squareSprite = false;
@@ -1375,15 +1437,52 @@ public class TektonBlocks {
 		nanoConveyor = new PoweredConveyor("nano-conveyor") {{
 			requirements(Category.distribution, with(tantalum, 1, nanoAlloy, 1));
             health = 200;
-            speed = 0.07f;
+            speed = 0.09f;
             enhancedSpeed = 0.22f;
             displayedSpeed = 28f;
             
             bridgeReplacement = ironBridge;
-            //TODO remove
-            junctionReplacement = null;
             
 			consumePower(1f / 60f);
+            researchCost = with(nanoAlloy, 30, tantalum, 80);
+		}};
+		
+		nanoJunction = new PoweredJunction("nano-junction") {{
+			requirements(Category.distribution, with(tantalum, 2, nanoAlloy, 2));
+			health = 240;
+			itemCapacity = 2;
+			var sp = 4f;
+			speed = sp * 3.14f;
+			enhancedSpeed = sp;
+
+            underBullets = true;
+            solid = false;
+            
+            hasPower = consumesPower = conductivePower = true;
+
+			consumePower(2f / 60f);
+            researchCost = with(nanoAlloy, 30, tantalum, 80);
+            
+    		((PoweredConveyor)nanoConveyor).junctionReplacement = this;
+		}};
+		
+		
+		nanoRouter = new Router("nano-router") {{
+			requirements(Category.distribution, with(tantalum, 1, nanoAlloy, 5));
+			health = 240;
+			itemCapacity = 2;
+			speed = 0.22f;
+
+            underBullets = true;
+            solid = false;
+            
+            hasPower = conductivePower = true;
+            consumesPower = false;
+
+			//consumePower(1f / 60f);
+            researchCost = with(nanoAlloy, 50, tantalum, 80);
+            
+            buildVisibility = BuildVisibility.hidden;
 		}};
 		
 		//liquid
@@ -1393,10 +1492,10 @@ public class TektonBlocks {
 			health = 300;
 			size = 2;
 			squareSprite = false;
-			hasLiquids = true;
-			liquidCapacity = 20;
-			floating = false;
-			placeableLiquid = false;
+			//hasLiquids = true;
+			liquidCapacity = 30f;
+			/*floating = true;
+			placeableLiquid = true;*/
 			pumpAmount = 10f / 60f / 4f;
 			
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawPumpLiquidDynamic() {{
@@ -1411,10 +1510,10 @@ public class TektonBlocks {
 			health = 550;
 			size = 3;
 			squareSprite = false;
-			hasLiquids = true;
-			liquidCapacity = 60;
-			floating = false;
-			placeableLiquid = false;
+			//hasLiquids = true;
+			liquidCapacity = 100f;
+			/*floating = true;
+			placeableLiquid = true;*/
 			pumpAmount = 40f / 60f / 9f;
 			
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawPumpLiquidDynamic() {{
@@ -1521,7 +1620,7 @@ public class TektonBlocks {
 		//power
 		
 		lineNode = new LineNode("line-node") {{
-			requirements(Category.power, with(iron, 5, Items.silicon, 2));
+			requirements(Category.power, with(iron, 5, Items.silicon, 1));
 			laserColor1 = Color.valueOf("fffffff0");
 			laserColor2 = Color.valueOf("ffd8b880");
 			health = 140;
@@ -1548,10 +1647,10 @@ public class TektonBlocks {
 		}};
 		
 		lineLink = new LongPowerNodeLink("line-link") {{
-			requirements(Category.power, with(nanoAlloy, 40, Items.silicon, 120, tantalum, 200, polytalum, 80));
+			requirements(Category.power, with(nanoAlloy, 40, Items.silicon, 120, tantalum, 180, magnet, 60));
 			health = 2000;
 			size = 4;
-			laserRange = 140f;
+			laserRange = 170f;
 			autolink = false;
 			laserColor1 = Color.valueOf("ffffff").a(0.45f);
 			laserColor2 = Color.valueOf("ffd9c2").a(0.45f);
@@ -1562,7 +1661,7 @@ public class TektonBlocks {
 			ambientSound = Sounds.pulse;
 			ambientSoundVolume = 0.07f;
 			
-	    	consumePower(300f / 60f);
+	    	consumePower(160f / 60f);
 		}};
 		
 		powerCapacitor = new Battery("power-capacitor") {{
@@ -1591,7 +1690,7 @@ public class TektonBlocks {
 		}};
 		
 		lightningRod = new LightningRod("lightning-rod") {{
-			requirements(Category.power, with(Items.silicon, 120, polytalum, 80, magnet, 60, nanoAlloy, 40));
+			requirements(Category.power, with(Items.silicon, 80, iron, 100, polycarbonate, 60, nanoAlloy, 30));
 			health = 880;
 			size = 3;
 			cummulative = false;
@@ -1667,7 +1766,7 @@ public class TektonBlocks {
 		}};
 		
 		thermalDifferenceGenerator = new ConsumeGenerator("thermal-difference-generator") {{
-			requirements(Category.power, with(magnet, 40, polytalum, 80, Items.graphite, 100, Items.silicon, 120));
+			requirements(Category.power, with(magnet, 60, polycarbonate, 80, Items.graphite, 100, Items.silicon, 120));
 			health = 820;
 			powerProduction = 1400f / 60f;
 			itemDuration = 2.1f * 60f;
@@ -2005,8 +2104,8 @@ public class TektonBlocks {
 			itemCapacity = 50;
 			heatColor = TektonColor.gravityColor;
 			
-			requiredGravity = 6;
-			maxGravity = 12;
+			requiredGravity = 6 * gravityMul;
+			maxGravity = 12 * gravityMul;
 
 	        ambientSoundVolume = 0.044f;
 			
@@ -2103,7 +2202,7 @@ public class TektonBlocks {
         
         var defCoolantMultiplier = 0.5f + (0.5f / 3f);
         var turretBuildingDamageMultipliyer = 0.2f;
-		
+        
 		one = new ItemTurret("one") {{
 			requirements(Category.turret, with(iron, 40, zirconium, 20));
 			size = 1;
@@ -2147,7 +2246,7 @@ public class TektonBlocks {
 						homingPower = 0.1f;
 						reloadMultiplier = 1.2f;
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
-						ammoMultiplier = 2;
+						ammoMultiplier = 4;
 					}}
 				);
 			
@@ -2301,7 +2400,7 @@ public class TektonBlocks {
 			var coolantConsumption = 1f / 60f;
             coolant = consume(new ConsumeLiquid(TektonLiquids.ammonia, coolantConsumption));
             coolantMultiplier = defCoolantMultiplier / coolantConsumption;
-			researchCostMultiplier = 0.4f;
+			researchCostMultiplier = 0.2f;
 			buildCostMultiplier = 2.1f;
 		}};
 		
@@ -2404,7 +2503,7 @@ public class TektonBlocks {
 			}};
 			
 			buildCostMultiplier = 2.5f;
-			researchCostMultiplier = 0.8f;
+			researchCostMultiplier = 0.4f;
 		}};
 		
 		skyscraper = new ItemTurret("skyscraper") {{
@@ -2496,7 +2595,7 @@ public class TektonBlocks {
 							despawnEffect = Fx.none;
 							collidesGround = false;
 						}};
-						ammoMultiplier = 1;
+						ammoMultiplier = 4;
 					}}
 				);
 			shoot = new ShootAlternate() {{
@@ -2508,7 +2607,7 @@ public class TektonBlocks {
             coolant = consume(new ConsumeLiquid(TektonLiquids.ammonia, coolantConsumption));
             coolantMultiplier = defCoolantMultiplier / coolantConsumption;
             
-			researchCostMultiplier = 0.4f;
+			researchCostMultiplier = 0.2f;
 			buildCostMultiplier = 1.8f;
 		}};
 		
@@ -2576,15 +2675,13 @@ public class TektonBlocks {
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 						hitEffect = despawnEffect = TektonFx.blastExplosionColor;
 						pierce = false;
-						//pierceBuilding = true;
 						pierceArmor = true;
-						//pierceCap = 2;
 						knockback = 8f;
 						
 						splashDamageRadius = 30f;
 						splashDamage = 50f;
 						
-						fragOnHit = false;
+						fragOnHit = true;
 						fragRandomSpread = 0f;
 						fragSpread = 10f;
 						fragBullets = 5;
@@ -2607,7 +2704,6 @@ public class TektonBlocks {
 							pierce = false;
 							pierceBuilding = false;
 							pierceCap = 3;
-							ammoMultiplier = 1;
 							buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 						}};
 						
@@ -2646,8 +2742,9 @@ public class TektonBlocks {
 						fragOnHit = true;
 						fragRandomSpread = 0f;
 						fragSpread = 10f;
-						fragBullets = 5;
-						fragVelocityMin = 1f;
+						fragBullets = 4;
+						fragVelocityMin = 0.4f;
+						fragVelocityMax = 1f;
 						despawnSound = Sounds.dullExplosion;
 						reloadMultiplier = 0.8f;
 
@@ -2667,9 +2764,10 @@ public class TektonBlocks {
 							pierce = true;
 							pierceBuilding = false;
 							pierceCap = 2;
-							ammoMultiplier = 1;
 							buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 						}};
+						
+						ammoMultiplier = 2f;
 					}});
 			var coolantConsumption = 2f / 60f;
             coolant = consume(new ConsumeLiquid(TektonLiquids.ammonia, coolantConsumption));
@@ -2734,7 +2832,7 @@ public class TektonBlocks {
 			health = 1700;
 			shootCone = 1;
 			recoil = 1f;
-			reload = 350f;
+			reload = 360f;
 			shake = 2f;
 			//shootEffect = Fx.lancerLaserShoot.wrap(Color.valueOf("ff4545"));
 			smokeEffect = Fx.none;
@@ -2754,7 +2852,7 @@ public class TektonBlocks {
 			consumePower(4f);
 			consumeLiquid(Liquids.water, 3f / 60f);
 
-			shootType = new LaserBulletType(165f) {{
+			shootType = new LaserBulletType(120f) {{
 				colors = new Color[]{Color.valueOf("ff4545"), Color.valueOf("ff5959"), Color.valueOf("ff6e6e"), Color.valueOf("ff9191")};
 				chargeEffect = new MultiEffect(
 					new WaveEffect() {{
@@ -2895,7 +2993,33 @@ public class TektonBlocks {
 			soundPitchMax = 1f;
 			targetGround = false;
 			ammo(
-					polycarbonate, new FlakBulletType(7f, 3) {{
+					tantalum, new BasicBulletType(7f, 20f) {{
+				        collidesGround = false;
+						width = 7f;
+						height = 9f;
+						lifetime = 30f;
+						shootEffect = Fx.shootSmall;
+						shootEffect = Fx.shootSmallSmoke;
+						sprite = "tekton-basic-bullet";
+						backSprite = "tekton-basic-bullet-back";
+						frontColor = backColor = trailColor = tantalum.color;
+						lightRadius = 15;
+						lightOpacity = 0.5f;
+						lightColor = tantalum.color;
+						trailChance = -1;
+						trailWidth = 2;
+						trailLength = 7;
+						reloadMultiplier = 0.8f;
+						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+						hitEffect = Fx.flakExplosion;
+						
+						pierce = true;
+						pierceCap = 3;
+						
+						ammoMultiplier = 2f;
+					}},
+					
+					polycarbonate, new FlakBulletType(7f, 3f) {{
 						width = 7f;
 						height = 9f;
 						lifetime = 30f;
@@ -2918,7 +3042,7 @@ public class TektonBlocks {
 						explodeRange = 9f;
 
 						fragBullets = 6;
-						fragBullet = new BasicBulletType(3f, 5) {{
+						fragBullet = new BasicBulletType(3f, 5f) {{
 							width = 5f;
 							height = 12f;
 							shrinkY = 1f;
@@ -2927,10 +3051,10 @@ public class TektonBlocks {
 							despawnEffect = Fx.none;
 							collidesGround = false;
 						}};
-						ammoMultiplier = 1;
+						ammoMultiplier = 4f;
 					}},
 					
-					polytalum, new FlakBulletType(9f, 6) {{
+					polytalum, new FlakBulletType(9f, 6f) {{
 						rangeChange = 80f;
 						width = 7f;
 						height = 9f;
@@ -2954,7 +3078,7 @@ public class TektonBlocks {
 						explodeRange = 11f;
 
 						fragBullets = 7;
-						fragBullet = new BasicBulletType(3f, 7) {{
+						fragBullet = new BasicBulletType(3.5f, 8f) {{
 							width = 5f;
 							height = 12f;
 							shrinkY = 1f;
@@ -2963,7 +3087,7 @@ public class TektonBlocks {
 							despawnEffect = Fx.none;
 							collidesGround = false;
 						}};
-						ammoMultiplier = 1;
+						ammoMultiplier = 6f;
 					}}
 				);
 			
@@ -3040,10 +3164,31 @@ public class TektonBlocks {
 						fromColor = TektonColor.zirconiumSpark;
 						toColor = Color.white;
 						shootEffect = smokeEffect = Fx.sparkShoot;
+						pierce = true;
 						pierceBuilding = true;
-						pierceCap = 10;
+						pierceCap = 7;
 						knockback = 10;
-						ammoMultiplier = 1;
+						ammoMultiplier = 1f;
+						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+					}},
+					Items.phaseFabric, new ShrapnelBulletType() {{
+						length = tRange * 0.95f;
+						damage = 700;
+						width = 25f;
+						serrationLenScl = 7f;
+						serrationSpaceOffset = 60f;
+						serrationFadeOffset = 0f;
+						serrations = 10;
+						serrationWidth = 6f;
+						hitLarge = true;
+						fromColor = Items.phaseFabric.color.cpy();
+						toColor = Color.white;
+						shootEffect = smokeEffect = Fx.sparkShoot;
+						pierce = true;
+						pierceBuilding = true;
+						pierceArmor = true;
+						knockback = 30;
+						ammoMultiplier = 4f;
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 					}});
 			consumeLiquid(TektonLiquids.oxygen, 1.5f / 60f);
@@ -3094,7 +3239,7 @@ public class TektonBlocks {
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 					}},
 					
-					TektonLiquids.methane, new DoubleLiquidBulletType(TektonLiquids.liquidMethane, Liquids.cryofluid) {{
+					TektonLiquids.methane, new DoubleLiquidBulletType(TektonLiquids.methane, Liquids.cryofluid) {{
 						lifetime = 40f;
 						speed = 4f;
 						knockback = 1f;
@@ -3635,7 +3780,7 @@ public class TektonBlocks {
             predictTarget = false;
             minWarmup = 0.8f;
             shootCone = 90f;
-            minGravity = 18;
+            minGravity = 12 * gravityMul;
             maxGravity = minGravity + (minGravity / 2);
             
             drawer = new DrawTurret("quad-") {{ 
@@ -3889,8 +4034,8 @@ public class TektonBlocks {
             chargeSound = TektonSounds.greencharge;
             unitSort = UnitSorts.strongest;
             envEnabled |= Env.space;
-            minGravity = 12;
-            maxGravity = 24;
+            minGravity = 8 * gravityMul;
+            maxGravity = 16 * gravityMul;
 
 			health = 3100;
 
@@ -3913,7 +4058,7 @@ public class TektonBlocks {
             loopSoundVolume = 3.5f;
             predictTarget = false;
             scaleDamageEfficiency = true;
-            minGravity = 60 + (12 * 3);
+            minGravity = (60 + (12 * 3)) * gravityMul;
             maxGravity = minGravity * 1;
             heatColor = Color.clear.cpy();
             shootY = 0f;
@@ -4484,6 +4629,7 @@ public class TektonBlocks {
             coolantMultiplier = defCoolantMultiplier / coolantConsumption;
             buildCostMultiplier = 0.4f;
 		}};
+		
 		//units
 		
 		primordialUnitFactory = new TektonUnitFactory("unit-factory") {{
@@ -4496,13 +4642,12 @@ public class TektonBlocks {
 			consumePower(2f);
 
 			regionSuffix = "-iron";
-			setPayloadRegions(this, regionSuffix);
 			
 			plans.addAll(
-					new UnitPlan(TektonUnits.piezo, 60f * 25f, with(iron, 45, Items.silicon, 25)), 
+					new UnitPlan(TektonUnits.piezo, 60f * 25f, with(Items.silicon, 25, iron, 45)), 
 					new UnitPlan(TektonUnits.martyris, 60f * 15f, with(Items.silicon, 15, zirconium, 25)), 
-					new UnitPlan(TektonUnits.caravela, 60f * 30f, with(iron, 30, Items.silicon, 20, polycarbonate, 15)), 
-					new UnitPlan(TektonUnits.nail, 60f * 35f, with(iron, 35, Items.silicon, 25, tantalum, 15)));
+					new UnitPlan(TektonUnits.caravela, 60f * 30f, with(Items.silicon, 20, polycarbonate, 15)), 
+					new UnitPlan(TektonUnits.nail, 60f * 35f, with(Items.silicon, 25, iron, 35, tantalum, 15)));
 
 			researchCostMultiplier = 0.1f;
 		}};
@@ -4715,7 +4860,7 @@ public class TektonBlocks {
             
             droneType = TektonUnits.assemblyDrone;
             
-            consumePower(160f / 60f);
+            consumePower(210f / 60f);
             consumeLiquid(Liquids.hydrogen, 12f / 60f);
             consumeItem(cryogenicCompound, 1);
             itemDuration = 60f;
@@ -4729,7 +4874,7 @@ public class TektonBlocks {
             regionSuffix = "-iron";
             health = 5200;
             size = 7;
-            maxGravity = 12;
+            maxGravity = 12 * gravityMul;
             plans.addAll(
             		//a null one is needed because modules must make sense i think 2
             new AssemblerUnitPlan(TektonUnits.none, 0f, PayloadStack.list(nullBlock, 1)),
@@ -4742,7 +4887,7 @@ public class TektonBlocks {
             
             droneType = TektonUnits.ultimateAssemblyDrone;
             
-            consumePower(240f / 60f);
+            consumePower(360f / 60f);
             consumeLiquid(TektonLiquids.oxygen, 6f / 60f);
             consumeItem(cryogenicCompound, 2);
             itemConsumption = 2;
@@ -4755,7 +4900,7 @@ public class TektonBlocks {
         
         tankAssemblerModule = new TektonUnitAssemblerModule("tank-assembler-module") {{
             requirements(Category.units, with(tantalum, 300, uranium, 250, iron, 500, Items.silicon, 200));
-            consumePower(4f);
+            consumePower(2f);
             regionSuffix = "-iron";
             
             tier = 1;
@@ -4766,7 +4911,7 @@ public class TektonBlocks {
         
         airAssemblerModule = new TektonUnitAssemblerModule("air-assembler-module") {{
             requirements(Category.units, with(tantalum, 250, uranium, 200, zirconium, 400, Items.silicon, 300));
-            consumePower(4f);
+            consumePower(2f);
             regionSuffix = "-iron";
             
             tier = 2;
@@ -4777,7 +4922,7 @@ public class TektonBlocks {
         
         navalAssemblerModule = new TektonUnitAssemblerModule("naval-assembler-module") {{
             requirements(Category.units, with(tantalum, 250, uranium, 200, polycarbonate, 350, Items.silicon, 250));
-            consumePower(4f);
+            consumePower(2f);
             regionSuffix = "-iron";
             
             tier = 3;
@@ -4788,7 +4933,7 @@ public class TektonBlocks {
         
         mechAssemblerModule = new TektonUnitAssemblerModule("mech-assembler-module") {{
             requirements(Category.units, with(tantalum, 250, uranium, 200, Items.graphite, 250, Items.silicon, 250));
-            consumePower(4f);
+            consumePower(2f);
             regionSuffix = "-iron";
             
             tier = 4;
@@ -4798,7 +4943,7 @@ public class TektonBlocks {
         }};
 		
         unitRepairTurret = new RepairWaveTurret("unit-repair-turret") {{
-            requirements(Category.units, with(Items.graphite, 100, Items.silicon, 100, tantalum, 80));
+            requirements(Category.units, with(Items.graphite, 100, Items.silicon, 100, tantalum, 80, magnet, 10));
             outlineColor = TektonColor.tektonOutlineColor;
 
             size = 2;
@@ -4845,7 +4990,7 @@ public class TektonBlocks {
 			requirements(Category.units, with(iron, 120, Items.silicon, 100, zirconium, 100, Items.graphite, 80));
 			regionSuffix = "-iron";
 			itemCapacity = 250;
-			consumePower(3f);
+			consumePower(40f / 60f);
 			size = 3;
 			deconstructSpeed = 1f;
             researchCostMultiplier = 0.7f;
@@ -4856,7 +5001,7 @@ public class TektonBlocks {
 			regionSuffix = "-iron";
 			hasPower = true;
 			buildSpeed = 0.6f;
-			consumePower(2f);
+			consumePower(1f);
 			size = 3;
 			filter = Seq.with();
             researchCostMultiplier = 0.7f;
@@ -4866,7 +5011,7 @@ public class TektonBlocks {
 			requirements(Category.units, with(Items.graphite, 50, Items.silicon, 50, tantalum, 80));
 			regionSuffix = "-iron";
 			hasPower = true;
-			consumePower(2f);
+			consumePower(0.2f);
 			size = 3;
 			fogRadius = 5;
             researchCostMultiplier = 0.7f;
@@ -4876,7 +5021,7 @@ public class TektonBlocks {
 			requirements(Category.units, with(Items.graphite, 50, Items.silicon, 50, tantalum, 30));
 			regionSuffix = "-iron";
 			hasPower = true;
-			consumePower(2f);
+			consumePower(0.2f);
 			size = 3;
 			fogRadius = 5;
             researchCostMultiplier = 0.7f;
@@ -4892,14 +5037,14 @@ public class TektonBlocks {
 			maxPayloadSize = 2.5f;
 			fogRadius = 5;
 			consumePower(0.2f);
-			maxGravity = 1;
+			maxGravity = 1 * gravityMul;
             researchCostMultiplier = 0.7f;
 		}};
 		
 		//logic
 		
 		ironCanvas = new CanvasBlock("iron-canvas"){{
-            requirements(Category.logic, with(Items.silicon, 10, iron, 10));
+            requirements(Category.logic, with(Items.silicon, 10, iron, 10, Items.graphite, 5));
             
             canvasSize = 12;
             padding = 7f / 4f * 2f;

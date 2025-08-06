@@ -9,6 +9,8 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.util.io.*;
 import mindustry.Vars;
+import mindustry.entities.Effect;
+import mindustry.entities.effect.WaveEffect;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -30,6 +32,19 @@ public class LightningRod extends PowerGenerator {
 	public float maxPowerEfficiency = 4f;
 	
     public TextureRegion glowRegion;
+    
+    public Effect lightningAbsorptionEffect = new WaveEffect() {{
+		sides = 4;
+		rotation = 0f;
+		lifetime = 60f;
+		sizeFrom = 2f;
+		sizeTo = 20f;
+		lightOpacity = 0.5f;
+		colorFrom = Color.white.cpy();
+		colorTo = lightColor = Color.valueOf("ffe047");
+		strokeFrom = 2f;
+		strokeTo = 0f;
+	}};
     
 	public LightningRod(String name) {
 		super(name);
@@ -59,11 +74,11 @@ public class LightningRod extends PowerGenerator {
 	@Override
     public void drawPlace(int x, int y, int rotation, boolean valid) {
         if (circleArea)
-            Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, protectionRadius, Pal.accent);
+            Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, protectionRadius, Pal.lightOrange);
         else if (squareArea)
-        	Drawf.dashSquare(Pal.accent, x * tilesize + offset, y * tilesize + offset, protectionRadius * 2f);
+        	Drawf.dashSquare(Pal.lightOrange, x * tilesize + offset, y * tilesize + offset, protectionRadius * 2f);
         else if (diamondArea)
-        	Drawt.dashDiamond(x * tilesize + offset, y * tilesize + offset, protectionRadius);
+        	Drawt.dashDiamond(Pal.lightOrange, x * tilesize + offset, y * tilesize + offset, protectionRadius);
         
         super.drawPlace(x, y, rotation, valid);
     }
@@ -116,11 +131,11 @@ public class LightningRod extends PowerGenerator {
 		@Override
         public void drawSelect() {
 			if (circleArea)
-	            Drawf.dashCircle(x + offset, y + offset, protectionRadius, Pal.accent);
+	            Drawf.dashCircle(x + offset, y + offset, protectionRadius, Pal.lightOrange);
 			else if (squareArea)
-	        	Drawf.dashSquare(Pal.accent, x + offset, y + offset, protectionRadius * 2f);
+	        	Drawf.dashSquare(Pal.lightOrange, x + offset, y + offset, protectionRadius * 2f);
 			else if (diamondArea)
-				Drawt.dashDiamond(x + offset * tilesize, y + offset * tilesize, protectionRadius);
+				Drawt.dashDiamond(Pal.lightOrange, x + offset * tilesize, y + offset * tilesize, protectionRadius);
         }
 		
 		@Override
@@ -162,6 +177,12 @@ public class LightningRod extends PowerGenerator {
 		@Override
 		public void absorbLightning() {
 			hit = true;
+			lightningAbsorptionEffect.at(this);
+		}
+		
+		@Override
+		public float lightningProtectionRadius() {
+			return protectionRadius;
 		}
 	}
 }

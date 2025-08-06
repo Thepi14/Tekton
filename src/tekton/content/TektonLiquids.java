@@ -7,7 +7,7 @@ import mindustry.type.Liquid;
 import tekton.Tekton;
 
 public class TektonLiquids {
-	public static Liquid ammonia, oxygen, methane, liquidMethane, metazotoplasm, acid, cobweb;
+	public static Liquid ammonia, oxygen, methane, /*liquidMethane,*/ metazotoplasm, acid, cobweb;
 	
 	public static void load(){
 		ammonia = new Liquid("ammonia", TektonColor.ammonia) {{
@@ -48,7 +48,7 @@ public class TektonLiquids {
             effect = TektonStatusEffects.tarredInMethane;
 		}};
 		
-		liquidMethane = new Liquid("liquid-methane", TektonColor.liquidMethane) {{
+		/*liquidMethane = new Liquid("liquid-methane", TektonColor.liquidMethane) {{
         	hidden = Tekton.hideContent;
             coolant = false;
 			gas = false;
@@ -60,7 +60,7 @@ public class TektonLiquids {
             gasColor = TektonColor.methane;
 			canStayOn.addAll(Liquids.water);
             effect = TektonStatusEffects.tarredInMethane;
-		}};
+		}};*/
 		
 		acid = new Liquid("acid", TektonColor.acid) {{
         	hidden = Tekton.hideContent;
@@ -88,7 +88,7 @@ public class TektonLiquids {
             moveThroughBlocks = true;
             incinerable = true;
             blockReactive = false;
-            canStayOn.addAll(Liquids.water, Liquids.oil, Liquids.cryofluid, liquidMethane, ammonia);
+            canStayOn.addAll(Liquids.water, Liquids.oil, Liquids.cryofluid, methane, ammonia);
 			alwaysUnlocked = false;
             colorFrom = Color.valueOf("999999");
             colorTo = Color.valueOf("55ff55");
@@ -105,9 +105,9 @@ public class TektonLiquids {
             lightColor = Color.valueOf("d6d6d6").a(0.3f);
             boilPoint = 0.9f;
 			alwaysUnlocked = false;
-			canStayOn.addAll(Liquids.water, liquidMethane);
+			canStayOn.addAll(Liquids.water, methane);
 		}};
         
-        Liquids.water.canStayOn.addAll(ammonia, liquidMethane);
+        Liquids.water.canStayOn.addAll(ammonia, methane);
 	}
 }

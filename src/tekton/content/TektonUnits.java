@@ -69,7 +69,7 @@ public class TektonUnits {
 	formica, gracilipes, colobopsis, carabidae, isoptera, araneae, latrodectus, danaus, antheraea, //longicornis, //ground biological
 	diptera, polyphaga, groundPolyphaga, lepidoptera, //air biological
 	assemblyDrone, ultimateAssemblyDrone, //payload
-	none, impactMissile, formicaEgg, electron, builderDrone //others
+	none, impactMissile, formicaEgg, electron, builderDrone, uwu //others
 	;
 
     public static int 
@@ -121,6 +121,55 @@ public class TektonUnits {
 		
 		//others
 		
+		uwu = new UnitType("uwu") {{
+            this.constructor = UnitEntity::create;
+			alwaysUnlocked = false;
+			speed = 30f;
+			mineTier = 10;
+			mineSpeed = accel = drag = buildSpeed = 10f;
+            flying = true;
+            health = 1000000;
+            armor = 10000;
+            engineOffset = 0f;
+            engineSize = 0;
+            hitSize = 1f;
+            itemCapacity = 1000;
+            crashDamageMultiplier = 0;
+            strafePenalty = 0.9f;
+            engineOffset = 6f;
+    		mineFloor = mineWalls = targetable = physics = hittable = true;
+            targetPriority = 10;
+            fogRadius = 10000;
+            
+            weapons.add(new Weapon(name + "-weapon") {{
+                shootCone = 360f;
+                mirror = false;
+                rotate = true;
+                rotateSpeed = 100f;
+                reload = 60f;
+            	shootY = 0f;
+            	x = y = 0;
+    			shootSound = Sounds.none;
+                predictTarget = false;
+                
+                bullet = new TeslaBulletType(){{
+                	absorbable = false;
+                	chains = 3;
+    				maxRange = 10000f;
+    				hitSize = 1f;
+    				statusDuration = 5f;
+    				status = StatusEffects.shocked;
+    				hitColor = lightningColor = Pal.lancerLaser;
+    				damage = 1000000f;
+    				lightning = 0;
+    				hitEffect = applyEffect = TektonFx.electricPulseBig;
+    				hitSound = Sounds.shockBlast;
+    				hitSoundVolume = 0.2f;
+    				chainEffect = Fx.chainEmp.wrap(Pal.lancerLaser);
+    			}};
+            }});
+		}};
+		
 		none = new UnitType("none") {{
             this.constructor = UnitEntity::create;
 			speed = 0f;
@@ -135,8 +184,6 @@ public class TektonUnits {
             hitSize = 0f;
             itemCapacity = 0;
             crashDamageMultiplier = 0;
-            strafePenalty = 0.9f;
-            engineOffset = 6f;
             alwaysUnlocked = mineFloor = mineWalls = targetable = physics = hittable = false;
             targetPriority = -2;
             fogRadius = 0;
@@ -768,9 +815,9 @@ public class TektonUnits {
                     }};
                     
                     lightOpacity = 0.7f;
-                    unitDamageScl = 0.8f;
                     timeIncrease = 3f;
                     timeDuration = 60f * 20f;
+                    unitDamageScl = 0.8f;
                     powerDamageScl = 3f;
                     hitColor = lightColor = Pal.lancerLaser;
                     lightRadius = 70f;
@@ -1103,7 +1150,7 @@ public class TektonUnits {
             	y = 0;
             	shootY = 4;
             	inaccuracy = 2;
-            	reload = 22;
+            	reload = 25f;
             	recoil = 1;
             	mirror = false;
             	rotate = true;
@@ -1114,8 +1161,8 @@ public class TektonUnits {
             	layerOffset = -0.001f;
             	top = false;
                 bullet = new RailBulletType(){{
-            		length = 160f;
-                    damage = 18f;
+            		length = 160f - 16f;
+                    damage = 14f;
             		pierce = true;
                     pierceDamageFactor = 0.8f;
 
@@ -1799,6 +1846,7 @@ public class TektonUnits {
             rotateSpeed = 2f;
             faceTarget = false;
             fogRadiusMultipliyer = 0.65f;
+            alwaysShootWhenMoving = true;
 
             trailLength = 23;
             waveTrailX = 9f;
@@ -1855,7 +1903,7 @@ public class TektonUnits {
                 
                 bullet = new RailBulletType(){{
                     length = 160f;
-                    damage = 8f;
+                    damage = 1f;
                     pierceArmor = true;
                     hitColor = Color.valueOf("feb380");
                     hitEffect = endEffect = Fx.hitBulletColor;
@@ -2113,7 +2161,7 @@ public class TektonUnits {
             	soundPitchMax = 0.85f;
             	
                 layerOffset = 0.0001f;
-                reload = 55f * 3f;
+                reload = 30f;
                 shootY = 71f / 4f;
                 shake = 5f;
                 recoil = 3f;
@@ -2124,9 +2172,6 @@ public class TektonUnits {
                 cooldownTime = 80f;
             	layerOffset = 0.01f;
             	minWarmup = 0.8f;
-            	
-            	shoot.shots = 3;
-            	shoot.shotDelay = 13f;
                 
                 for(int i = 1; i <= 3; i++) {
                     int fi = i;
@@ -2196,6 +2241,7 @@ public class TektonUnits {
                         splashDamage = 20f;
                         pierceCap = 2;
                         pierce = true;
+                        pierceArmor = true;
                         pierceBuilding = true;
                         status = StatusEffects.blasted;
                     }};
@@ -2795,6 +2841,7 @@ public class TektonUnits {
                     	hidden = true;
                     	flying = true;
                         hoverable = false;
+                        playerControllable = logicControllable = false;
                         hitSize = 0f;
                     	speed = 0f;
                     	mechLandShake = 0f;
@@ -2806,6 +2853,7 @@ public class TektonUnits {
                     			//killShooter = true;
                                 splashDamageRadius = splashRadCorr;
                                 splashDamage = 0f;
+                                hitShake = despawnShake = 0f;
                                 //hitEffect = despawnEffect = TektonFx.techSmoke;
                     		}
                     		//despawn
@@ -2834,6 +2882,7 @@ public class TektonUnits {
 	                    			instantDisappear = true;
 	                                splashDamageRadius = splashRadCorr;
 	                                splashDamage = 0f;
+	                                hitShake = despawnShake = 0f;
 	                    		}
 		                    		@Override
 		                    		public void createSplashDamage(Bullet b, float x, float y) {
@@ -3215,7 +3264,7 @@ public class TektonUnits {
                 //loopSound = Sounds.spray;
                 shootSound = Sounds.artillery;
                 mirror = false;
-                baseRotation = 180f;
+                baseRotation = 0f;
                 x = 0f;
                 y = -6f;
                 shootY = 3.5f;
@@ -3452,9 +3501,9 @@ public class TektonUnits {
             	range = 31f;
                 shootSound = Sounds.dullExplosion;
                 mirror = false;
-                rotate = false;
-                /*rotationLimit = 40f;
-                rotateSpeed = 4f;*/
+                rotate = true;
+                rotationLimit = 10f;
+                rotateSpeed = 4f;
                 top = false;
                 shootCone = 20f;
                 x = 0f;

@@ -54,8 +54,8 @@ public class TektonWeathers {
 	        status = TektonStatusEffects.tarredInMethane;
 	        sound = Sounds.rain;
 	        soundVol = 0.25f;
-	        liquid = TektonLiquids.liquidMethane;
-	        color = TektonLiquids.methane.color.cpy();
+	        liquid = TektonLiquids.methane;
+	        color = TektonColor.liquidMethane.cpy();
             duration = 8f * Time.toMinutes;
 	    }};
 	    
@@ -117,7 +117,7 @@ public class TektonWeathers {
 	    }};
 	    
 	    electricStorm = new StormWeather("electric-storm") {{
-	    	color = noiseColor = Color.valueOf("3d352f");
+	    	color = noiseColor = Color.valueOf("ffe14a");
             particleRegion = "particle";
             drawNoise = true;
             useWindVector = true;

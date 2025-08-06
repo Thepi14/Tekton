@@ -26,48 +26,48 @@ public class TeslaBulletType extends BulletType{
 	 public int chains = 3;
      
      public TeslaBulletType(){
-         removeAfterPierce = false;
-         speed = 0f;
-         hitEffect = new MultiEffect() {{
-         	effects = new Effect[]{
-        			new WaveEffect() {{
-            	    	sizeFrom = 2;
-            	    	sizeTo = 14;
-            	    	lifetime = 10;
-            	    	strokeFrom = 2;
-            	    	strokeTo = 0;
-            	    	colorFrom = Color.valueOf("ffffff");
-            	    	colorTo = Color.valueOf("ff4545");
-            	    }},
-            		new ParticleEffect() {{
-            			particles = 6;
-            			line = true;
-            			lifetime = 15;
-            			length = 15;
-            			lenFrom = 3;
-            			lenTo = 0;
-            			strokeFrom = 1;
-            			strokeTo = 0;
-            			colorFrom = Color.valueOf("ffffff");
-            			colorTo = Color.valueOf("ff4545");
-            		}}
-        	};
-        }};
-        maxRange = 100f;
+		 removeAfterPierce = false;
+		 speed = 0f;
+		 hitEffect = new MultiEffect() {{
+		 	effects = new Effect[]{
+					new WaveEffect() {{
+		    	    	sizeFrom = 2;
+		    	    	sizeTo = 14;
+		    	    	lifetime = 10;
+		    	    	strokeFrom = 2;
+		    	    	strokeTo = 0;
+		    	    	colorFrom = Color.valueOf("ffffff");
+				    	colorTo = Color.valueOf("ff4545");
+				    }},
+					new ParticleEffect() {{
+						particles = 6;
+						line = true;
+						lifetime = 15;
+						length = 15;
+						lenFrom = 3;
+						lenTo = 0;
+						strokeFrom = 1;
+						strokeTo = 0;
+						colorFrom = Color.valueOf("ffffff");
+						colorTo = Color.valueOf("ff4545");
+		    		}}
+			};
+		}};
+		maxRange = 100f;
 		 despawnEffect = Fx.none;
-         lifetime = 20f;
-         impact = true;
-         keepVelocity = false;
-         collides = false;
-         pierce = true;
-         hittable = false;
-         absorbable = true;
-         optimalLifeFract = 0.5f;
-         shootEffect = smokeEffect = Fx.none;
-         despawnHit = true;
-
-         //just make it massive, users of this bullet can adjust as necessary
-         drawSize = 1000f;
+		 lifetime = 20f;
+		 impact = true;
+		 keepVelocity = false;
+		 collides = false;
+		 pierce = true;
+		 hittable = false;
+		 absorbable = true;
+		 optimalLifeFract = 0.5f;
+		 shootEffect = smokeEffect = Fx.none;
+		 despawnHit = true;
+		
+		 //just make it massive, users of this bullet can adjust as necessary
+		 drawSize = 1000f;
      }
 
     @Override
