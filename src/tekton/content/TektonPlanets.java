@@ -36,10 +36,10 @@ public class TektonPlanets {
 			description = "A extremely cold planet with unknown threats and possibilities.";
 			alwaysUnlocked = true;
 			allowLaunchSchematics = false;
-			allowLaunchToNumbered = !Tekton.hideContent;
+			allowLaunchToNumbered = false;
 			allowLaunchLoadout = false;
 			allowSectorInvasion = false;
-			allowWaveSimulation = true;
+			allowWaveSimulation = false;
 			clearSectorOnLose = true;
             prebuildBase = true;
 			startSector = 0;

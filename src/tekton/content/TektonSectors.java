@@ -125,6 +125,8 @@ public class TektonSectors {
         all.addAll(new SectorPreset[] {satus, scintilla, river, proelium, lake/*, aequor*/});
         
         for (var sectorPreset : all) {
+        	if (sectorPreset == satus)
+        		continue;
         	sectorPreset.alwaysUnlocked = !Tekton.hideContent;
         }
 	}

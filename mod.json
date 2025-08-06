@@ -1,9 +1,11 @@
 {
     "displayName": "Tekton",
+    "subtitle": "Now you can launch on sectors.",
     "description": "A Mindustry Java mod adding a new planet called Tekton, with lots of hazards and other things.",
     "version": "v0.2.0",
     "minGameVersion": "146",
     "author": "ThePi14",
     "java": true,
-    "main": "tekton.Tekton"
+    "main": "tekton.Tekton",
+    "repo": "Thepi14/Tekton"
 }

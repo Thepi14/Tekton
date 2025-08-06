@@ -431,9 +431,8 @@ public class TektonTechTree {
         	 * */
         	
         	//sectors
-        	if (Tekton.hideContent)
         	node(satus, () -> {
-        		node(middle, Seq.with(new SectorComplete(satus), new Research(siliconFilter)), () -> {
+        		node(middle, Seq.with(new SectorComplete(satus), new Research(silicaAspirator), new Research(siliconFilter)), () -> {
         			node(scintilla, Seq.with(new SectorComplete(middle), new Research(primordialUnitFactory)), () -> {
             			node(proelium, Seq.with(new SectorComplete(scintilla), new Research(duel)), () -> {
             				node(pit, Seq.with(new SectorComplete(proelium), new Research(reactionDrill)), () -> {
@@ -447,8 +446,10 @@ public class TektonTechTree {
                 						
                                 	});
                             	});
-                				node(rainforest, Seq.with(new SectorComplete(pit), new Research(reactionDrill)), () -> {
-            						
+                				node(rainforest, Seq.with(new SectorComplete(rainforest), new Research(reactionDrill)), () -> {
+                					node(transit, Seq.with(new SectorComplete(pit), new Research(reactionDrill)), () -> {
+                						
+                                	});
                             	});
                         	});
                     	});
