@@ -25,6 +25,7 @@ import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.Liquids;
 import mindustry.game.EventType.Trigger;
+import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
@@ -59,7 +60,6 @@ public class FusionReactor extends PowerGenerator {
     public float warmupSpeed = 0.001f;
 	public int requiredGravity = 48 * gravityMul;
 	public int minGravity = requiredGravity / 2;
-	public int maxGravity = requiredGravity;
 	public int minimalCoolant = 5;
 	
 	public float heatingPerTick = 0.005f;
@@ -114,9 +114,9 @@ public class FusionReactor extends PowerGenerator {
         		() -> entity.productionEfficiency));
         addBar("instability", (FusionReactorBuild entity) -> new Bar("bar.instability", Pal.negativeStat, () -> entity.instability));
         addBar("gravity", (FusionReactorBuild entity) -> new Bar(
-        		() -> Core.bundle.format("bar.gravityPercent", Math.min(maxGravity, entity.gravity), ((float)maxGravity / (float)requiredGravity) * 100), 
+        		() -> Core.bundle.format("bar.gravityPercent", Math.min(requiredGravity, entity.gravity), (entity.gravityFrac()) * 100), 
         		() -> TektonColor.gravityColor, 
-				() -> (float)entity.gravity / (float)requiredGravity));
+				() -> entity.gravityFrac()));
     }
 	
 	@Override
@@ -140,19 +140,19 @@ public class FusionReactor extends PowerGenerator {
         public float[] sideGravity = new float[4];
         
 		@Override
-        public double sense(LAccess sensor){
+        public double sense(LAccess sensor) {
             if(sensor == LAccess.heat) return instability;
             return super.sense(sensor);
         }
 		
         @Override
-        public void updateTile(){
+        public void updateTile() {
             //super.updateTile();
         	
             gravity = (int)calculateGravity(sideGravity);
             float currentCoolant = items.get(coolantItem);
             float currentFuel = liquids.get(fuelLiquid);
-            float gravityFrac = Math.min((float)gravity, (float)maxGravity) / (float)requiredGravity;
+            float gravityFrac = Math.min((float)gravity, (float)requiredGravity) / (float)requiredGravity;
             float fuelFulness = Mathf.equal(currentFuel / liquidCapacity, 1f, 0.002f) ? 1f : currentFuel / liquidCapacity;
             boolean cool = false;
             float coolingMul = minimalCoolant / currentCoolant;
@@ -226,12 +226,12 @@ public class FusionReactor extends PowerGenerator {
         }
         
         @Override
-        public float ambientVolume(){
+        public float ambientVolume() {
             return warmup;
         }
         
         @Override
-        public float warmup(){
+        public float warmup() {
             return warmup;
         }
         
@@ -246,12 +246,12 @@ public class FusionReactor extends PowerGenerator {
         }
 
         @Override
-        public float[] sideGravity(){
+        public float[] sideGravity() {
             return sideGravity;
         }
 
         @Override
-        public float gravityRequirement(){
+        public float gravityRequirement() {
             return requiredGravity;
         }
 
@@ -336,53 +336,14 @@ public class FusionReactor extends PowerGenerator {
         public float calculateGravity(float[] sideGravity){
             return calculateGravity(sideGravity, null);
         }
+
+		@Override
+		public float calculateGravity(float[] sideGravity, IntSet cameFrom) {
+			return calculateGravity(this, sideGravity, cameFrom);
+		}
         
-        public float calculateGravity(float[] sideGravity, @Nullable IntSet cameFrom){
-            Arrays.fill(sideGravity, 0f);
-            if(cameFrom != null) cameFrom.clear();
-
-            float gravityAmmount = 0f;
-
-            for(var build : proximity){
-                if(build != null && build.team == team && build instanceof GravityBlock graviter && build != this){
-                    boolean split = build.block instanceof GravityConductor cond && cond.splitGravity;
-                    // non-routers must face us, routers must face away - next to a redirector, they're forced to face away due to cycles anyway
-                    if(!build.block.rotate || (!split && (relativeTo(build) + 2) % 4 == build.rotation) || (split && relativeTo(build) != build.rotation)){ //TODO hacky
-
-                        //if there's a cycle, ignore its gravity
-                        if(!(build instanceof GravityConductorBuild hc && hc.cameFrom.contains(id()))){
-                            //x/y coordinate difference across point of contact
-                            float diff = (Math.min(Math.abs(build.x - x), Math.abs(build.y - y)) / Vars.tilesize);
-                            //number of points that this block had contact with
-                            int contactPoints = Math.min((int)(block.size/2f + build.block.size/2f - diff), Math.min(build.block.size, block.size));
-
-                            //gravity is distributed across building size
-                            float add = graviter.gravity() / build.block.size * contactPoints;
-                            if(split){
-                                //gravity routers split gravity across 3 surfaces
-                                add /= 3f;
-                            }
-
-                            sideGravity[Mathf.mod(relativeTo(build), 4)] += add;
-                            gravityAmmount += add;
-                        }
-
-                        //register traversed cycles
-                        if(cameFrom != null){
-                            cameFrom.add(build.id);
-                            if(build instanceof GravityConductorBuild gc){
-                                cameFrom.addAll(gc.cameFrom);
-                            }
-                        }
-
-                        //massive hack but I don't really care anymore
-                        if(graviter instanceof GravityConductorBuild cond){
-                            cond.updateGravity();
-                        }
-                    }
-                }
-            }
-            return gravityAmmount;
+        public float gravityFrac() {
+        	return Math.min(gravity() / gravityRequirement(), 1f);
         }
 	}
 }
