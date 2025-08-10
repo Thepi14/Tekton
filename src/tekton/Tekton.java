@@ -6,13 +6,17 @@ import java.util.Arrays;
 
 import arc.Core;
 import arc.Events;
+import arc.graphics.Color;
+import arc.graphics.Colors;
 import arc.math.Mathf;
 import arc.struct.IntSet;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Nullable;
+import arc.util.Reflect;
 import arc.util.Time;
 import mindustry.Vars;
+import mindustry.core.Version;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.game.Team;
 import mindustry.gen.Building;
@@ -31,7 +35,8 @@ import tekton.EntityDefinitions;
 import mindustry.type.*;
 
 public class Tekton extends Mod{
-	
+
+    public static String ID = "tekton";
 	protected static boolean contentLoadComplete = false;
 	
 	public static final String MOD_RELEASES = "https://github.com/Thepi14/Tekton/releases";
@@ -70,6 +75,25 @@ public class Tekton extends Mod{
             });
         });*/
 	}
+	
+	@Override
+    public void init() {
+        super.init();
+        TektonSettings.load();
+        
+        try {
+            if(Version.isAtLeast("147")) {
+                Reflect.invoke(Vars.logicVars, "put", new Object[] {"@martyris", TektonUnits.martyris},
+                        String.class, Object.class);
+            }
+            else {
+                Reflect.invoke(Vars.logicVars, "put", new Object[] {"@martyris", TektonUnits.martyris},
+                        String.class, Object.class);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 	
     @Override
     public void loadContent(){
