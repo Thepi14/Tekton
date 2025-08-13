@@ -60,6 +60,7 @@ Keep in mind that this mod is still in development, so there will be bugs, missi
 </div>
 
 <div align = center>
+  
 ![Alpha]
 </div>
 
