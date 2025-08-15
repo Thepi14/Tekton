@@ -48,9 +48,6 @@ public class TektonSettings {
     public static boolean autoUpdate() {
         return boolDef("autoupdate", true);
     }
-    public static boolean unitUwu() {
-        return boolDef("leeft-uwu", false);
-    }
 
     public static boolean bool(String key) {
         return settings.getBool("tekton-" + key);

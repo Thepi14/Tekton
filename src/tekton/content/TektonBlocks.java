@@ -43,6 +43,7 @@ import mindustry.world.blocks.logic.MessageBlock;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import tekton.*;
+import tekton.environment.*;
 import tekton.type.biological.*;
 import tekton.type.bullets.*;
 import tekton.type.defense.*;

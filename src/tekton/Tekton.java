@@ -81,7 +81,7 @@ public class Tekton extends Mod{
         super.init();
         TektonSettings.load();
         
-        try {
+        /*try {
             if(Version.isAtLeast("147")) {
                 Reflect.invoke(Vars.logicVars, "put", new Object[] {"@martyris", TektonUnits.martyris},
                         String.class, Object.class);
@@ -92,7 +92,7 @@ public class Tekton extends Mod{
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 	
     @Override
