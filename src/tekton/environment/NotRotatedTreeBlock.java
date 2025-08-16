@@ -1,4 +1,4 @@
-package tekton;
+package tekton.environment;
 
 import arc.graphics.g2d.*;
 import arc.math.*;

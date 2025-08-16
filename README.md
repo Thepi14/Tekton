@@ -55,8 +55,14 @@ Keep in mind that this mod is still in development, so there will be bugs, missi
 - Brazilian Portuguese
 <br>
 <br>
+<br>
+<br>
+</div>
 
 <div align = center>
+  
+![Alpha]
+</div>
 
 <!----------------------------------[ Badges ]--------------------------------->
 
@@ -65,6 +71,7 @@ Keep in mind that this mod is still in development, so there will be bugs, missi
 
 <!----------------------------------[ Links ]---------------------------------->
 [Logo]: github/logo.png
-[Banner]: github/banner.jpg
+[Banner]: github/banner.png
+[Alpha]: github/alpha-reimu.png
 [Commits]: https://github.com/Thepi14/Tekton/commits/main
 [Issues]: https://github.com/Thepi14/Tekton/issues

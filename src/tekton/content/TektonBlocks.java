@@ -43,6 +43,7 @@ import mindustry.world.blocks.logic.MessageBlock;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import tekton.*;
+import tekton.environment.*;
 import tekton.type.biological.*;
 import tekton.type.bullets.*;
 import tekton.type.defense.*;
@@ -838,7 +839,7 @@ public class TektonBlocks {
             fogRadius = 3;
 
         	requiredGravity = 8 * gravityMul;
-        	maxGravity = requiredGravity * 2 * gravityMul;
+        	maxGravity = requiredGravity * 2;
 
 			consumeItems(with(polycarbonate, 2, tantalum, 2));
 			consumeLiquids(LiquidStack.with(TektonLiquids.acid, 20f / 60f, TektonLiquids.methane, 40f / 60f));
@@ -874,7 +875,7 @@ public class TektonBlocks {
             size = 4;
         	
         	requiredGravity = 12 * gravityMul;
-        	maxGravity = requiredGravity * 4 * gravityMul;
+        	maxGravity = requiredGravity * 4;
 			craftTime = 180f;
 			hasPower = true;
 
@@ -909,7 +910,7 @@ public class TektonBlocks {
             size = 4;
 			
         	requiredGravity = 8 * gravityMul;
-        	maxGravity = requiredGravity * 4 * gravityMul;
+        	maxGravity = requiredGravity * 4;
         	
         	
 			craftTime = 240f;
