@@ -81,7 +81,7 @@ public class CoreRadar extends Block {
     public void setBars(){
         super.setBars();
 
-        addBar("instability", (CoreRadarBuild entity) -> new Bar("stat.range", Pal.berylShot, () -> Mathf.clamp(entity.currentRadius / maxRadius)));
+        addBar("range", (CoreRadarBuild entity) -> new Bar("stat.range", Pal.berylShot, () -> Mathf.clamp(entity.currentRadius / maxRadius)));
     }
     
     @Override

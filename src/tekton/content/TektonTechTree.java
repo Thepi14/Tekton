@@ -196,7 +196,7 @@ public class TektonTechTree {
             	});
             	
             	//power
-        		node(methaneBurner, Seq.with(new Research(pneumaticPump), new SectorComplete(satus)), () -> {
+        		node(methaneBurner, Seq.with(new SectorComplete(satus)), () -> {
         			node(lineNode, () -> {
                 		node(geothermalGenerator, Seq.with(new OnSector(middle)), () -> {
                     		node(geothermalCondenser, () -> {
@@ -245,7 +245,7 @@ public class TektonTechTree {
         		
             	//wall
             	node(ironWall, () -> {
-                    node(ironWallLarge, () -> {
+                    node(ironWallLarge, Seq.with(new SectorComplete(satus)), () -> {
                     	
                     });
                     //resistance

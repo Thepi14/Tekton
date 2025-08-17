@@ -29,8 +29,6 @@ public class FireRateOverdriveAbility extends Ability {
 	public TextureRegion heatRegion;
 	public float heat = 0f;
 	
-	protected float currentBoost = 0f;
-	
 	/*private static int divisions = 200;
 	public static Seq<StatusEffect> boosts;*/
 
@@ -45,6 +43,11 @@ public class FireRateOverdriveAbility extends Ability {
     
     public String abilityStat(String stat, Object... values) {
         return Core.bundle.format("ability.stat." + stat, values);
+    }
+    
+    @Override
+    public void displayBars(Unit unit, Table bars){
+        bars.add(new Bar("bar.heat", Pal.lightOrange, () -> (data - minBoost) / (maxBoost - minBoost))).row();
     }
 
 	@Override
@@ -69,20 +72,20 @@ public class FireRateOverdriveAbility extends Ability {
 		/*if (boosts == null || boosts.size == 0)
 			return;*/
 		if (unit.isShooting() && (unit.hasEffect(statusCondition) || statusCondition == StatusEffects.none)) {
-			currentBoost += boostIncrease / 60f;
+			data += boostIncrease / 60f;
 		}
 		else {
-			currentBoost -= boostDecrease / 60f;
+			data -= boostDecrease / 60f;
 		}
 		
-		currentBoost = Mathf.clamp(currentBoost, minBoost, maxBoost);
-		heat = (currentBoost - minBoost) / (maxBoost - minBoost);
+		data = Mathf.clamp(data, minBoost, maxBoost);
+		heat = (data - minBoost) / (maxBoost - minBoost);
 		
-		//int currentIndex = Math.min((int)(currentBoost * (200 / 4)), 199);
-		//Log.info(currentBoost + ", " + currentIndex + ", " + boosts.get(currentIndex).reloadMultiplier);
+		//int currentIndex = Math.min((int)(data * (200 / 4)), 199);
+		//Log.info(data + ", " + currentIndex + ", " + boosts.get(currentIndex).reloadMultiplier);
 		//unit.apply(boosts.get(currentIndex));
 		
-		unit.reloadMultiplier *= currentBoost;
+		unit.reloadMultiplier *= data;
 	}
 	
 	@Override
