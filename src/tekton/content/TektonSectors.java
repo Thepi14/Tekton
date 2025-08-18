@@ -113,7 +113,7 @@ public class TektonSectors {
         }};
         
         aequor = new TektonSectorPreset("aequor", tekton, 77){{
-            difficulty = 2;
+            difficulty = 4;
             rules = r -> {
 				r.hiddenBuildItems.clear();
 				r.attackMode = true;
