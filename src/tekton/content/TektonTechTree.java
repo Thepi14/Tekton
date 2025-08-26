@@ -421,13 +421,13 @@ public class TektonTechTree {
         	 * middle - preparation, graphite final: unit Factory, piezo, compass
         	 * 
         	 * scintilla - attack, final: martyris, caravela
-        	 * proelium - survival, tantalum, final: electret, nail, spear, azure
+        	 * proelium - survival, tantalum, final: electret, nail, spear, azure (make sure player gets tantalum after before ending this map or going to pit)
         	 * 
-        	 * river - attack, polycarbonate final: sagres, bellator, freezer
-        	 * pit - survival, final: strike, interfusion
-        	 * lake - argos boss
+        	 * river - attack, polycarbonate final: sagres, bellator, freezer (place after pit)
+        	 * pit - survival, final: strike, interfusion (place before river)
+        	 * lake - argos boss (can be placed before river now)
         	 * cave - attack, magnet final: sword, payload Launchers
-        	 * aequor - idk
+        	 * aequor - idk (place after all for uranium maybe? needs uranium introduction for its higher difficulty, probably a map earlier)
         	 * */
         	
         	//sectors
