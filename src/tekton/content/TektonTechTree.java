@@ -437,13 +437,12 @@ public class TektonTechTree {
             			node(proelium, Seq.with(new SectorComplete(scintilla), new Research(duel)), () -> {
             				node(pit, Seq.with(new SectorComplete(proelium), new Research(reactionDrill)), () -> {
                 				node(river, Seq.with(new SectorComplete(pit)), () -> {
-                					node(aequor, Seq.with(new SectorComplete(river), new Research(sagres)), () -> {
-                						node(cave, Seq.with(new SectorComplete(aequor)), () -> {
-                    						
-                                    	});
-                                	});
                 					node(lake, Seq.with(new SectorComplete(river)), () -> {
-                						
+                						node(aequor, Seq.with(new SectorComplete(river), new Research(sagres)), () -> {
+                    						node(cave, Seq.with(new SectorComplete(aequor)), () -> {
+                        						
+                                        	});
+                                    	});
                                 	});
                             	});
                 				node(rainforest, Seq.with(new SectorComplete(rainforest), new Research(reactionDrill)), () -> {

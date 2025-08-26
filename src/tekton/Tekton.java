@@ -25,6 +25,7 @@ import mindustry.type.Item;
 import mindustry.type.Liquid;
 import mindustry.type.UnitType;
 import mindustry.ui.dialogs.BaseDialog;
+import mindustry.ui.dialogs.PlanetDialog;
 import mindustry.world.Block;
 import tekton.content.*;
 import tekton.type.gravity.GravityBlock;
@@ -33,6 +34,8 @@ import tekton.type.gravity.GravityConductor.GravityConductorBuild;
 import ent.anno.Annotations.*;
 import tekton.EntityDefinitions;
 import mindustry.type.*;
+
+import static mindustry.Vars.*;
 
 public class Tekton extends Mod{
 
@@ -44,7 +47,7 @@ public class Tekton extends Mod{
 	public static final String MOD_GITHUB_URL = "https://github.com/Thepi14/Tekton.git";
 	public static final String MOD_NAME = "tekton";
 	
-	public static boolean hideContent = true;
+	public static boolean hideContent = false;
 
 	public static final boolean loadedComplete(){
 		return contentLoadComplete;
@@ -93,6 +96,8 @@ public class Tekton extends Mod{
         } catch (Exception e) {
             e.printStackTrace();
         }*/
+
+    	PlanetDialog.debugSelect = !hideContent;
     }
 	
     @Override

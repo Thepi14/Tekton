@@ -1132,7 +1132,7 @@ public class TektonBlocks {
 		tantalumWall = new Wall("tantalum-wall") {{
 			requirements(Category.defense, with(tantalum, 6));
 			health = tantalumLife;
-			armor = 14f;
+			armor = 8f;
 			buildCostMultiplier = 2f;
 			researchCostMultiplier = 0.5f;
 		}};
@@ -1140,7 +1140,7 @@ public class TektonBlocks {
 		tantalumWallLarge = new Wall("tantalum-wall-large") {{
 			requirements(Category.defense, with(tantalum, 24));
 			health = tantalumLife * 4;
-			armor = 14f;
+			armor = 8f;
 			size = 2;
 			buildCostMultiplier = 2f;
 			researchCostMultiplier = 0.5f;
