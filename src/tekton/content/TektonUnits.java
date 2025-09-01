@@ -1528,10 +1528,10 @@ public class TektonUnits {
             ((SuppressionFieldAbility)abilities.get(0)).active = false;
             abilities.get(0).display = false;
             
-            /*var bulletImperatoris = new ContinuousLaserBulletType() {{
+            var bulletImperatoris1 = new ContinuousLaserBulletType() {{
             	//layer = Layer.flyingUnit + 0.1f;
-                damage = 400f / 12f;
-                length = 300f;
+                damage = 140f / 12f;
+                length = 160f;
                 drawSize = 0f;
                 lifetime = 200f;
                 continuous = true;
@@ -1543,18 +1543,18 @@ public class TektonUnits {
                     stroke(e.fin() * 2f);
                     Lines.circle(e.x, e.y, e.fout() * 50f);
                 }).followParent(true).rotWithParent(true);
-                chargeEffect.layer = Layer.flyingUnit;
+                chargeEffect.layer = layer = Layer.flyingUnit + 0.011f;
                 
-                flareLayer = Layer.flyingUnit + 1f;
-                colors = new Color[]{Pal.sapBullet.cpy().a(.2f), Pal.sapBullet.cpy().a(.5f), Pal.sapBullet.cpy().mul(1.2f), Color.white};
-                flareWidth = 5f;
-                flareLength = 70f;
-                hitColor = flareColor = Pal.sapBullet.cpy().mul(1.15f);
+                //flareLayer = Layer.flyingUnit + 1f;
+                colors = new Color[]{Pal.sapBullet.cpy().a(.1f), Pal.sapBullet.cpy().a(.2f), Pal.sapBullet.cpy().a(.35f), Pal.sapBullet.cpy().a(.5f), Pal.sapBullet.cpy().mul(1.1f), Pal.sapBullet.cpy().mul(1.25f), Color.white};
+                //flareWidth = 5f;
+                //flareLength = 70f;
+                hitColor = /*flareColor = */Pal.sapBullet.cpy().mul(1.15f);
 
                 pierce = true;
                 pierceBuilding = true;
                 pierceArmor = true;
-                pierceCap = 2;
+                pierceCap = 3;
                 //pierceDamageFactor = 0.15f;
                 incendChance = 0.05f;
                 incendAmount = 2;
@@ -1562,16 +1562,16 @@ public class TektonUnits {
                 
                 status = StatusEffects.melting;
                 statusDuration = 130f;
-            }};*/
+            }};
             
-            var bulletImperatoris = new BasicBulletType() {{
+            var bulletImperatoris2 = new BasicBulletType() {{
                 shootEffect = new MultiEffect(Fx.shootTitan.wrap(Pal.sapBullet), new WaveEffect(){{
                     colorTo = Pal.sapBullet;
                     sizeTo = 26f;
                     lifetime = 14f;
                     strokeFrom = 4f;
                 }});
-                smokeEffect = Fx.shootSmokeTitan.wrap(Pal.sapBullet);
+                smokeEffect = Fx.shootSmokeTitan;
                 hitColor = Pal.sapBullet;
 
                 sprite = "large-orb";
@@ -1588,6 +1588,7 @@ public class TektonUnits {
                 frontColor = Pal.sapBullet;
                 shrinkX = shrinkY = 0f;
                 trailColor = Pal.sapBullet;
+                this.
                 trailLength = 12;
                 trailWidth = 2.2f;
                 
@@ -1685,7 +1686,7 @@ public class TektonUnits {
                     outlineLayerOffset = -0.0001f;
                     }});
 
-                bullet = bulletImperatoris;
+                bullet = bulletImperatoris2;
 
                 heatColor = lightColor = Pal.sapBullet.cpy().mul(1.15f);
             }};
@@ -1698,28 +1699,32 @@ public class TektonUnits {
                 mirror = false;
                 top = true;
                 shake = imperatorisWeapon.shake;
-                shootY = imperatorisWeapon.shootY;
+                shootY = 5f;
                 rotate = imperatorisWeapon.rotate;
                 shootCone = imperatorisWeapon.shootCone;
                 rotationLimit = imperatorisWeapon.rotationLimit;
                 alternate = false;
-                reload = (imperatorisWeapon.reload * 2f) / 3f;
+                
+                reload = 155f;
+                
                 rotateSpeed = imperatorisWeapon.rotateSpeed;
                 
                 shoot = imperatorisWeapon.shoot;
 
-                shoot.firstShotDelay = (imperatorisWeapon.reload * 2f) / 4f;
+                shoot.firstShotDelay = Fx.greenLaserChargeSmall.lifetime - 1f;
                 parentizeEffects = imperatorisWeapon.parentizeEffects;
                 recoil = imperatorisWeapon.recoil;
-                chargeSound = imperatorisWeapon.chargeSound;
-                shootSound = imperatorisWeapon.shootSound;
-                continuous = imperatorisWeapon.continuous;
-                cooldownTime = imperatorisWeapon.cooldownTime;
+                
+                chargeSound = Sounds.lasercharge2;
+                shootSound = Sounds.beam;
+                continuous = true;
+                cooldownTime = 200f;
+                
                 layerOffset = 0.01f;
                 
                 parts.add(imperatorisWeapon.parts);
 
-                bullet = bulletImperatoris;
+                bullet = bulletImperatoris1;
 
                 heatColor = lightColor = imperatorisWeapon.heatColor;
             }});
@@ -1903,7 +1908,7 @@ public class TektonUnits {
                 
                 bullet = new RailBulletType(){{
                     length = 160f;
-                    damage = 1f;
+                    damage = 8f;
                     pierceArmor = true;
                     hitColor = Color.valueOf("feb380");
                     hitEffect = endEffect = Fx.hitBulletColor;
@@ -1983,6 +1988,7 @@ public class TektonUnits {
                 hitEffect = Fx.flakExplosion;
                 splashDamage = 20;
                 splashDamageRadius = 22f;
+                status = StatusEffects.blasted;
                 range = 40f;
             }};
             

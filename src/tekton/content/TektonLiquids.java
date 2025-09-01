@@ -7,7 +7,7 @@ import mindustry.type.Liquid;
 import tekton.Tekton;
 
 public class TektonLiquids {
-	public static Liquid ammonia, oxygen, methane, /*liquidMethane,*/ metazotoplasm, acid, cobweb;
+	public static Liquid ammonia, oxygen, methane, liquidMethane, metazotoplasm, acid, cobweb;
 	
 	public static void load(){
 		ammonia = new Liquid("ammonia", TektonColor.ammonia) {{
@@ -48,19 +48,20 @@ public class TektonLiquids {
             effect = TektonStatusEffects.tarredInMethane;
 		}};
 		
-		/*liquidMethane = new Liquid("liquid-methane", TektonColor.liquidMethane) {{
+		liquidMethane = new Liquid("liquid-methane", TektonColor.liquidMethane) {{ //this one only exists because of freezer
         	hidden = Tekton.hideContent;
             coolant = false;
 			gas = false;
 			temperature = 0.1f;
 			heatCapacity = 0.8f;
 			viscosity = 0.6f;
-			alwaysUnlocked = true;
+			alwaysUnlocked = false;
+			hidden = true;
             boilPoint = 0.15f;
             gasColor = TektonColor.methane;
 			canStayOn.addAll(Liquids.water);
             effect = TektonStatusEffects.tarredInMethane;
-		}};*/
+		}};
 		
 		acid = new Liquid("acid", TektonColor.acid) {{
         	hidden = Tekton.hideContent;

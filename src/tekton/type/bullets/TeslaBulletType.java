@@ -17,11 +17,12 @@ import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.effect.ParticleEffect;
 import mindustry.entities.effect.WaveEffect;
 import mindustry.gen.*;
+import tekton.content.TektonColor;
 
 public class TeslaBulletType extends BulletType{
      public float trailSpacing = 10f;
      
-	 public Effect chainEffect = Fx.chainEmp.wrap(Color.valueOf("ff4545")),
+	 public Effect chainEffect = Fx.chainEmp.wrap(TektonColor.redShootColorLightning),
 	 applyEffect = Fx.titanExplosion.wrap(Color.valueOf("ffaaaa"));
 	 public int chains = 3;
      

@@ -19,6 +19,7 @@ public class StatusEffectAreaBulletType extends BulletType {
 	
 	public StatusEffectAreaBulletType() {
 		super();
+		damage = 0f;
 		speed = 0;
 		absorbable = false;
 		hittable = false;
@@ -33,20 +34,9 @@ public class StatusEffectAreaBulletType extends BulletType {
 	}
 	
 	public StatusEffectAreaBulletType(float lifetime, float radius) {
-		super();
-		speed = 0;
-		absorbable = false;
-		hittable = false;
-		collideFloor = false;
-		collideTerrain = false;
-		collidesTiles = false;
-		collides = false;
-		statusDuration = 60f;
+		this();
 		this.lifetime = lifetime;
 		statusRadius = radius;
-		collidesGround = collidesAir = true;
-		shootEffect = smokeEffect = hitEffect = despawnEffect = Fx.none;
-		keepVelocity = false;
 	}
 	
 	@Override

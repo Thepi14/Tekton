@@ -15,9 +15,10 @@ import tekton.type.gravity.GravityConsumer;
 
 public class DrawGravityInput extends DrawBlock {
 	public String suffix = "-gravity";
-    public Color gravityColor = TektonColor.gravityColor;
+    public Color gravityColor = TektonColor.gravityColor.cpy().mul(0.5f);
     public float gravityPulse = 0.3f, gravityPulseScl = 10f;
     public boolean drawSides = true;
+    public float maxAlpha = 0.8f;
 
     public TextureRegion gravity;
 
@@ -43,7 +44,7 @@ public class DrawGravityInput extends DrawBlock {
 	            for(int i = 0; i < 4; i++){
 	                if(side[i] > 0){
 	                    Draw.blend(Blending.additive);
-	                    Draw.color(gravityColor, side[i] / hc.gravityRequirement() * (gravityColor.a * (1f - gravityPulse + Mathf.absin(gravityPulseScl, gravityPulse))));
+	                    Draw.color(gravityColor, maxAlpha * (side[i] / hc.gravityRequirement() * (gravityColor.a * (1f - gravityPulse + Mathf.absin(gravityPulseScl, gravityPulse)))));
 	                    Draw.rect(gravity, build.x, build.y, i * 90f);
 	                    Draw.blend();
 	                    Draw.color();
@@ -51,7 +52,7 @@ public class DrawGravityInput extends DrawBlock {
 	            }
             else {
             	Draw.blend(Blending.additive);
-                Draw.color(gravityColor, hc.gravityRequirement() * (gravityColor.a * (1f - gravityPulse + Mathf.absin(gravityPulseScl, gravityPulse))));
+                Draw.color(gravityColor, maxAlpha * hc.gravityRequirement() * (gravityColor.a * (1f - gravityPulse + Mathf.absin(gravityPulseScl, gravityPulse))));
                 Draw.rect(gravity, build.x, build.y, build.rotation * 90f);
                 Draw.blend();
                 Draw.color();

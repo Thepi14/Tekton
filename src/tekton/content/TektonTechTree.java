@@ -77,7 +77,7 @@ public class TektonTechTree {
         		
         		//payloads
 				node(ironPayloadConveyor, () -> {
-					node(payloadLauncher, () -> {
+					node(payloadLauncher, Seq.with(new SectorComplete(lake)), () -> {
 						node(payloadLoader, () -> {
 							node(payloadUnloader, () -> {
 								
@@ -96,8 +96,8 @@ public class TektonTechTree {
         	});
         	
         	//cores
-        	node(coreDeveloped, () -> {
-        		node(corePerfected, () -> {
+        	node(coreDeveloped, Seq.with(new SectorComplete(lake)), () -> {
+        		node(corePerfected, Seq.with(new SectorComplete(aequor)), () -> { //change
             		
             	});
         	});
@@ -132,7 +132,7 @@ public class TektonTechTree {
                     	});
                 	});
             	});
-    			node(reactionDrill, Seq.with(new OnSector(proelium), new Research(coldElectrolyzer)), () -> {
+    			node(reactionDrill, Seq.with(new SectorComplete(scintilla), new Research(coldElectrolyzer)), () -> {
     				node(gravitationalDrill, () -> {
                 		
                 	});
@@ -150,29 +150,29 @@ public class TektonTechTree {
                         	});
         					node(coldElectrolyzer, Seq.with(new OnSector(scintilla)), () -> {
             					node(atmosphericMethaneConcentrator, () -> {
-            						node(polycarbonateSynthesizer, Seq.with(new SectorComplete(river)), () -> {
-                						node(cryogenicMixer, () -> {
+            						node(polycarbonateSynthesizer, Seq.with(new SectorComplete(pit)), () -> {
+                						node(cryogenicMixer, Seq.with(new SectorComplete(pit)), () -> {
                                     		
                                     	});
                                 	});
                             	});
-            					node(magnetizer, Seq.with(new OnSector(scintilla)), () -> {
-        							node(gravityConductor, () -> {
-                						node(electricalCoil, () -> {
-                							node(thermalCoil, Seq.with(new Research(cryogenicMixer)), () -> {
+            					node(magnetizer, Seq.with(new OnSector(cave)), () -> {
+        							node(gravityConductor, Seq.with(new OnSector(cave)), () -> {
+                						node(electricalCoil, Seq.with(new OnSector(cave)), () -> {
+                							node(thermalCoil, Seq.with(new Research(cryogenicMixer), new OnSector(cave)), () -> { //chane?
                 								node(phaseNanoCoil, Seq.with(new Research(nanoAlloyCrucible), new Research(phasePrinter)), () -> {
                         							
                         						});
                     						});
                 							node(polytalumFuser, Seq.with(new Research(polycarbonateSynthesizer)), () -> {
-                    							node(phasePrinter, Seq.with(new SectorComplete(river)), () -> { //change
+                    							node(phasePrinter, Seq.with(new SectorComplete(aequor)), () -> { //change
                     								
                 			    				});
                                         	});
-                							node(nanoAlloyCrucible, Seq.with(new SectorComplete(river)), () -> { //change
+                							node(nanoAlloyCrucible, Seq.with(new SectorComplete(aequor)), () -> { //change
             									
             			    				});
-            								node(gravityRouter, () -> {
+            								node(gravityRouter, Seq.with(new OnSector(cave)), () -> {
             									node(nanoGravityConductor, Seq.with(new Research(nanoAlloyCrucible)), () -> {
                         							
                         						});
@@ -188,7 +188,7 @@ public class TektonTechTree {
                         	});
             			});
         				node(silicaTurbine, Seq.with(new SectorComplete(proelium)), () -> {
-            				node(sandFilter, Seq.with(new SectorComplete(proelium)), () -> {
+            				node(sandFilter, Seq.with(new SectorComplete(scintilla), new Research(reactionDrill)), () -> { //change?
                         		
                         	});
                     	});
@@ -200,14 +200,14 @@ public class TektonTechTree {
         			node(lineNode, () -> {
                 		node(geothermalGenerator, Seq.with(new OnSector(middle)), () -> {
                     		node(geothermalCondenser, () -> {
-                    			node(undergroundWaterExtractor, () -> {
+                    			node(undergroundWaterExtractor, Seq.with(new SectorComplete(lake)), () -> { //change?
                     				
                             	});
                         	});
-                    		node(methaneCombustionChamber, Seq.with(new SectorComplete(proelium)), () -> {
-                    			node(thermalDifferenceGenerator, Seq.with(new SectorComplete(proelium)), () -> {
-                    				node(uraniumReactor, Seq.with(new SectorComplete(proelium)), () -> {
-                    					node(fusionReactor, Seq.with(new SectorComplete(proelium), new Research(electricalCoil)), () -> {
+                    		node(methaneCombustionChamber, Seq.with(new SectorComplete(pit)), () -> {
+                    			node(thermalDifferenceGenerator, Seq.with(new SectorComplete(cave)), () -> {
+                    				node(uraniumReactor, Seq.with(new SectorComplete(aequor)), () -> { //change
+                    					node(fusionReactor, Seq.with(new SectorComplete(aequor), new Research(electricalCoil)), () -> { //change
                                     		
                                     	});
                                 	});
@@ -216,7 +216,7 @@ public class TektonTechTree {
             			});
                 		node(powerCapacitor, Seq.with(new SectorComplete(middle)), () -> {
                 			node(powerBank, Seq.with(new SectorComplete(proelium)), () -> {
-                				node(lightningRod, Seq.with(new SectorComplete(proelium)), () -> {
+                				node(lightningRod, Seq.with(new SectorComplete(aequor)), () -> { //change
                             		
                             	});
                         	});
@@ -225,13 +225,13 @@ public class TektonTechTree {
                         	});
                     	});
                 		node(lineTower, () -> {
-                			node(lineLink, Seq.with(new SectorComplete(proelium)), () -> {
+                			node(lineLink, Seq.with(new SectorComplete(aequor)), () -> { //change
                         		
                         	});
                     	});
                 		node(regenerator, Seq.with(new Research(coldElectrolyzer), new SectorComplete(scintilla)), () -> {
-                			node(regenerationDome, () -> {
-                				node(builderDroneCenter, () -> {
+                			node(regenerationDome, Seq.with(new SectorComplete(cave)), () -> {
+                				node(builderDroneCenter, Seq.with(new SectorComplete(aequor)), () -> { //change
                         			
                             	});
                         	});
@@ -281,17 +281,17 @@ public class TektonTechTree {
             	
         		node(duel, Seq.with(new SectorComplete(satus)),  () -> {
     				node(skyscraper, Seq.with(new SectorComplete(satus)),  () -> {
-    					node(azure, Seq.with(new OnSector(lake)),  () -> {
+    					node(azure, Seq.with(new SectorComplete(pit)),  () -> {
             				node(prostrate, Seq.with(new SectorComplete(lake), new Research(magnetizer)),  () -> {
         						
                         	});
                     	});
                 	});
         			node(spear, Seq.with(new SectorComplete(pit)),  () -> {
-        				node(interfusion, Seq.with(new OnSector(scintilla)),  () -> {
-            				node(havoc, Seq.with(new SectorComplete(lake), new Research(coldElectrolyzer)),  () -> {
-                				node(concentration, Seq.with(new SectorComplete(lake), new Research(magnetizer)),  () -> {
-                					node(tempest, Seq.with(new SectorComplete(lake)),  () -> {
+        				node(interfusion, Seq.with(new SectorComplete(lake)),  () -> {
+            				node(havoc, Seq.with(new SectorComplete(aequor), new Research(coldElectrolyzer)),  () -> { //change
+                				node(concentration, Seq.with(new SectorComplete(aequor), new Research(magnetizer)),  () -> { //change
+                					node(tempest, Seq.with(new SectorComplete(aequor)),  () -> { //change
                                 		
                                 	});
                             	});
@@ -301,14 +301,14 @@ public class TektonTechTree {
             	});
         		node(compass, Seq.with(new SectorComplete(middle)),  () -> {
         			node(sword, Seq.with(new SectorComplete(lake)),  () -> {
-        				node(tesla, Seq.with(new SectorComplete(lake)),  () -> {
-            				node(radiance, Seq.with(new SectorComplete(lake)),  () -> {
+        				node(tesla, Seq.with(new SectorComplete(lake)),  () -> { //change
+            				node(radiance, Seq.with(new SectorComplete(lake)),  () -> { //change
                         		
                         	});
                     	});
                 	});
-        			node(freezer, Seq.with(new SectorComplete(lake), new Research(cryogenicMixer)),  () -> {
-            			node(repulsion, Seq.with(new SectorComplete(lake), new Research(magnetizer)), () -> {
+        			node(freezer, Seq.with(new OnSector(lake), new Research(cryogenicMixer)),  () -> {
+            			node(repulsion, Seq.with(new SectorComplete(lake), new Research(magnetizer)), () -> { //change
     						
     					});
                 	});
@@ -316,7 +316,7 @@ public class TektonTechTree {
         		
         		//radar
         		node(researchRadar, Seq.with(new OnSector(scintilla)), () -> {
-        			node(sensor, Seq.with(new SectorComplete(proelium)), () -> {
+        			node(sensor, Seq.with(new SectorComplete(lake)), () -> {
         				
         			});
     			});
@@ -330,13 +330,13 @@ public class TektonTechTree {
     			node(TektonUnits.martyris, Seq.with(new SectorComplete(scintilla)), () -> {
         			
         		});
-				node(TektonUnits.caravela, Seq.with(new SectorComplete(proelium)), () -> {
+				node(TektonUnits.caravela, Seq.with(new SectorComplete(lake)), () -> {
         			
         		});
 				node(TektonUnits.nail, Seq.with(new SectorComplete(proelium)), () -> {
         			
         		});
-				node(unitRepairTurret, () -> {
+				node(unitRepairTurret, () -> { //change?
         			
         		});
 				//tier 2 & 3
@@ -356,17 +356,17 @@ public class TektonTechTree {
 	        	        		});
 	        				});
 	            		});
-						node(navalDeveloper, Seq.with(new SectorComplete(river)), () -> {
+						node(navalDeveloper, Seq.with(new OnSector(lake)), () -> {
 							node(TektonUnits.sagres, () -> {
-		    					node(navalRefabricator, Seq.with(new SectorComplete(pit)), () -> {
+		    					node(navalRefabricator, Seq.with(new SectorComplete(river)), () -> {
 		    						node(TektonUnits.argos, Seq.with(new Research(navalRefabricator)), () -> {
 		        	        			
 		        	        		});
 		        				});
 		            		});
-							node(mechDeveloper, Seq.with(new SectorComplete(pit)), () -> {
+							node(mechDeveloper, Seq.with(new OnSector(lake)), () -> { //change?
 								node(TektonUnits.strike, () -> {
-			    					node(mechRefabricator, Seq.with(new SectorComplete(pit)), () -> {
+			    					node(mechRefabricator, Seq.with(new OnSector(lake)), () -> {
 			    						node(TektonUnits.hammer, Seq.with(new Research(mechRefabricator)), () -> {
 			        	        			
 			        	        		});
@@ -433,20 +433,21 @@ public class TektonTechTree {
         	//sectors
         	node(satus, () -> {
         		node(middle, Seq.with(new SectorComplete(satus), new Research(silicaAspirator), new Research(siliconFilter)), () -> {
-        			node(scintilla, Seq.with(new SectorComplete(middle), new Research(primordialUnitFactory)), () -> {
-            			node(proelium, Seq.with(new SectorComplete(scintilla), new Research(duel)), () -> {
-            				node(pit, Seq.with(new SectorComplete(proelium), new Research(reactionDrill)), () -> {
-                				node(river, Seq.with(new SectorComplete(pit)), () -> {
-                					node(lake, Seq.with(new SectorComplete(river)), () -> {
+        			node(scintilla, Seq.with(new SectorComplete(middle), new Research(Items.graphite), new Research(primordialUnitFactory)), () -> {
+            			node(proelium, Seq.with(new SectorComplete(scintilla), new Research(duel), new Research(reactionDrill)), () -> {
+            				node(pit, Seq.with(new SectorComplete(proelium), new Research(TektonItems.tantalum)), () -> {
+            					node(lake, Seq.with(new SectorComplete(pit)), () -> {
+                    				node(river, Seq.with(new SectorComplete(lake), new Research(caravela)), () -> {
                 						node(aequor, Seq.with(new SectorComplete(river), new Research(sagres)), () -> {
-                    						node(cave, Seq.with(new SectorComplete(aequor)), () -> {
-                        						
-                                        	});
+                							
+                                    	});
+                						node(cave, Seq.with(new SectorComplete(aequor)), () -> {
+                    						
                                     	});
                                 	});
                             	});
                 				node(rainforest, Seq.with(new SectorComplete(rainforest), new Research(reactionDrill)), () -> {
-                					node(transit, Seq.with(new SectorComplete(pit), new Research(reactionDrill)), () -> {
+                					node(transit, Seq.with(new SectorComplete(rainforest), new Research(reactionDrill)), () -> {
                 						
                                 	});
                             	});

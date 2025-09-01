@@ -16,11 +16,12 @@ import tekton.type.gravity.GravityBlock;
 public class DrawGravityOutput extends DrawBlock {
 	public TextureRegion gravity, glow, top1, top2;
 
-    public Color heatColor = TektonColor.gravityColor;
+    public Color gravityColor = TektonColor.gravityColor.cpy().mul(0.5f);
     public float gravityPulse = 0.3f, gravityPulseScl = 10f, glowMult = 1.2f;
 
     public int rotOffset = 0;
     public boolean drawGlow = true;
+    public float maxAlpha = 0.8f;
 
     public DrawGravityOutput(){}
 
@@ -37,7 +38,7 @@ public class DrawGravityOutput extends DrawBlock {
         if(build instanceof GravityBlock graviter && graviter.gravity() > 0){
             Draw.z(Layer.blockAdditive);
             Draw.blend(Blending.additive);
-            Draw.color(heatColor, graviter.gravityFrac() * (heatColor.a * (1f - gravityPulse + Mathf.absin(gravityPulseScl, gravityPulse))));
+            Draw.color(gravityColor, maxAlpha * graviter.gravityFrac() * (gravityColor.a * (1f - gravityPulse + Mathf.absin(gravityPulseScl, gravityPulse))));
             if(gravity.found()) Draw.rect(gravity, build.x, build.y, rotdeg);
             Draw.color(Draw.getColor().mul(glowMult));
             if(drawGlow && glow.found()) Draw.rect(glow, build.x, build.y);

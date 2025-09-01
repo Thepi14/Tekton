@@ -47,7 +47,7 @@ public class Tekton extends Mod{
 	public static final String MOD_GITHUB_URL = "https://github.com/Thepi14/Tekton.git";
 	public static final String MOD_NAME = "tekton";
 	
-	public static boolean hideContent = false;
+	public static boolean hideContent = true;
 
 	public static final boolean loadedComplete(){
 		return contentLoadComplete;
@@ -110,6 +110,7 @@ public class Tekton extends Mod{
         TektonItems.load();
         TektonLiquids.load();
         //TektonBullets.load();
+        TektonColor.load();
         TektonUnits.load();
         TektonBlocks.load();
         TektonWeathers.load();

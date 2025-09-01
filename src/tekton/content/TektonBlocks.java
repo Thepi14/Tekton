@@ -103,7 +103,7 @@ public class TektonBlocks {
 	gravityConductor, nanoGravityConductor, gravityRouter, electricalCoil, thermalCoil, phaseNanoCoil, 
 	
 	//walls
-	ironWall, ironWallLarge, polycarbonateWall, polycarbonateWallLarge, tantalumWall, tantalumWallLarge, gate, 
+	ironWall, ironWallLarge, tantalumWall, tantalumWallLarge, gate, polycarbonateWall, polycarbonateWallLarge, 
 	polytalumWall, polytalumWallLarge, uraniumWall, uraniumWallLarge, nanoAlloyWall, nanoAlloyWallLarge, 
 	
 	//transport
@@ -917,7 +917,8 @@ public class TektonBlocks {
 			hasPower = true;
 			hasLiquids = true;
             envEnabled |= Env.space;
-            
+
+            craftEffect = Fx.smeltsmoke;
             ambientSound = Sounds.techloop;
             ambientSoundVolume = 0.02f;
             
@@ -1110,25 +1111,6 @@ public class TektonBlocks {
 			size = 2;
 		}};
 		
-		polycarbonateWall = new Wall("polycarbonate-wall") {{
-			requirements(Category.defense, with(polycarbonate, 6, zirconium, 1));
-			health = polycarbonateLife;
-			insulated = true;
-			absorbLasers = true;
-			buildCostMultiplier = 3.5f;
-			researchCostMultiplier = 0.2f;
-		}};
-		
-		polycarbonateWallLarge = new Wall("polycarbonate-wall-large") {{
-			requirements(Category.defense, with(polycarbonate, 24, zirconium, 4));
-			health = polycarbonateLife * 4;
-			size = 2;
-			insulated = true;
-			absorbLasers = true;
-			buildCostMultiplier = 3.5f;
-			researchCostMultiplier = 0.2f;
-		}};
-		
 		tantalumWall = new Wall("tantalum-wall") {{
 			requirements(Category.defense, with(tantalum, 6));
 			health = tantalumLife;
@@ -1153,8 +1135,27 @@ public class TektonBlocks {
             size = 2;
         }};
 		
+		polycarbonateWall = new Wall("polycarbonate-wall") {{
+			requirements(Category.defense, with(polycarbonate, 6));
+			health = polycarbonateLife;
+			insulated = true;
+			absorbLasers = true;
+			buildCostMultiplier = 3.5f;
+			researchCostMultiplier = 0.2f;
+		}};
+		
+		polycarbonateWallLarge = new Wall("polycarbonate-wall-large") {{
+			requirements(Category.defense, with(polycarbonate, 24));
+			health = polycarbonateLife * 4;
+			size = 2;
+			insulated = true;
+			absorbLasers = true;
+			buildCostMultiplier = 3.5f;
+			researchCostMultiplier = 0.2f;
+		}};
+		
 		polytalumWall = new Wall("polytalum-wall") {{
-			requirements(Category.defense, with(polytalum, 6, zirconium, 2));
+			requirements(Category.defense, with(polytalum, 6));
 			health = polytalumLife;
 			armor = 14f;
 			insulated = true;
@@ -1164,7 +1165,7 @@ public class TektonBlocks {
 		}};
 		
 		polytalumWallLarge = new Wall("polytalum-wall-large") {{
-			requirements(Category.defense, with(polytalum, 24, zirconium, 8));
+			requirements(Category.defense, with(polytalum, 24));
 			health = polytalumLife * 4;
 			armor = 14f;
 			size = 2;
@@ -1316,7 +1317,7 @@ public class TektonBlocks {
 		}};
 		
 		regenerationDome = new Regenerator("regeneration-dome") {{
-			requirements(Category.effect, with(Items.silicon, 120, magnet, 20, Items.graphite, 80, polycarbonate, 60));
+			requirements(Category.effect, with(Items.silicon, 120, magnet, 20, iron, 140, polycarbonate, 60));
 			size = 3;
 			range = 44;
 			health = 360;
@@ -2223,12 +2224,12 @@ public class TektonBlocks {
 						height = 9f;
 						lifetime = 16f;
 						shootEffect = Fx.shootSmall;
-						shootEffect = Fx.shootSmallSmoke;
+						smokeEffect = Fx.shootSmallSmoke;
+						hitEffect = despawnEffect = Fx.hitBulletColor;
 						sprite = "tekton-basic-bullet";
 						backSprite = "tekton-basic-bullet-back";
-						frontColor = Color.valueOf("fff6d4");
-						backColor = Color.valueOf("fff6d4");
-						trailColor = Color.valueOf("fff6d4");
+						hitColor = backColor = trailColor = lightColor = commonShootColor;
+						frontColor = Color.white;
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 						ammoMultiplier = 2;
 					}},
@@ -2237,15 +2238,31 @@ public class TektonBlocks {
 						height = 9f;
 						lifetime = 14f;
 						shootEffect = Fx.shootSmall;
-						shootEffect = Fx.shootSmallSmoke;
+						smokeEffect = Fx.shootSmallSmoke;
+						hitEffect = despawnEffect = Fx.hitBulletColor;
 						sprite = "tekton-basic-bullet";
 						backSprite = "tekton-basic-bullet-back";
-						frontColor = Color.valueOf("fff6d4");
-						backColor = Color.valueOf("fff6d4");
-						trailColor = Color.valueOf("fff6d4");
+						hitColor = backColor = trailColor = lightColor = siliconShootColor;
+						frontColor = Color.white;
 						knockback = 0.2f;
 						homingPower = 0.1f;
 						reloadMultiplier = 1.2f;
+						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+						ammoMultiplier = 4;
+					}},
+					Items.graphite, new BasicBulletType(6.2f, 40) {{
+						width = 7f;
+						height = 9f;
+						lifetime = 14f;
+						shootEffect = Fx.shootSmall;
+						smokeEffect = Fx.shootSmallSmoke;
+						//hitEffect = despawnEffect = Fx.hitBulletColor;
+						sprite = "tekton-basic-bullet";
+						backSprite = "tekton-basic-bullet-back";
+						hitColor = backColor = trailColor = lightColor = commonShootColor;
+						frontColor = Color.white;
+						knockback = 0.2f;
+						reloadMultiplier = 0.7f;
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 						ammoMultiplier = 4;
 					}}
@@ -2327,10 +2344,9 @@ public class TektonBlocks {
 						sprite = "tekton-basic-bullet";
 						backSprite = "tekton-basic-bullet-back";
 						frontColor = Color.white;
-						backColor = trailColor = hitColor = Color.valueOf("fff6d4");
+						backColor = trailColor = hitColor = lightColor = commonShootColor;
 						lightRadius = 15;
 						lightOpacity = 0.5f;
-						lightColor = Color.valueOf("fff6d4");
 						trailChance = -1;
 						trailWidth = 1.7f;
 						trailLength = 7;
@@ -2347,16 +2363,36 @@ public class TektonBlocks {
 						sprite = "tekton-basic-bullet";
 						backSprite = "tekton-basic-bullet-back";
 						frontColor = Color.white;
-						backColor = trailColor = hitColor = Color.valueOf("fff6d4");
+						backColor = trailColor = hitColor = lightColor = siliconShootColor;
 						lightRadius = 15;
 						lightOpacity = 0.5f;
-						lightColor = Color.valueOf("fff6d4");
 						trailChance = -1;
 						trailWidth = 1.7f;
 						trailLength = 7;
 						knockback = 0.1f;
 						homingPower = 0.1f;
 						reloadMultiplier = 1.2f;
+						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+						ammoMultiplier = 2;
+					}},
+					Items.graphite, new BasicBulletType(5.15f, 40) {{
+						width = 7f;
+						height = 9f;
+						lifetime = 30f;
+						shootEffect = Fx.shootSmall;
+						smokeEffect = Fx.shootSmallSmoke;
+						//hitEffect = despawnEffect = Fx.hitBulletColor;
+						sprite = "tekton-basic-bullet";
+						backSprite = "tekton-basic-bullet-back";
+						frontColor = Color.white;
+						backColor = trailColor = hitColor = lightColor = commonShootColor;
+						lightRadius = 15;
+						lightOpacity = 0.5f;
+						trailChance = -1;
+						trailWidth = 1.7f;
+						trailLength = 7;
+						knockback = 0.2f;
+						reloadMultiplier = 0.7f;
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 						ammoMultiplier = 2;
 					}},
@@ -2370,17 +2406,60 @@ public class TektonBlocks {
 						sprite = "tekton-basic-bullet";
 						backSprite = "tekton-basic-bullet-back";
 						frontColor = Color.white;
-						backColor = trailColor = hitColor = Color.valueOf("d4d4ff");
+						backColor = trailColor = hitColor = lightColor = tantalumShootColor;
 						lightRadius = 15;
 						lightOpacity = 0.5f;
-						lightColor = Color.valueOf("d4d4ff");
 						trailChance = -1;
 						trailWidth = 1.7f;
 						trailLength = 7;
 						pierce = true;
 						pierceCap = 2;
-						knockback = 0.25f;
+						knockback = 0.3f;
 						reloadMultiplier = 0.9f;
+						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+						ammoMultiplier = 2;
+					}},
+					magnet, new BasicBulletType(7.1f, 10) {{
+						width = 7f;
+						height = 9f;
+						lifetime = 22f;
+						shootEffect = Fx.shootSmallColor;
+						smokeEffect = Fx.shootSmallSmoke;
+						hitEffect = despawnEffect = new MultiEffect(Fx.hitBulletColor, new WaveEffect() {{ 
+							sizeFrom = 2;
+							sizeTo = 16;
+							lifetime = 14;
+							strokeFrom = 2;
+							strokeTo = 0;
+							colorFrom = Color.white;
+							colorTo = magnetShootColor;
+						}});
+						sprite = "tekton-basic-bullet";
+						backSprite = "tekton-basic-bullet-back";
+						frontColor = Color.white;
+						backColor = trailColor = hitColor = lightColor = magnetShootColor;
+						lightRadius = 15;
+						lightOpacity = 0.5f;
+						
+						trailChance = -1;
+						trailInterval = 2f;
+						trailEffect = new WaveEffect() {{ 
+							sizeFrom = 0;
+							sizeTo = 6;
+							lifetime = 8;
+							strokeFrom = 1.5f;
+							strokeTo = 0;
+							colorFrom = Color.white;
+							colorTo = magnetShootColor;
+						}};
+						
+						trailWidth = 1.7f;
+						trailLength = 7;
+						pierce = true;
+						pierceCap = 2;
+						knockback = 4f;
+						splashDamage = 20f;
+						splashDamageRadius = 16f;
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 						ammoMultiplier = 2;
 					}}
@@ -2407,7 +2486,6 @@ public class TektonBlocks {
 		
 		compass = new PowerTurret("compass") {{
 			requirements(Category.turret, with(Items.silicon, 80, Items.graphite, 40));
-			var theCol = Color.valueOf("ff4733");
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
 			drawer = new DrawTurret("quad-");
@@ -2440,8 +2518,8 @@ public class TektonBlocks {
 				lenTo = 0;
 				strokeFrom = 1;
 				strokeTo = 0;
-				colorFrom = Color.valueOf("ffffff");
-				colorTo = theCol;
+				colorFrom = Color.white;
+				colorTo = redShootColor;
 			}});
 
 			consumePower(120f / 60f);
@@ -2455,7 +2533,7 @@ public class TektonBlocks {
 				height = 9f;
 				lifetime = 30f;
 				hitSize = 4f;
-				hitColor = backColor = trailColor = theCol;
+				hitColor = backColor = trailColor = redShootColor;
 				frontColor = Color.white;
 				lightRadius = 15f;
 				lightOpacity = 0.5f;
@@ -2472,7 +2550,7 @@ public class TektonBlocks {
 								strokeFrom = 2;
 								strokeTo = 0;
 								colorFrom = Color.valueOf("ffffff");
-								colorTo = theCol;
+								colorTo = redShootColor;
 							}},
 							new ParticleEffect() {{
 								particles = 6;
@@ -2484,7 +2562,7 @@ public class TektonBlocks {
 								strokeFrom = 1;
 								strokeTo = 0;
 								colorFrom = Color.valueOf("ffffff");
-								colorTo = theCol;
+								colorTo = redShootColor;
 							}}
 					};
 				}};
@@ -2498,7 +2576,7 @@ public class TektonBlocks {
 				lightningLength = 6;
 				lightningLengthRand = 8;
 				lightningDamage = 7;
-				lightningColor = theCol;
+				lightningColor = redShootColorLightning;
 				ammoMultiplier = 1;
 				buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 			}};
@@ -2530,69 +2608,125 @@ public class TektonBlocks {
 			}};
 			health = 600;
 			reload = 25f;
-			range = 180f;
+			range = 204f;
 			//shootSound = Sounds.pew;
 			maxAmmo = 10;
-			inaccuracy = 14;
+			inaccuracy = 7f;
 			ammoPerShot = 1;
 			recoils = 2;
 			soundPitchMin = 0.9f;
 			soundPitchMax = 1f;
 			targetGround = false;
 			ammo(
-					iron, new FlakBulletType(7f, 3) {{
+					iron, new FlakBulletType(7f, 6) {{
 						width = 7f;
 						height = 9f;
 						lifetime = 30f;
 						shootEffect = Fx.shootSmall;
-						shootEffect = Fx.shootSmallSmoke;
+						smokeEffect = Fx.shootSmallSmoke;
+						hitEffect = despawnEffect = Fx.hitBulletColor;
 						sprite = "tekton-basic-bullet";
 						backSprite = "tekton-basic-bullet-back";
 						frontColor = Color.white;
-						backColor = trailColor = Color.valueOf("fff6d4");
+						backColor = trailColor = lightColor = hitColor = lightColor = commonShootColor;
 						lightRadius = 15;
 						lightOpacity = 0.5f;
-						lightColor = Color.valueOf("fff6d4");
 						trailChance = -1;
 						trailWidth = 2;
 						trailLength = 7;
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
-						hitEffect = Fx.flakExplosion;
-						splashDamage = 20;
+						splashDamage = 30;
 						splashDamageRadius = 18f;
 						explodeRange = 12f;
 						ammoMultiplier = 2;
 					}},
-					polycarbonate, new FlakBulletType(7f, 3) {{
+					Items.graphite, new FlakBulletType(7f, 12) {{
 						width = 7f;
 						height = 9f;
 						lifetime = 30f;
 						shootEffect = Fx.shootSmall;
-						shootEffect = Fx.shootSmallSmoke;
+						smokeEffect = Fx.shootSmallSmoke;
+						//hitEffect = despawnEffect = Fx.hitBulletColor;
 						sprite = "tekton-basic-bullet";
 						backSprite = "tekton-basic-bullet-back";
 						frontColor = Color.white;
-						backColor = trailColor = polycarbonate.color;
+						backColor = trailColor = lightColor = hitColor = lightColor = commonShootColor;
 						lightRadius = 15;
 						lightOpacity = 0.5f;
-						lightColor = polycarbonate.color;
+						trailChance = -1;
+						trailWidth = 2;
+						trailLength = 7;
+						reloadMultiplier = 0.7f;
+						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+						splashDamage = 60;
+						splashDamageRadius = 26f;
+						explodeRange = 18f;
+						ammoMultiplier = 2;
+					}},
+					polycarbonate, new FlakBulletType(7f, 6) {{
+						width = 7f;
+						height = 9f;
+						lifetime = 30f;
+						shootEffect = Fx.shootSmall;
+						smokeEffect = Fx.shootSmallSmoke;
+						hitEffect = despawnEffect = Fx.hitBulletColor;
+						sprite = "tekton-basic-bullet";
+						backSprite = "tekton-basic-bullet-back";
+						frontColor = Color.white;
+						backColor = trailColor = lightColor = hitColor = polycarbonateShootColor;
+						lightRadius = 15;
+						lightOpacity = 0.5f;
 						trailChance = -1;
 						trailWidth = 2;
 						trailLength = 7;
 						reloadMultiplier = 0.8f;
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
-						hitEffect = Fx.flakExplosion;
-						splashDamage = 25;
+						splashDamage = 40f;
 						splashDamageRadius = 18f;
 						explodeRange = 12f;
 
-						fragBullets = 7;
-						fragBullet = new BasicBulletType(3f, 6f) {{
+						fragBullets = 6;
+						fragBullet = new BasicBulletType(3f, 8f) {{
 							width = 5f;
 							height = 12f;
 							shrinkY = 1f;
 							lifetime = 20f;
-							backColor = frontColor = polycarbonate.color;
+							backColor = frontColor = polycarbonateShootColor;
+							despawnEffect = Fx.none;
+							collidesGround = false;
+						}};
+						ammoMultiplier = 4;
+					}},
+					polytalum, new FlakBulletType(7.5f, 9) {{
+						width = 7f;
+						height = 9f;
+						lifetime = 30f;
+						shootEffect = Fx.shootSmall;
+						smokeEffect = Fx.shootSmallSmoke;
+						hitEffect = despawnEffect = Fx.hitBulletColor;
+						sprite = "tekton-basic-bullet";
+						backSprite = "tekton-basic-bullet-back";
+						frontColor = Color.white;
+						backColor = trailColor = lightColor = hitColor = polytalumShootColor;
+						lightRadius = 15;
+						lightOpacity = 0.5f;
+						trailChance = -1;
+						trailWidth = 2;
+						trailLength = 7;
+						reloadMultiplier = 1.2f;
+						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+						splashDamage = 50f;
+						splashDamageRadius = 24f;
+						explodeRange = 18f;
+						rangeChange = (7.5f * 8f) - 24f;
+
+						fragBullets = 7;
+						fragBullet = new BasicBulletType(3.5f, 14f) {{
+							width = 5f;
+							height = 12f;
+							shrinkY = 1f;
+							lifetime = 20f;
+							backColor = frontColor = polytalumShootColor;
 							despawnEffect = Fx.none;
 							collidesGround = false;
 						}};
@@ -2655,8 +2789,7 @@ public class TektonBlocks {
 			accurateDelay = true;
 			ammoPerShot = 2;
 			ammo(
-					tantalum, new BasicBulletType(10f, 120) {{
-						Color col = tantalum.color.cpy().lerp(Color.white, 0.5f);
+					tantalum, new BasicBulletType(10f, 80) {{
 						hitSize = 7f;
 						width = 9f;
 						height = 12f;
@@ -2666,7 +2799,7 @@ public class TektonBlocks {
 						sprite = "tekton-basic-bullet";
 						backSprite = "tekton-basic-bullet-back";
 						frontColor = Color.white;
-						backColor = trailColor = hitColor = col;
+						backColor = trailColor = hitColor = tantalumShootColor;
 						lightRadius = 20;
 						lightOpacity = 0.5f;
 						lightColor = tantalum.color;
@@ -2679,7 +2812,7 @@ public class TektonBlocks {
 						pierceArmor = true;
 						knockback = 8f;
 						
-						splashDamageRadius = 30f;
+						splashDamageRadius = 24f;
 						splashDamage = 50f;
 						
 						fragOnHit = true;
@@ -2689,19 +2822,19 @@ public class TektonBlocks {
 						fragVelocityMin = 1f;
 						despawnSound = Sounds.dullExplosion;
 
-						fragBullet = new BasicBulletType(8f, 30) {{
+						fragBullet = new BasicBulletType(8f, 25) {{
 							sprite = "missile-large";
 							width = 8f;
 							height = 12f;
 							lifetime = 15f;
 							hitSize = 4f;
-							hitColor = backColor = trailColor = col;
+							hitColor = backColor = trailColor = tantalumShootColor;
 							frontColor = Color.white;
 							trailWidth = 2.8f;
 							trailLength = 6;
 							hitEffect = despawnEffect = Fx.hitBulletColor;
-							splashDamageRadius = 10f;
-							splashDamage = 25f;
+							splashDamageRadius = 24f;
+							splashDamage = 20f;
 							pierce = false;
 							pierceBuilding = false;
 							pierceCap = 3;
@@ -2711,8 +2844,112 @@ public class TektonBlocks {
 						ammoMultiplier = 1f;
 					}},
 					
-					uranium, new BasicBulletType(12f, 240) {{
-						Color col = uranium.color.cpy().lerp(TektonStatusEffects.radioactiveContamination.color, 0.4f).mul(1.2f);
+					magnet, new BasicBulletType(10f, 40) {{
+						hitSize = 7f;
+						width = 9f;
+						height = 12f;
+						lifetime = 20f;
+						shootEffect = TektonFx.shootBig;
+						smokeEffect = TektonFx.shootBigSmoke;
+						sprite = "tekton-basic-bullet";
+						backSprite = "tekton-basic-bullet-back";
+						frontColor = Color.white;
+						backColor = trailColor = hitColor = magnetShootColor;
+						lightRadius = 20;
+						lightOpacity = 0.5f;
+						lightColor = magnet.color;
+						trailChance = -1;
+						trailWidth = 2.2f;
+						trailLength = 10;
+						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+						hitEffect = despawnEffect = TektonFx.blastExplosionColor;
+						pierce = false;
+						pierceArmor = true;
+						knockback = 26f;
+						
+						splashDamageRadius = 40f;
+						splashDamage = 70f;
+						
+						fragOnHit = true;
+						fragRandomSpread = 0f;
+						fragSpread = 10f;
+						fragBullets = 1;
+						fragVelocityMin = 1f;
+						despawnSound = TektonSounds.gravityemission;
+						
+						trailChance = -1;
+						trailInterval = 2f;
+						trailEffect = new WaveEffect() {{ 
+							sizeFrom = 1;
+							sizeTo = 10;
+							lifetime = 8;
+							strokeFrom = 1.5f;
+							strokeTo = 0;
+							colorFrom = Color.white;
+							colorTo = magnetShootColor;
+						}};
+
+						fragBullet = new WaveBulletType(7f / 2.5f, 8f) {{
+							circleDeegres = 50f;
+							minRadius = 8f;
+							lifetime = 60f;
+							knockback = 40f;
+							hitColor = backColor = trailColor = magnetShootColor;
+							frontColor = Color.white;
+							buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+						}};
+
+						ammoMultiplier = 2f;
+					}},
+					
+					cryogenicCompound, new BasicBulletType(10f, 20) {{
+						hitSize = 7f;
+						width = 9f;
+						height = 12f;
+						lifetime = 20f;
+						shootEffect = TektonFx.shootBig;
+						smokeEffect = TektonFx.shootBigSmoke;
+						sprite = "tekton-basic-bullet";
+						backSprite = "tekton-basic-bullet-back";
+						frontColor = Color.white;
+						backColor = trailColor = hitColor = cryogenicCompoundShootColor;
+						lightRadius = 20;
+						lightOpacity = 0.5f;
+						lightColor = cryogenicCompound.color;
+						//trailChance = -1;
+						trailWidth = 2.2f;
+						trailLength = 10;
+						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+						hitEffect = despawnEffect = TektonFx.blastExplosionColorSlow;
+						pierce = false;
+						pierceArmor = false;
+						knockback = 4f;
+						
+						rangeChange = -52f;
+						splashDamageRadius = 32f;
+						splashDamage = 40f;
+						status = StatusEffects.freezing;
+						statusDuration = 60f * 5f;
+						
+						trailEffect = StatusEffects.freezing.effect;
+						trailInterval = 20f;
+						trailChance = 1f;
+						
+						fragOnHit = true;
+						fragBullets = 1;
+						fragVelocityMin = 1f;
+						despawnSound = Sounds.dullExplosion;
+
+						fragBullet = new StatusEffectAreaBulletType(90f, 32f) {{
+							status = StatusEffects.freezing;
+							areaEffect = StatusEffects.freezing.effect;
+							buildingDamageMultiplier = 0f;
+						}};
+
+						ammoMultiplier = 2f;
+					}},
+					
+					uranium, new BasicBulletType(12f, 160) {{
 						hitSize = 7f;
 						width = 9f;
 						height = 12f;
@@ -2722,7 +2959,7 @@ public class TektonBlocks {
 						sprite = "tekton-basic-bullet";
 						backSprite = "tekton-basic-bullet-back";
 						frontColor = Color.white;
-						backColor = trailColor = hitColor = col;
+						backColor = trailColor = hitColor = uraniumShootColor;
 						lightRadius = 20;
 						lightOpacity = 0.5f;
 						lightColor = uranium.color;
@@ -2737,7 +2974,7 @@ public class TektonBlocks {
 						pierceCap = 3;
 						knockback = 12f;
 						
-						splashDamageRadius = 40f;
+						splashDamageRadius = 24f;
 						splashDamage = 70f;
 						
 						fragOnHit = true;
@@ -2746,22 +2983,22 @@ public class TektonBlocks {
 						fragBullets = 4;
 						fragVelocityMin = 0.4f;
 						fragVelocityMax = 1f;
-						despawnSound = Sounds.dullExplosion;
+						despawnSound = hitSound = Sounds.dullExplosion;
 						reloadMultiplier = 0.8f;
 
-						fragBullet = new BasicBulletType(8f, 50) {{
+						fragBullet = new BasicBulletType(8f, 35) {{
 							sprite = "missile-large";
 							width = 8f;
 							height = 12f;
 							lifetime = 15f;
 							hitSize = 4f;
-							hitColor = backColor = trailColor = col;
+							hitColor = backColor = trailColor = uraniumShootColor;
 							frontColor = Color.white;
 							trailWidth = 2.8f;
 							trailLength = 6;
 							hitEffect = despawnEffect = Fx.hitBulletColor;
-							splashDamageRadius = 15f;
-							splashDamage = 35f;
+							splashDamageRadius = 24f;
+							splashDamage = 30f;
 							pierce = true;
 							pierceBuilding = false;
 							pierceCap = 2;
@@ -2769,6 +3006,90 @@ public class TektonBlocks {
 						}};
 						
 						ammoMultiplier = 2f;
+					}},
+					
+					nanoAlloy, new BasicBulletType(14f, 240) {{
+						hitSize = 7f;
+						width = 9f;
+						height = 12f;
+						lifetime = 18f;
+						shootEffect = TektonFx.shootBig;
+						smokeEffect = TektonFx.shootBigSmoke;
+						sprite = "tekton-basic-bullet";
+						backSprite = "tekton-basic-bullet-back";
+						frontColor = Color.white;
+						backColor = trailColor = hitColor = nanoAlloyShootColor;
+						lightRadius = 20;
+						lightOpacity = 0.5f;
+						lightColor = uranium.color;
+						trailChance = -1;
+						trailWidth = 2.2f;
+						trailLength = 10;
+						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+						hitEffect = despawnEffect = TektonFx.blastExplosionColor;
+						pierce = true;
+						//pierceBuilding = true;
+						pierceArmor = true;
+						pierceCap = 7;
+						knockback = 14f;
+						
+						splashDamageRadius = 24f;
+						splashDamage = 100f;
+						
+						fragOnHit = true;
+						fragSpread = 50f / 7f;
+						fragBullets = 7;
+						fragVelocityMin = 0f;
+						fragVelocityMax = 0f;
+						despawnSound = hitSound = Sounds.spark;
+						reloadMultiplier = 0.8f;
+
+	                    bulletInterval = 2f;
+						intervalBullet = new LightningBulletType(){{
+	                        damage = 16;
+	                        collidesAir = false;
+	                        lightningColor = nanoAlloyShootColor;
+	                        lightningLength = 3;
+	                        lightningLengthRand = 6;
+
+	                        //for visual stats only.
+	                        buildingDamageMultiplier = 0.8f;
+
+	                        lightningType = new BulletType(0.0001f, 0f){{
+	                            lifetime = Fx.lightning.lifetime;
+	                            hitEffect = Fx.hitLancer;
+	                            despawnEffect = Fx.none;
+	                            status = StatusEffects.shocked;
+	                            statusDuration = 10f;
+	                            hittable = false;
+	                            lightColor = nanoAlloyShootColor;
+	                            buildingDamageMultiplier = 0.25f;
+	                        }};
+	                    }};
+	                    
+						fragBullet = new LightningBulletType(){{
+	                        damage = 24f;
+	                        collidesAir = false;
+	                        lightningColor = nanoAlloyShootColor;
+	                        lightningLength = 5;
+	                        lightningLengthRand = 8;
+
+	                        //for visual stats only.
+	                        buildingDamageMultiplier = 0.8f;
+
+	                        lightningType = new BulletType(0.0001f, 0f){{
+	                            lifetime = Fx.lightning.lifetime;
+	                            hitEffect = Fx.hitLancer;
+	                            despawnEffect = Fx.none;
+	                            status = StatusEffects.shocked;
+	                            statusDuration = 10f;
+	                            hittable = false;
+	                            lightColor = nanoAlloyShootColor;
+	                            buildingDamageMultiplier = 0.25f;
+	                        }};
+	                    }};
+						
+						ammoMultiplier = 4f;
 					}});
 			var coolantConsumption = 2f / 60f;
             coolant = consume(new ConsumeLiquid(TektonLiquids.ammonia, coolantConsumption));
@@ -2854,7 +3175,7 @@ public class TektonBlocks {
 			consumeLiquid(Liquids.water, 3f / 60f);
 
 			shootType = new LaserBulletType(120f) {{
-				colors = new Color[]{Color.valueOf("ff4545"), Color.valueOf("ff5959"), Color.valueOf("ff6e6e"), Color.valueOf("ff9191")};
+				colors = new Color[]{redShootColor, Color.valueOf("ff5959"), Color.valueOf("ff6e6e"), Color.valueOf("ff9191")};
 				chargeEffect = new MultiEffect(
 					new WaveEffect() {{
 					sizeFrom = 35;
@@ -2934,7 +3255,7 @@ public class TektonBlocks {
 				status = StatusEffects.melting;
 				hitEffect = Fx.hitBulletColor;
 				splashDamagePierce = true;
-				lightningColor = Color.valueOf("ff5959");
+				lightningColor = redShootColorLightning;
 			}};
 			
 			buildCostMultiplier = 1.15f;
@@ -2984,17 +3305,17 @@ public class TektonBlocks {
 			recoils = 3;
 			recoil = 0.5f;
 			health = 1000;
-			reload = 5f;
+			reload = 6f;
 			var brange = range = 220f;
 			//shootSound = Sounds.pew;
 			maxAmmo = 10;
-			inaccuracy = 14;
+			inaccuracy = 7f;
 			ammoPerShot = 1;
 			soundPitchMin = 0.9f;
 			soundPitchMax = 1f;
 			targetGround = false;
 			ammo(
-					tantalum, new BasicBulletType(7f, 20f) {{
+					tantalum, new BasicBulletType(7f, 40f) {{
 				        collidesGround = false;
 						width = 7f;
 						height = 9f;
@@ -3003,24 +3324,24 @@ public class TektonBlocks {
 						shootEffect = Fx.shootSmallSmoke;
 						sprite = "tekton-basic-bullet";
 						backSprite = "tekton-basic-bullet-back";
-						frontColor = backColor = trailColor = tantalum.color;
+						frontColor = backColor = trailColor = hitColor = tantalumShootColor;
 						lightRadius = 15;
 						lightOpacity = 0.5f;
-						lightColor = tantalum.color;
+						lightColor = tantalumShootColor;
 						trailChance = -1;
 						trailWidth = 2;
 						trailLength = 7;
-						reloadMultiplier = 0.8f;
+						//reloadMultiplier = 0.8f;
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
-						hitEffect = Fx.flakExplosion;
+						hitEffect = despawnEffect = Fx.hitBulletColor;
 						
 						pierce = true;
 						pierceCap = 3;
 						
-						ammoMultiplier = 2f;
+						ammoMultiplier = 6f;
 					}},
 					
-					polycarbonate, new FlakBulletType(7f, 3f) {{
+					polycarbonate, new FlakBulletType(7f, 6f) {{
 						width = 7f;
 						height = 9f;
 						lifetime = 30f;
@@ -3028,31 +3349,31 @@ public class TektonBlocks {
 						shootEffect = Fx.shootSmallSmoke;
 						sprite = "tekton-basic-bullet";
 						backSprite = "tekton-basic-bullet-back";
-						frontColor = backColor = trailColor = polycarbonate.color;
+						frontColor = backColor = trailColor = hitColor = polycarbonateShootColor;
 						lightRadius = 15;
 						lightOpacity = 0.5f;
-						lightColor = polycarbonate.color;
+						lightColor = polycarbonateShootColor;
 						trailChance = -1;
 						trailWidth = 2;
 						trailLength = 7;
 						reloadMultiplier = 0.8f;
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
-						hitEffect = Fx.flakExplosion;
-						splashDamage = 25;
-						splashDamageRadius = 15f;
+						hitEffect = despawnEffect = Fx.hitBulletColor;
+						splashDamage = 40;
+						splashDamageRadius = 40f;
 						explodeRange = 9f;
 
 						fragBullets = 6;
-						fragBullet = new BasicBulletType(3f, 5f) {{
+						fragBullet = new BasicBulletType(3f, 8f) {{
 							width = 5f;
 							height = 12f;
 							shrinkY = 1f;
 							lifetime = 20f;
-							backColor = frontColor = polycarbonate.color;
+							backColor = frontColor = polycarbonateShootColor;
 							despawnEffect = Fx.none;
 							collidesGround = false;
 						}};
-						ammoMultiplier = 4f;
+						ammoMultiplier = 6f;
 					}},
 					
 					polytalum, new FlakBulletType(9f, 6f) {{
@@ -3064,31 +3385,31 @@ public class TektonBlocks {
 						shootEffect = Fx.shootSmallSmoke;
 						sprite = "tekton-basic-bullet";
 						backSprite = "tekton-basic-bullet-back";
-						frontColor = backColor = trailColor = polytalum.color;
+						frontColor = backColor = trailColor = hitColor = polytalumShootColor;
 						lightRadius = 15;
 						lightOpacity = 0.5f;
-						lightColor = polytalum.color;
+						lightColor = polytalumShootColor;
 						trailChance = -1;
 						trailWidth = 2;
 						trailLength = 7;
-						reloadMultiplier = 1f;
+						reloadMultiplier = 1.2f;
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
-						hitEffect = Fx.flakExplosion;
-						splashDamage = 40;
-						splashDamageRadius = 22f;
+						hitEffect = despawnEffect = Fx.hitBulletColor;
+						splashDamage = 50;
+						splashDamageRadius = 40f;
 						explodeRange = 11f;
 
 						fragBullets = 7;
-						fragBullet = new BasicBulletType(3.5f, 8f) {{
+						fragBullet = new BasicBulletType(3.5f, 14f) {{
 							width = 5f;
 							height = 12f;
 							shrinkY = 1f;
 							lifetime = 27f;
-							backColor = frontColor = polytalum.color;
+							backColor = frontColor = polytalumShootColor;
 							despawnEffect = Fx.none;
 							collidesGround = false;
 						}};
-						ammoMultiplier = 6f;
+						ammoMultiplier = 8f;
 					}}
 				);
 			
@@ -3154,7 +3475,7 @@ public class TektonBlocks {
 			ammo(
 					zirconium, new ShrapnelBulletType() {{
 						length = tRange * 0.95f;
-						damage = 200;
+						damage = 400;
 						width = 25f;
 						serrationLenScl = 7f;
 						serrationSpaceOffset = 60f;
@@ -3162,7 +3483,7 @@ public class TektonBlocks {
 						serrations = 10;
 						serrationWidth = 6f;
 						hitLarge = true;
-						fromColor = TektonColor.zirconiumSpark;
+						fromColor = zirconiumShootColor;
 						toColor = Color.white;
 						shootEffect = smokeEffect = Fx.sparkShoot;
 						pierce = true;
@@ -3172,8 +3493,60 @@ public class TektonBlocks {
 						ammoMultiplier = 1f;
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 					}},
-					Items.phaseFabric, new ShrapnelBulletType() {{
+					Items.graphite, new ShrapnelBulletType() {{
 						length = tRange * 0.95f;
+						damage = 200;
+						width = 25f;
+						serrationLenScl = 7f;
+						serrationSpaceOffset = 60f;
+						serrationFadeOffset = 0f;
+						serrations = 10;
+						serrationWidth = 6f;
+						hitLarge = true;
+						fromColor = commonShootColor;
+						toColor = Color.white;
+						shootEffect = smokeEffect = Fx.sparkShoot;
+						pierce = true;
+						pierceBuilding = true;
+						pierceCap = 7;
+						knockback = 6;
+						ammoMultiplier = 1f;
+						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+						
+						bulletInterval = 60f;
+						intervalBullets = 10;
+						intervalRandomSpread = 25f;
+						intervalSpread = 0f;
+						intervalAngle = 0f;
+						
+						intervalBullet = new BasicBulletType(0f, 0f) {{ // 1.5
+							instantDisappear = true;
+							fragRandomSpread = 0f;
+							fragSpread = 0f;
+							fragBullets = 1;
+							
+							fragLifeMax = 1f;
+							fragLifeMin = 0.7f;
+							
+							fragBullet = new BasicBulletType(10f, 20f) {{ // 1.5
+								lifetime = 18f;
+								width = height *= 2f;
+								
+								trailLength = 14;
+				                trailWidth = 1.4f;
+				                trailSinScl = 2.5f;
+				                trailSinMag = 0.5f;
+				                
+				                pierce = true;
+				                pierceCap = 4;
+				                
+				                backColor = hitColor = lightColor = trailColor = commonShootColor;
+				                frontColor = Color.white;
+							}};
+						}};
+					}},
+					Items.phaseFabric, new ShrapnelBulletType() {{// 1
+						length = tRange * 1.05f;
 						damage = 700;
 						width = 25f;
 						serrationLenScl = 7f;
@@ -3182,7 +3555,7 @@ public class TektonBlocks {
 						serrations = 10;
 						serrationWidth = 6f;
 						hitLarge = true;
-						fromColor = Items.phaseFabric.color.cpy();
+						fromColor = phaseFabricShootColor;
 						toColor = Color.white;
 						shootEffect = smokeEffect = Fx.sparkShoot;
 						pierce = true;
@@ -3191,8 +3564,96 @@ public class TektonBlocks {
 						knockback = 30;
 						ammoMultiplier = 4f;
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+						
+						fragBullets = 1;
+						fragRandomSpread = 20f;
+						fragBullet = new BasicBulletType(2f, 0f) {{ // 1.5
+							hittable = false;
+							absorbable = false;
+							collides = false;
+							
+							lifetime = 24f;
+							width = height *= 2f;
+							
+							trailLength = 14;
+			                trailWidth = 1.4f;
+			                trailSinScl = 2.5f;
+			                trailSinMag = 0.5f;
+			                
+			                backColor = hitColor = lightColor = trailColor = phaseFabricShootColor;
+			                frontColor = Color.white;
+			                
+			                hitSound = despawnSound = TektonSounds.shotheavy;
+							
+			                fragBullets = 1;
+							fragRandomSpread = 0f;
+							fragBullet = new ShrapnelBulletType() {{ // 2
+								var mul = 0.667f;
+								length = tRange * 1.05f * mul;
+								damage = 700 * mul;
+								width = 25f * mul;
+								serrationLenScl = 7f * mul;
+								serrationSpaceOffset = 60f * mul;
+								serrationFadeOffset = 0f * mul;
+								serrations = 10;
+								serrationWidth = 6f * mul;
+								hitLarge = true;
+								fromColor = phaseFabricShootColor;
+								toColor = Color.white;
+								shootEffect = smokeEffect = Fx.sparkShoot;
+								pierce = true;
+								pierceBuilding = true;
+								pierceArmor = true;
+								knockback = 30 * mul;
+								buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+								
+								fragBullets = 1;
+								fragRandomSpread = 20f;
+								fragBullet = new BasicBulletType(2f, 0f) {{ // 2.5
+									hittable = false;
+									absorbable = false;
+									collides = false;
+									
+									lifetime = 24f;
+									width = height *= 2f;
+									
+									trailLength = 14;
+					                trailWidth = 1.4f;
+					                trailSinScl = 2.5f;
+					                trailSinMag = 0.5f;
+					                
+					                backColor = hitColor = lightColor = trailColor = phaseFabricShootColor;
+					                frontColor = Color.white;
+					                
+					                hitSound = despawnSound = TektonSounds.shotheavy;
+									
+					                fragBullets = 1;
+									fragRandomSpread = 0f;
+									fragBullet = new ShrapnelBulletType() {{ // 3
+										var mul = 0.334f;
+										length = tRange * 1.05f * mul;
+										damage = 700 * mul;
+										width = 25f * mul;
+										serrationLenScl = 7f * mul;
+										serrationSpaceOffset = 60f * mul;
+										serrationFadeOffset = 0f * mul;
+										serrations = 10;
+										serrationWidth = 6f * mul;
+										hitLarge = true;
+										fromColor = phaseFabricShootColor;
+										toColor = Color.white;
+										shootEffect = smokeEffect = Fx.sparkShoot;
+										pierce = true;
+										pierceBuilding = true;
+										pierceArmor = true;
+										knockback = 30 * mul;
+										buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+									}};
+								}};
+							}};
+						}};
 					}});
-			consumeLiquid(TektonLiquids.oxygen, 1.5f / 60f);
+			consumeLiquid(TektonLiquids.oxygen, 1f / 60f);
 			//coolant = consumeCoolant(0.3f, true, true);
 			coolantMultiplier = 0.5f;
 			researchCostMultiplier = 0.5f;
@@ -3240,7 +3701,7 @@ public class TektonBlocks {
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 					}},
 					
-					TektonLiquids.methane, new DoubleLiquidBulletType(TektonLiquids.methane, Liquids.cryofluid) {{
+					TektonLiquids.methane, new DoubleLiquidBulletType(TektonLiquids.liquidMethane, Liquids.cryofluid) {{
 						lifetime = 40f;
 						speed = 4f;
 						knockback = 1f;
@@ -3252,7 +3713,7 @@ public class TektonBlocks {
 						ammoMultiplier = 3.5f;
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 						
-			        	hitColor =Color.valueOf("d0ff63ff");
+			        	hitColor = Color.valueOf("d0ff63ff");
 					}},
 					
 					TektonLiquids.ammonia, new DoubleLiquidBulletType(TektonLiquids.ammonia, Liquids.cryofluid) {{
@@ -3405,7 +3866,7 @@ public class TektonBlocks {
 		                splashDamage = 180f;
 		                
 		                scaledSplashDamage = true;
-		                backColor = hitColor = trailColor = Color.valueOf("ea8878").lerp(Pal.redLight, 0.5f);
+		                backColor = hitColor = trailColor = lightColor = uraniumShootColor;
 		                frontColor = Color.white;
 		                ammoMultiplier = 1f;
 		                hitSound = Sounds.titanExplosion;
@@ -3431,8 +3892,8 @@ public class TektonBlocks {
 		                	collidesAir = false;
                             collidesTiles = false;
 		                	splashDamage = 50f;
-		                	splashDamageRadius = 15f;
-			                backColor = hitColor = trailColor = Color.valueOf("ea8878").lerp(Pal.redLight, 0.5f);
+		                	splashDamageRadius = 28f;
+		                	backColor = hitColor = trailColor = lightColor = uraniumShootColor;
 			                drag = 0.02f;
                             despawnEffect = hitEffect = Fx.massiveExplosion;
                             smokeEffect = Fx.none;
@@ -3442,6 +3903,221 @@ public class TektonBlocks {
                             trailWidth = 2.8f;
                             trailEffect = Fx.none;
 		                }};
+
+		                trailLength = 32;
+		                trailWidth = 3.35f;
+		                trailSinScl = 2.5f;
+		                trailSinMag = 0.5f;
+		                trailEffect = Fx.disperseTrail;
+		                trailInterval = 2f;
+		                despawnShake = 7f;
+
+		                shootEffect = Fx.shootTitan;
+		                smokeEffect = Fx.shootSmokeTitan;
+		                trailRotation = true;
+
+		                trailInterp = v -> Math.max(Mathf.slope(v), 0.8f);
+		                shrinkX = 0.2f;
+		                shrinkY = 0.1f;
+						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+		            }},
+					
+					magnet, new ArtilleryBulletType(3f, 120, "shell") {{
+		                hitEffect = new MultiEffect(Fx.titanExplosion);
+		                despawnEffect = Fx.none;
+						knockback = 30f;
+		                lifetime = 140f;
+		                height = 19f;
+		                width = 17f;
+		                splashDamageRadius = 55f;
+		                splashDamage = 180f;
+		                
+		                scaledSplashDamage = true;
+		                backColor = hitColor = trailColor = lightColor = magnetShootColor;
+		                frontColor = Color.white;
+		                ammoMultiplier = 2f;
+		                hitSound = Sounds.titanExplosion;
+
+						fragBullets = 1;
+						fragVelocityMin = 1f;
+
+						fragBullet = new BulletSpawnerBullet(60f * 1.2f, 60f) {{
+							bulletInterval = 5f;
+							spawnSound = TektonSounds.gravityemission;
+							intervalBullet = new WaveBulletType(7f / 2.5f, 8f) {{
+								minRadius = 1f;
+								knockback = 30f;
+								backColor = hitColor = trailColor = lightColor = magnetShootColor;
+								lifetime = 9f;
+								circleDeegres = 360f;
+							}};
+							buildingDamageMultiplier = 0f;
+						}};
+
+		                trailLength = 32;
+		                trailWidth = 3.35f;
+		                trailSinScl = 2.5f;
+		                trailSinMag = 0.5f;
+		                trailEffect = new MultiEffect(Fx.disperseTrail, new WaveEffect() {{ 
+							sizeFrom = 4;
+							sizeTo = 20;
+							lifetime = 20;
+							strokeFrom = 2.5f;
+							strokeTo = 0;
+							colorFrom = Color.white;
+							colorTo = magnetShootColor;
+						}});
+		                trailInterval = 4f;
+		                despawnShake = 7f;
+
+		                shootEffect = Fx.shootTitan;
+		                smokeEffect = Fx.shootSmokeTitan;
+		                trailRotation = true;
+
+		                trailInterp = v -> Math.max(Mathf.slope(v), 0.8f);
+		                shrinkX = 0.2f;
+		                shrinkY = 0.1f;
+						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+		            }},
+					
+					cryogenicCompound, new ArtilleryBulletType(3f, 120, "shell") {{
+		                hitEffect = new MultiEffect(Fx.titanExplosion, Fx.titanSmoke);
+		                despawnEffect = Fx.none;
+		                knockback = 3f;
+		                lifetime = 140f;
+		                height = 19f;
+		                width = 17f;
+		                splashDamageRadius = 55f;
+		                splashDamage = 180f;
+		                
+		                scaledSplashDamage = true;
+		                backColor = hitColor = trailColor = lightColor = cryogenicCompoundShootColor;
+		                frontColor = Color.white;
+		                ammoMultiplier = 2f;
+		                hitSound = Sounds.titanExplosion;
+
+		                status = StatusEffects.freezing;
+		                statusDuration = 60f * 10f;
+
+						fragBullets = 1;
+						fragVelocityMin = 1f;
+
+						fragBullet = new StatusEffectAreaBulletType(60f * 7f, 60f) {{
+							status = StatusEffects.freezing;
+							areaEffect = StatusEffects.freezing.effect;
+							buildingDamageMultiplier = 0f;
+						}};
+
+		                trailLength = 32;
+		                trailWidth = 3.35f;
+		                trailSinScl = 2.5f;
+		                trailSinMag = 0.5f;
+		                trailEffect = Fx.disperseTrail;
+		                trailInterval = 2f;
+		                despawnShake = 7f;
+
+		                shootEffect = Fx.shootTitan;
+		                smokeEffect = Fx.shootSmokeTitan;
+		                trailRotation = true;
+
+		                trailInterp = v -> Math.max(Mathf.slope(v), 0.8f);
+		                shrinkX = 0.2f;
+		                shrinkY = 0.1f;
+						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+		            }},
+					
+					nanoAlloy, new ArtilleryBulletType(3f, 240, "shell") {{
+		                hitEffect = new MultiEffect(Fx.titanExplosion);
+		                despawnEffect = Fx.none;
+		                knockback = 3f;
+		                lifetime = 140f;
+		                height = 19f;
+		                width = 17f;
+		                splashDamageRadius = 55f;
+		                splashDamage = 200f;
+		                
+		                scaledSplashDamage = true;
+		                backColor = hitColor = trailColor = lightColor = nanoAlloyShootColor;
+		                frontColor = Color.white;
+		                ammoMultiplier = 4f;
+		                hitSound = Sounds.plasmaboom;
+		                
+	                    bulletInterval = 5f;
+						intervalBullet = new LightningBulletType(){{
+	                        damage = 16;
+	                        collidesAir = false;
+	                        lightningColor = nanoAlloyShootColor;
+	                        lightningLength = 3;
+	                        lightningLengthRand = 6;
+
+	                        //for visual stats only.
+	                        buildingDamageMultiplier = 0.8f;
+
+	                        lightningType = new BulletType(0.0001f, 0f){{
+	                            lifetime = Fx.lightning.lifetime;
+	                            hitEffect = Fx.hitLancer;
+	                            despawnEffect = Fx.none;
+	                            status = StatusEffects.shocked;
+	                            statusDuration = 10f;
+	                            hittable = false;
+	                            lightColor = nanoAlloyShootColor;
+	                            buildingDamageMultiplier = 0.25f;
+	                        }};
+	                    }};
+	                    
+        				lightning = 7;
+        				lightningDamage = 30f;
+                        lightningLength = 8;
+                        lightningLengthRand = 10;
+
+		                fragBullets = 1;
+            			fragBullet = new TektonEmpBulletType() {{
+                            collidesAir = true;
+                            instantDisappear = true;
+                            despawnHit = true;
+            				damage = 70f;
+            				radius = 55f;
+                            clipSize = 250f;
+            				powerDamageScl = 2f;
+            				unitDamageScl = 1f;
+            				buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+            				lightColor = lightningColor = hitColor = Pal.lightOrange;
+            				hitPowerEffect = new Effect(40, e -> {
+            			        color(e.color);
+            			        stroke(e.fout() * 1.6f);
+
+            			        randLenVectors(e.id, 18, e.finpow() * 27f, e.rotation, 360f, (x, y) -> {
+            			            float ang = Mathf.angle(x, y);
+            			            lineAngle(e.x + x, e.y + y, ang, e.fout() * 6 + 1f);
+            			        });
+            			    });
+            				hitEffect = new Effect(50f, 100f, e -> {
+                                e.scaled(7f, b -> {
+                                    color(Pal.lightOrange, b.fout());
+                                    Fill.circle(e.x, e.y, radius);
+                                });
+
+                                color(Pal.lightOrange);
+                                stroke(e.fout() * 3f);
+                                Lines.circle(e.x, e.y, radius);
+
+                                int points = 7;
+                                float offset = Mathf.randomSeed(e.id, 360f);
+                                for(int i = 0; i < points; i++){
+                                    float angle = i* 360f / points + offset;
+                                    //for(int s : Mathf.zeroOne){
+                                        Drawf.tri(e.x + Angles.trnsx(angle, radius), e.y + Angles.trnsy(angle, radius), 6f, 50f * e.fout(), angle/* + s*180f*/);
+                                    //}
+                                }
+
+                                Fill.circle(e.x, e.y, 12f * e.fout());
+                                color();
+                                Fill.circle(e.x, e.y, 6f * e.fout());
+                                Drawf.light(e.x, e.y, radius * 1.6f, Pal.lightOrange, e.fout());
+                            });
+            				chainEffect = Fx.chainEmp.wrap(Pal.lightOrange); 
+            				applyEffect = Fx.hitLancer.wrap(Pal.lightOrange);
+            			}};
 
 		                trailLength = 32;
 		                trailWidth = 3.35f;
@@ -3552,16 +4228,16 @@ public class TektonBlocks {
 				hitSize = 4;
 				statusDuration = 10f;
 				status = StatusEffects.shocked;
-				hitColor = Color.valueOf("ff5959");
+				hitColor = redShootColor;
 				damage = 1800f;
 				lightning = 8;
 				lightningDamage = 50f;
                 lightningLength = 8;
                 lightningLengthRand = 10;
-				lightningColor = Color.valueOf("ff5959");
+				lightningColor = redShootColorLightning;
 				
 				applyEffect = new MultiEffect(
-						Fx.titanExplosion.wrap(Color.valueOf("ffaaaa")),
+						Fx.titanExplosion.wrap(redShootColorLightning),
 	            		new Effect(120f, 20f, e -> {
 	                        TektonFx.rand.setSeed(e.id + 1);
 	                		color(e.color);
@@ -3580,7 +4256,7 @@ public class TektonBlocks {
 	                            Drawf.tri(e.x + ex, e.y + ey, 2.5f, 20f / 3f * e.fout(), i*90);
 	                        }
 
-	                        Drawf.light(e.x + ex, e.y + ey, circleRad * 1.6f, Color.valueOf("ffaaaa"), e.fout());
+	                        Drawf.light(e.x + ex, e.y + ey, circleRad * 1.6f, redShootColorLightning, e.fout());
 	                    }));
 				
 				hitEffect = new MultiEffect(
@@ -3590,8 +4266,8 @@ public class TektonBlocks {
 	            	    	lifetime = 10;
 	            	    	strokeFrom = 2;
 	            	    	strokeTo = 0;
-	            	    	colorFrom = Color.valueOf("ffffff");
-	            	    	colorTo = Color.valueOf("ff4545");
+	            	    	colorFrom = Color.white;
+	            	    	colorTo = redShootColor;
 	            	    }},
 	            		new ParticleEffect() {{
 	            			particles = 6;
@@ -3602,8 +4278,8 @@ public class TektonBlocks {
 	            			lenTo = 0;
 	            			strokeFrom = 1;
 	            			strokeTo = 0;
-	            			colorFrom = Color.valueOf("ffffff");
-	            			colorTo = Color.valueOf("ff4545");
+	            			colorFrom = Color.white;
+	            			colorTo = redShootColor;
 	            		}}
             	    );
 			}};
@@ -3708,7 +4384,7 @@ public class TektonBlocks {
 			rotateSpeed = 0f;
 			shootCone = 361f;
 			
-            float rad = 200f;
+            float rad = 8f * 30f;
 			range = rad;
 
 			consumePower(300f / 60f);
@@ -3717,24 +4393,20 @@ public class TektonBlocks {
             //unitSort = UnitSorts.closest;
 
 			shootType = new TektonEmpBulletType() {{
-				speed = 0f;
+				hitSize = speed = 0f;
 				lifetime = 1f;
 				ammoMultiplier = 1;
 				buildingDamageMultiplier = turretBuildingDamageMultipliyer;
-				hitSize = 4;
 				collidesAir = true;
-				collidesGround = false;
-				collidesTiles = false;
-				absorbable = false;
+				collidesGround = collidesTiles = absorbable = false;
 				despawnHit = true;
 				
 				statusDuration = 10f;
 				status = StatusEffects.shocked;
 				hitColor = Color.valueOf("d1dcff");
-				damage = 80f;
-				radius = rad + 10f;
-				splashDamageRadius = rad + 10f;
-				splashDamage = 1f;
+				damage = 0f;
+				radius = splashDamageRadius = rad;
+				splashDamage = 80f;
 				unitDamageScl = 1f;
 				chainEffect = Fx.chainEmp.wrap(hitColor);
 				hitPowerEffect.wrap(hitColor);
@@ -3783,6 +4455,7 @@ public class TektonBlocks {
             shootCone = 90f;
             minGravity = 12 * gravityMul;
             maxGravity = minGravity + (minGravity / 2);
+            unitSort = UnitSorts.closest;
             
             drawer = new DrawTurret("quad-") {{ 
             	//parts.clear();
@@ -3803,7 +4476,7 @@ public class TektonBlocks {
 				interval = reload;
 				damageInterval = 1f;
 		        drawSize = ((lifetime * waveSpeed) + minRadius) * 2f;
-		        knockback = 3f;
+		        knockback = 12f;
 				buildingDamageMultiplier = 0f;
 			}};
 			
@@ -3822,7 +4495,7 @@ public class TektonBlocks {
 	        			height = width = 14f;
 	        			shrinkX = shrinkY = 0f;
 	                    shootEffect = TektonFx.instShoot;
-	                    chargeEffect = TektonFx.concentrationChargeEffect.wrap(Pal.techBlue);
+	                    chargeEffect = TektonFx.concentrationChargeEffect.wrap(siliconShootColor);
 	                    hitEffect = new MultiEffect(TektonFx.instHit, new Effect(120f, 20f, e -> {
 	                        TektonFx.rand.setSeed(e.id + 1);
 	                		color(e.color);
@@ -3852,7 +4525,7 @@ public class TektonBlocks {
 	                    trailEffect = TektonFx.sparks;
 	                    trailChance = 10f;
 	                    frontColor = Color.white;
-	                    backColor = trailColor = lightColor = lightningColor = hitColor = Pal.techBlue;
+	                    backColor = trailColor = lightColor = lightningColor = hitColor = siliconShootColor;
 	
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 	                    pierce = true;
@@ -3873,12 +4546,91 @@ public class TektonBlocks {
 		                    	pierce = true;
 		                    	pierceArmor = false;
 								buildingDamageMultiplier = turretBuildingDamageMultipliyer;
-		                    	lightColor = lightningColor = hitColor = fromColor = Pal.techBlue;
+		                    	lightColor = lightningColor = hitColor = fromColor = siliconShootColor;
 		                    	toColor = Color.white;
 		                    	despawnSound = Sounds.none;
 	                			hitSound = Sounds.shotgun;
 		                    	hitSoundPitch = 1f;
 		                    	hitSoundVolume = 0.3f;
+		                    }};
+            		}},
+            		
+            		magnet, new BasicBulletType(14f, 400f) {{
+	        			lifetime /= div;
+	        			sprite = "tekton-big-circle-bullet";
+	        			height = width = 14f;
+	        			shrinkX = shrinkY = 0f;
+	                    shootEffect = TektonFx.instShoot;
+	                    chargeEffect = TektonFx.concentrationChargeEffect.wrap(magnetShootColor);
+	                    hitEffect = new MultiEffect(TektonFx.instHit, new Effect(120f, 20f, e -> {
+	                        TektonFx.rand.setSeed(e.id + 1);
+	                		color(e.color);
+	                        stroke(e.fout() * 2f);
+	                        float circleRad = 0.3f + e.finpow() * e.rotation;
+	                        float range = 2f;
+	                        float ex = TektonFx.rand.range(range);
+	                        float ey = TektonFx.rand.range(range);
+	
+	                        for(int i = 0; i < 4; i++){
+	                            Drawf.tri(e.x + ex, e.y + ey, 5f, 20f * e.fout(), i*90);
+	                        }
+	
+	                        color();
+	                        for(int i = 0; i < 4; i++){
+	                            Drawf.tri(e.x + ex, e.y + ey, 2.5f, 20f / 3f * e.fout(), i*90);
+	                        }
+	
+	                        Drawf.light(e.x + ex, e.y + ey, circleRad * 1.6f, e.color, e.fout());
+	                    }));
+	                    smokeEffect = Fx.smokeCloud;
+	                    despawnEffect = TektonFx.instBomb;
+	
+	                    hitSound = Sounds.none;
+	                    despawnSound = Sounds.shotgun;
+	                    
+	                    trailEffect = TektonFx.sparks;
+	                    trailChance = 10f;
+	                    frontColor = Color.white;
+	                    backColor = trailColor = lightColor = lightningColor = hitColor = magnetShootColor;
+	
+						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+	                    pierce = true;
+	                    pierceArmor = true;
+	                    pierceDamageFactor = 1f / 15f;
+	                    pierceCap = 14;
+	                    hitShake = 5f;
+	                    ammoMultiplier = 1f;
+	                    fragBullets = 1;
+	                    fragAngle = 0f;
+	                    fragRandomSpread = 0f;
+	                    fragBullet = 
+	                		new ShrapnelBulletType() {{
+		                    	damage = 140f;
+		                    	length = 90f;
+		                    	width = 90f;
+		                    	keepVelocity = false;
+		                    	pierce = true;
+		                    	pierceArmor = false;
+								buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+		                    	lightColor = lightningColor = hitColor = fromColor = magnetShootColor;
+		                    	toColor = Color.white;
+		                    	despawnSound = Sounds.none;
+	                			hitSound = Sounds.shotgun;
+		                    	hitSoundPitch = 1f;
+		                    	hitSoundVolume = 0.3f;
+		                    	
+		                    	intervalBullets = 10;
+		                    	bulletInterval = 60f;
+		                    	intervalBullet = new WaveBulletType() {{
+		                    		damage = 0;
+		                    		circleDeegres = 360f / 11f;
+									minRadius = 8f;
+									lifetime = 30f;
+									knockback = 30f;
+									hitColor = backColor = trailColor = magnetShootColor;
+									frontColor = Color.white;
+									buildingDamageMultiplier = turretBuildingDamageMultipliyer;
+		                    	}};
 		                    }};
             		}},
             		
@@ -3888,7 +4640,7 @@ public class TektonBlocks {
             			height = width = 14f;
             			shrinkX = shrinkY = 0f;
                         shootEffect = TektonFx.instShoot;
-                        chargeEffect = TektonFx.concentrationChargeEffect.wrap(Pal.lightOrange);
+                        chargeEffect = TektonFx.concentrationChargeEffect.wrap(nanoAlloyShootColor);
                         hitEffect = new MultiEffect(TektonFx.instHit, new Effect(120f, 20f, e -> {
                             TektonFx.rand.setSeed(e.id + 1);
                     		color(e.color);
@@ -3918,7 +4670,7 @@ public class TektonBlocks {
                         trailEffect = TektonFx.sparks;
                         trailChance = 10f;
                         frontColor = Color.white;
-                        backColor = trailColor = lightColor = lightningColor = hitColor = Pal.lightOrange;
+                        backColor = trailColor = lightColor = lightningColor = hitColor = nanoAlloyShootColor;
 
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
                         pierce = true;
@@ -3926,7 +4678,7 @@ public class TektonBlocks {
                         pierceDamageFactor = 1f / 28f;
                         pierceCap = 27;
                         hitShake = 7f;
-                        ammoMultiplier = 1f;
+                        ammoMultiplier = 2f;
                         fragBullets = 1;
                         fragAngle = 0f;
                         fragRandomSpread = 0f;
@@ -3939,18 +4691,17 @@ public class TektonBlocks {
     	                    	pierce = true;
     	                    	pierceArmor = true;
     							buildingDamageMultiplier = turretBuildingDamageMultipliyer;
-    	                    	lightColor = lightningColor = hitColor = fromColor = Pal.lightOrange;
+    	                    	lightColor = lightningColor = hitColor = fromColor = nanoAlloyShootColor;
     	                    	toColor = Color.white;
     	                    	despawnSound = Sounds.none;
                     			hitSound = Sounds.shotgun;
-    	                    	hitSoundPitch = 1f;
+    	                    	hitSoundPitch = 1.1f;
     	                    	hitSoundVolume = 0.3f;
 
     	                        lightning = 7;
     	                        lightningLength = 14;
     	                        lightningLengthRand = 7;
     	                        lightningDamage = 30f;
-    	                        lightningColor = Pal.lightOrange;
     	                    }};
                 		}}
             );
@@ -4056,7 +4807,7 @@ public class TektonBlocks {
             rotateSpeed = 1.7f;
             shootSound = Sounds.none;
             loopSound = TektonSounds.exterminationbeam;
-            loopSoundVolume = 3.5f;
+            loopSoundVolume = 3.5f * 1.8f;
             predictTarget = false;
             scaleDamageEfficiency = true;
             minGravity = (60 + (12 * 3)) * gravityMul;
@@ -4944,7 +5695,7 @@ public class TektonBlocks {
         }};
 		
         unitRepairTurret = new RepairWaveTurret("unit-repair-turret") {{
-            requirements(Category.units, with(Items.graphite, 100, Items.silicon, 100, tantalum, 80, magnet, 10));
+            requirements(Category.units, with(Items.graphite, 100, Items.silicon, 100, tantalum, 80, magnet, 20));
             outlineColor = TektonColor.tektonOutlineColor;
 
             size = 2;

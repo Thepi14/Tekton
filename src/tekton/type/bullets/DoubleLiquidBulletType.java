@@ -37,6 +37,9 @@ public class DoubleLiquidBulletType extends LiquidBulletType {
             secondLiquid = liquid2;
         	secondStatus = secondLiquid.effect;
         	
+        	if (status == null)
+        		status = secondStatus;
+        	
         	var col2 = secondLiquid.color.cpy().mul(0.3f);
         	hitColor = hitColor.cpy().mul(0.8f).add(col2);
         	hitColor.a = 1f;
@@ -57,6 +60,7 @@ public class DoubleLiquidBulletType extends LiquidBulletType {
         knockback = 0.55f;
         displayAmmoMultiplier = false;
     }
+	
 	
 	@Override
     public void draw(Bullet b){
