@@ -16,7 +16,7 @@ import static mindustry.Vars.*;
 public class RebuilderAI extends AIController {
 	public @Nullable Vec2 targetPos;
 	public float distance = 0f;
-	public boolean keepDistance = false;
+	public boolean keepDistance = false, arrival = false;
 
     public RebuilderAI() {
     }
@@ -35,7 +35,7 @@ public class RebuilderAI extends AIController {
         if(!(unit instanceof BuildingTetherc tether) || tether.building() == null) return;
         if (!(tether.building() instanceof BuilderUnitSourceBuild build)) return;
         
-        moveTo(targetPos, distance, 0.5f, keepDistance, new Vec2(), true);
+        moveTo(targetPos, distance, 0.5f, keepDistance, new Vec2(), arrival);
 	}
     
     public float prefSpeed(){
@@ -85,5 +85,10 @@ public class RebuilderAI extends AIController {
         }else{
             unit.movePref(vec);
         }
+    }
+
+    @Override
+    public boolean shouldShoot(){
+        return !unit.isBuilding() && unit.type.canAttack;
     }
 }

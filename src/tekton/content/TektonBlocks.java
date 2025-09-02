@@ -1285,7 +1285,7 @@ public class TektonBlocks {
 		regenerator = new Regenerator("regenerator") {{
 			requirements(Category.effect, with(Items.silicon, 60, Items.graphite, 40, iron, 80));
 			size = 2;
-			range = 22;
+			range = 24;
 			health = 140;
 			squareSprite = false;
 
@@ -1319,7 +1319,7 @@ public class TektonBlocks {
 		regenerationDome = new Regenerator("regeneration-dome") {{
 			requirements(Category.effect, with(Items.silicon, 120, magnet, 20, iron, 140, polycarbonate, 60));
 			size = 3;
-			range = 44;
+			range = 48;
 			health = 360;
 			squareSprite = false;
 			
@@ -5715,7 +5715,7 @@ public class TektonBlocks {
             powerUse = 3f;
 
             consumePower(1f);
-            consumeLiquid(TektonLiquids.oxygen, 1.5f / 60f);
+            consumeLiquid(TektonLiquids.oxygen, 2f / 60f);
         }};
         
 		//payload

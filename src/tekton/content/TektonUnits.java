@@ -333,13 +333,15 @@ public class TektonUnits {
 		builderDrone = new TektonUnitType("builder-drone") {{
 			this.constructor = BuildingTetherPayloadUnit::create;
 			aiController = RebuilderAI::new;
+			
+			buildRange = 300f;
 
             flying = true;
             drag = 0.06f;
             accel = 0.10f;
             speed = 1.7f;
-            health = 140f;
-            armor = 1f;
+            health = 270f;
+            armor = 3f;
             buildSpeed = 0.7f;
             faceTarget = true;
             engineOffset = 6.5f;
@@ -354,7 +356,7 @@ public class TektonUnits {
 			immunities.addAll(TektonStatusEffects.wetInAcid, TektonStatusEffects.shortCircuit);
 			
 			setEnginesMirror(new UnitEngine(30 / 4f, -33.5f / 4f, 2f, 300f));
-
+			
             isEnemy = false;
             hidden = true;
             useUnitCap = false;

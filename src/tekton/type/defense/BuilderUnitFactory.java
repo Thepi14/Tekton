@@ -55,10 +55,10 @@ import static mindustry.Vars.*;
 
 public class BuilderUnitFactory extends Block {
     public final int timerTarget = timers++, timerTarget2 = timers++;
-    public int targetInterval = 15;
+    public int targetInterval = 7;
 
 	public int maxUnits = 3;
-	public float buildRadius = 30f * tilesize;
+	public float buildRadius = 30f * tilesize, unitBuildDistance = 100f;
 	public float rotationMoveDelay = 60f * 3f, rotationSpeedPerTick = 15f / 60f;
 	public UnitType unitType = UnitTypes.mono;
     public float unitBuildTime = 60f * 8f;
@@ -139,7 +139,6 @@ public class BuilderUnitFactory extends Block {
         public Seq<Unit> units = new Seq<Unit>();
         public float buildProgress, totalProgress, rotationProgress = Mathf.range(360f);
         public float warmup, unitWarmup, moveDelayTimer = Mathf.range(rotationMoveDelay);
-        public Build buildTarget;
         
         public boolean missingUnit;
         public @Nullable Unit following;
@@ -273,7 +272,7 @@ public class BuilderUnitFactory extends Block {
                     }
                 }
             	
-            	unit.plans().remove(b -> b.build() == this);
+            	unit.plans().remove(b -> {if (b != null) return b.build() == this; else return true; });
 
                 unit.updateBuildLogic();
             }
@@ -318,12 +317,14 @@ public class BuilderUnitFactory extends Block {
             		if (!unit.activelyBuilding()) {
                 		tUnit.distance = 5f;
                 		tUnit.keepDistance = false;
+                		tUnit.arrival = true;
                 		tUnit.targetPos	= positions.get(i);
                 	}
                 	else if (unit.activelyBuilding()) {
-                		tUnit.distance = 100f;
+                		tUnit.distance = unitBuildDistance;
                 		tUnit.keepDistance = true;
-                		tUnit.targetPos	= new Vec2(unit.buildPlan().x, unit.buildPlan().y);
+                		tUnit.arrival = false;
+                		tUnit.targetPos	= new Vec2(unit.buildPlan().x, unit.buildPlan().y).scl(8f);
                 	}
             	}
             	i++;
