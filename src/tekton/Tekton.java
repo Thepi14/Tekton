@@ -20,6 +20,7 @@ import mindustry.core.Version;
 import mindustry.game.EventType.ClientLoadEvent;
 import mindustry.game.Team;
 import mindustry.gen.Building;
+import mindustry.graphics.MultiPacker;
 import mindustry.mod.Mod;
 import mindustry.type.Item;
 import mindustry.type.Liquid;
@@ -39,6 +40,7 @@ import static mindustry.Vars.*;
 
 public class Tekton extends Mod{
 
+	public static MultiPacker packer;
     public static String ID = "tekton";
 	protected static boolean contentLoadComplete = false;
 	
@@ -82,6 +84,7 @@ public class Tekton extends Mod{
 	@Override
     public void init() {
         super.init();
+        packer = new MultiPacker();
         TektonSettings.load();
         
         /*try {

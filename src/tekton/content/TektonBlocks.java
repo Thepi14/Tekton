@@ -5712,7 +5712,7 @@ public class TektonBlocks {
                 healAmount = (repairAmount / damageInterval) / 5f;
             }};
             
-            powerUse = 3f;
+            powerUse = 1f;
 
             consumePower(1f);
             consumeLiquid(TektonLiquids.oxygen, 2f / 60f);

@@ -64,7 +64,7 @@ public class TektonLiquids {
 		}};
 		
 		acid = new Liquid("acid", TektonColor.acid) {{
-        	hidden = Tekton.hideContent;
+        	hidden = false;
             coolant = false;
 			gas = false;
 			temperature = 1f;

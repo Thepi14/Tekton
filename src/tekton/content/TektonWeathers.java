@@ -55,7 +55,7 @@ public class TektonWeathers {
 	        sound = Sounds.rain;
 	        soundVol = 0.25f;
 	        liquid = TektonLiquids.methane;
-	        color = TektonColor.liquidMethane.cpy();
+	        color = TektonColor.liquidMethane.cpy().mul(1.3f);
             duration = 8f * Time.toMinutes;
 	    }};
 	    

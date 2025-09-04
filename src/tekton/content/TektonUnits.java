@@ -36,6 +36,7 @@ import mindustry.content.*;
 import mindustry.type.unit.*;
 import mindustry.type.weapons.*;
 import mindustry.world.blocks.defense.turrets.BaseTurret.BaseTurretBuild;
+import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.units.DroneCenter.EffectDroneAI;
 import mindustry.world.meta.*;
 import tekton.*;
@@ -2137,8 +2138,30 @@ public class TektonUnits {
         }};
         
         castelo = new TektonUnitType("castelo") {{
-            this.constructor = CrushWaterMoveUnitEntity::create;
-            this.abilities.add(new CrushAbility());
+            this.constructor = ElevationMoveUnit::create;
+            abilities.addAll(new CrushAbility(), new GroundThrustAbility() {{
+            	thrustBulletType = new BulletType(4f, 12f){{
+                    hitSize = 7f;
+                    lifetime = 13f;
+                    statusDuration = 60f * 4;
+                    shootEffect = Fx.shootSmallFlame;
+                    hitEffect = Fx.hitFlameSmall;
+                    despawnEffect = Fx.none;
+                    status = StatusEffects.burning;
+                    keepVelocity = false;
+                    hittable = false;
+                }};
+            }});
+            
+            //emitWalkSound = false;
+            hovering = true;
+            omniMovement = false;
+            rotateMoveFirst = true;
+            faceTarget = true;
+
+            immunities.add(StatusEffects.wet);
+            shadowElevation = 0.11f;
+            
             fogRadiusMultipliyer = 0.8f;
             speed = 0.7f;
             drag = 0.15f;
