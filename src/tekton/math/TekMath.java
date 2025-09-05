@@ -1,4 +1,4 @@
-package tekton;
+package tekton.math;
 
 import arc.math.Mathf;
 import arc.util.Log;

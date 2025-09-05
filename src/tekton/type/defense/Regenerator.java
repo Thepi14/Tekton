@@ -15,7 +15,7 @@ import mindustry.world.*;
 import mindustry.world.draw.*;
 import mindustry.world.meta.*;
 import tekton.Drawt;
-import tekton.TekMath;
+import tekton.math.TekMath;
 
 import static mindustry.Vars.*;
 

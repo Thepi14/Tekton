@@ -36,10 +36,10 @@ import mindustry.graphics.*;
 import static mindustry.Vars.*;
 
 public class ShockwaveAbility extends Ability {
-	protected  float reloadCounter = 0f, checkCounter = 0f;
-	protected  Seq<Bullet> targets = new Seq<>();
-	protected  Seq<Unit> unitTargets = new Seq<>();
-	protected  float heat = 0f;
+	protected float reloadCounter = 0f, checkCounter = 0f;
+	protected Seq<Bullet> targets = new Seq<>();
+	protected Seq<Unit> unitTargets = new Seq<>();
+	protected float heat = 0f;
     public TextureRegion heatRegion;
     
     public float posY = 0f;

@@ -41,10 +41,10 @@ import arc.util.*;
 import mindustry.game.*;
 import mindustry.world.*;
 import tekton.Drawt;
-import tekton.TekMath;
 import tekton.content.TektonFx;
 import tekton.content.TektonItems;
 import tekton.content.TektonStatusEffects;
+import tekton.math.TekMath;
 
 public class LongPowerNodeLink extends LongPowerNode {
 

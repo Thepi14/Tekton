@@ -19,6 +19,7 @@ import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Strings;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -41,13 +42,15 @@ import mindustry.type.UnitType;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import tekton.Tekton;
+import tekton.TektonGambiarra;
+import tekton.TektonGambiarra.*;
+import tekton.math.*;
 
 import static mindustry.Vars.*;
 
 public class GroundThrustAbility extends Ability {
 	protected boolean firstUpdate = false;
 	protected float warmup = 0f, reloadProgress = 0f, thrusterWarmup = 0f, mainThrusterWarmup = 0f, splashTimer = 0f;
-	protected Seq<Vec2F> thrusterPositions = new Seq<>();
 	
 	public float thrusterShake = 0.4f;
 	public float thrusterDistance = 7f;
@@ -60,8 +63,11 @@ public class GroundThrustAbility extends Ability {
     
     public float mainThrusterDistance = 16f;
     public float mainThrusterBulletOffset = 21f;
+    public float mainThrusterMinSpeed = 0.05f;
 	
 	public float groundSpeedMultiplier = 0.5f;
+	public float groundDamageMultiplier = 0.8f;
+	public float groundReloadMultiplier = 0.8f;
 	
 	public Effect 
 	smokeEffect = new Effect(50, e -> {
@@ -86,21 +92,37 @@ public class GroundThrustAbility extends Ability {
     public TextureRegion mainThrusterRegion;
     public TextureRegion mainThrusterHeatRegion;
     public TextureRegion mainThrusterOutlineRegion;
+    
+    private Color trailColor = Blocks.water.mapColor.cpy().mul(1.5f);
+    
+    private int thrusterPosID = 0;
 
     public GroundThrustAbility(){
-    	display = false;
+    	
+    }
+    
+    public String getBundle(){
+        var type = getClass();
+        return "ability." + (type.isAnonymousClass() ? type.getSuperclass() : type).getSimpleName().replace("Ability", "").toLowerCase();
     }
 
     @Override
     public void addStats(Table t) {
-        super.addStats(t);
+        //super.addStats(t);
+		float descriptionWidth = 350f;
+        t.add(Core.bundle.get(getBundle() + ".description")).wrap().width(descriptionWidth);
+        t.row();
+        t.add(abilityStat("speedmultiplierground", Strings.autoFixed((int)(groundSpeedMultiplier * 100f), 3)));
+        t.row();
+        t.add(abilityStat("damagemultiplierground", Strings.autoFixed((int)(groundDamageMultiplier * 100f), 3)));
+        t.row();
+        t.add(abilityStat("reloadmultiplierground", Strings.autoFixed((int)(groundReloadMultiplier * 100f), 3)));
+        t.row();
     }
 
 	@Override
 	public void init(UnitType type){
 		firstUpdate = true;
-        tleft.clear();
-        tright.clear();
 	}
 	
 	@Override
@@ -109,13 +131,39 @@ public class GroundThrustAbility extends Ability {
         
         Floor floor = unit.floorOn();
         var type = unit.type;
+		thrusterPosID = unit.id;
         
+        if (TektonGambiarra.getMisc(unit.id, "leftTrail") == null)
+        	TektonGambiarra.addMisc(new IDObj(unit.id, "leftTrail", new Trail(1)));
+		Trail lTrail = (Trail)TektonGambiarra.getMisc(unit.id, "leftTrail").value;
+        
+        if (TektonGambiarra.getMisc(unit.id, "rightTrail") == null)
+        	TektonGambiarra.addMisc(new IDObj(unit.id, "rightTrail", new Trail(1)));
+		Trail rTrail = (Trail)TektonGambiarra.getMisc(unit.id, "rightTrail").value;
+		
         if (firstUpdate) {
         	warmup = isOnLiquid(unit) ? 0f : 1f;
         	firstUpdate = false;
+
+        	lTrail.clear();
+        	rTrail.clear();
         }
 
+        if (TektonGambiarra.getVec2F(thrusterPosID) == null)
+        	TektonGambiarra.addVec2F(new RSeq<Vec2F>(thrusterPosID));
+        Seq<Vec2F> thrusterPositions = TektonGambiarra.getVec2F(thrusterPosID).seq;
     	thrusterPositions.clear();
+        
+        boolean flying = unit.isFlying();
+        for(int i = 0; i < 2; i++){
+            Trail t = i == 0 ? lTrail : rTrail;
+            t.length = type.trailLength;
+
+            int sign = i == 0 ? -1 : 1;
+            float cx = Angles.trnsx(unit.rotation - 90, type.waveTrailX * sign, type.waveTrailY) + unit.x, cy = Angles.trnsy(unit.rotation - 90, type.waveTrailX * sign, type.waveTrailY) + unit.y;
+            t.update(cx, cy, world.floorWorld(cx, cy).isLiquid && !flying ? 1 : 0);
+        }
+        
         for (int i = 0; i < 4; i++) {
         	var angleOffset = (90f * i);
         	var rotation = unit.rotation - 90f - angleOffset;
@@ -132,12 +180,18 @@ public class GroundThrustAbility extends Ability {
         
     	warmup = Mathf.lerpDelta(warmup, isOnLiquid(unit) ? 0f : 1f, warmupSpeed);
     	thrusterWarmup = Mathf.lerpDelta(thrusterWarmup, isOnLiquid(unit) ? 0f : 1f, thrustWarmupSpeed);
-    	mainThrusterWarmup = Mathf.lerpDelta(mainThrusterWarmup, unit.moving() ? 1f : 0f, mainThrustWarmupSpeed);
-    	
-        unit.speedMultiplier -= warmup * groundSpeedMultiplier;
+    	mainThrusterWarmup = Mathf.lerpDelta(mainThrusterWarmup, unit.moving() && unit.speed() > type.speed * mainThrusterMinSpeed ? 1f : 0f, mainThrustWarmupSpeed);
+
         //act as a naval unit
         Floor on = unit.isFlying() ? Blocks.air.asFloor() : floor;
         unit.speedMultiplier *= (on.shallow ? 1f : 1.3f);
+        
+        //nerf it so it's not too strong
+        if (warmup >= 0.9f) {
+            unit.speedMultiplier *= groundSpeedMultiplier;
+            unit.damageMultiplier *= groundDamageMultiplier;
+            unit.reloadMultiplier *= groundReloadMultiplier;
+        }
         
         if (reloadProgress >= thrustReload) {
         	if (thrustBulletType != null) {
@@ -146,15 +200,13 @@ public class GroundThrustAbility extends Ability {
 	        		bulletX = pos.x + Angles.trnsx(pos.rotation + 45f, thrusterBulletOffset), 
 	    			bulletY = pos.y + Angles.trnsy(pos.rotation + 45f, thrusterBulletOffset);
 
-	            	if (smokeEffect != null && smokeEffect != Fx.none) smokeEffect.at(bulletX, bulletY, pos.rotation);
-
 	            	thrustBulletType.create(unit, unit.team, bulletX, bulletY, pos.rotation + 45f);
 	            	thrustBulletType.shootEffect.create(bulletX, bulletY, pos.rotation + 45f, thrustBulletType.hitColor, this);
 	            	thrustBulletType.smokeEffect.create(bulletX, bulletY, pos.rotation + 45f, thrustBulletType.hitColor, this);
 	            	
-	            	smokeEffect.at(bulletX, bulletY, unit.rotation, world.floor((int)(bulletX / 8), (int)(bulletY / 8)).mapColor, unit);
+	            	if (smokeEffect != null && smokeEffect != Fx.none)smokeEffect.at(bulletX, bulletY, pos.rotation + 45f, world.floor((int)(bulletX / 8), (int)(bulletY / 8)).mapColor, unit);
 	        	}
-	        	if (unit.moving()) {
+	        	if (unit.moving() && unit.speed() > type.speed * mainThrusterMinSpeed) {
 	                float 
 	                mainX = unit.x + Angles.trnsx(unit.rotation - 180f, (mainThrusterDistance * warmup) + mainThrusterBulletOffset), 
 	                mainY = unit.y + Angles.trnsy(unit.rotation - 180f, (mainThrusterDistance * warmup) + mainThrusterBulletOffset);
@@ -163,7 +215,7 @@ public class GroundThrustAbility extends Ability {
 	            	thrustBulletType.shootEffect.create(mainX, mainY, unit.rotation - 180f, thrustBulletType.hitColor, this);
 	            	thrustBulletType.smokeEffect.create(mainX, mainY, unit.rotation - 180f, thrustBulletType.hitColor, this);
 	            	
-	            	smokeEffect.at(mainX, mainY, unit.rotation, world.floor((int)(mainX / 8), (int)(mainY / 8)).mapColor, unit);
+	            	if (smokeEffect != null && smokeEffect != Fx.none)smokeEffect.at(mainX, mainY, unit.rotation - 180f, world.floor((int)(mainX / 8), (int)(mainY / 8)).mapColor, unit);
 	        	}
         	}
         	reloadProgress = 0f;
@@ -189,16 +241,6 @@ public class GroundThrustAbility extends Ability {
         }
         
         Mathf.clamp(warmup);
-        
-        boolean flying = unit.isFlying();
-        for(int i = 0; i < 2; i++){
-            Trail t = i == 0 ? tleft : tright;
-            t.length = type.trailLength;
-
-            int sign = i == 0 ? -1 : 1;
-            float cx = Angles.trnsx(unit.rotation - 90, type.waveTrailX * sign, type.waveTrailY) + unit.x, cy = Angles.trnsy(unit.rotation - 90, type.waveTrailX * sign, type.waveTrailY) + unit.y;
-            t.update(cx, cy, world.floorWorld(cx, cy).isLiquid && !flying ? 1 : 0);
-        }
     }
 	
     public boolean isOnLiquid(Unit unit) {
@@ -222,6 +264,13 @@ public class GroundThrustAbility extends Ability {
     public void draw(Unit unit) {
         if(unit.inFogTo(Vars.player.team())) return;
         var type = unit.type;
+        if (TektonGambiarra.getMisc(unit.id, "leftTrail") == null || TektonGambiarra.getMisc(unit.id, "rightTrail") == null || TektonGambiarra.getVec2F(thrusterPosID) == null) {
+        	return;
+        }
+
+        final Seq<Vec2F> thrusterPositions = TektonGambiarra.getVec2F(thrusterPosID).seq;
+        final Trail lTrail = (Trail)TektonGambiarra.getMisc(unit.id, "leftTrail").value;
+        final Trail rTrail = (Trail)TektonGambiarra.getMisc(unit.id, "rightTrail").value;
         
         if(thrusterRegion == null || thrusterHeatRegion == null || mainThrusterRegion == null || mainThrusterHeatRegion == null){
         	thrusterRegion = Core.atlas.find(unit.type.name + "-thruster", unit.type.region);
@@ -294,26 +343,15 @@ public class GroundThrustAbility extends Ability {
         Color color = Tmp.c1.set(floor.mapColor.equals(Color.black) ? Blocks.water.mapColor : floor.mapColor).mul(1.5f);
         trailColor.lerp(color, Mathf.clamp(Time.delta * 0.04f));
 
-        tleft.draw(trailColor, type.trailScl);
-        tright.draw(trailColor, type.trailScl);
+        if (lTrail != null)
+        	lTrail.draw(trailColor, type.trailScl);
+        if (rTrail != null)
+        	rTrail.draw(trailColor, type.trailScl);
         
         Draw.z(z);
     }
     
-    private transient Trail tleft = new Trail(1), tright = new Trail(1);
-    private transient Color trailColor = Blocks.water.mapColor.cpy().mul(1.5f);
-    
     public String abilityStat(String stat, Object... values) {
         return Core.bundle.format("ability.stat." + stat, values);
-    }
-    
-    public class Vec2F {
-    	public float x, y, rotation;
-    	
-    	public Vec2F(float x, float y, float rotation) {
-    		this.x = x;
-    		this.y = y;
-    		this.rotation = rotation;
-    	}
     }
 }

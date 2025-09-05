@@ -40,6 +40,7 @@ import mindustry.world.blocks.environment.Floor;
 import mindustry.world.blocks.units.DroneCenter.EffectDroneAI;
 import mindustry.world.meta.*;
 import tekton.*;
+import tekton.math.TekMath;
 import tekton.type.abilities.*;
 import tekton.type.ai.MinionAI;
 import tekton.type.ai.RebuilderAI;
@@ -183,7 +184,7 @@ public class TektonUnits {
             engineOffset = 0f;
             engineSize = 0;
             hitSize = 0f;
-            itemCapacity = 0;
+            
             crashDamageMultiplier = 0;
             alwaysUnlocked = mineFloor = mineWalls = targetable = physics = hittable = false;
             targetPriority = -2;
@@ -282,6 +283,7 @@ public class TektonUnits {
             bounded = false;
             homingDelay = 0f;
             missileAccelTime = 0f;
+            
             
             //abilities.add(new ForceFieldAbility(30f, 0.1f, 80f, 60f * 100, 4, 0f));
             parts.add(new HoverPart() {{
@@ -515,7 +517,6 @@ public class TektonUnits {
             rotateSpeed = 4f;
             health = 500;
             armor = 3f;
-            itemCapacity = 0;
             treadRects = new Rect[]{new Rect(-24, -26, 15, 54)};
             researchCostMultiplier = 3f;
             
@@ -555,7 +556,7 @@ public class TektonUnits {
             rotateSpeed = 2.8f;
             health = 1800;
             armor = 7f;
-            itemCapacity = 0;
+            
             treadRects = new Rect[]{new Rect(-31, -38, 20, 76)};
             
             weapons.add(new Weapon(name + "-weapon") {{
@@ -619,7 +620,7 @@ public class TektonUnits {
             rotateSpeed = 2.1f;
             health = 4000;
             armor = 10f;
-            itemCapacity = 0;
+            
             treadPullOffset = 0;
             abilities.add(new ForceFieldAbility(30f, 0.15f, 800f, 60f * 20, 4, 45f));
             
@@ -679,7 +680,7 @@ public class TektonUnits {
             rotateSpeed = 1.5f;
             health = 10000;
             armor = 18f;
-            itemCapacity = 0;
+            
             
             abilities.add(new ShieldArcAbility() {{
                 region = "tekton-hysteresis-shield";
@@ -876,7 +877,7 @@ public class TektonUnits {
             rotateSpeed = 1.1f;
             health = 21000;
             armor = 24f;
-            itemCapacity = 0;
+            
             treadPullOffset = 0;
             float xo = 214f/2f, yo = 214f/2f;
             treadRects = new Rect[]{new Rect(18 - xo, 8 - yo, 56, 198)};
@@ -1053,7 +1054,7 @@ public class TektonUnits {
             engineOffset = 5.75f;
             targetFlags = new BlockFlag[]{BlockFlag.generator, null};
             hitSize = 9;
-            itemCapacity = 0;
+            
             //armor = 0;
             faceTarget = true;
             targetPriority = 0;
@@ -1140,7 +1141,7 @@ public class TektonUnits {
 			rotateSpeed = 4.5f;
 			targetAir = true;
 			armor = 1;
-			itemCapacity = 0;
+			
 			engineOffset = 8.5f;
 			faceTarget = true;
 			targetPriority = 0;
@@ -1231,7 +1232,6 @@ public class TektonUnits {
 			rotateSpeed = 2.5f;
 			targetAir = false;
 			armor = 3;
-			itemCapacity = 0;
 			engineOffset = 14f;
 			faceTarget = true;
 			targetPriority = 0;
@@ -1351,7 +1351,7 @@ public class TektonUnits {
 			health = 8000;
 			rotateSpeed = 2.5f;
 			armor = 7;
-			itemCapacity = 0;
+			
 			faceTarget = false;
 			customFogRadius = true;
 			fogRadius = rang / 8f;
@@ -1509,7 +1509,6 @@ public class TektonUnits {
 			health = 16000;
 			rotateSpeed = 1.8f;
 			armor = 14;
-			itemCapacity = 0;
 			faceTarget = true;
 			crashDamageMultiplier = 2f;
             engineSize = 5.6f;
@@ -1990,14 +1989,14 @@ public class TektonUnits {
                 height = 8.5f;
                 hitEffect = Fx.flakExplosion;
                 splashDamage = 20;
-                splashDamageRadius = 22f;
+                splashDamageRadius = 24f;
                 status = StatusEffects.blasted;
                 range = 40f;
             }};
             
             weapons.add(
     		new Weapon("tekton-mount-weapon") {{
-                reload = 40f;
+                reload = 80f;
                 x = 13f;
                 shootY = 3.2f;
                 y = 1.7f;
@@ -2018,7 +2017,7 @@ public class TektonUnits {
                 bullet = missile;
             }},
     		new Weapon("tekton-mount-weapon") {{
-                reload = 60f;
+                reload = 120f;
                 x = 18.5f;
                 shootY = 3.2f;
                 y = -1.8f;
@@ -2105,7 +2104,7 @@ public class TektonUnits {
             	}}
     			);
                 
-                bullet = new BasicBulletType(7f, 40f) {{
+                bullet = new BasicBulletType(7f, 20f) {{
                     width = 12f;
                     height = 18f;
                     lifetime = 30f;
@@ -2123,12 +2122,12 @@ public class TektonUnits {
                     pierceArmor = true;
                     hitEffect = Fx.flakExplosion;
                     fragBullets = 4;
-                    fragBullet = new BasicBulletType(4f, 40f / fragBullets) {{
+                    fragBullet = new BasicBulletType(4f, 30f / fragBullets) {{
                         lifetime = 8f;
                         pierce = true;
                         pierceBuilding = true;
                         pierceCap = 4;
-                        splashDamage = 20f;
+                        splashDamage = 15f;
                         splashDamageRadius = 30f;
                         status = StatusEffects.blasted;
                     }};
@@ -2142,7 +2141,7 @@ public class TektonUnits {
             abilities.addAll(new CrushAbility(), new GroundThrustAbility() {{
             	thrustBulletType = new BulletType(4f, 12f){{
                     hitSize = 7f;
-                    lifetime = 13f;
+                    lifetime = 10f;
                     statusDuration = 60f * 4;
                     shootEffect = Fx.shootSmallFlame;
                     hitEffect = Fx.hitFlameSmall;
@@ -2154,6 +2153,7 @@ public class TektonUnits {
             }});
             
             //emitWalkSound = false;
+            canDrown = false;
             hovering = true;
             omniMovement = false;
             rotateMoveFirst = true;
@@ -2252,8 +2252,12 @@ public class TektonUnits {
                     fragSpread = 20f;
                     fragRandomSpread = 25f;
                     fragBullets = 10;
+                    
                     fragVelocityMin = 0.4f;
                     fragVelocityMax = 1.4f;
+                    fragLifeMin = 0.3f;
+                    fragLifeMax = 1f;
+                    
                     despawnSound = Sounds.dullExplosion;
                     status = StatusEffects.blasted;
 
@@ -2987,7 +2991,6 @@ public class TektonUnits {
             armor = 0;
             engineOffset = 6f;
             hitSize = 7f;
-            itemCapacity = 30;
             faceTarget = true;
             crashDamageMultiplier = 0;
             strafePenalty = 0.9f;
@@ -2999,7 +3002,7 @@ public class TektonUnits {
             targetable = false;
             physics = false;
             hittable = false;
-
+            itemCapacity = 30;
             fogRadius = 0;
             
             targetPriority = -2;
@@ -3025,14 +3028,13 @@ public class TektonUnits {
             engineOffset = 6f;
             engineSize = 4f;
             hitSize = 13f;
-            itemCapacity = 60;
             faceTarget = true;
             crashDamageMultiplier = 0;
             strafePenalty = 0.9f;
             lowAltitude = false;
             mineFloor = false;
             mineWalls = true;
-
+            itemCapacity = 60;
             fogRadius = 0;
             targetable = false;
             hittable = false;
@@ -3065,14 +3067,13 @@ public class TektonUnits {
             engineOffset = 7f;
             engineSize = 4f;
             hitSize = 15f;
-            itemCapacity = 100;
             faceTarget = true;
             crashDamageMultiplier = 0;
             strafePenalty = 0.9f;
             lowAltitude = false;
             mineFloor = false;
             mineWalls = true;
-
+            itemCapacity = 100;
             fogRadius = 0;
             targetable = false;
             hittable = false;

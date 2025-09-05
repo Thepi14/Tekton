@@ -16,6 +16,7 @@ public class TektonUnitType extends UnitType {
         super(name);
         mechLegColor = outlineColor = TektonColor.tektonOutlineColor;
         envDisabled = Env.none;
+        itemCapacity = 0;
         //immunities.add(TektonStatusEffects.radiationAbsorption);
         ammoType = new ItemAmmoType(TektonItems.iron);
     }

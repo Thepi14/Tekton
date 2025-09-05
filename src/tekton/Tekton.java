@@ -17,7 +17,7 @@ import arc.util.Reflect;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.core.Version;
-import mindustry.game.EventType.ClientLoadEvent;
+import mindustry.game.EventType.*;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.graphics.MultiPacker;
@@ -79,6 +79,11 @@ public class Tekton extends Mod{
                 dialog.show();
             });
         });*/
+		
+		//the gambiarra must not stop
+		Events.on(WorldLoadEvent.class, e -> {
+			TektonGambiarra.clearAllLists();
+		});
 	}
 	
 	@Override
