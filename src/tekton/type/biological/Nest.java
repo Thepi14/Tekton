@@ -176,9 +176,14 @@ public class Nest extends Block implements BiologicalBlock {
             addBar("power", (NestBuild entity) -> new Bar(
             () -> Core.bundle.format("bar.poweroutput",
             Strings.fixed(entity.getPowerProduction() * 60 * entity.timeScale(), 1)),
-            () -> TektonColor.acid.cpy(),
+            () -> TektonColor.acid,
             () -> entity.efficiency));
         }
+        addBar("spawn", (NestBuild entity) -> new Bar(
+                () -> Core.bundle.format("respawn",
+                		Strings.autoFixed((int)(entity.spawnProgress / entity.currentTimer * 100f), 3) + "%"),
+                () -> Pal.power,
+                () -> entity.spawnProgress / entity.currentTimer));
     }
 
     @Override
@@ -199,6 +204,7 @@ public class Nest extends Block implements BiologicalBlock {
 		public float regenCharge = Mathf.random(regenReload);
 		public Seq<Vec2> spawnPositions = new Seq<Vec2>();
 		public Seq<Unit> spawnedCreatures = new Seq<Unit>();
+		protected float currentTimer = 0f, spawnProgress = 0f;
         
         @Override
         public void created() {
@@ -224,8 +230,9 @@ public class Nest extends Block implements BiologicalBlock {
             curRecoil = Mathf.approachDelta(curRecoil, 0, 1f / recoilTime);
             
             if (enabled) {
-            	var ftimer = Mathf.lerp(currentTimer(), currentTimer() / spawnSpeedMultipliyer, 1f - (health / maxHealth));
-                if (timer(timerSpawn, ftimer)) {
+            	spawnProgress += Time.delta;
+            	currentTimer = Mathf.lerp(currentTimer(), currentTimer() / spawnSpeedMultipliyer, 1f - (health / maxHealth));
+                if (timer(timerSpawn, currentTimer)) {
                 	curRecoil = 1f;
             		currentRandom = Mathf.random(-ticksRandom, ticksRandom);
             		currentIndex = Mathf.random(creatures.size - 1);
@@ -233,8 +240,11 @@ public class Nest extends Block implements BiologicalBlock {
             		spawnEffect.at(this);
             		
             		for (var creature : spawnedCreatures) {
-                    	creature.command().attackTarget = creature.command().findTarget(x, y, 1000f * tilesize, creature.type.targetAir, creature.type.targetGround);
+            			if (creature.isCommandable()) {
+            				creature.command().attackTarget = creature.command().findTarget(x, y, 1000f * tilesize, creature.type.targetAir, creature.type.targetGround);
+            			}
             		}
+            		spawnProgress = 0f;
                 }
             }
             
@@ -295,7 +305,9 @@ public class Nest extends Block implements BiologicalBlock {
     			spawnEffect.at(position);
         	var creature = unitType.spawn(position, team());
         	creature.rotation = Mathf.atan2(creature.x - x, creature.y - y) * Mathf.radDeg;
-        	creature.command().attackTarget = creature.command().findTarget(x, y, 1000f * tilesize, creature.type.targetAir, creature.type.targetGround);
+        	if (creature.isCommandable()) {
+            	creature.command().attackTarget = creature.command().findTarget(x, y, 1000f * tilesize, creature.type.targetAir, creature.type.targetGround);
+        	}
         	spawnedCreatures.add(creature);
         	
 			return creature;

@@ -12,7 +12,8 @@ public class TektonColor {
 	//liquids
 	ammonia = Color.valueOf("e6cd43"),
 	liquidMethane = Color.valueOf("515423"),
-	methane = Color.valueOf("868a37"),
+	methane = Color.valueOf("868a37").add(0.1f, 0.1f, 0.1f),
+	methaneGas = Color.valueOf("868a37"),
 	oxygen = Color.valueOf("b48fff"),
 	metazotoplasm = Color.valueOf("aaccaa"),
 	zirconiumSpark = Color.valueOf("fdff8c"),

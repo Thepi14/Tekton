@@ -17,6 +17,7 @@ import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.Fx;
 import mindustry.content.Liquids;
+import mindustry.entities.Effect;
 import mindustry.game.EventType.Trigger;
 import mindustry.gen.Sounds;
 import mindustry.graphics.*;
@@ -49,6 +50,7 @@ public class TektonNuclearReactor extends PowerGenerator {
     
     public Item fuelItem = TektonItems.uranium;
     public Liquid coolantLiquid = Liquids.water;
+    public Effect generateEffect = Fx.none;
 
     public TextureRegion lightsRegion;
     public TextureRegion overheatRegion;
@@ -120,6 +122,8 @@ public class TektonNuclearReactor extends PowerGenerator {
             if (fullness >= fuelThreshold) {
             	if(timer(timerFuel, itemDuration / timeScale)) {
                     consume();
+                    if (generateEffect != Fx.none && generateEffect != null)
+                    		generateEffect.at(this);
                 }
             	if (coolantFullness >= coolantThreshold) {
                 	heat -= (heating / 2f) * ((coolantFullness - coolantThreshold) + 0.1f) * timeScale;

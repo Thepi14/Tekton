@@ -124,7 +124,8 @@ public class LongPowerNodeLink extends LongPowerNode {
         outputsPower = connectedPower = conductivePower = hasPower = consumesPower = true;
         sync = true;
     	//consumePowerBuffered(100f);
-        priority = TargetPriority.base;
+        //it's not *that* important
+        priority = TargetPriority.core - 0.2f;
         drawDisabled = false;
         underBullets = false;
         schematicPriority = 0;

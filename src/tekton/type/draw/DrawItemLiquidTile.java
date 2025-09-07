@@ -15,8 +15,7 @@ public class DrawItemLiquidTile extends DrawBlock {
     public float alpha = 1f;
 
     public DrawItemLiquidTile(Liquid drawLiquid, Item itemReference, float padding){
-        this.drawLiquid = drawLiquid;
-        this.itemReference = itemReference;
+    	this(drawLiquid, itemReference);
         this.padding = padding;
     }
 

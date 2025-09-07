@@ -67,17 +67,17 @@ public class TektonWeathers {
             sizeMax = 140f;
             sizeMin = 70f;
             minAlpha = 0f;
-            maxAlpha = 0.4f;
-            density = 1500f;
-            baseSpeed = 5.4f;
+            maxAlpha = 0.3f;
+            density = 1200f;
+            baseSpeed = 5f;
             attrs.set(Attribute.light, -0.1f);
             attrs.set(Attribute.water, -0.1f);
 	        attrs.set(TektonAttributes.methane, -0.1f);
 	        attrs.set(TektonAttributes.silica, 0.2f);
-            opacityMultiplier = 0.45f;
-            force = 0.25f;
+            opacityMultiplier = 0.3f;
+            force = 0.2f;
             sound = Sounds.wind;
-            soundVol = 1f;
+            soundVol = 0.8f;
             
             duration = 4f * Time.toMinutes;
         }};

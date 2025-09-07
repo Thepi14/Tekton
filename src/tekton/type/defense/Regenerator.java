@@ -51,7 +51,7 @@ public class Regenerator extends Block{
     }
 
     @Override
-    public void drawPlace(int x, int y, int rotation, boolean valid){
+    public void drawPlace(int x, int y, int rotation, boolean valid) {
         super.drawPlace(x, y, rotation, valid);
         
         final float ex = (x * tilesize) + offset, ey = (y * tilesize) + offset;
@@ -164,7 +164,7 @@ public class Regenerator extends Block{
 
                 for(var entry : mendMap.entries()){
                     var build = world.build(entry.key);
-                    if(build != null){
+                    if(build != null) {
                         build.heal(entry.value);
                         build.recentlyHealed();
                     }

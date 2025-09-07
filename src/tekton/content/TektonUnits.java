@@ -416,9 +416,9 @@ public class TektonUnits {
             payloadCapacity = 0f;
             targetable = false;
             bounded = false;
-
+            
 			immunities.addAll(TektonMissileUnitType.defaultImmunities);
-
+			
             isEnemy = false;
             hidden = true;
             useUnitCap = false;
@@ -447,7 +447,7 @@ public class TektonUnits {
             bounded = false;
             
 			immunities.addAll(TektonMissileUnitType.defaultImmunities);
-
+			
             isEnemy = false;
             hidden = true;
             useUnitCap = false;
@@ -1348,7 +1348,7 @@ public class TektonUnits {
 			accel = 0.035f;
 			drag = 0.06f;
 			flying = true;
-			health = 8000;
+			health = 6800;
 			rotateSpeed = 2.5f;
 			armor = 7;
 			
@@ -1515,8 +1515,8 @@ public class TektonUnits {
             engineOffset = 62 / 3f;
             var xPos = 19f;
             var yPos = 12.5f;
-            aimDst = xPos + 20f;
-            range = xPos + 100f;
+            /*aimDst = xPos + 20f;
+            range = xPos + 100f;*/
             
             for (float i : Mathf.signs) {
             	abilities.add(new SuppressionFieldAbility() {{
@@ -1996,7 +1996,7 @@ public class TektonUnits {
             
             weapons.add(
     		new Weapon("tekton-mount-weapon") {{
-                reload = 80f;
+                reload = 60f;
                 x = 13f;
                 shootY = 3.2f;
                 y = 1.7f;
@@ -2017,7 +2017,7 @@ public class TektonUnits {
                 bullet = missile;
             }},
     		new Weapon("tekton-mount-weapon") {{
-                reload = 120f;
+                reload = 80f;
                 x = 18.5f;
                 shootY = 3.2f;
                 y = -1.8f;
@@ -2419,8 +2419,8 @@ public class TektonUnits {
             speed = 0.6f;
             hitSize = 18f;
             rotateSpeed = 2f;
-            health = 2300;
-            armor = 6f;
+            health = 2600;
+            armor = 7f;
             targetAir = false;
         	weapons.add(new Weapon(name + "-weapon") {{
         		layerOffset = -0.000002f;
@@ -2519,7 +2519,7 @@ public class TektonUnits {
             hitSize = 25f;
             rotateSpeed = 2.5f;
             health = 7000;
-            armor = 7f;
+            armor = 8f;
             faceTarget = true;
             singleTarget = true;
             
@@ -2644,7 +2644,7 @@ public class TektonUnits {
             hitSize = 30f;
             rotateSpeed = 1.7f;
             health = 17000f;
-            armor = 9f;
+            armor = 16f;
             faceTarget = true;
             alwaysShootWhenMoving = true;
             aimDst = 16f;
@@ -4099,8 +4099,8 @@ public class TektonUnits {
             rotateSpeed = 2.8f;
             health = 1400;
             armor = 6f;
-            omniMovement = false;
-            rotateMoveFirst = true;
+            //omniMovement = false;
+            //rotateMoveFirst = true;
             lowAltitude = false;
             targetAir = false;
             circleTarget = true;

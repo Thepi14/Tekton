@@ -8,6 +8,7 @@ import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.content.Fx;
+import mindustry.content.Liquids;
 import mindustry.entities.*;
 import mindustry.entities.abilities.*;
 import mindustry.entities.effect.ExplosionEffect;
@@ -315,11 +316,17 @@ public class TektonFx {
 
         Drawf.light(e.x, e.y, 45f, e.color, 0.8f * e.fout());
     }),
-    
-	regenParticleOxygen = new Effect(120f, e -> {
-        color(TektonColor.oxygen);
+	
+	regenParticleHydrogen = new Effect(100f, e -> {
+        color(Pal.heal);
 
-        Fill.square(e.x, e.y, e.fslope() * 1.7f + 0.14f, 0f);
+        Fill.square(e.x, e.y, e.fslope() * 1.7f + 0.14f, 45f);
+    }),
+    
+	regenParticleOxygen = new Effect(140f, e -> {
+        color(Pal.heal);
+
+        Fill.square(e.x, e.y, e.fslope() * 2f + 0.17f, 0f);
     }),
     
 	instShoot = new Effect(24f, e -> {
@@ -551,6 +558,43 @@ public class TektonFx {
         }
 
         Drawf.light(e.x + ex, e.y + ey, circleRad * 1.6f, e.color, e.fin());
+    }),
+	
+	methanespark = new Effect(18, e -> {
+        randLenVectors(e.id, 5, e.fin() * 8f, (x, y) -> {
+            color(TektonColor.methane, Color.gray, e.fin());
+            Fill.circle(e.x + x, e.y + y, e.fout() * 4f /2f);
+        });
+    }),
+	
+	oxygenCombustionSmoke = new Effect(240f, e -> {
+        color(TektonColor.oxygen);
+        alpha(0.5f);
+
+        rand.setSeed(e.id);
+        for(int i = 0; i < 4; i++){
+            float len = rand.random(8f), rot = rand.range(15f) + e.rotation;
+
+            e.scaled(e.lifetime * rand.random(0.3f, 1f), b -> {
+                v.trns(rot, len * b.finpow());
+                Fill.circle(e.x + v.x, e.y + v.y, 2f * b.fslope() + 0.2f);
+            });
+        }
+    }),
+	
+	nuclearSmoke = new Effect(240f, e -> {
+        color(Liquids.water.gasColor);
+        alpha(0.4f);
+
+        rand.setSeed(e.id);
+        for(int i = 0; i < 5; i++){
+            float len = rand.random(10f), rot = rand.range(120f) + e.rotation;
+
+            e.scaled(e.lifetime * rand.random(0.3f, 1f), b -> {
+                v.trns(rot, len * b.finpow());
+                Fill.circle(e.x + v.x, e.y + v.y, 3f * b.fslope() + 0.2f);
+            });
+        }
     }),
     
 	nuclearExplosion = new Effect(30, 700f, b -> {

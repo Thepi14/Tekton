@@ -32,7 +32,7 @@ public class HomingArtilleryBulletType extends ArtilleryBulletType {
     public void update(Bullet b){
         super.update(b);
 
-        //don't check for targets if primed to explode
+        /*//don't check for targets if primed to explode
         if(b.time >= flakDelay && b.fdata >= 0 && b.timer(2, flakInterval)){
         	Vars.indexer.allBuildings(b.x, b.y, explodeRange, other -> {
                 if(b.team != other.team){
@@ -46,7 +46,7 @@ public class HomingArtilleryBulletType extends ArtilleryBulletType {
                     });
                 }
             });
-        }
+        }*/
     }
 	
     @Override

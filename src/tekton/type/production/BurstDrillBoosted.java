@@ -115,7 +115,7 @@ public class BurstDrillBoosted extends BurstDrill {
                 for(int j = 0; j < arrows; j++){
                     float arrowFract = (arrows - 1 - j);
                     float a = Mathf.clamp(fract * arrows - arrowFract);
-                    Tmp.v1.trns(i * 90 + 45, j * arrowSpacing + arrowOffset);
+                    Tmp.v1.trns(i * 90, j * arrowSpacing + arrowOffset);
 
                     //TODO maybe just use arrow alpha and draw gray on the base?
                     Draw.z(Layer.block);
@@ -139,16 +139,16 @@ public class BurstDrillBoosted extends BurstDrill {
                 Drawf.additive(glowRegion, Tmp.c2.set(glowColor).a(Mathf.pow(fract, 3f) * glowColor.a), x, y);
             }
             
-            if (!topBoostRegion.found())
-            	return;
-            Draw.blend(Blending.additive);
-            Draw.color(heatColor);
-            Draw.alpha((Mathf.absin(totalProgress(), glowScale, alpha) * glowIntensity + 1f - glowIntensity) * alpha * liquids.get(boostLiquid));
-            Draw.rect(topBoostRegion, x, y);
-            Draw.color();
-            Draw.alpha(1f);
-            Draw.blend();
-            Draw.reset();
+            if (topBoostRegion.found()) {
+                Draw.blend(Blending.additive);
+                Draw.color(heatColor);
+                Draw.alpha((Mathf.absin(totalProgress(), glowScale, alpha) * glowIntensity + 1f - glowIntensity) * alpha * liquids.get(boostLiquid) * warmup);
+                Draw.rect(topBoostRegion, x, y);
+                Draw.color();
+                Draw.alpha(1f);
+                Draw.blend();
+                Draw.reset();
+            }
         }
     }
 }

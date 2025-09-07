@@ -17,6 +17,7 @@ import mindustry.world.blocks.Attributes;
 import mindustry.world.meta.*;
 import tekton.Tekton;
 import tekton.type.planetGeneration.*;
+import tekton.type.world.TektonEnv;
 import mindustry.content.*;
 
 import arc.func.*;
@@ -58,7 +59,8 @@ public class TektonPlanets {
 			hasAtmosphere = true;
 			solarSystem = Planets.sun;
 			enemyBuildSpeedMultiplier = 0.4f;
-			defaultEnv = Env.terrestrial;
+			//methaned now
+			defaultEnv = TektonEnv.methane | Env.terrestrial;
 			
 			ruleSetter = r -> {
                 r.waveTeam = Team.blue;
@@ -89,7 +91,10 @@ public class TektonPlanets {
             };
             
             accessible = true;
-
+            
+            //atmosphere is full of methane
+            defaultAttributes.set(TektonAttributes.methane, 1f);
+            
 			defaultCore = TektonBlocks.corePrimal;
             unlockedOnLand.add(TektonBlocks.corePrimal);
             

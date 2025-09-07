@@ -55,11 +55,11 @@ import static mindustry.Vars.*;
 
 public class BuilderUnitFactory extends Block {
     public final int timerTarget = timers++, timerTarget2 = timers++;
-    public int targetInterval = 7;
+    public int targetInterval = 15;
 
 	public int maxUnits = 3;
 	public float buildRadius = 30f * tilesize, unitBuildDistance = 100f;
-	public float rotationMoveDelay = 60f * 3f, rotationSpeedPerTick = 15f / 60f;
+	public float rotationMoveDelay = 60f * 3f, unitMoveTimer = 2f, rotationSpeedPerTick = 15f / 60f;
 	public UnitType unitType = UnitTypes.mono;
     public float unitBuildTime = 60f * 8f;
 
@@ -135,10 +135,10 @@ public class BuilderUnitFactory extends Block {
 	
 	public class BuilderUnitSourceBuild extends Building implements UnitTetherBlock {
         protected IntSeq readUnits = new IntSeq();
-
+        
         public Seq<Unit> units = new Seq<Unit>();
         public float buildProgress, totalProgress, rotationProgress = Mathf.range(360f);
-        public float warmup, unitWarmup, moveDelayTimer = Mathf.range(rotationMoveDelay);
+        public float warmup, unitWarmup = 0f, moveDelayTimer = Mathf.range(rotationMoveDelay);
         
         public boolean missingUnit;
         public @Nullable Unit following;
@@ -167,11 +167,11 @@ public class BuilderUnitFactory extends Block {
 
         @Override
         public void updateTile() {
-        	if(!readUnits.isEmpty()){
+        	if(!readUnits.isEmpty()) {
                 units.clear();
                 readUnits.each(i -> {
                     var unit = Groups.unit.getByID(i);
-                    if(unit != null){
+                    if(unit != null) {
                         units.add(unit);
                     }
                 });
@@ -180,11 +180,11 @@ public class BuilderUnitFactory extends Block {
 
             units.removeAll(u -> !u.isAdded() || u.dead);
         	
-            if(checkSuppression()){
+            if(checkSuppression()) {
                 efficiency = potentialEfficiency = 0f;
             }
             
-            unitWarmup = Mathf.lerpDelta(unitWarmup, units.size < maxUnits ? efficiency : 0f, 0.1f);
+            unitWarmup += Time.delta;
             warmup = Mathf.approachDelta(warmup, efficiency, 1f / 60f);
             
             if (efficiency > 0f) {
@@ -192,24 +192,25 @@ public class BuilderUnitFactory extends Block {
                 totalProgress += edelta();
             }
             
-            for (var unit : units) {
-            	if(following != null){
+        	for (var unit : units) {
+            	if(following != null) {
                     //validate follower
-                    if(!following.isValid() || !following.activelyBuilding()){
+                    if(!following.isValid() || !following.activelyBuilding()) {
                         following = null;
                         unit.plans().clear();
-                    }else{
+                    } else {
                         //set to follower's first build plan, whatever that is
                         unit.plans().clear();
                         unit.plans().addFirst(following.buildPlan());
                         lastPlan = null;
                     }
 
-                }else if(unit.buildPlan() == null && timer(timerTarget, targetInterval)){ //search for new stuff
+                } 
+            	else if(unit.buildPlan() == null && timer(timerTarget, targetInterval)) { //search for new stuff
                     Queue<BlockPlan> blocks = team.data().plans;
                     for(int i = 0; i < blocks.size; i++){
                         var block = blocks.get(i);
-                        if(within(block.x * tilesize, block.y * tilesize, buildRadius)){
+                        if(within(block.x * tilesize, block.y * tilesize, buildRadius)) {
                         	//TODO change next update
                         	
                             var btype = content.block(block.block);
@@ -273,7 +274,7 @@ public class BuilderUnitFactory extends Block {
                 }
             	
             	unit.plans().remove(b -> {if (b != null) return b.build() == this; else return true; });
-
+            	
                 unit.updateBuildLogic();
             }
             
@@ -301,33 +302,37 @@ public class BuilderUnitFactory extends Block {
             	rotationProgress += rotationSpeedPerTick * rotationMoveDelay;
             	moveDelayTimer = 0f;
             }
-            positions.clear();
-            for (int i = 1; i <= units.size; i++) {
-            	Vec2 pos = new Vec2(
-            			x + (Mathf.cosDeg((rotationProgress * rotationSpeedPerTick) - ((360f / units.size) * i)) * (buildRadius / 2f)), 
-            			y + (Mathf.sinDeg((rotationProgress * rotationSpeedPerTick) - ((360f / units.size) * i)) * (buildRadius / 2f)));
-            	positions.add(pos);
-            }
-            
-        	int i = 0;
-        	if (units.size > 0 && positions.size > 0)
-            for (var unit : units) {
-            	if (unit == null) break;
-            	if (unit.controller() instanceof RebuilderAI tUnit) {
-            		if (!unit.activelyBuilding()) {
-                		tUnit.distance = 5f;
-                		tUnit.keepDistance = false;
-                		tUnit.arrival = true;
-                		tUnit.targetPos	= positions.get(i);
+
+            if (unitWarmup > unitMoveTimer) {
+            	positions.clear();
+                for (int i = 1; i <= units.size; i++) {
+                	Vec2 pos = new Vec2(
+                			x + (Mathf.cosDeg((rotationProgress * rotationSpeedPerTick) - ((360f / units.size) * i)) * (buildRadius / 2f)), 
+                			y + (Mathf.sinDeg((rotationProgress * rotationSpeedPerTick) - ((360f / units.size) * i)) * (buildRadius / 2f)));
+                	positions.add(pos);
+                }
+                unitWarmup = 0f;
+                
+            	int i = 0;
+            	if (units.size > 0 && positions.size > 0)
+                for (var unit : units) {
+                	if (unit == null) break;
+                	if (unit.controller() instanceof RebuilderAI tUnit) {
+                		if (!unit.activelyBuilding()) {
+                    		tUnit.distance = 5f;
+                    		tUnit.keepDistance = false;
+                    		tUnit.arrival = true;
+                    		tUnit.targetPos	= positions.get(i);
+                    	}
+                    	else if (unit.activelyBuilding()) {
+                    		tUnit.distance = unitBuildDistance;
+                    		tUnit.keepDistance = true;
+                    		tUnit.arrival = false;
+                    		tUnit.targetPos	= new Vec2(unit.buildPlan().x, unit.buildPlan().y).scl(8f);
+                    	}
                 	}
-                	else if (unit.activelyBuilding()) {
-                		tUnit.distance = unitBuildDistance;
-                		tUnit.keepDistance = true;
-                		tUnit.arrival = false;
-                		tUnit.targetPos	= new Vec2(unit.buildPlan().x, unit.buildPlan().y).scl(8f);
-                	}
-            	}
-            	i++;
+                	i++;
+                }
             }
             
             Mathf.clamp(buildProgress);

@@ -66,6 +66,7 @@ public class GroundThrustAbility extends Ability {
     public float mainThrusterMinSpeed = 0.05f;
 	
 	public float groundSpeedMultiplier = 0.5f;
+	public float groundHealthMultiplier = 0.8f;
 	public float groundDamageMultiplier = 0.8f;
 	public float groundReloadMultiplier = 0.8f;
 	
@@ -113,6 +114,8 @@ public class GroundThrustAbility extends Ability {
         t.add(Core.bundle.get(getBundle() + ".description")).wrap().width(descriptionWidth);
         t.row();
         t.add(abilityStat("speedmultiplierground", Strings.autoFixed((int)(groundSpeedMultiplier * 100f), 3)));
+        t.row();
+        t.add(abilityStat("healthmultiplierground", Strings.autoFixed((int)(groundHealthMultiplier * 100f), 3)));
         t.row();
         t.add(abilityStat("damagemultiplierground", Strings.autoFixed((int)(groundDamageMultiplier * 100f), 3)));
         t.row();
@@ -234,10 +237,6 @@ public class GroundThrustAbility extends Ability {
         if((splashTimer += Mathf.dst(unit.deltaX(), unit.deltaY())) >= (7f + unit.hitSize()/8f)){
             floor.walkEffect.at(unit.x, unit.y, unit.hitSize() / 8f, floor.mapColor);
             splashTimer = 0f;
-
-            if(/*type.emitWalkSound*/ true){
-                floor.walkSound.at(unit.x, unit.y, Mathf.random(floor.walkSoundPitchMin, floor.walkSoundPitchMax), floor.walkSoundVolume);
-            }
         }
         
         Mathf.clamp(warmup);
@@ -335,7 +334,7 @@ public class GroundThrustAbility extends Ability {
     	Draw.alpha(1f);
         
         if (warmup >= 0.85f && !Vars.state.isPaused())
-        	Effect.shake(thrusterShake * warmup, thrusterShake, unit);
+        	Effect.shake(thrusterShake * warmup, 1f, unit);
         
         Draw.z(Layer.debris);
 
