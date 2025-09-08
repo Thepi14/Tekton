@@ -77,7 +77,6 @@ public class HomingArtilleryBulletType extends ArtilleryBulletType {
                 if(other.team != b.team && other.hittable() && ((other.isGrounded() && collidesGround) || (other.isFlying() && collidesAir)) && TekMath.insideDiamond(x,  y, other.x, other.y, splashDamageRadius)) {
                 	var dst = TekMath.insideDiamondDst(x, y, other.x, other.y);
                 	var dmg = splashDamage * Mathf.clamp((1.05f - (dst / splashDamageRadius)));
-            		Log.info((1f - (dst / splashDamageRadius)));
                     other.damage(dmg, splashDamagePierce);
                     if(status != StatusEffects.none){
                     	other.apply(status, statusDuration);
