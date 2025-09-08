@@ -642,7 +642,7 @@ public class TektonBlocks {
 		}};
 		
 		atmosphericMethaneConcentrator = new AttributeCrafter("atmospheric-methane-concentrator") {{
-			requirements(Category.crafting, tek(), with(zirconium, 80, Items.silicon, 60, magnet, 40));
+			requirements(Category.crafting, tek(), with(zirconium, 80, Items.graphite, 40, Items.silicon, 60, magnet, 40));
 			consumePower(40f / 60f);
 			squareSprite = false;
 			size = 3;
@@ -805,9 +805,9 @@ public class TektonBlocks {
 			researchCostMultiplier = 0.3f;
 		}};
 		
-		ammoniaCatalyst = new GenericCrafter("ammonia-catalyst") {{
-			requirements(Category.crafting, tek(), with(iron, 120, zirconium, 80, Items.graphite, 80, tantalum, 80));
-			consumePower(40f / 60f);
+		ammoniaCatalyst = new LiquidConverter("ammonia-catalyst") {{
+			requirements(Category.crafting, tek(), with(polycarbonate, 100, magnet, 40, Items.graphite, 60, tantalum, 80));
+			consumePower(60f / 60f);
 			squareSprite = false;
 			size = 3;
 			craftTime = 60f;
@@ -817,14 +817,39 @@ public class TektonBlocks {
 			hasLiquids = true;
 			liquidCapacity = 30;
             fogRadius = 3;
+            
+            liquidConsumption = 10f / 60f;
 
-			consumeLiquid(TektonLiquids.ammonia, 5f / 60f);
-			outputLiquid = new LiquidStack(Liquids.hydrogen, 6f / 60f);
+			consumeLiquid(TektonLiquids.ammonia, liquidConsumption).update(false).boost();
+			consumeLiquid(TektonLiquids.methane, liquidConsumption).update(false).boost();
+			consumeLiquid(TektonLiquids.acid, liquidConsumption).update(false).boost();
+			
+			convertableLiquids = new LiquidStack[] {
+					new LiquidStack(TektonLiquids.ammonia, 10f / 60f),
+					new LiquidStack(TektonLiquids.methane, 15f / 60f),
+					new LiquidStack(TektonLiquids.acid, 20f / 60f)
+			};
+			
+			outputLiquid = new LiquidStack(Liquids.hydrogen, 3f / 60f);
 
 			ambientSound = Sounds.electricHum;
 			ambientSoundVolume = 0.08f;
 			
-			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(TektonLiquids.ammonia) {{ padding = 1f; }}, new DrawRegion("-middle"), new DrawLiquidRegion(Liquids.hydrogen), 
+			var pad = 8f - (10f / 32f);
+			var alp = 0.7f;
+			
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.hydrogen, 0.96f), new DrawRegion("-middle"), 
+					new DrawLiquidTile(TektonLiquids.acid, pad) {{ alpha = alp; }}, 
+					new DrawLiquidTile(TektonLiquids.methane ,pad) {{ alpha = alp; }}, 
+					new DrawLiquidTile(TektonLiquids.ammonia, pad) {{ alpha = alp; }}, 
+					new DrawCircles(){{
+		                color = Liquids.hydrogen.color.cpy().mul(1.3f).a(1f);
+		                strokeMax = 1f;
+		                strokeMin = 0f;
+		                radius = 6f;
+		                amount = 2;
+		                sides = 4;
+		            }},
 					new DrawDefault(), new DrawGlowRegion() {{ color = Liquids.hydrogen.color.cpy(); }}, new DrawLight(Liquids.hydrogen.color));
 			
 			researchCostMultiplier = 0.3f;
@@ -1757,6 +1782,7 @@ public class TektonBlocks {
 			ambientSoundVolume = 0.06f;
 			
 			generateEffect = new RadialEffect(TektonFx.oxygenCombustionSmoke, 4, 90f, 8f) {{ rotationOffset = 45f; }};
+			generateEffectRange = 0f;
 			//effectChance = 1f;
             //generateEffect = TektonFx.methanespark;
 			
@@ -1787,13 +1813,13 @@ public class TektonBlocks {
 			ambientSoundVolume = 0.03f;
 			generateEffect = Fx.generatespark;
 
-			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawItemLiquidTile(Liquids.cryofluid, cryogenicCompound, 9f / 4f), new DrawRegion("-mid-bottom"),
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawItemLiquidTile(Liquids.cryofluid, cryogenicCompound, 9f / 4f) {{ alpha = 0.8f; }}, new DrawRegion("-mid-bottom"),
 				new DrawRegion("-turbine") {{
 					rotateSpeed = 5f;
 			}}, new DrawDefault(), new DrawWarmupRegion(), new DrawGlowRegion() {{
 				alpha = 0.7f;
 				glowScale = 5f;
-				color = Liquids.cryofluid.color;
+				color = Liquids.cryofluid.color.cpy().mul(1.2f);
 			}}, new DrawParticles() {{
 				color = Liquids.cryofluid.color;
 				alpha = 0.6f;
@@ -1828,7 +1854,13 @@ public class TektonBlocks {
 			
 			var col = TektonColor.uraniumShootColor.cpy();
 			
-			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water, 2f), new DrawCircles(){{
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(Liquids.water, 2f), new DrawBubbles(Color.valueOf("7693e3")) {{
+				sides = 10;
+				recurrence = 3f;
+				spread = 8;
+				radius = 1.5f;
+				amount = 20;
+			}}, new DrawCircles(){{
                 color = col.cpy().a(0.24f);
                 strokeMax = 2.5f;
                 radius = 10f;

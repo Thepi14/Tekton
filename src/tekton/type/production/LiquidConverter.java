@@ -1,5 +1,7 @@
-package tekton.type.craft;
+package tekton.type.production;
 
+import arc.Core;
+import arc.Events;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
@@ -8,12 +10,14 @@ import arc.struct.EnumSet;
 import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Nullable;
+import arc.util.Strings;
 import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.units.BuildPlan;
+import mindustry.game.EventType.Trigger;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
 import mindustry.logic.LAccess;
@@ -21,6 +25,8 @@ import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.Liquid;
 import mindustry.type.LiquidStack;
+import mindustry.graphics.Pal;
+import mindustry.ui.Bar;
 import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.liquid.Conduit.ConduitBuild;
@@ -40,6 +46,7 @@ public class LiquidConverter extends Block {
     public @Nullable LiquidStack[] outputLiquids;
     
     public LiquidStack[] convertableLiquids;
+    public float liquidConsumption = 10f / 60f;
 
     public float craftTime = 80;
     public Effect craftEffect = Fx.none;
@@ -66,6 +73,7 @@ public class LiquidConverter extends Block {
         flags = EnumSet.of(BlockFlag.factory);
         drawArrow = false;
         itemCapacity = 0;
+        convertableLiquids = new LiquidStack[0];
 	}
 	
 	@Override
@@ -82,7 +90,21 @@ public class LiquidConverter extends Block {
                 addLiquidBar(stack.liquid);
             }
         }
+        
+        addBar("efficiency", (LiquidConverterBuild entity) -> new Bar(
+		        () -> Core.bundle.format("bar.efficiency", (int)(entity.currentBoost * 100)),
+		        () -> Pal.lightOrange,
+		        () -> Math.min(entity.currentBoost, 1f)));
     }
+	
+	private int bId = 0;
+	public float getBoost() {
+		bId++;
+		if (bId >= convertableLiquids.length)
+			bId = 0;
+		return convertableLiquids[bId - 1].amount;
+				
+	}
 	
 	@Override
     public void setStats(){
@@ -91,6 +113,29 @@ public class LiquidConverter extends Block {
 
         if(outputLiquids != null){
             stats.add(Stat.output, StatValues.liquids(1f, outputLiquids));
+        }
+        
+        if(convertableLiquids.length > 1){
+            stats.remove(Stat.booster);
+            stats.add(Stat.booster, StatValues.boosters(liquidConsumption, liquidConsumption / 60f, getBoost() / liquidConsumption, false, r -> { 
+            	for (int i = 0; i < convertableLiquids.length; i++) {
+            		if (r == convertableLiquids[i].liquid) {
+            			return true;
+            		}
+            } return false; }));
+        	/*stats.add(Stat.booster,
+	                StatValues.speedBoosters("{0}" + StatUnit.percent.localized(),
+	    	        		liquidConsumption, 
+	    	        		(liquidConsumption / getBoost()) * 100, 
+	    	                false, 
+	    	                r -> { 
+	    	                	for (int i = 0; i < convertableLiquids.length; i++) {
+	    	                		if (r == convertableLiquids[i].liquid) {
+	    	                			return true;
+	    	                		}
+	    	                } return false; })
+	    	            );*/
+            
         }
     }
 	
@@ -168,6 +213,41 @@ public class LiquidConverter extends Block {
         public float progress;
         public float totalProgress;
         public float warmup;
+        public float currentBoost = 0f;
+
+        @Override
+        public void updateTile(){
+        	defineCurrentBoost();
+        	efficiency *= currentBoost;
+        	
+            if(efficiency > 0){
+                progress += getProgressIncrease(craftTime);
+                warmup = Mathf.approachDelta(warmup, warmupTarget(), warmupSpeed);
+
+                //continuously output based on efficiency
+                if(outputLiquids != null){
+                    float inc = getProgressIncrease(1f);
+                    for(var output : outputLiquids){
+                        handleLiquid(this, output.liquid, Math.min(output.amount * inc, liquidCapacity - liquids.get(output.liquid)));
+                    }
+                }
+
+                if(wasVisible && Mathf.chanceDelta(updateEffectChance)){
+                    updateEffect.at(x + Mathf.range(size * updateEffectSpread), y + Mathf.range(size * updateEffectSpread));
+                }
+            }else{
+                warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
+            }
+
+            //TODO may look bad, revert to edelta() if so
+            totalProgress += warmup * edelta();
+
+            if(progress >= 1f){
+                craft();
+            }
+
+            dumpOutputs();
+        }
         
         @Override
         public boolean shouldConsume(){
@@ -192,50 +272,36 @@ public class LiquidConverter extends Block {
 
             return enabled;
         }
-
-        @Override
-        public void updateTile(){
-            if(efficiency > 0){
-                progress += getProgressIncrease(craftTime);
-                warmup = Mathf.approachDelta(warmup, warmupTarget(), warmupSpeed);
-
-                //continuously output based on efficiency
-                if(outputLiquids != null){
-                    float inc = getProgressIncrease(1f);
-                    for(var output : outputLiquids){
-                        handleLiquid(this, output.liquid, Math.min(output.amount * inc, liquidCapacity - liquids.get(output.liquid)));
-                    }
-                }
-
-                if(wasVisible && Mathf.chanceDelta(updateEffectChance)){
-                    updateEffect.at(x + Mathf.range(size * updateEffectSpread), y + Mathf.range(size * updateEffectSpread));
-                }
-            }else{
-                warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed);
+        
+        public void defineCurrentBoost() {
+        	var newBoost = 0f;
+            for (int i = 0; i < convertableLiquids.length; i++) {
+            	var stack = convertableLiquids[i];
+            	var currentAmount = liquids.get(convertableLiquids[i].liquid);
+            	if (currentAmount > liquidConsumption) {
+                	newBoost += stack.amount / liquidConsumption;
+            	}
             }
-
-            //TODO may look bad, revert to edelta() if so
-            totalProgress += warmup * Time.delta;
-
-            if(progress >= 1f){
-                craft();
-            }
-
-            dumpOutputs();
+            
+            currentBoost = newBoost;
         }
         
+        public void craft() {
+            //consume();
 
-
-        public void craft(){
-            consume();
+            for (int i = 0; i < convertableLiquids.length; i++) {
+            	var stack = convertableLiquids[i];
+            	liquids.remove(stack.liquid, liquidConsumption * 60f);
+            }
 
             if(wasVisible){
                 craftEffect.at(x, y);
             }
+            
             progress %= 1f;
         }
 
-        public void dumpOutputs(){
+        public void dumpOutputs() {
         	if(outputLiquids != null){
                 for(int i = 0; i < outputLiquids.length; i++){
                     int dir = liquidOutputDirections.length > i ? liquidOutputDirections[i] : -1;
