@@ -87,7 +87,6 @@ public class HomingArtilleryBulletType extends ArtilleryBulletType {
             indexer.eachBlock(null, x, y, splashDamageRadius, other -> other.team != b.team && TekMath.insideDiamond(x,  y, other.x, other.y, splashDamageRadius), other -> {
             	var dst = TekMath.insideDiamondDst(x, y, other.x, other.y);
             	var dmg = splashDamage * Mathf.clamp((1.05f - (dst / splashDamageRadius)));
-        		Log.info((1f - (dst / splashDamageRadius)));
                 other.damage(dmg);
         	});
         }
