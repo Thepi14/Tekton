@@ -14,13 +14,13 @@ public class TektonItems {
 	public static final Seq<Item> tektonItems = new Seq<>(), allItems = new Seq<>();
 	
 	public static void load(){
-		iron = new Item("iron", Color.valueOf("9e9090")){{
+		iron = new Item("iron", Color.valueOf("8c857d")){{
             hardness = 1;
             cost = 0.8f;
             alwaysUnlocked = true;
         }};
         
-        zirconium = new Item("zirconium", Color.valueOf("4a3f37")) {{
+        zirconium = new Item("zirconium", Color.valueOf("d98162")) {{
         	hardness = 2;
             cost = 1.4f;
             alwaysUnlocked = false;
@@ -32,7 +32,7 @@ public class TektonItems {
             alwaysUnlocked = false;
         }};
         
-        polycarbonate = new Item("polycarbonate", Color.valueOf("bafff7")) {{
+        polycarbonate = new Item("polycarbonate", Color.valueOf("238277")) {{
         	hardness = 1;
             cost = 2f;
             explosiveness = 0.15f;
@@ -75,7 +75,7 @@ public class TektonItems {
             alwaysUnlocked = false;
         }};
         
-        cryogenicCompound = new Item("cryogenic-compound", Color.valueOf("87ceeb")) {{
+        cryogenicCompound = new Item("cryogenic-compound", Color.valueOf("80e8ff")) {{
         	hardness = 1;
             explosiveness = 0.5f;
             alwaysUnlocked = false;

@@ -40,7 +40,7 @@ public class TektonBioUnit extends UnitType {
 		useUnitCap = false;
 		drawBuildBeam = false;
 		drawCell = false;
-		hidden = Tekton.hideContent;
+		hidden = Tekton.hideContent && false;
         researchCostMultiplier = 0f;
         outlineColor = TektonColor.tektonOutlineColor;
         envDisabled = Env.space | Env.scorching;

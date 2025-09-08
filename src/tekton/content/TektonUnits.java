@@ -3373,12 +3373,13 @@ public class TektonUnits {
                 shootSound = Sounds.explosion;
                 x = shootY = 0f;
                 mirror = false;
+                range = 16f;
                 bullet = new BulletType(){{
                     collidesTiles = false;
                     collides = false;
                     hitSound = Sounds.explosion;
 
-                    rangeOverride = 25f;
+                    rangeOverride = 16f;
                     hitEffect = TektonFx.biologicalPulseBig;
                     speed = 0f;
                     splashDamageRadius = 44f;

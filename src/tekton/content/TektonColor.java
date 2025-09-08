@@ -45,7 +45,7 @@ public class TektonColor {
 	public static void load() { //waaaa
 		zirconiumShootColor = TektonColor.zirconiumSpark.cpy();
 		tantalumShootColor = tantalum.color.cpy().lerp(Color.white, 0.5f);
-		polycarbonateShootColor = polycarbonate.color.cpy().lerp(Color.white, 0.1f);
+		polycarbonateShootColor = Color.valueOf("71c9aa");
 		polytalumShootColor = polytalum.color.cpy().lerp(Color.white, 0.1f);
 		magnetShootColor = magnet.color.cpy().lerp(Color.white, 0.2f);
 		cryogenicCompoundShootColor = cryogenicCompound.color.cpy().lerp(Color.white, 0.2f);
