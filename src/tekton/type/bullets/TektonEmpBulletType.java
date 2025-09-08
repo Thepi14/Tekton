@@ -44,13 +44,13 @@ public class TektonEmpBulletType extends BasicBulletType{
         if(!b.absorbed){
         	if (collidesGround)
 	            Vars.indexer.allBuildings(x, y, radius, other -> {
-	                if(b.team != other.team && other.power != null){
+	                if(b.team != other.team && other.power != null) {
 	                    var absorber = Damage.findAbsorber(b.team, x, y, other.x, other.y);
-	                    if(absorber != null && absorbable){
+	                    if(absorber != null && absorbable) {
 	                        other = absorber;
 	                    }
 	
-	                    if(other.power != null && other.power.graph.getLastPowerProduced() > 0f && !(other.block instanceof Wall) && !(other.block instanceof BiologicalBlock)){
+	                    if(other.power != null && other.power.graph.getLastPowerProduced() > 0f && !(other.block instanceof Wall) && !(other.block instanceof BiologicalBlock)) {
 	                        other.applySlowdown(powerSclDecrease, timeDuration);
 	                        other.damage(damage * powerDamageScl * buildingDamageMultiplier);
 	                        hitPowerEffect.at(other.x, other.y, b.angleTo(other), hitColor);
@@ -61,9 +61,9 @@ public class TektonEmpBulletType extends BasicBulletType{
 
             if(hitUnits){
                 Units.nearbyEnemies(b.team, x, y, radius, other -> {
-                    if(other.team != b.team && other.hittable() && ((other.isGrounded() && collidesGround) || (other.isFlying() && collidesAir))){
+                    if(other.team != b.team && other.hittable() && ((other.isGrounded() && collidesGround) || (other.isFlying() && collidesAir))) {
                         var absorber = Damage.findAbsorber(b.team, x, y, other.x, other.y);
-                        if(absorber != null && absorbable){
+                        if(absorber != null && absorbable) {
                             return;
                         }
                         hitPowerEffect.at(other.x, other.y, b.angleTo(other), hitColor);

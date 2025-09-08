@@ -2786,6 +2786,8 @@ public class TektonUnits {
                     trailWidth = 4f;
                     trailLength = 20;
                     
+                    pierce = true;
+                    
                     explodeRange = 30f;
                     explodeDelay = 1f;
                     flakDelay = 2.5f;
@@ -2796,6 +2798,7 @@ public class TektonUnits {
                     splashDamageRadius = splashRadCorr;
                     splashDamage = 700f;
                     scaledSplashDamage = true;
+                    splashDamagePierce = false;
                     
                     homingDelay = 1f;
                     homingPower = 2f;

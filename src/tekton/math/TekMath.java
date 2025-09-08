@@ -13,4 +13,14 @@ public final class TekMath {
 		
 		return tx + ty <= size;
 	}
+	
+	public static float insideDiamondDst(float x, float y, float dx, float dy) {
+		var tx = (x - dx);
+		var ty = (y - dy);
+		
+		tx = tx < 0f ? tx * -1f : tx;
+		ty = ty < 0f ? ty * -1f : ty;
+		
+		return (tx + ty);
+	}
 }
