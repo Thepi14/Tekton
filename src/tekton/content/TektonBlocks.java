@@ -183,6 +183,22 @@ public class TektonBlocks {
 			statusDuration = 660f;
 			attributes.set(Attribute.water, -2f);
 		}};
+		
+		acidFloor = new Floor("acid-floor", 0) {{
+			speedMultiplier = 0.4f;
+			liquidDrop = TektonLiquids.acid;
+			isLiquid = true;
+			cacheLayer = CacheLayer.water;
+			drownTime = 200f;
+			status = TektonStatusEffects.acidified;
+			statusDuration = 200f;
+			attributes.set(Attribute.water, 0.2f);
+            albedo = 0.9f;
+            
+            emitLight = true;
+            lightRadius = 16f;
+            lightColor = Color.acid.cpy().a(0.3f);
+		}};
         
         //diatomite
 		
@@ -200,6 +216,10 @@ public class TektonBlocks {
             variants = 3;
             clipSize = 128f;
 			itemDrop = zirconium;
+			
+            emitLight = true;
+            lightRadius = 40f;
+            lightColor = TektonItems.zirconium.color.cpy().a(0.19f);
         }};
 		
 		diatomiteVent = new SteamVent("diatomite-vent") {{
@@ -323,18 +343,6 @@ public class TektonBlocks {
 			variants = 2;
 			status = TektonStatusEffects.neurosporaSlowed;
 			statusDuration = 100f;
-		}};
-		
-		acidFloor = new Floor("acid-floor", 0) {{
-			speedMultiplier = 0.4f;
-			liquidDrop = TektonLiquids.acid;
-			isLiquid = true;
-			cacheLayer = CacheLayer.water;
-			drownTime = 200f;
-			status = TektonStatusEffects.acidified;
-			statusDuration = 200f;
-			attributes.set(Attribute.water, 0.2f);
-            albedo = 0.9f;
 		}};
 		
 		//uraninite

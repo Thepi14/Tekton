@@ -135,6 +135,9 @@ public class GroundThrustAbility extends Ability {
         Floor floor = unit.floorOn();
         var type = unit.type;
 		thrusterPosID = unit.id;
+		
+		if (!unit.isImmune(floor.status))
+			unit.apply(floor.status);
         
         if (TektonGambiarra.getMisc(unit.id, "leftTrail") == null)
         	TektonGambiarra.addMisc(new IDObj(unit.id, "leftTrail", new Trail(1)));

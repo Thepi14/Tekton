@@ -2148,6 +2148,7 @@ public class TektonUnits {
                     despawnEffect = Fx.none;
                     status = StatusEffects.burning;
                     keepVelocity = false;
+                    collidesAir = false;
                     hittable = false;
                 }};
             }});
@@ -2295,6 +2296,7 @@ public class TektonUnits {
             health = 360;
             armor = 2f;
             fogRadiusMultipliyer = 0.6f;
+            targetAir = false;
 
             weapons.add(new Weapon(name + "-weapon") {{
             	recoil = 0f;

@@ -496,30 +496,30 @@ public class TektonTechTree {
                 			
                 			//biological session
             				nodeProduce(TektonLiquids.acid, () -> {
-            					node(TektonUnits.formica, () -> {
-            						node(TektonUnits.gracilipes, () -> {
-            							node(TektonUnits.carabidae, () -> {
+            					node(TektonUnits.formica, Seq.with(new SectorComplete(rainforest)), () -> {
+            						node(TektonUnits.gracilipes, Seq.with(new SectorComplete(rainforest)), () -> {
+            							node(TektonUnits.carabidae, Seq.with(new SectorComplete(rainforest)), () -> {
             								
                     					});
                 					});
-    								node(TektonUnits.danaus, () -> {
-            							node(TektonUnits.antheraea, () -> {
+    								node(TektonUnits.danaus, Seq.with(new SectorComplete(rainforest)), () -> {
+            							node(TektonUnits.antheraea, Seq.with(new SectorComplete(transit)), () -> {
                     						
                     					});
                 					});
-            						node(TektonUnits.colobopsis, () -> {
-                						node(TektonUnits.isoptera, () -> {
+            						node(TektonUnits.colobopsis, Seq.with(new SectorComplete(rainforest)), () -> {
+                						node(TektonUnits.isoptera, Seq.with(new SectorComplete(rainforest)), () -> {
                     						
                     					});
                 					});
-            						node(TektonUnits.diptera, () -> {
-            							node(TektonUnits.polyphaga, () -> {
-            								node(TektonUnits.lepidoptera, () -> {
+            						node(TektonUnits.diptera, Seq.with(new SectorComplete(rainforest)), () -> {
+            							node(TektonUnits.polyphaga, Seq.with(new SectorComplete(rainforest)), () -> {
+            								node(TektonUnits.lepidoptera, Seq.with(new SectorComplete(rainforest)), () -> {
                         						
                         					});
                     					});
                 					});
-    								node(TektonUnits.latrodectus, () -> {
+    								node(TektonUnits.latrodectus, Seq.with(new SectorComplete(transit)), () -> {
     									node(TektonLiquids.cobweb, Seq.with(new Research(latrodectus)), () -> {
                     						
                     					});

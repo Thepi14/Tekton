@@ -41,6 +41,7 @@ public class BurstDrillBoosted extends BurstDrill {
 	public class BurstDrillBoostedBuild extends BurstDrillBuild {
         //used so the lights don't fade out immediately
         public float smoothProgress = 0f;
+        public float smoothBoost = 0f;
         public float invertTime = 0f;
 
         @Override
@@ -58,6 +59,7 @@ public class BurstDrillBoosted extends BurstDrill {
             float drillTime = getDrillTime(dominantItem);
 
             smoothProgress = Mathf.lerpDelta(smoothProgress, progress / (drillTime - 20f), 0.1f);
+            smoothBoost = Mathf.lerpDelta(smoothBoost, optionalEfficiency * efficiency, 0.1f);
 
             if(items.total() <= itemCapacity - dominantItems && dominantItems > 0 && efficiency > 0){
                 warmup = Mathf.approachDelta(warmup, progress / drillTime, 0.01f);
@@ -142,7 +144,7 @@ public class BurstDrillBoosted extends BurstDrill {
             if (topBoostRegion.found()) {
                 Draw.blend(Blending.additive);
                 Draw.color(heatColor);
-                Draw.alpha((Mathf.absin(totalProgress(), glowScale, alpha) * glowIntensity + 1f - glowIntensity) * alpha * liquids.get(boostLiquid) * warmup);
+                Draw.alpha((Mathf.absin(totalProgress(), glowScale, alpha) * glowIntensity + 1f - glowIntensity) * alpha * liquids.get(boostLiquid) * smoothBoost);
                 Draw.rect(topBoostRegion, x, y);
                 Draw.color();
                 Draw.alpha(1f);

@@ -67,7 +67,7 @@ public class TektonStatusEffects {
 			applyColor = Color.green.cpy();
 	        speedMultiplier = 0.95f;
 	        reloadMultiplier = 0.95f;
-	        damage = 5f / 60f;
+	        damage = 4f / 60f;
 			transitionDamage = 20f;
 	        init(() -> {
                 affinity(acidified, (unit, result, time) -> result.set(acidified, result.time + time));
@@ -91,7 +91,7 @@ public class TektonStatusEffects {
 	        speedMultiplier = 0.8f;
 	        reloadMultiplier = 0.8f;
 	        healthMultiplier = 0.9f;
-	        damage = 20f / 60f;
+	        damage = 10f / 60f;
 	        effect = new Effect(40f, e -> {
 	            color(Color.valueOf("82d629"), Pal.berylShot, e.fout() / 5f + Mathf.randomSeedRange(e.id, 0.12f));
 	
