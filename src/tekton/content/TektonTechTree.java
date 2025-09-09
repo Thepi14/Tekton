@@ -159,7 +159,7 @@ public class TektonTechTree {
             					node(magnetizer, Seq.with(new OnSector(cave)), () -> {
         							node(gravityConductor, Seq.with(new OnSector(cave)), () -> {
                 						node(electricalCoil, Seq.with(new OnSector(cave)), () -> {
-                							node(thermalCoil, Seq.with(new Research(cryogenicMixer), new OnSector(cave)), () -> { //chane?
+                							node(thermalCoil, Seq.with(new Research(cryogenicMixer), new OnSector(cave)), () -> { //change?
                 								node(phaseNanoCoil, Seq.with(new Research(nanoAlloyCrucible), new Research(phasePrinter)), () -> {
                         							
                         						});
@@ -446,7 +446,7 @@ public class TektonTechTree {
                                     	});
                                 	});
                             	});
-                				node(rainforest, Seq.with(new SectorComplete(rainforest), new Research(reactionDrill)), () -> {
+                				node(rainforest, Seq.with(new SectorComplete(pit), new Research(reactionDrill)), () -> {
                 					node(transit, Seq.with(new SectorComplete(rainforest), new Research(reactionDrill)), () -> {
                 						
                                 	});
