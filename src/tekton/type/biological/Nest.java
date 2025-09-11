@@ -13,6 +13,7 @@ import arc.math.Mat;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.EnumSet;
+import arc.struct.IntSeq;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Nullable;
@@ -30,7 +31,11 @@ import mindustry.entities.Units;
 import mindustry.entities.effect.*;
 import mindustry.game.Team;
 import mindustry.gen.Building;
+import mindustry.gen.Bullet;
+import mindustry.gen.Entityc;
+import mindustry.gen.Groups;
 import mindustry.gen.Sounds;
+import mindustry.gen.Teamc;
 import mindustry.gen.Unit;
 import mindustry.graphics.BlockRenderer;
 import mindustry.graphics.Drawf;
@@ -39,6 +44,7 @@ import mindustry.graphics.Pal;
 import mindustry.type.*;
 import mindustry.ui.Bar;
 import mindustry.world.*;
+import mindustry.world.blocks.UnitTetherBlock;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.BuildVisibility;
@@ -54,7 +60,7 @@ import static mindustry.Vars.*;
 
 public class Nest extends Block implements BiologicalBlock {
 	public final int timerSpawn = timers++;
-	public Seq<UnitType> creatures;
+	public Seq<UnitType> creatureTypes;
 
 	public float ticksToSpawn = 60f * 50f;
 	public float ticksRandom = 60f * 20f;
@@ -107,7 +113,7 @@ public class Nest extends Block implements BiologicalBlock {
 		super(name);
 		unitCapModifier = 5;
         envEnabled |= Env.space;
-		creatures = new Seq<UnitType>();
+		creatureTypes = new Seq<UnitType>();
 		buildVisibility = BuildVisibility.sandboxOnly;
 		lightColor = glowColor;
 		lightRadius = 4f;
@@ -194,7 +200,9 @@ public class Nest extends Block implements BiologicalBlock {
     @Override
     public void drawShadow(Tile tile){ super.drawShadow(tile); }
 
-	public class NestBuild extends Building implements BiologicalSpawner {
+	public class NestBuild extends Building implements BiologicalSpawner, UnitTetherBlock {
+        protected IntSeq readCreatures = new IntSeq();
+        
 		public float currentRandom = 0f;
 		public float totalProgress = 0f;
         public float smoothLight;
@@ -215,17 +223,62 @@ public class Nest extends Block implements BiologicalBlock {
         	}
         	totalProgress = Mathf.random(0f, 1000f);
         	
-        	Units.nearbyEnemies(team, x, y, 80f * tilesize, other -> {
+        	/*Units.nearbyEnemies(team, x, y, 80f * tilesize, other -> {
                 if(other.team == team && other.hittable()){
                 	spawnedCreatures.add(other);
                 }
-            });
+            });*/
         	
             super.created();
         }
         
+        public void commandCreature(Unit creature, @Nullable Entityc target) {
+        	if (creature.isCommandable()) {
+        		if (target != null) {
+        			if (target instanceof Teamc tgt)
+        				creature.command().moveTo(tgt, Math.min(creature.type.range - 8f, 0f));
+            	}
+        		else {
+        			creature.command().attackTarget = creature.command().findTarget(x, y, 10000f * tilesize, creature.type.targetAir, creature.type.targetGround);
+    				if (creature.command().attackTarget == null) {
+    					if (state.teams.closestEnemyCore(x,  y, team) != null) {
+    						creature.command().moveTo(state.teams.closestEnemyCore(x,  y, team), Math.min(creature.type.range - 8f, 0f));
+    					}
+    					else {
+    						var list = state.teams.cores(Team.sharded);
+    						var ran = list.get(Mathf.random(0, list.size - 1));
+    						if (ran != null)
+    							creature.command().moveTo(ran, Math.min(creature.type.range - 8f, 0f));
+    					}
+    				}
+        		}
+			}
+        }
+
+        @Override
+        public boolean collision(Bullet bullet) {
+            super.collision(bullet);
+            for (Unit creature : spawnedCreatures) {
+            	if (new Vec2(creature.x, creature.y).dst(this) < creature.type.fogRadius) {
+            		commandCreature(creature, bullet.owner);
+            	}
+            }
+            return true;
+        }
+        
         @Override
         public void updateTile() {
+        	if(!readCreatures.isEmpty()) {
+        		spawnedCreatures.clear();
+        		readCreatures.each(i -> {
+                    var unit = Groups.unit.getByID(i);
+                    if(unit != null) {
+                    	spawnedCreatures.add(unit);
+                    }
+                });
+        		readCreatures.clear();
+            }
+        	
             totalProgress += Time.delta * timeScale * currentBoost();
             curRecoil = Mathf.approachDelta(curRecoil, 0, 1f / recoilTime);
             
@@ -235,14 +288,12 @@ public class Nest extends Block implements BiologicalBlock {
                 if (timer(timerSpawn, currentTimer)) {
                 	curRecoil = 1f;
             		currentRandom = Mathf.random(-ticksRandom, ticksRandom);
-            		currentIndex = Mathf.random(creatures.size - 1);
+            		currentIndex = Mathf.random(creatureTypes.size - 1);
             		spawnByCurrentIndex();
             		spawnEffect.at(this);
             		
             		for (var creature : spawnedCreatures) {
-            			if (creature.isCommandable()) {
-            				creature.command().attackTarget = creature.command().findTarget(x, y, 1000f * tilesize, creature.type.targetAir, creature.type.targetGround);
-            			}
+            			commandCreature(creature, null);
             		}
             		spawnProgress = 0f;
                 }
@@ -267,6 +318,12 @@ public class Nest extends Block implements BiologicalBlock {
         
         public float currentTimer() {
         	return ticksToSpawn + currentRandom;
+        }
+        
+        public void spawned(int id) {
+            if(net.client()){
+            	readCreatures.set(0, id);
+            }
         }
         
         public Unit spawn(UnitType unitType) {
@@ -305,16 +362,14 @@ public class Nest extends Block implements BiologicalBlock {
     			spawnEffect.at(position);
         	var creature = unitType.spawn(position, team());
         	creature.rotation = Mathf.atan2(creature.x - x, creature.y - y) * Mathf.radDeg;
-        	if (creature.isCommandable()) {
-            	creature.command().attackTarget = creature.command().findTarget(x, y, 1000f * tilesize, creature.type.targetAir, creature.type.targetGround);
-        	}
+			commandCreature(creature, null);
         	spawnedCreatures.add(creature);
         	
 			return creature;
         }
         
         public Unit spawnByIndex(int index) {
-        	return spawn(creatures.get(index));
+        	return spawn(creatureTypes.get(index));
         }
         
         public Unit spawnByCurrentIndex() {
@@ -326,6 +381,9 @@ public class Nest extends Block implements BiologicalBlock {
             super.onDestroyed();
             createExplosion();
 			Drawt.DrawAcidDebris(x, y, Mathf.random(4) * 90, size);
+			for (Unit creature : spawnedCreatures) {
+				creature.command().moveTo(this, 40f);
+			}
 			if (spawnOnDestroy)
 				spawnByCurrentIndex();
         }
@@ -431,6 +489,11 @@ public class Nest extends Block implements BiologicalBlock {
             write.f(currentRandom);
             write.i(currentIndex);
             write.f(regenCharge);
+            
+            write.s(readCreatures.size);
+            for(var unit : spawnedCreatures){
+                write.i(unit.id);
+            }
         }
 
         @Override
@@ -439,6 +502,12 @@ public class Nest extends Block implements BiologicalBlock {
             currentRandom = read.f();
             currentIndex = read.i();
             regenCharge = read.f();
+
+            int count = read.s();
+            readCreatures.clear();
+            for(int i = 0; i < count; i++){
+            	readCreatures.add(read.i());
+            }
         }
         
         @Override

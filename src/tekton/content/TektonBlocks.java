@@ -2589,6 +2589,7 @@ public class TektonBlocks {
 				trailChance = -1;
 				trailWidth = 1.7f;
 				trailLength = 6;
+				collidesAir = false;
 				despawnHit = true;
 				despawnEffect = hitEffect = new MultiEffect() {{
 					effects = new Effect[]{
@@ -2626,6 +2627,7 @@ public class TektonBlocks {
 				lightningLengthRand = 8;
 				lightningDamage = 7;
 				lightningColor = redShootColorLightning;
+				//lightningType.collidesAir = false;
 				ammoMultiplier = 1;
 				buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 			}};
@@ -3304,6 +3306,7 @@ public class TektonBlocks {
 				status = StatusEffects.melting;
 				hitEffect = Fx.hitBulletColor;
 				splashDamagePierce = true;
+				//lightningType.collidesAir = false;
 				lightningColor = redShootColorLightning;
 			}};
 			
@@ -4267,6 +4270,7 @@ public class TektonBlocks {
 			cooldownTime = 100;
 			warmupMaintainTime = 120;
 			predictTarget = false;
+			targetAir = false;
 
 			consumePower(800f / 60f);
 			consumeLiquid(Liquids.water, 5f / 60f);
@@ -4287,6 +4291,8 @@ public class TektonBlocks {
                 lightningLength = 8;
                 lightningLengthRand = 10;
 				lightningColor = redShootColorLightning;
+				//lightningType.collidesAir = false;
+				collidesAir = false;
 				
 				applyEffect = new MultiEffect(
 						Fx.titanExplosion.wrap(redShootColorLightning),
@@ -5878,7 +5884,7 @@ public class TektonBlocks {
 		
 		smallNest = new Nest("small-nest") {{
 			requirements(Category.logic, tek(bioVisibility), with());
-			creatures.add(TektonUnits.formica, TektonUnits.diptera);
+			creatureTypes.add(TektonUnits.formica, TektonUnits.diptera);
 			size = 2;
 			health = 300;
 			armor = 0;
@@ -5898,7 +5904,7 @@ public class TektonBlocks {
 		
 		mediumNest = new Nest("medium-nest") {{
 			requirements(Category.logic, tek(bioVisibility), with());
-			creatures.add(TektonUnits.gracilipes, TektonUnits.polyphaga, TektonUnits.colobopsis);
+			creatureTypes.add(TektonUnits.gracilipes, TektonUnits.polyphaga, TektonUnits.colobopsis);
 			health = 700;
 			fogRadius = 8;
 			explosionShake = 2f;
@@ -5908,7 +5914,7 @@ public class TektonBlocks {
 		
 		largeNest = new Nest("large-nest") {{
 			requirements(Category.logic, tek(bioVisibility), with());
-			creatures.add(TektonUnits.carabidae, TektonUnits.lepidoptera, TektonUnits.isoptera);
+			creatureTypes.add(TektonUnits.carabidae, TektonUnits.lepidoptera, TektonUnits.isoptera);
 			size = 4;
 			health = 1200;
 			armor = 3;

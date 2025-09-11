@@ -622,7 +622,7 @@ public class TektonUnits {
             armor = 10f;
             
             treadPullOffset = 0;
-            abilities.add(new ForceFieldAbility(30f, 0.15f, 800f, 60f * 20, 4, 45f));
+            abilities.add(new ForceFieldAbility(80f, 0.15f, 800f, 60f * 20, 4, 45f));
             
             treadRects = new Rect[]{
             		//i am starting to understand
@@ -1515,8 +1515,8 @@ public class TektonUnits {
             engineOffset = 62 / 3f;
             var xPos = 19f;
             var yPos = 12.5f;
-            /*aimDst = xPos + 20f;
-            range = xPos + 100f;*/
+            aimDst = yPos + 18f;
+            range = yPos + 140f;
             
             for (float i : Mathf.signs) {
             	abilities.add(new SuppressionFieldAbility() {{
@@ -2358,6 +2358,7 @@ public class TektonUnits {
             rotateSpeed = 3f;
             health = 1000;
             armor = 5f;
+            targetAir = false;
             float bx = 1f;
             float treload = 30f;
             for (float ex : new float[]{-bx, 0, bx}) {
@@ -2389,6 +2390,7 @@ public class TektonUnits {
 
                     	splashDamage = 15f;
                     	splashDamageRadius = 25f;
+                    	collidesAir = false;
                         hitShake = 1.5f;
                         
                         keepVelocity = false;
@@ -2423,7 +2425,7 @@ public class TektonUnits {
             rotateSpeed = 2f;
             health = 2600;
             armor = 7f;
-            targetAir = false;
+            targetAir = true;
         	weapons.add(new Weapon(name + "-weapon") {{
         		layerOffset = -0.000002f;
         		top = false;
@@ -2436,7 +2438,7 @@ public class TektonUnits {
                 shootSound = Sounds.dullExplosion;
                 bullet = new ArtilleryBulletType(7f, 40f) {{
                     collidesTiles = collides = true;
-                	collidesAir = false;
+                	collidesAir = true;
                     sprite = "missile-large";
                     width = 7.5f;
                     height = 13f;
@@ -2447,7 +2449,7 @@ public class TektonUnits {
                     trailWidth = 2.8f;
                     trailLength = 8;
                     splashDamageRadius = 25f;
-                    splashDamage = 50f;
+                    splashDamage = 40f;
 
                     trailEffect = Fx.hitSquaresColor;
                     trailRotation = true;
@@ -2455,8 +2457,8 @@ public class TektonUnits {
 
                     fragBullets = 5;
 
-                    fragBullet = new BasicBulletType(5f, 30f) {{
-                    	collidesAir = false;
+                    fragBullet = new BasicBulletType(5f, 5f) {{
+                    	collidesAir = true;
                         sprite = "missile-large";
                         width = 5f;
                         height = 7f;
@@ -2468,6 +2470,8 @@ public class TektonUnits {
                         trailLength = 3;
                         drag = 0.01f;
                         recoil = 0.3f;
+                        splashDamage = 15f;
+                        splashDamageRadius = 16f;
                         despawnEffect = hitEffect = new MultiEffect(Fx.hitSquaresColor, new WaveEffect() {{
                             colorFrom = colorTo = Pal.techBlue;
                             sizeTo = splashDamageRadius + 2f;
@@ -2508,7 +2512,7 @@ public class TektonUnits {
                     shootEffect = Fx.sparkShoot;
                     hitEffect = Fx.pointHit;
                     maxRange = 100f;
-                    damage = 29f;
+                    damage = 20f;
                 }};
             }});
         }};

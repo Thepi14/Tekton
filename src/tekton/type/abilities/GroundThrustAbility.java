@@ -42,9 +42,8 @@ import mindustry.type.UnitType;
 import mindustry.world.Tile;
 import mindustry.world.blocks.environment.Floor;
 import tekton.Tekton;
-import tekton.TektonGambiarra;
-import tekton.TektonGambiarra.*;
 import tekton.math.*;
+import tekton.content.TektonVars;
 
 import static mindustry.Vars.*;
 
@@ -139,13 +138,13 @@ public class GroundThrustAbility extends Ability {
 		if (!unit.isImmune(floor.status))
 			unit.apply(floor.status);
         
-        if (TektonGambiarra.getMisc(unit.id, "leftTrail") == null)
-        	TektonGambiarra.addMisc(new IDObj(unit.id, "leftTrail", new Trail(1)));
-		Trail lTrail = (Trail)TektonGambiarra.getMisc(unit.id, "leftTrail").value;
+        if (TektonVars.getMisc(unit.id, "leftTrail") == null)
+        	TektonVars.addMisc(new IDObj(unit.id, "leftTrail", new Trail(1)));
+		Trail lTrail = (Trail)TektonVars.getMisc(unit.id, "leftTrail").value;
         
-        if (TektonGambiarra.getMisc(unit.id, "rightTrail") == null)
-        	TektonGambiarra.addMisc(new IDObj(unit.id, "rightTrail", new Trail(1)));
-		Trail rTrail = (Trail)TektonGambiarra.getMisc(unit.id, "rightTrail").value;
+        if (TektonVars.getMisc(unit.id, "rightTrail") == null)
+        	TektonVars.addMisc(new IDObj(unit.id, "rightTrail", new Trail(1)));
+		Trail rTrail = (Trail)TektonVars.getMisc(unit.id, "rightTrail").value;
 		
         if (firstUpdate) {
         	warmup = isOnLiquid(unit) ? 0f : 1f;
@@ -155,9 +154,9 @@ public class GroundThrustAbility extends Ability {
         	rTrail.clear();
         }
 
-        if (TektonGambiarra.getVec2F(thrusterPosID) == null)
-        	TektonGambiarra.addVec2F(new RSeq<Vec2F>(thrusterPosID));
-        Seq<Vec2F> thrusterPositions = TektonGambiarra.getVec2F(thrusterPosID).seq;
+        if (TektonVars.getVec2F(thrusterPosID) == null)
+        	TektonVars.addVec2F(new RSeq<Vec2F>(thrusterPosID));
+        Seq<Vec2F> thrusterPositions = TektonVars.getVec2F(thrusterPosID).seq;
     	thrusterPositions.clear();
         
         boolean flying = unit.isFlying();
@@ -266,13 +265,13 @@ public class GroundThrustAbility extends Ability {
     public void draw(Unit unit) {
         if(unit.inFogTo(Vars.player.team())) return;
         var type = unit.type;
-        if (TektonGambiarra.getMisc(unit.id, "leftTrail") == null || TektonGambiarra.getMisc(unit.id, "rightTrail") == null || TektonGambiarra.getVec2F(thrusterPosID) == null) {
+        if (TektonVars.getMisc(unit.id, "leftTrail") == null || TektonVars.getMisc(unit.id, "rightTrail") == null || TektonVars.getVec2F(thrusterPosID) == null) {
         	return;
         }
 
-        final Seq<Vec2F> thrusterPositions = TektonGambiarra.getVec2F(thrusterPosID).seq;
-        final Trail lTrail = (Trail)TektonGambiarra.getMisc(unit.id, "leftTrail").value;
-        final Trail rTrail = (Trail)TektonGambiarra.getMisc(unit.id, "rightTrail").value;
+        final Seq<Vec2F> thrusterPositions = TektonVars.getVec2F(thrusterPosID).seq;
+        final Trail lTrail = (Trail)TektonVars.getMisc(unit.id, "leftTrail").value;
+        final Trail rTrail = (Trail)TektonVars.getMisc(unit.id, "rightTrail").value;
         
         if(thrusterRegion == null || thrusterHeatRegion == null || mainThrusterRegion == null || mainThrusterHeatRegion == null){
         	thrusterRegion = Core.atlas.find(unit.type.name + "-thruster", unit.type.region);

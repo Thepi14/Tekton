@@ -82,7 +82,7 @@ public class Tekton extends Mod{
 		
 		//the gambiarra must not stop
 		Events.on(WorldLoadEvent.class, e -> {
-			TektonGambiarra.clearAllLists();
+			TektonVars.clearAllLists();
 		});
 	}
 	

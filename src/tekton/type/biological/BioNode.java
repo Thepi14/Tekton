@@ -11,10 +11,12 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.Angles;
 import arc.math.Mathf;
 import arc.util.Structs;
 import arc.util.Time;
 import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.core.Renderer;
 import mindustry.core.World;
@@ -93,6 +95,14 @@ public class BioNode extends PowerNode implements BiologicalBlock {
 		glowRegion = Core.atlas.find(name + "-glow");
         upperShadowRegion = Core.atlas.find(name + "-upper-shadow");
 	}
+	
+	public void drawLaser(float x1, float y1, float x2, float y2, int size1, int size2){
+        float angle1 = Angles.angle(x1, y1, x2, y2),
+            vx = Mathf.cosDeg(angle1), vy = Mathf.sinDeg(angle1),
+            len1 = size1 * tilesize / 2f - 1.5f, len2 = size2 * tilesize / 2f - 1.5f;
+
+        Drawf.laser(laser, laserEnd, x1 + vx*len1, y1 + vy*len1, x2 - vx*len2, y2 - vy*len2, laserScale);
+    }
 	
 	public class BioNodeBuild extends PowerNodeBuild {
 		public boolean needRegen = false;
@@ -177,6 +187,10 @@ public class BioNode extends PowerNode implements BiologicalBlock {
                 
                 float ex = x + Mathf.range(block.size * tilesize / 2f), ey = y + Mathf.range(block.size * tilesize / 2f);
                 float lx = link.x + Mathf.range(link.block.size * tilesize / 2f), ly = link.y + Mathf.range(link.block.size * tilesize / 2f);
+                
+            	if (Vars.state.isEditor()) {
+            		((BioNode)this.block).drawLaser(x, y, link.x, link.y, block.size, link.block.size);
+            	}
                 
                 if (effectReloadProgress >= effectReload && !state.isPaused()) {
                     if (link.getPowerProduction() > 0f) {
