@@ -703,13 +703,13 @@ public class TektonBlocks {
 
 			craftEffect = new Effect(40, e -> {
 				randLenVectors(e.id, 6, 5f + e.fin() * 8f, (x, y) -> {
-					color(polycarbonate.color, Color.lightGray, e.fin());
+					color(TektonColor.polycarbonateShootColor, Color.lightGray, e.fin());
 					Fill.square(e.x + x, e.y + y, 0.2f + e.fout() * 2f, 45);
 				});
 			});
 			updateEffect = new Effect(40, e -> {
 				randLenVectors(e.id, 5, 3f + e.fin() * 5f, (x, y) -> {
-					color(polycarbonate.color, Color.gray, e.fin());
+					color(TektonColor.polycarbonateShootColor, Color.gray, e.fin());
 					Fill.circle(e.x + x, e.y + y, e.fout());
 				});});
 			
@@ -888,13 +888,13 @@ public class TektonBlocks {
 
 			craftEffect = new Effect(40, e -> {
 				randLenVectors(e.id, 6, 5f + e.fin() * 8f, (x, y) -> {
-					color(polycarbonate.color, Color.lightGray, e.fin());
+					color(TektonColor.polytalumShootColor, TektonColor.polycarbonateShootColor, e.fin());
 					Fill.square(e.x + x, e.y + y, 0.2f + e.fout() * 2f, 45);
 				});
 			});
 			updateEffect = new Effect(40, e -> {
 				randLenVectors(e.id, 5, 3f + e.fin() * 5f, (x, y) -> {
-					color(polycarbonate.color, Color.gray, e.fin());
+					color(TektonColor.polytalumShootColor, TektonColor.polycarbonateShootColor, e.fin());
 					Fill.circle(e.x + x, e.y + y, e.fout());
 				});});
 			
@@ -1025,7 +1025,7 @@ public class TektonBlocks {
 			
             researchCostMultiplier = 2f;
             
-            drawer = new DrawMulti(new DrawDefault(), new DrawGravityOutput());
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawItemLiquidTile(Liquids.cryofluid, cryogenicCompound), new DrawDefault(), new DrawGravityOutput());
             rotateDraw = false;
             gravityOutput = 4 * gravityMul;
             regionRotated1 = 1;
@@ -2168,7 +2168,7 @@ public class TektonBlocks {
 			liquidBoostIntensity = 1f;
 			
 			consumePower(480f / 60f);
-			consumeLiquid(Liquids.hydrogen, 5f / 60f);
+			consumeLiquid(Liquids.hydrogen, 6f / 60f);
 			//consumeLiquid(TektonLiquids.ammonia, 3f / 60f).boost();
 		}};
 		
@@ -2989,7 +2989,7 @@ public class TektonBlocks {
 						fragOnHit = true;
 						fragBullets = 1;
 						fragVelocityMin = 1f;
-						despawnSound = Sounds.dullExplosion;
+						hitSound = despawnSound = TektonSounds.freezeexplosion;
 
 						fragBullet = new StatusEffectAreaBulletType(90f, 32f) {{
 							status = StatusEffects.freezing;
@@ -3563,8 +3563,8 @@ public class TektonBlocks {
 						shootEffect = smokeEffect = Fx.sparkShoot;
 						pierce = true;
 						pierceBuilding = true;
-						pierceCap = 7;
-						knockback = 6;
+						pierceCap = 5;
+						knockback = 4;
 						ammoMultiplier = 1f;
 						buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 						
@@ -3582,6 +3582,9 @@ public class TektonBlocks {
 							
 							fragLifeMax = 1f;
 							fragLifeMin = 0.7f;
+							
+							fragVelocityMax = 1f;
+							fragVelocityMin = 0.7f;
 							
 							fragBullet = new BasicBulletType(10f, 20f) {{ // 1.5
 								lifetime = 18f;
@@ -4049,7 +4052,7 @@ public class TektonBlocks {
 		                backColor = hitColor = trailColor = lightColor = cryogenicCompoundShootColor;
 		                frontColor = Color.white;
 		                ammoMultiplier = 2f;
-		                hitSound = Sounds.titanExplosion;
+						hitSound = despawnSound = TektonSounds.freezeexplosionbig;
 
 		                status = StatusEffects.freezing;
 		                statusDuration = 60f * 10f;

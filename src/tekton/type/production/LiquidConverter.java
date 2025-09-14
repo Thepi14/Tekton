@@ -100,7 +100,7 @@ public class LiquidConverter extends Block {
 	private int bId = 0;
 	public float getBoost() {
 		bId++;
-		if (bId >= convertableLiquids.length)
+		if (bId > convertableLiquids.length)
 			bId = 0;
 		return convertableLiquids[bId - 1].amount;
 				
@@ -117,13 +117,13 @@ public class LiquidConverter extends Block {
         
         if(convertableLiquids.length > 1){
             stats.remove(Stat.booster);
-            stats.add(Stat.booster, StatValues.boosters(liquidConsumption, liquidConsumption / 60f, getBoost() / liquidConsumption, false, r -> { 
+            /*stats.add(Stat.booster, StatValues.boosters(liquidConsumption, liquidConsumption / 60f, getBoost() / liquidConsumption, false, r -> { 
             	for (int i = 0; i < convertableLiquids.length; i++) {
             		if (r == convertableLiquids[i].liquid) {
             			return true;
             		}
-            } return false; }));
-        	/*stats.add(Stat.booster,
+            } return false; }));*/
+        	stats.add(Stat.booster,
 	                StatValues.speedBoosters("{0}" + StatUnit.percent.localized(),
 	    	        		liquidConsumption, 
 	    	        		(liquidConsumption / getBoost()) * 100, 
@@ -134,8 +134,7 @@ public class LiquidConverter extends Block {
 	    	                			return true;
 	    	                		}
 	    	                } return false; })
-	    	            );*/
-            
+	    	            );
         }
     }
 	

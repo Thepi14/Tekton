@@ -15,6 +15,7 @@ public class TektonColor {
 	methane = Color.valueOf("868a37").add(0.1f, 0.1f, 0.1f),
 	methaneGas = Color.valueOf("868a37"),
 	oxygen = Color.valueOf("b48fff"),
+	dicyanogen = Color.valueOf("6f80e8"),
 	metazotoplasm = Color.valueOf("aaccaa"),
 	zirconiumSpark = Color.valueOf("fdff8c"),
 	
