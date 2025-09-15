@@ -48,14 +48,14 @@ public class TektonLiquids {
             effect = TektonStatusEffects.tarredInMethane;
 		}};
 		
-		dicyanogen = new Liquid("dicyanogen", TektonColor.dicyanogen.cpy().add(add, add, add)) {{
+		dicyanogen = new Liquid("dicyanogen", TektonColor.dicyanogen) {{
             coolant = false;
 			gas = true;
 			temperature = 0.5f;
 			heatCapacity = 0.6f;
 			viscosity = 0.1f;
-			flammability = 2f;
-			explosiveness = 1f;
+			flammability = 2.5f;
+			explosiveness = 0.5f;
 			alwaysUnlocked = true;
             lightColor = TektonColor.dicyanogen.cpy().a(0.3f);
             gasColor = TektonColor.dicyanogen;

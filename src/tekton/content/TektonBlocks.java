@@ -99,7 +99,7 @@ public class TektonBlocks {
 	//crafting
 	siliconFilter, siliconCompressor, graphiteConcentrator, coldElectrolyzer, polycarbonateSynthesizer, 
 	magnetizer, atmosphericMethaneConcentrator, sandFilter, ammoniaCatalyst, cryogenicMixer, 
-	polytalumFuser, phasePrinter, nanoAlloyCrucible, hydrogenIncinerator, 
+	dicyonogenEmitter, polytalumFuser, phasePrinter, nanoAlloyCrucible, hydrogenIncinerator, 
 	
 	//gravity
 	gravityConductor, nanoGravityConductor, gravityRouter, electricalCoil, thermalCoil, phaseNanoCoil, 
@@ -863,6 +863,41 @@ public class TektonBlocks {
 			researchCostMultiplier = 0.3f;
 		}};
 		
+		dicyonogenEmitter = new GravityCrafter("dicyanogen-emitter") {{
+			requirements(Category.crafting, tek(), with(uranium, 80, Items.graphite, 80, polycarbonate, 100, Items.silicon, 80));
+			consumePower(120f / 60f);
+			squareSprite = false;
+			size = 3;
+			craftTime = 60f;
+			health = 820;
+			hasPower = true;
+			hasLiquids = true;
+            liquidCapacity = 40f;
+            fogRadius = 3;
+
+        	requiredGravity = 4 * gravityMul;
+        	maxGravity = requiredGravity * 4;
+			
+			consumeLiquid(TektonLiquids.ammonia, 10f / 60f);
+			consumeItem(Items.graphite, 2);
+			
+			outputLiquid = new LiquidStack(TektonLiquids.dicyanogen, 3f / 60f);
+			
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(TektonLiquids.ammonia), new DrawRegion("-middle"), 
+					new DrawLiquidTile(TektonLiquids.dicyanogen, 9f), new DrawDefault(), 
+					new DrawGravityRegion("-gravity-glow"), new DrawGravityInput(), 
+					new DrawGlowRegionOffset("-glow1") {{ offset = 0.666f * craftTime; glowScale = 7f; color = TektonColor.gravityColor; }}, 
+					new DrawGlowRegionOffset("-glow2") {{ offset = 0.333f * craftTime; glowScale = 7f; color = TektonColor.gravityColor; }}, 
+					new DrawGlowRegionOffset("-glow3") {{ glowScale = 7f; color = TektonColor.gravityColor; }});
+
+			craftEffect = updateEffect = Fx.none;
+			
+			ambientSound = Sounds.extractLoop;
+            ambientSoundVolume = 0.08f;
+			
+			researchCostMultiplier = 0.4f;
+		}};
+		
 		polytalumFuser = new GravityCrafter("polytalum-fuser") {{
 			requirements(Category.crafting, tek(), with(magnet, 80, Items.silicon, 120, tantalum, 140, polycarbonate, 140));
 			consumePower(160f / 60f);
@@ -1311,7 +1346,7 @@ public class TektonBlocks {
 
 			consumePower(240f / 60f);
 			unitBuildTime = 60f * 16f;
-			consumeLiquid(TektonLiquids.oxygen, 3f / 60f);
+			consumeLiquid(TektonLiquids.dicyanogen, 3f / 60f);
 			unitType = TektonUnits.builderDrone;
 		}};
 		
@@ -2029,43 +2064,47 @@ public class TektonBlocks {
 			consumePower(40f / 60f);
 		}};
 		
-		geothermalCondenser = new AttributeCrafter("geothermal-condenser") {{
+		geothermalCondenser = new AttributeCrafterBoosted("geothermal-condenser") {{
             requirements(Category.production, tek(), with(Items.graphite, 20, Items.silicon, 40, iron, 60));
             attribute = Attribute.steam;
             group = BlockGroup.liquids;
+			maxBoost = 2f;
             minEfficiency = 9f - 0.0001f;
             baseEfficiency = 0f;
             displayEfficiency = false;
 			rotate = true;
 			invertFlip = true;
-            craftEffect = Fx.turbinegenerate;
             craftTime = 120f;
             size = 3;
-            ambientSound = Sounds.hum;
-            ambientSoundVolume = 0.06f;
             hasLiquids = true;
             boostScale = 1f / 9f;
+            liquidBoostIntensity = 2f;
 			ignoreLiquidFullness = false;
 			squareSprite = false;
+            craftEffect = Fx.turbinegenerate;
             
             itemCapacity = 0;
             
+            liquidCapacity = 60f;
 			regionRotated1 = 3;
 			liquidOutputDirections = new int[]{1, 3};
 			outputLiquids = LiquidStack.with(TektonLiquids.ammonia, 6f / 60f, Liquids.water, 20f / 60f);
 
-            drawer = new DrawMulti(new DrawRegion("-bottom", 0, false), new DrawLiquidOutputs(), new DrawBlurSpin("-rotator", 6f), new DrawRegion("-mid"), 
-            		new DrawLiquidTile(TektonLiquids.ammonia, 38f / 4f), new DrawLiquidTile(Liquids.water, 38f / 4f), new DrawRegion("", 0, false));
+            drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(TektonLiquids.ammonia, 1.4f), new DrawLiquidTile(Liquids.water, 1.4f), new DrawRegion() {{ buildingRotate = false; }}, new DrawLiquidOutputs(), new DrawBlurSpin("-rotator", 6f), new DrawRegion("-mid"), 
+            		new DrawLiquidTile(Liquids.hydrogen, 38f / 4f), new DrawRegion("-top") {{ buildingRotate = false; }});
 			
-            consumePower(70f / 60f);
-            liquidCapacity = 60f;
+            consumeLiquid(Liquids.hydrogen, 3f / 60f).boost();
+            consumePower(80f / 60f);
+            
+            ambientSound = Sounds.hum;
+            ambientSoundVolume = 0.06f;
+			researchCostMultiplier = 0.4f;
         }};
         
         var undergroundWaterExtractorDebuff = 2f;
 		
-		undergroundWaterExtractor = new AttributeCrafter("underground-water-extractor") {{
+		undergroundWaterExtractor = new AttributeCrafterBoosted("underground-water-extractor") {{
 			requirements(Category.production, tek(), with(tantalum, 60, Items.silicon, 60, zirconium, 80, Items.graphite, 60));
-			consumePower(100f / 60f);
 			craftTime = 1f;
 			size = 3;
 			health = 750;
@@ -2075,22 +2114,26 @@ public class TektonBlocks {
 			invertFlip = true;
 			group = BlockGroup.liquids;
 			itemCapacity = 0;
-			liquidCapacity = 15;
-			maxBoost = 1f;
+			maxBoost = 2f;
 			minEfficiency = 5f;
 			baseEfficiency = 0f;
 			boostScale = (1f / 9f) * 0.5f;
+            liquidBoostIntensity = 2f;
 			ignoreLiquidFullness = false;
 			attribute = Attribute.water;
 			craftEffect = Fx.none;
-
+			
+			liquidCapacity = 60f;
 			regionRotated1 = 3;
 			liquidOutputDirections = new int[]{1, 3};
 			outputLiquids = LiquidStack.with(TektonLiquids.ammonia, (6f / 60f) / undergroundWaterExtractorDebuff, Liquids.water, (20f / 60f) / undergroundWaterExtractorDebuff);
 			
-			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(TektonLiquids.ammonia, 4f), new DrawLiquidTile(Liquids.water, 4f), new DrawRegion("", 0, false), 
-					new DrawLiquidOutputs(), new DrawRegion("-rotator", 1.5f, true) {{ buildingRotate = true; }}, new DrawRegion("-top", 0, false));
-
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(TektonLiquids.ammonia, 4f), new DrawLiquidTile(Liquids.water, 4f), new DrawRegion() {{ buildingRotate = false; }}, 
+					new DrawLiquidOutputs(), new DrawRegion("-rotator", 1.5f, true) {{ buildingRotate = true; }}, new DrawRegion("-middle"), new DrawLiquidTile(Liquids.hydrogen, 38f / 4f), new DrawRegion("-top") {{ buildingRotate = false; }});
+			
+            consumeLiquid(Liquids.hydrogen, 3f / 60f).boost();
+			consumePower(80f / 60f);
+			
 			ambientSound = Sounds.hum;
 			ambientSoundVolume = 0.1f;
 			squareSprite = false;
@@ -4871,7 +4914,7 @@ public class TektonBlocks {
             loopSoundVolume = 3.5f * 1.8f;
             predictTarget = false;
             scaleDamageEfficiency = true;
-            minGravity = (60 + (12 * 3)) * gravityMul;
+            minGravity = 24 * 6;
             maxGravity = minGravity * 1;
             heatColor = Color.clear.cpy();
             shootY = 0f;
@@ -5129,8 +5172,8 @@ public class TektonBlocks {
                 pierceArmor = true;
             }};
             
-            consumePower(10f);
-			//consumeLiquid(TektonLiquids.ammonia, 6f / 60f);
+            consumePower(8f);
+			consumeLiquid(TektonLiquids.dicyanogen, 6f / 60f);
             buildCostMultiplier = 0.5f;
 		}};
 		
@@ -5675,7 +5718,7 @@ public class TektonBlocks {
             droneType = TektonUnits.assemblyDrone;
             
             consumePower(210f / 60f);
-            consumeLiquid(Liquids.hydrogen, 12f / 60f);
+            consumeLiquid(TektonLiquids.dicyanogen, 6f / 60f);
             consumeItem(cryogenicCompound, 1);
             itemDuration = 60f;
             itemCapacity = 40;
@@ -5702,7 +5745,7 @@ public class TektonBlocks {
             droneType = TektonUnits.ultimateAssemblyDrone;
             
             consumePower(360f / 60f);
-            consumeLiquid(TektonLiquids.oxygen, 6f / 60f);
+            consumeLiquid(TektonLiquids.dicyanogen, 12f / 60f);
             consumeItem(cryogenicCompound, 2);
             itemConsumption = 2;
             itemDuration = 60f;

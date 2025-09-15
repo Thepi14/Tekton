@@ -48,7 +48,7 @@ public class GravityConductor extends Block {
         //TODO show number
         addBar("gravity", (GravityConductorBuild entity) -> new Bar(
         		() -> Core.bundle.format(entity.gravity >= 0 ? "bar.gravity" : "bar.antiGravity", (int)(Math.abs(entity.gravity) + 0.01f)), 
-        		() -> entity.gravity >= 0 ? TektonColor.gravityColor : TektonColor.antiGravityColor, 
+        		() -> TektonColor.gravityColor, 
         		() -> entity.gravity / TektonVars.visualMaxGravity));
     }
 

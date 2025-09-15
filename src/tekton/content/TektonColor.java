@@ -15,14 +15,13 @@ public class TektonColor {
 	methane = Color.valueOf("868a37").add(0.1f, 0.1f, 0.1f),
 	methaneGas = Color.valueOf("868a37"),
 	oxygen = Color.valueOf("b48fff"),
-	dicyanogen = Color.valueOf("6f80e8"),
+	dicyanogen = Color.valueOf("75c1ff").mul(1.1f),
 	metazotoplasm = Color.valueOf("aaccaa"),
 	zirconiumSpark = Color.valueOf("fdff8c"),
 	
 	tektonOutlineColor = Color.valueOf("3d352f"),
 	
 	gravityColor = Color.valueOf("639bff"),
-	antiGravityColor = Color.valueOf("d95763"),
 	
 	neurospora = Color.valueOf("46617d"),
 	acid = Color.valueOf("82d629"),

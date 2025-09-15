@@ -3054,7 +3054,7 @@ public class TektonUnits {
             pickupUnits = false;
             vulnerableWithPayloads = true;
             
-            immunities.addAll(TektonStatusEffects.wetInAcid, TektonStatusEffects.shortCircuit);
+            immunities.addAll(TektonStatusEffects.neurosporaSlowed, TektonStatusEffects.wetInAcid, TektonStatusEffects.tarredInMethane, TektonStatusEffects.shortCircuit);
 		}};
 		
 		sigma = new TektonUnitType("sigma") {{
@@ -3122,7 +3122,7 @@ public class TektonUnits {
                 }};
             }});
             
-            immunities.addAll(TektonStatusEffects.neurosporaSlowed, TektonStatusEffects.wetInAcid, TektonStatusEffects.tarredInMethane, TektonStatusEffects.shortCircuit);
+            immunities.addAll(TektonStatusEffects.neurosporaSlowed, TektonStatusEffects.wetInAcid, TektonStatusEffects.tarredInMethane, TektonStatusEffects.shortCircuit, TektonStatusEffects.radioactiveContamination, TektonStatusEffects.radiationAbsorption);
 		}};
 		
 		//ground biological
