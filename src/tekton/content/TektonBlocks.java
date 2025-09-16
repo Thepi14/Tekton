@@ -868,7 +868,7 @@ public class TektonBlocks {
 			consumePower(120f / 60f);
 			squareSprite = false;
 			size = 3;
-			craftTime = 60f;
+			craftTime = 120f;
 			health = 820;
 			hasPower = true;
 			hasLiquids = true;
@@ -2948,7 +2948,7 @@ public class TektonBlocks {
 						sprite = "tekton-basic-bullet";
 						backSprite = "tekton-basic-bullet-back";
 						frontColor = Color.white;
-						backColor = trailColor = hitColor = magnetShootColor;
+						backColor = trailColor = hitColor = lightColor = magnetShootColor;
 						lightRadius = 20;
 						lightOpacity = 0.5f;
 						lightColor = magnet.color;
@@ -2988,7 +2988,7 @@ public class TektonBlocks {
 							minRadius = 8f;
 							lifetime = 60f;
 							knockback = 40f;
-							hitColor = backColor = trailColor = magnetShootColor;
+							hitColor = backColor = trailColor = lightColor = magnetShootColor;
 							frontColor = Color.white;
 							buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 						}};
@@ -4346,7 +4346,7 @@ public class TektonBlocks {
 	                        TektonFx.rand.setSeed(e.id + 1);
 	                		color(e.color);
 	                        stroke(e.fout() * 2f);
-	                        float circleRad = 0.3f + e.finpow() * e.rotation;
+	                        float circleRad = 0.3f + e.finpow() * 180f;
 	                        float range = 2f;
 	                        float ex = TektonFx.rand.range(range);
 	                        float ey = TektonFx.rand.range(range);
@@ -4604,7 +4604,7 @@ public class TektonBlocks {
 	                        TektonFx.rand.setSeed(e.id + 1);
 	                		color(e.color);
 	                        stroke(e.fout() * 2f);
-	                        float circleRad = 0.3f + e.finpow() * e.rotation;
+	                        float circleRad = 0.3f + e.finpow() * 180f;
 	                        float range = 2f;
 	                        float ex = TektonFx.rand.range(range);
 	                        float ey = TektonFx.rand.range(range);
@@ -4670,7 +4670,7 @@ public class TektonBlocks {
 	                        TektonFx.rand.setSeed(e.id + 1);
 	                		color(e.color);
 	                        stroke(e.fout() * 2f);
-	                        float circleRad = 0.3f + e.finpow() * e.rotation;
+	                        float circleRad = 0.3f + e.finpow() * 180f;
 	                        float range = 2f;
 	                        float ex = TektonFx.rand.range(range);
 	                        float ey = TektonFx.rand.range(range);
@@ -4731,7 +4731,7 @@ public class TektonBlocks {
 									minRadius = 8f;
 									lifetime = 30f;
 									knockback = 30f;
-									hitColor = backColor = trailColor = magnetShootColor;
+									hitColor = backColor = trailColor = lightColor = magnetShootColor;
 									frontColor = Color.white;
 									buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 		                    	}};
@@ -4749,7 +4749,7 @@ public class TektonBlocks {
                             TektonFx.rand.setSeed(e.id + 1);
                     		color(e.color);
                             stroke(e.fout() * 2f);
-                            float circleRad = 0.3f + e.finpow() * e.rotation;
+                            float circleRad = 0.3f + e.finpow() * 180f;
                             float range = 1f;
                             float ex = TektonFx.rand.range(range);
                             float ey = TektonFx.rand.range(range);
