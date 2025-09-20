@@ -10,7 +10,6 @@ import mindustry.Vars;
 import mindustry.entities.abilities.Ability;
 import mindustry.gen.Unit;
 import mindustry.world.Tile;
-import tekton.type.crushWaterMove.CrushWaterMoveUnitEntity;
 
 public class CrushAbility extends Ability {
     private boolean walked;

@@ -42,14 +42,16 @@ import mindustry.world.meta.*;
 import tekton.*;
 import tekton.math.TekMath;
 import tekton.type.abilities.*;
+import tekton.type.ai.DistanceMissileAI;
 import tekton.type.ai.MinionAI;
 import tekton.type.ai.RebuilderAI;
 import tekton.type.biological.*;
 import tekton.type.bullets.*;
-import tekton.type.crushWaterMove.CrushWaterMoveUnitEntity;
-import tekton.type.distanceMissile.*;
+import tekton.type.dependent.DependentBulletType;
+import tekton.type.dependent.DependentWeapon;
+import tekton.type.dependent.DistanceMissileUnitType;
+import tekton.type.dependent.MinionUnitType;
 //import tekton.content.gen.*;
-import tekton.type.minion.*;
 import tekton.type.part.EffectSpawnerPart;
 import tekton.type.part.FramePart;
 import tekton.type.weathers.*;
@@ -73,25 +75,6 @@ public class TektonUnits {
 	assemblyDrone, ultimateAssemblyDrone, //payload
 	none, impactMissile, formicaEgg, electron, builderDrone, uwu //others
 	;
-
-    public static int 
-		mapMissileDist = 0,
-		mapCrushWaterMov = 1
-		;
-
-	public static void missileDistance(String id) {
-		mapMissileDist = EntityMapping.register(id, DistanceMissileUnitEntity::create);
-    }
-	public static void missileDistance(String... ids) {
-        for (String id : ids) missileDistance(id);
-    }
-
-	public static void crushWaterMove(String id) {
-		mapCrushWaterMov = EntityMapping.register(id, CrushWaterMoveUnitEntity::create);
-    }
-	public static void crushWaterMove(String... ids) {
-        for (String id : ids) crushWaterMove(id);
-    }
 	
 	public static Seq<StatusEffect> returnDefaultStatusEffects() {
     	var b = new Seq<StatusEffect>();
@@ -117,9 +100,6 @@ public class TektonUnits {
 	public static void load(){
 		float coreFleeRange = 500f;
 		//EntityRegister.setupID();
-		
-		missileDistance("impact-missile");
-		crushWaterMove("castelo");
 		
 		//others
 		
@@ -246,7 +226,7 @@ public class TektonUnits {
         }};
         
 		electron = new MinionUnitType("electron") {{
-			this.constructor = TimedKillUnit::create;
+			constructor = TimedKillUnit::create;
             aiController = MinionAI::new;
 			flying = true;
 			hoverable = true;
@@ -1050,7 +1030,7 @@ public class TektonUnits {
             accel = 0.06f;
             drag = 0.05f;
             flying = true;
-            health = 20;
+            health = 60;
             engineOffset = 5.75f;
             targetFlags = new BlockFlag[]{BlockFlag.generator, null};
             hitSize = 9;
@@ -1110,15 +1090,15 @@ public class TektonUnits {
                 	collides = false;
                 	hitSound = Sounds.explosion;
                 	pierceBuilding = false;
-                	rangeOverride = 30;
+                	rangeOverride = 50f;
                 	trailChance = -1;
                 	despawnHit = true;
                 	despawnEffect = Fx.none;
                 	hitColor = Pal.suppress;
                 	hitEffect = Fx.pulverize;
-                	splashDamageRadius = 65;
+                	splashDamageRadius = 6f * 8f;
                 	instantDisappear = true;
-                	splashDamage = 50;
+                	splashDamage = 50f;
                 	killShooter = true;
                 	hittable = false;
                 	collidesAir = true;
@@ -2138,7 +2118,7 @@ public class TektonUnits {
         
         castelo = new TektonUnitType("castelo") {{
             this.constructor = ElevationMoveUnit::create;
-            abilities.addAll(new CrushAbility(), new GroundThrustAbility() {{
+            abilities.addAll(new CrushAbility(), new GroundThrustAbility(true) {{
             	thrustBulletType = new BulletType(4f, 12f){{
                     hitSize = 7f;
                     lifetime = 10f;
@@ -2152,6 +2132,7 @@ public class TektonUnits {
                     hittable = false;
                 }};
             }});
+            //useEngineElevation = false;
             
             //emitWalkSound = false;
             canDrown = false;
@@ -2564,7 +2545,7 @@ public class TektonUnits {
             var tRange = ((DistanceMissileUnitType)impactMissile).maxDistance;
             
             for (float i : new float[] {0f, 1f, 2f}) {
-            	weapons.add(new DependentMissileWeapon(name + "-weapon") {{
+            	weapons.add(new DependentWeapon(name + "-weapon") {{
             		var deg = -45 * i;
                     shootSound = Sounds.missileLarge;
                     mirror = true;
@@ -2583,7 +2564,7 @@ public class TektonUnits {
                     
                     shoot = new ShootBarrel() {{
                     	barrels = new float[] {
-                    			10f * Mathf.cosDeg(deg), 10f * Mathf.sinDeg(deg), 145f - (20f * i)
+                    			10f * Mathf.cosDeg(deg), 10f * Mathf.sinDeg(deg), (-45f * i) - 55f
                     	};
                     	firstShotDelay = 10f * i;
                     }};
@@ -2616,7 +2597,7 @@ public class TektonUnits {
                         outlineLayerOffset = 0f;
                         }});
                     
-                    bullet = new BulletType() {{
+                    bullet = new DependentBulletType() {{
                     	range = tRange;
                     	shootEffect = new MultiEffect(Fx.shootBigColor, new Effect(9, e -> {
                             color(Color.white, e.color, e.fin());

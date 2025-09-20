@@ -1,4 +1,4 @@
-package tekton.type.distanceMissile;
+package tekton.type.dependent;
 
 import arc.util.io.Writes;
 import arc.math.Mathf;
@@ -6,6 +6,7 @@ import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Unit;
 import mindustry.type.unit.MissileUnitType;
+import tekton.type.ai.DistanceMissileAI;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 
@@ -14,8 +15,8 @@ public class DistanceMissileUnitType extends MissileUnitType {
 	
 	public DistanceMissileUnitType(String name) {
 		super(name);
-    	constructor = DistanceMissileUnitEntity::create;
 		lifetime = 3.5f * 60f;
+		controller = u -> new DistanceMissileAI();
 	}
 
     @Override

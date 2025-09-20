@@ -93,12 +93,20 @@ public class GroundThrustAbility extends Ability {
     public TextureRegion mainThrusterHeatRegion;
     public TextureRegion mainThrusterOutlineRegion;
     
+    //huge nerf lol
+    public boolean drawHarmlessThrusters = false;
+    public float engineRadius = 5.6f;
+    
     private Color trailColor = Blocks.water.mapColor.cpy().mul(1.5f);
     
     private int thrusterPosID = 0;
 
     public GroundThrustAbility(){
     	
+    }
+    
+    public GroundThrustAbility(boolean harmless){
+    	drawHarmlessThrusters = harmless;
     }
     
     public String getBundle(){
@@ -204,10 +212,12 @@ public class GroundThrustAbility extends Ability {
 	            	float 
 	        		bulletX = pos.x + Angles.trnsx(pos.rotation + 45f, thrusterBulletOffset), 
 	    			bulletY = pos.y + Angles.trnsy(pos.rotation + 45f, thrusterBulletOffset);
-
-	            	thrustBulletType.create(unit, unit.team, bulletX, bulletY, pos.rotation + 45f);
-	            	thrustBulletType.shootEffect.create(bulletX, bulletY, pos.rotation + 45f, thrustBulletType.hitColor, this);
-	            	thrustBulletType.smokeEffect.create(bulletX, bulletY, pos.rotation + 45f, thrustBulletType.hitColor, this);
+	            	
+	            	if (!drawHarmlessThrusters) {
+		            	thrustBulletType.create(unit, unit.team, bulletX, bulletY, pos.rotation + 45f);
+		            	thrustBulletType.shootEffect.create(bulletX, bulletY, pos.rotation + 45f, thrustBulletType.hitColor, this);
+		            	thrustBulletType.smokeEffect.create(bulletX, bulletY, pos.rotation + 45f, thrustBulletType.hitColor, this);
+	            	}
 	            	
 	            	if (smokeEffect != null && smokeEffect != Fx.none)smokeEffect.at(bulletX, bulletY, pos.rotation + 45f, world.floor((int)(bulletX / 8), (int)(bulletY / 8)).mapColor, unit);
 	        	}
@@ -215,10 +225,12 @@ public class GroundThrustAbility extends Ability {
 	                float 
 	                mainX = unit.x + Angles.trnsx(unit.rotation - 180f, (mainThrusterDistance * warmup) + mainThrusterBulletOffset), 
 	                mainY = unit.y + Angles.trnsy(unit.rotation - 180f, (mainThrusterDistance * warmup) + mainThrusterBulletOffset);
-	
-	            	thrustBulletType.create(unit, unit.team, mainX, mainY, unit.rotation - 180f);
-	            	thrustBulletType.shootEffect.create(mainX, mainY, unit.rotation - 180f, thrustBulletType.hitColor, this);
-	            	thrustBulletType.smokeEffect.create(mainX, mainY, unit.rotation - 180f, thrustBulletType.hitColor, this);
+	                
+	                if (!drawHarmlessThrusters) {
+		            	thrustBulletType.create(unit, unit.team, mainX, mainY, unit.rotation - 180f);
+		            	thrustBulletType.shootEffect.create(mainX, mainY, unit.rotation - 180f, thrustBulletType.hitColor, this);
+		            	thrustBulletType.smokeEffect.create(mainX, mainY, unit.rotation - 180f, thrustBulletType.hitColor, this);
+	                }
 	            	
 	            	if (smokeEffect != null && smokeEffect != Fx.none)smokeEffect.at(mainX, mainY, unit.rotation - 180f, world.floor((int)(mainX / 8), (int)(mainY / 8)).mapColor, unit);
 	        	}
@@ -302,15 +314,22 @@ public class GroundThrustAbility extends Ability {
 	    }
 
     	var z = Draw.z();
-    	Draw.alpha(warmup);
 
         for (Vec2F pos : thrusterPositions) {
+        	float 
+        	engineX = pos.x + Angles.trnsx(pos.rotation + 45f, thrusterBulletOffset + ((engineRadius / 2f) * mainThrusterWarmup)), 
+			engineY = pos.y + Angles.trnsy(pos.rotation + 45f, thrusterBulletOffset + ((engineRadius / 2f) * mainThrusterWarmup));
+        	
         	Draw.z(type.groundLayer - 0.01f);
         	//Draw.alpha(1f);
         	Draw.color(isOnLiquid(unit) ? unit.floorOn().mapColor.cpy().lerp(Color.white, warmup) : Color.white);
         	Draw.alpha(warmup);
             Draw.rect(thrusterRegion, pos.x, pos.y, pos.rotation - 45f);
-            Drawf.additive(thrusterHeatRegion, heatColor, thrusterWarmup * warmup, pos.x, pos.y, pos.rotation - 45f, type.groundLayer - 0.009f);
+            
+            if (!drawHarmlessThrusters)
+            	Drawf.additive(thrusterHeatRegion, heatColor, thrusterWarmup * warmup, pos.x, pos.y, pos.rotation - 45f, type.groundLayer - 0.009f);
+            else
+            	drawEngine(unit, engineX, engineY, engineRadius * warmup, pos.rotation + 45f);
             
         	Draw.z(type.groundLayer - 0.011f);
         	Draw.alpha(warmup);
@@ -320,22 +339,30 @@ public class GroundThrustAbility extends Ability {
         float 
         mainX = unit.x + Angles.trnsx(unit.rotation - 180f, mainThrusterDistance * warmup), 
         mainY = unit.y + Angles.trnsy(unit.rotation - 180f, mainThrusterDistance * warmup);
+        
+        float 
+        engineX = unit.x + Angles.trnsx(unit.rotation - 180f, (mainThrusterDistance * warmup) + mainThrusterBulletOffset + ((engineRadius / 2f) * mainThrusterWarmup)), 
+		engineY = unit.y + Angles.trnsy(unit.rotation - 180f, (mainThrusterDistance * warmup) + mainThrusterBulletOffset + ((engineRadius / 2f) * mainThrusterWarmup));
 
     	Draw.z(type.groundLayer - 0.01f);
     	//Draw.alpha(1f);
     	Draw.color(isOnLiquid(unit) ? unit.floorOn().mapColor.cpy().lerp(Color.white, warmup) : Color.white);
     	Draw.alpha(warmup);
-        Draw.rect(mainThrusterRegion, mainX, mainY, unit.rotation - 90f - 180f);
-        Drawf.additive(mainThrusterHeatRegion, heatColor, mainThrusterWarmup * warmup, mainX, mainY, unit.rotation - 90f - 180f, type.groundLayer - 0.009f);
+        Draw.rect(mainThrusterRegion, mainX, mainY, unit.rotation + 90f);
+        
+        if (!drawHarmlessThrusters)
+        	Drawf.additive(mainThrusterHeatRegion, heatColor, mainThrusterWarmup * warmup, mainX, mainY, unit.rotation + 90f, type.groundLayer - 0.009f);
+        else
+        	drawEngine(unit, engineX, engineY, engineRadius * mainThrusterWarmup * warmup, unit.rotation - 180f);
         
     	Draw.z(type.groundLayer - 0.011f);
     	Draw.alpha(warmup);
-        Draw.rect(mainThrusterOutlineRegion, mainX, mainY, unit.rotation - 90f - 180f);
+        Draw.rect(mainThrusterOutlineRegion, mainX, mainY, unit.rotation + 90f);
         
         Draw.color();
     	Draw.alpha(1f);
         
-        if (warmup >= 0.85f && !Vars.state.isPaused())
+        if (warmup >= 0.85f && !Vars.state.isPaused() && unit.moving() && unit.speed() > type.speed * mainThrusterMinSpeed)
         	Effect.shake(thrusterShake * warmup, 1f, unit);
         
         Draw.z(Layer.debris);
@@ -354,5 +381,32 @@ public class GroundThrustAbility extends Ability {
     
     public String abilityStat(String stat, Object... values) {
         return Core.bundle.format("ability.stat." + stat, values);
+    }
+    
+    public void drawEngine(Unit unit, float x, float y, float radius, float rotation) {
+        var z = Draw.z();
+        
+    	UnitType type = unit.type;
+        Color color = type.engineColor == null ? unit.team.color : type.engineColor;
+        
+        float rad = (radius + Mathf.absin(Time.time, 2f, radius / 4f));
+
+        Draw.color(color);
+    	Draw.alpha(warmup);
+        Draw.z(type.groundLayer - 0.012f);
+        Fill.circle(
+            x,
+            y,
+            rad
+        );
+        Draw.color(type.engineColorInner);
+    	Draw.alpha(warmup);
+        Fill.circle(
+            x - Angles.trnsx(rotation, rad / 4f),
+            y - Angles.trnsy(rotation, rad / 4f),
+            rad / 2f
+        );
+        
+        Draw.z(z);
     }
 }

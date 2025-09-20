@@ -279,6 +279,8 @@ public class Nest extends Block implements BiologicalBlock {
         		readCreatures.clear();
             }
         	
+        	spawnedCreatures.removeAll(u -> !u.isAdded() || u.dead);
+        	
             totalProgress += Time.delta * timeScale * currentBoost();
             curRecoil = Mathf.approachDelta(curRecoil, 0, 1f / recoilTime);
             
@@ -490,7 +492,7 @@ public class Nest extends Block implements BiologicalBlock {
             write.i(currentIndex);
             write.f(regenCharge);
             
-            write.s(readCreatures.size);
+            write.s(spawnedCreatures.size);
             for(var unit : spawnedCreatures){
                 write.i(unit.id);
             }

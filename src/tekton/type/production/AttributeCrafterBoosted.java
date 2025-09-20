@@ -29,7 +29,7 @@ public class AttributeCrafterBoosted extends AttributeCrafter {
             stats.remove(Stat.booster);
             stats.add(Stat.booster,
                 StatValues.speedBoosters("{0}" + StatUnit.timesSpeed.localized(),
-                consBase.amount, liquidBoostIntensity, false, r -> consumesLiquid(r))
+                consBase.amount * liquidBoostIntensity, liquidBoostIntensity, false, r -> consumesLiquid(r))
             );
         }
     }

@@ -1,5 +1,8 @@
-package tekton.type.minion;
+package tekton.type.dependent;
 
+import static mindustry.Vars.tilesize;
+
+import mindustry.Vars;
 import mindustry.entities.*;
 import mindustry.entities.effect.*;
 import mindustry.graphics.Pal;
@@ -12,6 +15,8 @@ import tekton.content.TektonMissileUnitType;
 import tekton.content.TektonStatusEffects;
 
 public class MinionUnitType extends UnitType {
+	public float maxDistance = 40f * tilesize;
+	
 	public Effect despawnEffect = new WaveEffect() {{
 		sides = 4;
 		strokeFrom = 1.5f;

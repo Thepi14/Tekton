@@ -1,4 +1,4 @@
-package tekton.type.minion;
+package tekton.type.dependent;
 
 import arc.*;
 import arc.audio.*;
@@ -21,18 +21,20 @@ import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.meta.*;
+import tekton.type.ai.DistanceMissileAI;
 import tekton.type.ai.MinionAI;
 import mindustry.type.Weapon;
 
 import static mindustry.Vars.*;
 
-public class MinionWeapon extends Weapon {
+public class DependentWeapon extends Weapon {
+	public float weaponRange = 43f * tilesize;
 	
-	public MinionWeapon() {
+	public DependentWeapon() {
 		super();
 	}
 	
-	public MinionWeapon(String name) {
+	public DependentWeapon(String name) {
 		super(name);
 	}
 	
@@ -51,8 +53,11 @@ public class MinionWeapon extends Weapon {
         lifeScl = bullet.scaleLife ? Mathf.clamp(Mathf.dst(bulletX, bulletY, mount.aimX, mount.aimY) / bullet.range) : 1f,
         angle = shootAngle + Mathf.range(inaccuracy + bullet.inaccuracy);
 
-        Entityc shooter = unit.controller() instanceof MinionAI ai ? ai.shooter : unit; //Pass the minion shooter down to its bullets
-        mount.bullet = ((MinionBullet)bullet).create(unit, shooter, unit.team, bulletX, bulletY, angle, -1f, (1f - velocityRnd) + Mathf.random(velocityRnd), lifeScl, null, mover, mount.aimX, mount.aimY, mount.target);
+        Entityc shooter = unit.controller() instanceof MinionAI ai ? ai.shooter : unit;
+        shooter = unit.controller() instanceof DistanceMissileAI ai ? ai.shooter : unit;
+        if (bullet instanceof DependentBulletType dBullet) {
+            mount.bullet = dBullet.create(unit, shooter, unit.team, bulletX, bulletY, angle, -1f, (1f - velocityRnd) + Mathf.random(velocityRnd), lifeScl, null, mover, mount.aimX, mount.aimY, mount.target);
+        }
         handleBullet(unit, mount, mount.bullet);
 
         if(!continuous){

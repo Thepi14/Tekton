@@ -1,4 +1,4 @@
-package tekton.type.minion;
+package tekton.type.dependent;
 
 import arc.*;
 import arc.audio.*;
@@ -21,12 +21,13 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
+import tekton.type.ai.DistanceMissileAI;
 import tekton.type.ai.MinionAI;
 import mindustry.entities.bullet.BulletType;
 
 import static mindustry.Vars.*;
 
-public class MinionBullet extends BulletType {
+public class DependentBulletType extends BulletType {
 	public @Nullable Bullet create(
 	        @Nullable Entityc owner, @Nullable Entityc shooter, Team team, float x, float y, float angle, float damage, float velocityScl,
 	        float lifetimeScl, Object data, @Nullable Mover mover, float aimX, float aimY, @Nullable Teamc target
@@ -48,6 +49,14 @@ public class MinionBullet extends BulletType {
 	                //assign unit owner
 	                if(spawned.controller() instanceof MinionAI ai){
 	                    if(shooter instanceof Unit unit){
+	                        ai.shooter = unit;
+	                    }
+	                    if(shooter instanceof ControlBlock control){
+	                        ai.shooter = control.unit();
+	                    }
+	                }
+	                if (spawned.controller() instanceof DistanceMissileAI ai) {
+	                	if(shooter instanceof Unit unit){
 	                        ai.shooter = unit;
 	                    }
 	                    if(shooter instanceof ControlBlock control){

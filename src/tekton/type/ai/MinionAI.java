@@ -7,13 +7,13 @@ import mindustry.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
-import tekton.type.minion.MinionUnitType;
+import tekton.type.dependent.DistanceMissileUnitType;
+import tekton.type.dependent.MinionUnitType;
 
 import static mindustry.Vars.*;
 
 public class MinionAI extends AIController {
 	 public @Nullable Unit shooter;
-	 public float maxDistance = 40f * tilesize;
 	 public float attackDistanceMul = 0.8f;
 
     /*@Override
@@ -25,36 +25,40 @@ public class MinionAI extends AIController {
     public void updateMovement(){
         unloadPayloads();
 
-        float time = unit instanceof TimedKillc t ? t.time() : 1000000f;
-        float distance = shooter != null ? new Vec2(shooter.x, shooter.y).dst(this.unit) : maxDistance + 1f;
-        float distanceTarget = shooter != null ? new Vec2(unit.x, unit.y).dst(new Vec2(shooter.aimX, shooter.aimY)) : 0f;
-        float attackDistance = unit.type.range * attackDistanceMul;
-        
-        //remove before missile kills itself
-        if (distance > maxDistance || time >= unit.type.lifetime - 0.5f) {
-        	if (unit.type instanceof MinionUnitType v) {
-        		v.despawnEffect.at(unit);
-        	}
-        	unit.remove();
-        	return;
-        }
-
-        if (shooter != null) {
-        	if(time >= unit.type.homingDelay && !shooter.dead()){
-	            unit.lookAt(shooter.aimX, shooter.aimY);
-	        }
+        if (unit.type instanceof MinionUnitType typ) {
+            float time = unit instanceof TimedKillc t ? t.time() : 1000000f;
+            float distance = shooter != null ? new Vec2(shooter.x, shooter.y).dst(this.unit) : typ.maxDistance + 1f;
+            float distanceTarget = shooter != null ? new Vec2(unit.x, unit.y).dst(new Vec2(shooter.aimX, shooter.aimY)) : 0f;
+            float attackDistance = unit.type.range * attackDistanceMul;
             
-            unit.aimX = shooter.aimX;
-            unit.aimY = shooter.aimY;
-        	
-        	if (distanceTarget >= attackDistance)
-        		moveTo(new Vec2(shooter.aimX, shooter.aimY), attackDistance, 0.5f, true, null, true);
-        	else
-        		moveTo(new Vec2(shooter.aimX, shooter.aimY), attackDistance, 0.5f, true, null, false);
+            //remove before missile kills itself
+            if (distance > typ.maxDistance || time >= unit.type.lifetime - 0.5f) {
+            	if (unit.type instanceof MinionUnitType v) {
+            		v.despawnEffect.at(unit);
+            	}
+            	unit.remove();
+            	return;
+            }
+
+            if (shooter != null) {
+            	if(time >= unit.type.homingDelay && !shooter.dead()){
+    	            unit.lookAt(shooter.aimX, shooter.aimY);
+    	        }
+                
+                unit.aimX = shooter.aimX;
+                unit.aimY = shooter.aimY;
+            	
+            	if (distanceTarget >= attackDistance)
+            		moveTo(new Vec2(shooter.aimX, shooter.aimY), attackDistance, 0.5f, true, null, true);
+            	else
+            		moveTo(new Vec2(shooter.aimX, shooter.aimY), attackDistance, 0.5f, true, null, false);
+            }
+            else {
+            	unit.moveAt(vec.trns(unit.rotation, unit.type.missileAccelTime <= 0f ? unit.speed() : Mathf.pow(Math.min(time / unit.type.missileAccelTime, 1f), 2f) * unit.speed()));
+            }
         }
-        else {
-        	unit.moveAt(vec.trns(unit.rotation, unit.type.missileAccelTime <= 0f ? unit.speed() : Mathf.pow(Math.min(time / unit.type.missileAccelTime, 1f), 2f) * unit.speed()));
-        }
+        else
+        	Log.info("not attached to a MinionUnitType!");
     }
     
     public float prefSpeed(){

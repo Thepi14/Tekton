@@ -769,8 +769,8 @@ public class TektonBlocks {
 			hasLiquids = true;
             fogRadius = 3;
 			
-			consumeLiquid(Liquids.water, 4f / 60f);
-			consumeItem(tantalum);
+			consumeLiquid(Liquids.water, 10f / 60f);
+			consumeItem(tantalum, 2);
 			outputItem = new ItemStack(cryogenicCompound, 1);
 
             drawLiquidLight = true;
@@ -2093,7 +2093,7 @@ public class TektonBlocks {
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(TektonLiquids.ammonia, 1.4f), new DrawLiquidTile(Liquids.water, 1.4f), new DrawRegion() {{ buildingRotate = false; }}, new DrawLiquidOutputs(), new DrawBlurSpin("-rotator", 6f), new DrawRegion("-mid"), 
             		new DrawLiquidTile(Liquids.hydrogen, 38f / 4f), new DrawRegion("-top") {{ buildingRotate = false; }});
 			
-            consumeLiquid(Liquids.hydrogen, 3f / 60f).boost();
+            consumeLiquid(Liquids.hydrogen, 1.5f / 60f).boost();
             consumePower(80f / 60f);
             
             ambientSound = Sounds.hum;
@@ -2131,7 +2131,7 @@ public class TektonBlocks {
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(TektonLiquids.ammonia, 4f), new DrawLiquidTile(Liquids.water, 4f), new DrawRegion() {{ buildingRotate = false; }}, 
 					new DrawLiquidOutputs(), new DrawRegion("-rotator", 1.5f, true) {{ buildingRotate = true; }}, new DrawRegion("-middle"), new DrawLiquidTile(Liquids.hydrogen, 38f / 4f), new DrawRegion("-top") {{ buildingRotate = false; }});
 			
-            consumeLiquid(Liquids.hydrogen, 3f / 60f).boost();
+            consumeLiquid(Liquids.hydrogen, 1.5f / 60f).boost();
 			consumePower(80f / 60f);
 			
 			ambientSound = Sounds.hum;
@@ -5815,6 +5815,8 @@ public class TektonBlocks {
                 lightColor = hitColor = Pal.heal;
                 collidesAir = collidesGround = collidesTeam = true;
                 healAmount = (repairAmount / damageInterval) / 5f;
+                damage = 0f;
+                knockback = 0f;
             }};
             
             powerUse = 1f;
