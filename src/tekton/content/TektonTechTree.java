@@ -206,6 +206,9 @@ public class TektonTechTree {
                         	});
                     		node(methaneCombustionChamber, Seq.with(new SectorComplete(pit)), () -> {
                     			node(thermalDifferenceGenerator, Seq.with(new SectorComplete(cave)), () -> {
+                    				node(acidCore, Seq.with(new SectorComplete(rainforest)), () -> { //change?
+                    					
+                                	});
                     				node(uraniumReactor, Seq.with(new SectorComplete(aequor)), () -> { //change
                     					node(fusionReactor, Seq.with(new SectorComplete(aequor), new Research(electricalCoil)), () -> { //change
                                     		
@@ -489,14 +492,14 @@ public class TektonTechTree {
     			//liquids
     			nodeProduce(TektonLiquids.methane, () -> {
             		nodeProduce(Liquids.water, Seq.with(new Research(graphiteConcentrator)), () -> {
+            			nodeProduce(TektonLiquids.ammonia, () -> {
+            				
+                    	});
             			nodeProduce(Liquids.hydrogen, () -> {
-                			nodeProduce(TektonLiquids.ammonia, () -> {
-                				
-                        	});
                 			
                 			//biological session
             				nodeProduce(TektonLiquids.acid, () -> {
-            					node(TektonUnits.formica, Seq.with(new SectorComplete(rainforest)), () -> {
+            					/*node(TektonUnits.formica, Seq.with(new SectorComplete(rainforest)), () -> {
             						node(TektonUnits.gracilipes, Seq.with(new SectorComplete(rainforest)), () -> {
             							node(TektonUnits.carabidae, Seq.with(new SectorComplete(rainforest)), () -> {
             								
@@ -524,7 +527,7 @@ public class TektonTechTree {
                     						
                     					});
                 					});
-            					});
+            					});*/
             					
                     			//alien session
                     			/*nodeProduce(TektonLiquids.metazotoplasm, () -> {

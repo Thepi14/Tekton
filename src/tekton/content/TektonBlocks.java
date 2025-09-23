@@ -117,7 +117,7 @@ public class TektonBlocks {
 	
 	//power
 	lineNode, lineTower, lineLink, powerCapacitor, powerBank, reinforcedDiode, lightningRod, methaneBurner, 
-	geothermalGenerator, methaneCombustionChamber, thermalDifferenceGenerator, uraniumReactor, fusionReactor, 
+	geothermalGenerator, methaneCombustionChamber, thermalDifferenceGenerator, acidCore, uraniumReactor, fusionReactor, 
 	
 	//production
 	wallDrill, plasmaWallDrill, silicaAspirator, silicaTurbine, geothermalCondenser, undergroundWaterExtractor, reactionDrill, gravitationalDrill, 
@@ -187,6 +187,7 @@ public class TektonBlocks {
 		acidFloor = new Floor("acid-floor", 0) {{
 			speedMultiplier = 0.4f;
 			liquidDrop = TektonLiquids.acid;
+			liquidMultiplier = 0.5f;
 			isLiquid = true;
 			cacheLayer = CacheLayer.water;
 			drownTime = 200f;
@@ -1778,7 +1779,7 @@ public class TektonBlocks {
 			consumeLiquid(TektonLiquids.methane, 10f / 60f);
 			powerProduction = 1;
 			//itemDuration = 80;
-			liquidCapacity = 35f;
+			liquidCapacity = 30f;
 			generateEffect = TektonFx.methanespark;
 			ambientSound = Sounds.smelter;
 			ambientSoundVolume = 0.03f;
@@ -1820,9 +1821,9 @@ public class TektonBlocks {
 			squareSprite = false;
 			consumeLiquids(LiquidStack.with(TektonLiquids.oxygen, 1f / 60f, TektonLiquids.methane, 40f / 60f));
 			powerProduction = 520f / 60f;
-			liquidCapacity = 35f;
 			ambientSound = Sounds.smelter;
 			ambientSoundVolume = 0.06f;
+			liquidCapacity = 40f;
 			
 			generateEffect = new RadialEffect(TektonFx.oxygenCombustionSmoke, 4, 90f, 8f) {{ rotationOffset = 45f; }};
 			generateEffectRange = 0f;
@@ -1855,8 +1856,9 @@ public class TektonBlocks {
 			ambientSound = Sounds.steam;
 			ambientSoundVolume = 0.03f;
 			generateEffect = Fx.generatespark;
+			liquidCapacity = 10f;
 
-			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawItemLiquidTile(Liquids.cryofluid, cryogenicCompound, 9f / 4f) {{ alpha = 0.8f; }}, new DrawRegion("-mid-bottom"),
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawItemLiquidTile(Liquids.cryofluid, cryogenicCompound, 9f / 4f) {{ alpha = 0.9f; }}, new DrawRegion("-mid-bottom"),
 				new DrawRegion("-turbine") {{
 					rotateSpeed = 5f;
 			}}, new DrawDefault(), new DrawWarmupRegion(), new DrawGlowRegion() {{
@@ -1879,7 +1881,35 @@ public class TektonBlocks {
 			lightLiquid = Liquids.cryofluid;
 
 			consumeItem(cryogenicCompound);
-			consumeLiquids(LiquidStack.with(TektonLiquids.oxygen, 1f / 60f));
+			consumeLiquid(TektonLiquids.oxygen, 1f / 60f);
+		}};
+		
+		acidCore = new ConsumeGenerator("acid-core") {{
+			requirements(Category.power, tek(), with(iron, 600, magnet, 100, polytalum, 100, tantalum, 240, Items.silicon, 280));
+			health = 1280;
+			powerProduction = 3600 / 60;
+			hasLiquids = true;
+			hasItems = true;
+			size = 4;
+            ambientSound = Sounds.flux;
+            ambientSoundVolume = 0.13f;
+			//generateEffect = Fx.generatespark;
+			liquidCapacity = 120f;
+			
+			generateEffect = new RadialEffect(TektonFx.acidGenerateSmoke, 4, 90f, 10.5f);
+			generateEffectRange = 0f;
+
+			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(TektonLiquids.acid), new DrawRegion("-middle"), new DrawLiquidTile(TektonLiquids.oxygen, 10.05f), new DrawDefault(), new DrawGlowRegion() {{
+				alpha = 0.7f;
+				glowScale = 5f;
+				color = TektonColor.acid.cpy().mul(1.3f);
+			}});
+			
+			lightLiquid = TektonLiquids.acid;
+
+			itemDuration = 20f;
+			consumeItem(zirconium);
+			consumeLiquids(LiquidStack.with(TektonLiquids.oxygen, 3f / 60f, TektonLiquids.acid, 80f / 60f));
 		}};
 
 		uraniumReactor = new TektonNuclearReactor("uranium-reactor") {{
@@ -1888,10 +1918,11 @@ public class TektonBlocks {
 			ambientSoundVolume = 0.24f;
 			size = 4;
 			health = 1470;
-			itemDuration = 140f;
-			powerProduction = 4000 / 60;
+			itemDuration = 120f;
+			powerProduction = 4600 / 60;
 			heating = 0.005f;
 			squareSprite = false;
+			liquidCapacity = 80f;
 			
 			generateEffect = new RadialEffect(TektonFx.nuclearSmoke, 4, 90f, 13.25f) {{ rotationOffset = 45f; }};
 			
@@ -1920,7 +1951,7 @@ public class TektonBlocks {
 			explosionDamage = 5000;
 
 			consumeItem(uranium);
-			consumeLiquid(Liquids.water, 50f / 60f);
+			consumeLiquid(Liquids.water, 40f / 60f);
 		}};
 		
 		fusionReactor = new FusionReactor("fusion-reactor") {{
@@ -1931,7 +1962,7 @@ public class TektonBlocks {
 			itemDuration = 45f;
 			
 			itemCapacity = 20;
-			liquidCapacity = 100f;
+			liquidCapacity = 60f;
 
             ambientSound = Sounds.pulse;
             ambientSoundVolume = 0.085f;
@@ -1991,6 +2022,7 @@ public class TektonBlocks {
 			ambientSound = Sounds.drill;
 			ambientSoundVolume = 0.1f;
 			squareSprite = false;
+			liquidCapacity = 40f;
 			
             fogRadius = 4;
             laserWidth = 0.7f;
@@ -2123,7 +2155,7 @@ public class TektonBlocks {
 			attribute = Attribute.water;
 			craftEffect = Fx.none;
 			
-			liquidCapacity = 60f;
+			liquidCapacity = 30f;
 			regionRotated1 = 3;
 			liquidOutputDirections = new int[]{1, 3};
 			outputLiquids = LiquidStack.with(TektonLiquids.ammonia, (6f / 60f) / undergroundWaterExtractorDebuff, Liquids.water, (20f / 60f) / undergroundWaterExtractorDebuff);
@@ -2157,6 +2189,7 @@ public class TektonBlocks {
 			shake = 3.5f;
 			itemCapacity = 30;
 			researchCostMultiplier = 0.4f;
+			liquidCapacity = 10f;
 
 			blockedItem = TektonItems.uranium;
 			drillMultipliers.put(TektonItems.zirconium, multiReactionDrill(0.2f));
@@ -2195,6 +2228,7 @@ public class TektonBlocks {
 			warmupSpeed = 0.01f;
 			itemCapacity = 50;
 			heatColor = TektonColor.gravityColor;
+			liquidCapacity = 30f;
 			
 			requiredGravity = 6 * gravityMul;
 			maxGravity = 12 * gravityMul;
@@ -2359,7 +2393,8 @@ public class TektonBlocks {
 						ammoMultiplier = 4;
 					}}
 				);
-			
+
+			liquidCapacity = 5f;
 			var coolantConsumption = 0.5f / 60f;
             coolant = consume(new ConsumeLiquid(TektonLiquids.ammonia, coolantConsumption));
             coolantMultiplier = defCoolantMultiplier / coolantConsumption;
@@ -2569,6 +2604,8 @@ public class TektonBlocks {
 					3, y, 0
 				};
 			}};
+			
+			liquidCapacity = 10f;
 			var coolantConsumption = 1f / 60f;
             coolant = consume(new ConsumeLiquid(TektonLiquids.ammonia, coolantConsumption));
             coolantMultiplier = defCoolantMultiplier / coolantConsumption;
@@ -2674,7 +2711,8 @@ public class TektonBlocks {
 				ammoMultiplier = 1;
 				buildingDamageMultiplier = turretBuildingDamageMultipliyer;
 			}};
-			
+
+			liquidCapacity = 10f;
 			buildCostMultiplier = 2.5f;
 			researchCostMultiplier = 0.4f;
 		}};
@@ -2832,6 +2870,8 @@ public class TektonBlocks {
 				shotDelay = 0;
 				shots = 2;
 			}};
+			
+			liquidCapacity = 10f;
 			var coolantConsumption = 1f / 60f;
             coolant = consume(new ConsumeLiquid(TektonLiquids.ammonia, coolantConsumption));
             coolantMultiplier = defCoolantMultiplier / coolantConsumption;
@@ -3185,6 +3225,8 @@ public class TektonBlocks {
 						
 						ammoMultiplier = 4f;
 					}});
+			
+			liquidCapacity = 20f;
 			var coolantConsumption = 2f / 60f;
             coolant = consume(new ConsumeLiquid(TektonLiquids.ammonia, coolantConsumption));
             coolantMultiplier = defCoolantMultiplier / coolantConsumption;
@@ -3352,7 +3394,8 @@ public class TektonBlocks {
 				//lightningType.collidesAir = false;
 				lightningColor = redShootColorLightning;
 			}};
-			
+
+			liquidCapacity = 30f;
 			buildCostMultiplier = 1.15f;
 			researchCostMultiplier = 0.7f;
 		}};
@@ -3401,7 +3444,6 @@ public class TektonBlocks {
 			recoil = 0.5f;
 			health = 1000;
 			reload = 6f;
-			var brange = range = 220f;
 			//shootSound = Sounds.pew;
 			maxAmmo = 10;
 			inaccuracy = 7f;
@@ -3510,7 +3552,8 @@ public class TektonBlocks {
 						ammoMultiplier = 8f;
 					}}
 				);
-			
+
+			liquidCapacity = 20f;
 			var coolantConsumption = 2f / 60f;
             coolant = consume(new ConsumeLiquid(TektonLiquids.ammonia, coolantConsumption));
             coolantMultiplier = defCoolantMultiplier / coolantConsumption;
@@ -3754,6 +3797,8 @@ public class TektonBlocks {
 							}};
 						}};
 					}});
+			
+			liquidCapacity = 10f;
 			consumeLiquid(TektonLiquids.oxygen, 1f / 60f);
 			//coolant = consumeCoolant(0.3f, true, true);
 			coolantMultiplier = 0.5f;
@@ -3779,7 +3824,7 @@ public class TektonBlocks {
 			soundPitchMax = 1f;
 			maxAmmo = 10;
 			itemCapacity = 10;
-			liquidCapacity = 20;
+			liquidCapacity = 20f;
 			ammoPerShot = 1;
 			inaccuracy = 6;
 			accurateDelay = true;
@@ -3951,6 +3996,7 @@ public class TektonBlocks {
 
 			consumeLiquid(Liquids.hydrogen, 3f / 60f);
 
+			liquidCapacity = 40f;
 			var coolantConsumption = 4f / 60f;
             coolant = consume(new ConsumeLiquid(TektonLiquids.ammonia, coolantConsumption));
             coolantMultiplier = defCoolantMultiplier / coolantConsumption;
@@ -4318,8 +4364,9 @@ public class TektonBlocks {
 			predictTarget = false;
 			targetAir = false;
 
+			liquidCapacity = 50f;
 			consumePower(800f / 60f);
-			consumeLiquid(Liquids.water, 5f / 60f);
+			consumeLiquid(Liquids.water, 10f / 60f);
 			
             unitSort = UnitSorts.strongest;
 
@@ -4331,7 +4378,7 @@ public class TektonBlocks {
 				statusDuration = 10f;
 				status = StatusEffects.shocked;
 				hitColor = redShootColor;
-				damage = 1800f;
+				damage = 1700f;
 				lightning = 8;
 				lightningDamage = 50f;
                 lightningLength = 8;
@@ -4491,6 +4538,7 @@ public class TektonBlocks {
             float rad = 8f * 30f;
 			range = rad;
 
+			liquidCapacity = 50f;
 			consumePower(300f / 60f);
 			consumeLiquid(Liquids.water, 5f / 60f);
 			
@@ -5171,7 +5219,8 @@ public class TektonBlocks {
             shootType = new MultiTargetedBulletType(bullet, spawnPositions, effect) {{ 
                 pierceArmor = true;
             }};
-            
+
+			liquidCapacity = 60f;
             consumePower(8f);
 			consumeLiquid(TektonLiquids.dicyanogen, 6f / 60f);
             buildCostMultiplier = 0.5f;
@@ -5479,7 +5528,7 @@ public class TektonBlocks {
             		}}
             );
             
-			
+			liquidCapacity = 60f;
             var coolantConsumption = 6f / 60f;
             coolant = consume(new ConsumeLiquid(TektonLiquids.ammonia, coolantConsumption));
             coolantMultiplier = defCoolantMultiplier / coolantConsumption;
@@ -5930,6 +5979,8 @@ public class TektonBlocks {
 			hideDetails = true;
 		}};
 		
+		var bioFogMultiplier = 10;
+		
 		smallNest = new Nest("small-nest") {{
 			requirements(Category.logic, tek(bioVisibility), with());
 			creatureTypes.add(TektonUnits.formica, TektonUnits.diptera);
@@ -5938,7 +5989,7 @@ public class TektonBlocks {
 			armor = 0;
 			ticksToSpawn = 60f * 30f;
 			ticksRandom = 60f * 10f;
-			fogRadius = 5;
+			fogRadius = 5 * bioFogMultiplier;
 			lightRadius = 2f;
 			powerProduction = 0.4f;
 			explosionShake = 1f;
@@ -5954,7 +6005,7 @@ public class TektonBlocks {
 			requirements(Category.logic, tek(bioVisibility), with());
 			creatureTypes.add(TektonUnits.gracilipes, TektonUnits.polyphaga, TektonUnits.colobopsis);
 			health = 700;
-			fogRadius = 8;
+			fogRadius = 8 * bioFogMultiplier;
 			explosionShake = 2f;
 			explosionRadius = 10;
 		    explosionDamage = 250;
@@ -5968,7 +6019,7 @@ public class TektonBlocks {
 			armor = 3;
 			ticksToSpawn = 60f * 70f;
 			ticksRandom = 60f * 30f;
-			fogRadius = 14;
+			fogRadius = 14 * bioFogMultiplier;
 			lightRadius = 7f;
 			powerProduction = 2f;
 			explosionShake = 4f;

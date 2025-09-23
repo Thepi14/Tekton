@@ -582,6 +582,21 @@ public class TektonFx {
         }
     }),
 	
+	acidGenerateSmoke = new Effect(300f, e -> {
+        color(TektonColor.acid.cpy().mul(1.1f));
+        alpha(0.6f);
+
+        rand.setSeed(e.id);
+        for(int i = 0; i < 6; i++){
+            float len = rand.random(10f), rot = rand.range(45f) + e.rotation;
+
+            e.scaled(e.lifetime * rand.random(0.3f, 1f), b -> {
+                v.trns(rot, len * b.finpow());
+                Fill.circle(e.x + v.x, e.y + v.y, 2f * b.fslope() + 0.2f);
+            });
+        }
+    }),
+	
 	nuclearSmoke = new Effect(240f, e -> {
         color(Liquids.water.gasColor);
         alpha(0.4f);
