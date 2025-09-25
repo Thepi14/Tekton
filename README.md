@@ -8,7 +8,6 @@
 [![Badge Issues]][Issues] <br>
 
 <br>
-<br>
 
 ## A still in development campaign mod that adds a new planet called Tekton. <br>
 
@@ -24,9 +23,9 @@
 ## Overview
 </div>
 
-- Currently 190 pieces of content, including blocks, units, items and liquids (excluding environment and ores).
-- 3 sectors at the moment of the creation of this README.
-- 4 completed unit trees with unique units.
+- Currently 207 pieces of content, including blocks, units, items and liquids (excluding environment and ores).
+- 11 sectors at the moment of the creation of this README.
+- 4 unit trees with unique units.
 
 Keep in mind that this mod is still in development, so there will be bugs, missing things and other strange things.
 <br>
