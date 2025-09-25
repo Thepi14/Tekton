@@ -36,7 +36,7 @@ public class WaveBulletType extends BulletType {
 	public boolean scaleDistance = true;
 	
 	public float healAmount = 1f;
-	public boolean impulseTeam = false, statusTeam = false;
+	public boolean collidesEnemy = true, impulseTeam = false, statusTeam = false;
 	
 	public Effect waveEffect = new Effect();
 	public Effect unitWaveEffect = Fx.none;
@@ -117,51 +117,52 @@ public class WaveBulletType extends BulletType {
         float currentSize = (b.time * waveSpeed) + minRadius;
         
         if (b.timer.get(5, damageInterval)) {
-        	Units.nearbyEnemies(b.team, b.x, b.y, currentSize + 1f, other -> {
-        		
-            	var angle = Mathf.atan2(other.x - b.x, other.y - b.y);
-            	var absAngle = angle + 0f;
-            	if (angle < 0f)
-            		absAngle = angle + (360f * Mathf.degRad);
-            	var abs = Math.abs(b.rotation() - (absAngle * Mathf.radDeg));
-            	
-                if(other.team != b.team && other.hittable() && ((other.isFlying() && collidesAir) || (other.isGrounded() && collidesGround)) &&
-                		!Mathf.within(other.x - b.x, other.y - b.y, currentSize - 4f) && (abs < circleDeegres / 2f || circleDeegres >= 360f)) {
-                	
-                    unitWaveEffect.at(other.x, other.y, angle * Mathf.radDeg, hitColor, new GravWaveEffectContainer(other, knockback * b.fout(), waveSpeed * 0.8f));
-                    
-                    other.damage(damage);
-                    other.apply(status, statusDuration);
-                    
-                	var direction = new Vec2(Mathf.cos(angle), Mathf.sin(angle)).scl((knockback * 80f * b.fout()));
-                    other.impulse(direction);
-                }
-            });
-        	//hate to do a different iteration
-        	Units.nearbyEnemies(Team.derelict, b.x, b.y, currentSize + 1f, other -> {
-        		var angle = Mathf.atan2(other.x - b.x, other.y - b.y);
-            	var absAngle = angle + 0f;
-            	if (angle < 0f)
-            		absAngle = angle + (360f * Mathf.degRad);
-            	var abs = Math.abs(b.rotation() - (absAngle * Mathf.radDeg));
-            	
-                if (other.team == b.team && ((other.isFlying() && collidesAir) || (other.isGrounded() && collidesGround)) &&
-                		!Mathf.within(other.x - b.x, other.y - b.y, currentSize - 4f) && (abs < circleDeegres / 2f || circleDeegres >= 360f) && collidesTeam) {
-                	
-                	unitWaveEffect.at(other.x, other.y, angle * Mathf.radDeg, hitColor, new GravWaveEffectContainer(other, knockback * b.fout(), waveSpeed * 0.8f));
-                	
-                	if (healAmount > 0)
-                		other.heal(healAmount);
-                	
-                	if (statusTeam)
-                        other.apply(status, statusDuration);
-                	
-                	if (impulseTeam) {
-                    	var direction = new Vec2(Mathf.cos(angle), Mathf.sin(angle)).scl((knockback * 80f * b.fout()));
-                        other.impulse(direction);
-                	}
-                }
-            });
+        	if (collidesEnemy)
+	        	Units.nearbyEnemies(b.team, b.x, b.y, currentSize + 1f, other -> {
+	            	var angle = Mathf.atan2(other.x - b.x, other.y - b.y);
+	            	var absAngle = angle + 0f;
+	            	if (angle < 0f)
+	            		absAngle = angle + (360f * Mathf.degRad);
+	            	var abs = Math.abs(b.rotation() - (absAngle * Mathf.radDeg));
+	            	
+	                if(other.team != b.team && other.hittable() && ((other.isFlying() && collidesAir) || (other.isGrounded() && collidesGround)) &&
+	                		!Mathf.within(other.x - b.x, other.y - b.y, currentSize - 4f) && (abs < circleDeegres / 2f || circleDeegres >= 360f)) {
+	                	
+	                    unitWaveEffect.at(other.x, other.y, angle * Mathf.radDeg, hitColor, new GravWaveEffectContainer(other, knockback * b.fout(), waveSpeed * 0.8f));
+	                    
+	                    other.damage(damage);
+	                    other.apply(status, statusDuration);
+	                    
+	                	var direction = new Vec2(Mathf.cos(angle), Mathf.sin(angle)).scl((knockback * 80f * b.fout()));
+	                    other.impulse(direction);
+	                }
+	            });
+        	//TODO maybe make only one iteration?
+        	if (collidesTeam)
+	        	Units.nearbyEnemies(Team.derelict, b.x, b.y, currentSize + 1f, other -> {
+	        		var angle = Mathf.atan2(other.x - b.x, other.y - b.y);
+	            	var absAngle = angle + 0f;
+	            	if (angle < 0f)
+	            		absAngle = angle + (360f * Mathf.degRad);
+	            	var abs = Math.abs(b.rotation() - (absAngle * Mathf.radDeg));
+	            	
+	                if (other.team == b.team && ((other.isFlying() && collidesAir) || (other.isGrounded() && collidesGround)) &&
+	                		!Mathf.within(other.x - b.x, other.y - b.y, currentSize - 4f) && (abs < circleDeegres / 2f || circleDeegres >= 360f)) {
+	                	
+	                	unitWaveEffect.at(other.x, other.y, angle * Mathf.radDeg, hitColor, new GravWaveEffectContainer(other, knockback * b.fout(), waveSpeed * 0.8f));
+	                	
+	                	if (healAmount > 0)
+	                		other.heal(healAmount);
+	                	
+	                	if (statusTeam)
+	                        other.apply(status, statusDuration);
+	                	
+	                	if (impulseTeam) {
+	                    	var direction = new Vec2(Mathf.cos(angle), Mathf.sin(angle)).scl((knockback * 80f * b.fout()));
+	                        other.impulse(direction);
+	                	}
+	                }
+	            });
         }
     }
     

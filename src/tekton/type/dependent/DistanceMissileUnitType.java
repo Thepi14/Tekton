@@ -10,7 +10,7 @@ import tekton.type.ai.DistanceMissileAI;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 
-public class DistanceMissileUnitType extends MissileUnitType {
+public class DistanceMissileUnitType extends MissileUnitType implements DependentType {
 	public float maxDistance = 43f * Vars.tilesize;
 	
 	public DistanceMissileUnitType(String name) {
@@ -19,7 +19,7 @@ public class DistanceMissileUnitType extends MissileUnitType {
 		controller = u -> new DistanceMissileAI();
 	}
 
-    @Override
+    /*@Override
     public Unit spawn(Position pos) {
     	return super.spawn(pos);
     }
@@ -37,5 +37,10 @@ public class DistanceMissileUnitType extends MissileUnitType {
     @Override
     public void init() {
         super.init();
-    }
+    }*/
+
+	@Override
+	public float maxDistance() {
+		return maxDistance;
+	}
 }

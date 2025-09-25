@@ -129,7 +129,7 @@ public class Tekton extends Mod{
         TektonLoadouts.load();
         
         Team.blue.emoji = "tekton-hapax";
-        Team.blue.name = "hapax";
+        //Team.blue.name = "hapax";
         
         Log.info("Tekton loaded, non-hidden content: " + returnResourcesSize());
         

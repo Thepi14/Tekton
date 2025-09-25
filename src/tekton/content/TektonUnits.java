@@ -211,7 +211,7 @@ public class TektonUnits {
                 reload = 1f;
                 shootOnDeath = true;
                 
-                bullet = new ExplosionBulletType(100f, 35f) {{
+                bullet = new ExplosionBulletType(90f, 35f) {{
                 	hittable = false;
                     collidesAir = true;
                 	hitShake = 3f;
@@ -1067,19 +1067,9 @@ public class TektonUnits {
                 	strokeTo = 0;
                 	colorFrom = colorTo = Pal.suppress;
                 }}, new WaveEffect() {{
-                	sizeFrom = 4;
-                	sizeTo = 45;
-                	lifetime = 16;
-                	strokeFrom = 5;
-                	strokeTo = 1;
-                	colorFrom = Color.white.cpy();
-                	colorTo = Pal.suppress;
-                }}, new WaveEffect() {{
-                	sizeFrom = 8;
-                	sizeTo = 60;
-                	lifetime = 20;
-                	strokeFrom = 5;
-                	strokeTo = 1;
+                	sizeTo = 44f;
+                	lifetime = 16f;
+                	strokeFrom = 4f;
                 	colorFrom = Color.white.cpy();
                 	colorTo = Pal.suppress;
                 }});
@@ -1228,7 +1218,7 @@ public class TektonUnits {
             	y = 8.5f;
             	shootY = 4;
             	inaccuracy = 0;
-            	reload = 85f;
+            	reload = 80f;
             	recoil = 3;
             	mirror = false;
             	rotate = false;
@@ -1263,7 +1253,7 @@ public class TektonUnits {
                             x = y = shootY = 0;
                             reload = 1f;
                             shootOnDeath = true;
-                            bullet = new ExplosionBulletType(90f, 20f) {{
+                            bullet = new ExplosionBulletType(80f, 25f) {{
                             	hittable = false;
                             	hitShake = 3f;
                                 shootEffect = new MultiEffect(new ParticleEffect() {{
@@ -1275,24 +1265,12 @@ public class TektonUnits {
                                 	lenTo = 0;
                                 	strokeFrom = 3;
                                 	strokeTo = 0;
-                                	colorFrom = Pal.suppress;
-                                	colorTo = Pal.suppress;
+                                	colorFrom = colorTo = Pal.suppress;
                             		layer = Layer.flyingUnit + 1f;
                                 }}, new WaveEffect() {{
-                                	sizeFrom = 4;
-                                	sizeTo = 14;
-                                	lifetime = 16;
-                                	strokeFrom = 5;
-                                	strokeTo = 1;
-                                	colorFrom = Color.white;
-                                	colorTo = Pal.suppress;
-                            		layer = Layer.flyingUnit + 1f;
-                                }}, new WaveEffect() {{
-                                	sizeFrom = 8;
-                                	sizeTo = 36;
-                                	lifetime = 20;
-                                	strokeFrom = 5;
-                                	strokeTo = 1;
+                                	sizeTo = 30f;
+                                	lifetime = 12f;
+                                	strokeFrom = 4f;
                                 	colorFrom = Color.white;
                                 	colorTo = Pal.suppress;
                                 }});

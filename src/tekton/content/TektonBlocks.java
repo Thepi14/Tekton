@@ -50,6 +50,7 @@ import tekton.type.bullets.*;
 import tekton.type.defense.*;
 import tekton.type.draw.*;
 import tekton.type.gravity.*;
+import tekton.type.part.EffectSpawnerPart;
 import tekton.type.part.FramePart;
 import tekton.type.payloads.*;
 import tekton.type.power.*;
@@ -4618,7 +4619,23 @@ public class TektonBlocks {
 						mirror = false;
 						x = y = 0;
 						under = outline = false;
-						heatColor = TektonColor.gravityColor;
+						heatColor = TektonColor.gravityColor.cpy().a(1f);
+					}}, new EffectSpawnerPart() {{
+						x = 8.4f;
+						y = 15f;
+						height = 1f;
+						width = 12f;
+						effectRandRot = 90f;
+						mirror = true;
+						effectColor = TektonColor.gravityColor.cpy().a(1f);
+						effect = new Effect(12f, e -> {
+					        color(Color.white, e.color, e.fin());
+					        stroke(e.fout() * 1.2f + 0.6f);
+
+					        randLenVectors(e.id, 7, 25f * e.finpow(), e.rotation, 45f, (x, y) -> {
+					            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), e.fslope() * 5f + 0.5f);
+					        });
+					    });
 					}});
             	}};
             consumePower(8f);
@@ -5863,15 +5880,15 @@ public class TektonBlocks {
             	linePoints = 24;
                 lightColor = hitColor = Pal.heal;
                 collidesAir = collidesGround = collidesTeam = true;
-                healAmount = (repairAmount / damageInterval) / 5f;
-                damage = 0f;
+                healAmount = (repairAmount / damageInterval) / 1.5f;
                 knockback = 0f;
+                collidesEnemy = false;
             }};
             
             powerUse = 1f;
 
             consumePower(1f);
-            consumeLiquid(TektonLiquids.oxygen, 2f / 60f);
+            consumeLiquid(TektonLiquids.oxygen, 3f / 60f);
         }};
         
 		//payload

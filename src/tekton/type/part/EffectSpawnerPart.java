@@ -12,6 +12,7 @@ import mindustry.graphics.*;
 import static arc.math.Mathf.random;
 import static arc.util.Tmp.*;
 
+//TODO: change in new version
 /**Spawns effects in a rectangle centered on x and y.*/
 public class EffectSpawnerPart extends DrawPart{
     public float x, y, width, height, rotation;

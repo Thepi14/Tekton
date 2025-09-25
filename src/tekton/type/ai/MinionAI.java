@@ -7,12 +7,14 @@ import mindustry.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
+import tekton.type.dependent.DependentAI;
+import tekton.type.dependent.DependentType;
 import tekton.type.dependent.DistanceMissileUnitType;
 import tekton.type.dependent.MinionUnitType;
 
 import static mindustry.Vars.*;
 
-public class MinionAI extends AIController {
+public class MinionAI extends AIController implements DependentAI {
 	 public @Nullable Unit shooter;
 	 public float attackDistanceMul = 0.8f;
 
@@ -25,14 +27,14 @@ public class MinionAI extends AIController {
     public void updateMovement(){
         unloadPayloads();
 
-        if (unit.type instanceof MinionUnitType typ) {
+        if (unit.type instanceof DependentType typ) {
             float time = unit instanceof TimedKillc t ? t.time() : 1000000f;
-            float distance = shooter != null ? new Vec2(shooter.x, shooter.y).dst(this.unit) : typ.maxDistance + 1f;
+            float distance = shooter != null ? new Vec2(shooter.x, shooter.y).dst(this.unit) : typ.maxDistance() + 1f;
             float distanceTarget = shooter != null ? new Vec2(unit.x, unit.y).dst(new Vec2(shooter.aimX, shooter.aimY)) : 0f;
             float attackDistance = unit.type.range * attackDistanceMul;
             
             //remove before missile kills itself
-            if (distance > typ.maxDistance || time >= unit.type.lifetime - 0.5f) {
+            if (distance > typ.maxDistance() || time >= unit.type.lifetime - 0.5f) {
             	if (unit.type instanceof MinionUnitType v) {
             		v.despawnEffect.at(unit);
             	}
@@ -58,7 +60,7 @@ public class MinionAI extends AIController {
             }
         }
         else
-        	Log.info("not attached to a MinionUnitType!");
+        	Log.info("not attached to a DependentType!");
     }
     
     public float prefSpeed(){
@@ -120,4 +122,14 @@ public class MinionAI extends AIController {
         //more frequent retarget due to high speed. TODO won't this lag?
         return timer.get(timerTarget, 4f);
     }
+
+	@Override
+	public Unit shooter() {
+		return shooter;
+	}
+
+	@Override
+	public void setShooter(Unit unit) {
+		shooter = unit;
+	}
 }

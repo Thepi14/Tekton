@@ -28,7 +28,6 @@ public class TektonWeathers {
 	
 	public static void load() {
 		tektonFog = new FogWeather("fog"){{
-            duration = 15f * Time.toMinutes;
             noiseLayers = 3;
             noiseLayerSclM = 0.8f;
             noiseLayerAlphaM = 0.7f;
@@ -46,6 +45,8 @@ public class TektonWeathers {
             yspeed = 0.01f;
             attrs.set(Attribute.light, -1f);
             opacityMultiplier = 0.47f;
+            
+            duration = 15f * Time.toMinutes;
         }};
 		
 		methaneRain = new RainWeather("methane-rain") {{
@@ -56,7 +57,8 @@ public class TektonWeathers {
 	        soundVol = 0.25f;
 	        liquid = TektonLiquids.methane;
 	        color = TektonColor.liquidMethane.cpy().mul(1.3f);
-            duration = 8f * Time.toMinutes;
+	        
+            //duration = 8f * Time.toMinutes;
 	    }};
 	    
 	    darkSandstorm = new ParticleWeather("dark-sandstorm") {{
@@ -78,8 +80,8 @@ public class TektonWeathers {
             force = 0.2f;
             sound = Sounds.wind;
             soundVol = 0.8f;
-            
-            duration = 4f * Time.toMinutes;
+
+            duration = 7f * Time.toMinutes;
         }};
 	    
 	    neurosporastorm = new ParticleWeather("neurosporastorm") {{
@@ -102,6 +104,7 @@ public class TektonWeathers {
             force = 0.1f;
             sound = Sounds.wind;
             soundVol = 0.7f;
+            
             duration = 7f * Time.toMinutes;
         }};
 	    
@@ -138,6 +141,9 @@ public class TektonWeathers {
             duration = 2f * Time.toMinutes;
 
 	        status = TektonStatusEffects.shortCircuit;
+	        statusGround = false;
+	        
+            duration = 7f * Time.toMinutes;
 	    }};
         
         cryoVolcanicSnow = new ParticleWeather("cryovolcanic-snow") {{
@@ -181,7 +187,6 @@ public class TektonWeathers {
             force = 0.2f;
             sound = Sounds.wind;
             soundVol = 0.8f;
-            duration = 4f * Time.toMinutes;
         	
         	obstacle = new EmptyBulletType() {{
         		lifetime = 1f;
@@ -196,6 +201,8 @@ public class TektonWeathers {
         	}};
         	obstacleFallEffect = TektonFx.biologicalFallingEgg;
         	obstacleTeam = Team.green;
+        	
+            duration = 4f * Time.toMinutes;
         }};
 	}
 }

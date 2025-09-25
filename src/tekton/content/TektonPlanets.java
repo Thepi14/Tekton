@@ -63,9 +63,9 @@ public class TektonPlanets {
 			defaultEnv = TektonEnv.methane | Env.terrestrial;
 			
 			ruleSetter = r -> {
-                r.waveTeam = Team.blue;
-                r.staticColor = new Color(0f, 0f, 0f, 1f);
-                r.dynamicColor = new Color(0f, 0f, 0f, 0.7f);
+                //r.waveTeam = Team.blue;
+                /*r.staticColor = new Color(0f, 0f, 0f, 1f);
+                r.dynamicColor = new Color(0f, 0f, 0f, 0.7f);*/
                 r.cloudColor = Color.valueOf("3e401f");
                 r.placeRangeCheck = false;
                 r.showSpawns = false;
@@ -74,21 +74,26 @@ public class TektonPlanets {
                 r.lighting = true;
                 r.fire = false;
                 r.ambientLight = Color.valueOf("101805a4");
-                r.weather.clear();
-                r.weather = new Seq<WeatherEntry>().addAll(
-                		new WeatherEntry(TektonWeathers.tektonFog) {{ always = true; }},
-                		new WeatherEntry(TektonWeathers.methaneRain),
-                		new WeatherEntry(TektonWeathers.darkSandstorm));
+            	if (r.weather.size == 0) {
+            		var fog = new WeatherEntry(TektonWeathers.tektonFog) {{ always = true; }};
+            		var rain = new WeatherEntry(TektonWeathers.methaneRain) {{  }};
+            		var sandStorm = new WeatherEntry(TektonWeathers.darkSandstorm) {{ minFrequency = 20f * Time.toMinutes; maxFrequency = 60f * Time.toMinutes; }};
+	                r.weather = new Seq<WeatherEntry>().addAll(fog, rain, sandStorm);
+            	}
                 r.coreDestroyClear = true;
                 r.onlyDepositCore = true;
                 //r.teams.get(Team.blue).rtsAi = true;
-                r.teams.get(Team.blue).buildAi = false;
+                //r.teams.get(Team.green).rtsAi = true;
                 r.coreIncinerates = true;
                 r.solarMultiplier = 0.1f;
                 r.bannedBlocks.addAll(Blocks.phaseWall, Blocks.phaseWallLarge);
                 r.hideBannedBlocks = true;
                 r.loadout = new Seq<ItemStack>().add(new ItemStack(TektonItems.iron, 200));
             };
+            
+            /*campaignRuleDefaults.fog = true;
+            campaignRuleDefaults.showSpawns = false;
+            campaignRuleDefaults.rtsAI = true;*/
             
             accessible = true;
             
@@ -98,41 +103,13 @@ public class TektonPlanets {
 			defaultCore = TektonBlocks.corePrimal;
             unlockedOnLand.add(TektonBlocks.corePrimal);
             
-            /*meshLoader = () -> new MultiMesh(
-            		//zirconium
-            		new NoiseMesh(this, 64, 5, 1.01f, 8, 0.79f, 1f, 0.7f, 
-            				Color.valueOf("948881"), 
-            				Color.valueOf("6e6761"), 
-            				1, 0.5f, 1f, 0.5f),
-            		//brown
-            		new NoiseMesh(this, 147, 5, 1.004f, 6, 0.77f, 1f, 0.7f, 
-            				Color.valueOf("5c483e"), 
-            				Color.valueOf("78523d"), 
-            				1, 0.5f, 1f, 0.5f),
-            		//dark sand
-            		new NoiseMesh(this, 77, 5, 1.007f, 5, 0.86f, 1f, 0.7f, 
-            				Color.valueOf("515151"), 
-            				Color.valueOf("3c3838"), 
-            				1, 0.5f, 1f, 0.5f),
-            		//methane
-            		new NoiseMesh(this, 1000, 5, 1.01f, 1, 0.6f, 1f, 0.7f, 
-            				Color.valueOf("57592b"), 
-            				Color.valueOf("4d4f24"), 
-            				1, 0.5f, 1f, 0.5f)
-            		);*/
-            
             meshLoader = () -> new HexMesh(this, 5);
             
             var increaseCloudRad = 0.040f;
             cloudMeshLoader = () -> new MultiMesh(
-            		//fast
+            		//inner
             		new HexSkyMesh(this, 3377, 1.8f, 0.12f + increaseCloudRad, 5, Color.valueOf("57592b5e"), 3, 0.3f, 1f, 0.6f),
             		new HexSkyMesh(this, 714, -1.7f, 0.125f + increaseCloudRad, 5, Color.valueOf("57592b5e"), 3, 0.3f, 1f, 0.6f),
-            		//middle
-            		/*new HexSkyMesh(this, 7777, 1.34f, 0.13f + increaseCloudRad, 5, Color.valueOf("3e401f5e"), 3, 0.3f, 1f, 0.6f),
-            		//big
-            		new HexSkyMesh(this, 1777, -1.1f, 0.135f + increaseCloudRad, 5, Color.valueOf("3e401f5e"), 2, 0.4f, 1f, 0.6f),
-            		new HexSkyMesh(this, 1414, -0.88f, 0.14f + increaseCloudRad, 5, Color.valueOf("3e401f5e"), 2, 0.4f, 1f, 0.6f),*/
             		//outer
             		new HexSkyMesh(this, 1477, 0.14f, 0.145f + increaseCloudRad, 5, Color.valueOf("74800e").a(0.75f), 4, 0.42f, 1f, 0.43f),
             		new HexSkyMesh(this, 7714, 0.7f, 0.16f + increaseCloudRad, 5, Color.valueOf("c2d175").a(0.75f), 4, 0.42f, 1.2f, 0.45f));

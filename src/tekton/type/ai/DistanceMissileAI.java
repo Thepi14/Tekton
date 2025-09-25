@@ -9,17 +9,19 @@ import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.gen.*;
 import mindustry.type.unit.*;
+import tekton.type.dependent.DependentAI;
+import tekton.type.dependent.DependentType;
 import tekton.type.dependent.DistanceMissileUnitType;
 
-public class DistanceMissileAI extends MissileAI{
+public class DistanceMissileAI extends MissileAI implements DependentAI {
 	 public @Nullable Unit shooter;
 
     @Override
     public void updateMovement(){
         unloadPayloads();
-        if (unit.type instanceof DistanceMissileUnitType typ) {
+        if (unit.type instanceof DependentType typ) {
             float time = unit instanceof TimedKillc t ? t.time() : 1000000f;
-            float distance = shooter != null ? new Vec2(shooter.x, shooter.y).dst(unit) : typ.maxDistance + 1f;
+            float distance = shooter != null ? new Vec2(shooter.x, shooter.y).dst(unit) : typ.maxDistance() + 1f;
 
             if(time >= unit.type.homingDelay && shooter != null && !shooter.dead()){
                 unit.lookAt(shooter.aimX, shooter.aimY);
@@ -31,12 +33,12 @@ public class DistanceMissileAI extends MissileAI{
             var build = unit.buildOn();
 
             //kill instantly on enemy building contact
-            if((build != null && build.team != unit.team && (build == target || !build.block.underBullets)) || distance > typ.maxDistance){
+            if((build != null && build.team != unit.team && (build == target || !build.block.underBullets)) || distance > typ.maxDistance()){
                 unit.kill();
             }
         }
         else
-        	Log.info("not attached to a DistanceMissileUnitType!");
+        	Log.info("not attached to a DependentType!");
     }
 
     /*@Override
@@ -57,4 +59,14 @@ public class DistanceMissileAI extends MissileAI{
         //more frequent retarget due to high speed. TODO won't this lag?
         return timer.get(timerTarget, 4f);
     }*/
+
+	@Override
+	public Unit shooter() {
+		return shooter;
+	}
+
+	@Override
+	public void setShooter(Unit unit) {
+		shooter = unit;
+	}
 }

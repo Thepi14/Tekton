@@ -53,8 +53,7 @@ public class DependentWeapon extends Weapon {
         lifeScl = bullet.scaleLife ? Mathf.clamp(Mathf.dst(bulletX, bulletY, mount.aimX, mount.aimY) / bullet.range) : 1f,
         angle = shootAngle + Mathf.range(inaccuracy + bullet.inaccuracy);
 
-        Entityc shooter = unit.controller() instanceof MinionAI ai ? ai.shooter : unit;
-        shooter = unit.controller() instanceof DistanceMissileAI ai ? ai.shooter : unit;
+        Entityc shooter = unit.controller() instanceof DependentAI ai ? ai.shooter() : unit;
         if (bullet instanceof DependentBulletType dBullet) {
             mount.bullet = dBullet.create(unit, shooter, unit.team, bulletX, bulletY, angle, -1f, (1f - velocityRnd) + Mathf.random(velocityRnd), lifeScl, null, mover, mount.aimX, mount.aimY, mount.target);
         }

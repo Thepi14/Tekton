@@ -14,7 +14,7 @@ import tekton.content.TektonItems;
 import tekton.content.TektonMissileUnitType;
 import tekton.content.TektonStatusEffects;
 
-public class MinionUnitType extends UnitType {
+public class MinionUnitType extends UnitType implements DependentType {
 	public float maxDistance = 40f * tilesize;
 	
 	public Effect despawnEffect = new WaveEffect() {{
@@ -34,4 +34,9 @@ public class MinionUnitType extends UnitType {
         ammoType = new ItemAmmoType(TektonItems.iron);
         fogRadius = 0f;
     }
+
+	@Override
+	public float maxDistance() {
+		return maxDistance;
+	}
 }

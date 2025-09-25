@@ -47,20 +47,12 @@ public class DependentBulletType extends BulletType {
 	                    spawned.vel.trns(angle, spawnUnit.speed);
 	                }
 	                //assign unit owner
-	                if(spawned.controller() instanceof MinionAI ai){
+	                if(spawned.controller() instanceof DependentAI ai){
 	                    if(shooter instanceof Unit unit){
-	                        ai.shooter = unit;
+	                        ai.setShooter(unit);
 	                    }
 	                    if(shooter instanceof ControlBlock control){
-	                        ai.shooter = control.unit();
-	                    }
-	                }
-	                if (spawned.controller() instanceof DistanceMissileAI ai) {
-	                	if(shooter instanceof Unit unit){
-	                        ai.shooter = unit;
-	                    }
-	                    if(shooter instanceof ControlBlock control){
-	                        ai.shooter = control.unit();
+	                        ai.setShooter(control.unit());
 	                    }
 	                }
 	                spawned.add();
