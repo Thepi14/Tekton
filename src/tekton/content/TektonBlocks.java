@@ -3445,6 +3445,7 @@ public class TektonBlocks {
 			recoil = 0.5f;
 			health = 1000;
 			reload = 6f;
+			range = 220f;
 			//shootSound = Sounds.pew;
 			maxAmmo = 10;
 			inaccuracy = 7f;
@@ -5568,7 +5569,7 @@ public class TektonBlocks {
 			plans.addAll(
 					new UnitPlan(TektonUnits.piezo, 60f * 25f, with(Items.silicon, 25, iron, 45)), 
 					new UnitPlan(TektonUnits.martyris, 60f * 15f, with(Items.silicon, 15, zirconium, 25)), 
-					new UnitPlan(TektonUnits.caravela, 60f * 30f, with(Items.silicon, 20, polycarbonate, 15)), 
+					new UnitPlan(TektonUnits.caravela, 60f * 30f, with(Items.silicon, 25, polycarbonate, 40)), 
 					new UnitPlan(TektonUnits.nail, 60f * 35f, with(Items.silicon, 25, iron, 35, tantalum, 15)));
 
 			researchCostMultiplier = 0.1f;

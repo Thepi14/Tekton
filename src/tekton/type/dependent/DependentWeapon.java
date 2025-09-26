@@ -28,7 +28,7 @@ import mindustry.type.Weapon;
 import static mindustry.Vars.*;
 
 public class DependentWeapon extends Weapon {
-	public float weaponRange = 43f * tilesize;
+	//public float weaponRange = 43f * tilesize;
 	
 	public DependentWeapon() {
 		super();

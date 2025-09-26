@@ -602,7 +602,7 @@ public class TektonUnits {
             armor = 10f;
             
             treadPullOffset = 0;
-            abilities.add(new ForceFieldAbility(80f, 0.15f, 800f, 60f * 20, 4, 45f));
+            abilities.add(new ForceFieldAbility(80f, 0.15f * 4f, 800f, 60f * 10f, 4, 45f));
             
             treadRects = new Rect[]{
             		//i am starting to understand
@@ -867,7 +867,8 @@ public class TektonUnits {
             aimDst = 1f;
             
             var weapPos = -9f;
-            
+
+            abilities.add(new ForceFieldAbility(140f, 240f / 60f, 6000f, 60f * 20f, 6, 0f));
             for (int i : Mathf.signs) {
             	abilities.add(new MinionSpawnAbility(electron, 60f, 16f * i, -1f));
             }
@@ -898,6 +899,7 @@ public class TektonUnits {
                 parentizeEffects = true;
 
                 bullet = new LaserBulletType(){{
+                	rangeOverride = maxRange = 320f;
                     length = 330f;
                     damage = 1400f;
                     width = 75f;
@@ -1450,8 +1452,7 @@ public class TektonUnits {
 	        ammoType = new PowerAmmoType();
 	        fogRadiusMultipliyer = 0.8f;
 	        
-            immunities.add(StatusEffects.burning);
-            immunities.add(StatusEffects.melting);
+            immunities.addAll(StatusEffects.burning, StatusEffects.melting);
 			
             this.constructor = UnitEntity::create;
             targetAir = true;
@@ -1490,7 +1491,7 @@ public class TektonUnits {
             
             var bulletImperatoris1 = new ContinuousLaserBulletType() {{
             	//layer = Layer.flyingUnit + 0.1f;
-                damage = 140f / 12f;
+                damage = 100f / 12f;
                 length = 160f;
                 drawSize = 0f;
                 lifetime = 200f;
@@ -1548,12 +1549,11 @@ public class TektonUnits {
                 frontColor = Pal.sapBullet;
                 shrinkX = shrinkY = 0f;
                 trailColor = Pal.sapBullet;
-                this.
                 trailLength = 12;
                 trailWidth = 2.2f;
                 
-                statusDuration = 60f * 1f;
-                status = StatusEffects.sapped;
+                /*statusDuration = 60f * 1f;
+                status = StatusEffects.sapped;*/
                 
                 despawnEffect = hitEffect = new ExplosionEffect(){{
                     waveColor = Pal.sapBullet;
@@ -2537,7 +2537,7 @@ public class TektonUnits {
                     y = -1.2f;
                     baseRotation = 0;
                     //alwaysShootWhenMoving = true;
-                    weaponRange = tRange + 10f;
+                    //weaponRange = tRange + 10f;
                     //predictTarget = false;
                     
                     shoot = new ShootBarrel() {{
@@ -2576,7 +2576,7 @@ public class TektonUnits {
                         }});
                     
                     bullet = new DependentBulletType() {{
-                    	range = tRange;
+                    	range = rangeOverride = maxRange = tRange;
                     	shootEffect = new MultiEffect(Fx.shootBigColor, new Effect(9, e -> {
                             color(Color.white, e.color, e.fin());
                             stroke(0.7f + e.fout());
