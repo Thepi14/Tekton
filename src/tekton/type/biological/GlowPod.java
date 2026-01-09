@@ -11,6 +11,7 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.struct.EnumSet;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.core.Renderer;
@@ -21,9 +22,13 @@ import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.world.Block;
 import mindustry.world.Tile;
 import mindustry.world.blocks.power.PowerNode;
+import mindustry.world.blocks.power.LightBlock;
 import mindustry.world.blocks.power.LightBlock.LightBuild;
+import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.Env;
 import tekton.Drawt;
 import tekton.content.TektonColor;
 import tekton.content.TektonFx;
@@ -31,7 +36,7 @@ import tekton.content.TektonLiquids;
 import tekton.type.biological.Nest.NestBuild;
 import tekton.type.defense.TeamLight;
 
-public class GlowPod extends TeamLight implements BiologicalBlock {
+public class GlowPod extends LightBlock implements BiologicalBlock {
     public Color damageColor = TektonLiquids.acid.color.cpy();
     
     public float alpha = 0.9f, glowScale = 15f, glowIntensity = 0.5f, shadowAlpha = 0.2f;
@@ -55,6 +60,14 @@ public class GlowPod extends TeamLight implements BiologicalBlock {
 
 	public GlowPod(String name) {
 		super(name);
+		
+        hasPower = true;
+        update = true;
+        configurable = true;
+        saveConfig = true;
+        envEnabled |= Env.space;
+        swapDiagonalPlacement = true;
+		
 		outlineIcon = true;
         outlineColor = TektonColor.tektonOutlineColor;
         lightColor = TektonColor.acid;
@@ -62,6 +75,7 @@ public class GlowPod extends TeamLight implements BiologicalBlock {
 		createRubble = drawCracks = false;
 		destroyEffect = TektonFx.biologicalDynamicExplosion;
 		alwaysUnlocked = false;
+        flags = EnumSet.of(BlockFlag.hasFogRadius);
 	}
 	
 	@Override
@@ -79,7 +93,7 @@ public class GlowPod extends TeamLight implements BiologicalBlock {
         upperShadowRegion = Core.atlas.find(name + "-upper-shadow");
 	}
 	
-	public class GlowPodBuild extends TeamLightBuild {
+	public class GlowPodBuild extends LightBuild {
 		public boolean needRegen = false;
 		public float regenCharge = Mathf.random(regenReload);
 		public float totalProgress = Mathf.random(1000f);
@@ -159,8 +173,8 @@ public class GlowPod extends TeamLight implements BiologicalBlock {
             super.onDestroyed();
 			Tile tile = world.tileWorld(x + Tmp.v1.x, y + Tmp.v1.y);
             Puddles.deposit(tile, TektonLiquids.acid, 140f * efficiency);
-			Drawt.DrawAcidDebris(x, y, Mathf.random(4) * 90, size);
-			Drawt.DrawAcidDebris(x, y, Mathf.random(4) * 90, size);
+			Drawt.DrawAcidDebris(x, y, size);
+			Drawt.DrawAcidDebris(x, y, size);
         }
 		
 		@Override
@@ -177,6 +191,11 @@ public class GlowPod extends TeamLight implements BiologicalBlock {
 		public float currentGlow() {
 			return Mathf.absin(totalProgress(), glowScale, alpha) * glowIntensity + 1f - glowIntensity;
 		}
+		
+    	@Override
+        public float fogRadius(){
+            return fogRadius * efficiency;
+        }
         
         @Override
         public float totalProgress() {

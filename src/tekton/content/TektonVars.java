@@ -1,11 +1,14 @@
 package tekton.content;
 
 import arc.struct.Seq;
+import arc.util.Time;
 import tekton.math.IDObj;
 import tekton.math.RSeq;
 import tekton.math.Vec2F;
 
 public class TektonVars {
+    public static float time() { return Time.time; };
+	
 	public static final int 
 	visualMaxGravity = 16,
 	gravityMul = 2

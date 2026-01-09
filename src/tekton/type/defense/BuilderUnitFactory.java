@@ -42,8 +42,11 @@ import mindustry.world.Block;
 import mindustry.world.Build;
 import mindustry.world.Tile;
 import mindustry.world.blocks.ConstructBlock.ConstructBuild;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import mindustry.world.blocks.UnitTetherBlock;
 import tekton.Drawt;
+import tekton.content.TektonUnits;
 import tekton.type.ai.RebuilderAI;
 
 //import ent.anno.Annotations.*;
@@ -60,7 +63,7 @@ public class BuilderUnitFactory extends Block {
 	public int maxUnits = 3;
 	public float buildRadius = 30f * tilesize, unitBuildDistance = 100f;
 	public float rotationMoveDelay = 60f * 3f, unitMoveTimer = 2f, rotationSpeedPerTick = 15f / 60f;
-	public UnitType unitType = UnitTypes.mono;
+	public UnitType unitType = TektonUnits.builderDrone;
     public float unitBuildTime = 60f * 8f;
 
     public float polyStroke = 2f, polyRadius = 11f;
@@ -109,7 +112,13 @@ public class BuilderUnitFactory extends Block {
             () -> (float)e.units.size / maxUnits
         ));
     }
+    
 
+    @Override
+    public void setStats(){
+        super.setStats();
+	    stats.add(Stat.range, buildRadius, StatUnit.blocks);
+    }
     @Override
     public boolean canPlaceOn(Tile tile, Team team, int rotation){
         return super.canPlaceOn(tile, team, rotation) && Units.canCreate(team, unitType);

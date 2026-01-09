@@ -1,4 +1,4 @@
-package tekton.environment;
+package tekton.type.environment;
 
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -15,7 +15,6 @@ public class NotRotatedTreeBlock extends TreeBlock {
 	
 	@Override
     public void drawBase(Tile tile){
-
         float
         x = tile.worldx(), y = tile.worldy(),
         w = region.width * region.scl(), h = region.height * region.scl(),

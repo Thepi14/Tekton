@@ -46,7 +46,15 @@ public final class Drawt {
         Drawf.dashLine(color, x - radius, y, x, y + radius);
 	}
 	
-	public static void DrawAcidDebris(float x, float y, float rotation, int size) {
-		biologicalDebris.at(x, y, rotation, size);
+	public static void DrawAcidDebris(float x, float y, int size) {
+		DrawColorDebris(x, y, size, TektonColor.acid.cpy());
+	}
+	
+	public static void DrawAmmoniaDebris(float x, float y, int size) {
+		DrawColorDebris(x, y, size, TektonColor.ammonia.cpy());
+	}
+	
+	public static void DrawColorDebris(float x, float y, int size, Color color) {
+		colorDebris.at(x, y, size, color);
 	}
 }

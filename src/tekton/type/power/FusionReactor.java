@@ -38,6 +38,7 @@ import mindustry.ui.Bar;
 import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.draw.*;
 import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
@@ -62,8 +63,8 @@ public class FusionReactor extends PowerGenerator {
 	public int minGravity = requiredGravity / 2;
 	public int minimalCoolant = 5;
 	
-	public float heatingPerTick = 0.005f;
-	public float maxHeatingPerTick = 0.01f;
+	public float heatingPerTick = 0.01f;
+	public float maxHeatingPerTick = 0.018f;
 	public float explosionThreshold = 0.5f;
 
     public float alpha = 0.9f, glowScale = 10f, glowIntensity = 0.5f;
@@ -185,7 +186,7 @@ public class FusionReactor extends PowerGenerator {
                     }
                     
             		if (currentCoolant <= minimalCoolant) {
-            			instability += Math.min(((1f + (currentCoolant / itemCapacity)) * gravityFrac * coolingMul) * heatingPerTick * timeScale, maxHeatingPerTick);
+            			instability += Math.min(((1f + (currentCoolant / itemCapacity)) * gravityFrac * coolingMul) * heatingPerTick * timeScale * Time.delta, maxHeatingPerTick * Time.delta * timeScale);
             		}
             		else cool = true;
             	}
@@ -221,7 +222,7 @@ public class FusionReactor extends PowerGenerator {
                 return;
             }
         	if (cool) {
-    			instability -= (currentCoolant / minimalCoolant) * heatingPerTick;
+    			instability -= (currentCoolant / minimalCoolant) * heatingPerTick * Time.delta;
     		}
         }
         
@@ -263,6 +264,14 @@ public class FusionReactor extends PowerGenerator {
         @Override
         public float getPowerProduction() {
             return productionEfficiency * powerProduction;
+        }
+        
+        @Override
+        public BlockStatus status() {
+            float balance = power.status;
+            //if(balance > 0.001f && hasAmmo() && !isShooting()) return BlockStatus.noOutput;
+            if(balance > 0.001f && gravityFrac() > 0.001f && canConsume()) return BlockStatus.active;
+            return BlockStatus.noInput;
         }
         
         @Override

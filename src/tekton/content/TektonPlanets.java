@@ -75,10 +75,11 @@ public class TektonPlanets {
                 r.fire = false;
                 r.ambientLight = Color.valueOf("101805a4");
             	if (r.weather.size == 0) {
-            		var fog = new WeatherEntry(TektonWeathers.tektonFog) {{ always = true; }};
-            		var rain = new WeatherEntry(TektonWeathers.methaneRain) {{  }};
-            		var sandStorm = new WeatherEntry(TektonWeathers.darkSandstorm) {{ minFrequency = 20f * Time.toMinutes; maxFrequency = 60f * Time.toMinutes; }};
-	                r.weather = new Seq<WeatherEntry>().addAll(fog, rain, sandStorm);
+	                r.weather = new Seq<WeatherEntry>().addAll(new WeatherEntry(TektonWeathers.methaneRain) {{  }}, new WeatherEntry(TektonWeathers.darkSandstorm) {{ minFrequency = 20f * Time.toMinutes; maxFrequency = 60f * Time.toMinutes; }});
+            	}
+            	//foolish
+            	if (r.weather.contains(t -> (t.weather == TektonWeathers.tektonFog))) {
+            		r.weather.remove(t -> (t.weather == TektonWeathers.tektonFog));
             	}
                 r.coreDestroyClear = true;
                 r.onlyDepositCore = true;
@@ -172,10 +173,10 @@ public class TektonPlanets {
                 r.fire = false;
                 r.ambientLight = Color.valueOf("101805a4");
                 r.weather.clear();
-                r.weather = new Seq<WeatherEntry>().addAll(
-                		new WeatherEntry(TektonWeathers.tektonFog) {{ always = true; }},
+                /*r.weather = new Seq<WeatherEntry>().addAll(
+                		//new WeatherEntry(TektonWeathers.tektonFog) {{ always = true; }},
                 		new WeatherEntry(TektonWeathers.methaneRain),
-                		new WeatherEntry(TektonWeathers.darkSandstorm));
+                		new WeatherEntry(TektonWeathers.darkSandstorm));*/
                 r.coreDestroyClear = true;
                 r.onlyDepositCore = true;
                 //r.teams.get(Team.blue).rtsAi = true;
@@ -188,8 +189,8 @@ public class TektonPlanets {
             };
 		}};
 		
-        Planets.serpulo.hiddenItems.addAll(TektonItems.tektonItems);
-        Planets.erekir.hiddenItems.addAll(TektonItems.tektonItems);
+        Planets.serpulo.hiddenItems.addAll(TektonItems.tektonOnlyItems);
+        Planets.erekir.hiddenItems.addAll(TektonItems.tektonOnlyItems);
 	}
 	
 	public static class TektonPlanet extends Planet{

@@ -6,6 +6,8 @@ import arc.graphics.Color;
 import static arc.graphics.g2d.Draw.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.struct.Seq;
+
 import static tekton.content.TektonFx.*;
 
 import mindustry.content.StatusEffects;
@@ -24,27 +26,26 @@ import tekton.content.TektonColor;
 import tekton.content.TektonFx;
 import tekton.content.TektonLiquids;
 import tekton.content.TektonStatusEffects;
-import tekton.type.abilities.AcidBloodDebrisAbility;
+import tekton.type.abilities.ColorDebrisAbility;
 
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
 import static mindustry.Vars.*;
 
-public class TektonBioUnit extends UnitType {
+public class TektonBioUnit extends UnitType implements BiologicalUnit {
 	public boolean customFogRadius = false;
 	
 	public TektonBioUnit(String name) {
 		super(name);
-        //drawCell = false;
+        drawCell = Tekton.drawBiologicalUnitsCell;
 		createScorch = false;
 		useUnitCap = false;
 		drawBuildBeam = false;
-		drawCell = false;
 		hidden = Tekton.hideContent;
         researchCostMultiplier = 0f;
         outlineColor = TektonColor.tektonOutlineColor;
         envDisabled = Env.space | Env.scorching;
-        lightColor = TektonColor.acid.cpy();
+        lightColor = TektonColor.acid;
         lightOpacity = 0.35f;
         abilities.addAll(
         		new LiquidExplodeAbility() {{ 
@@ -54,8 +55,8 @@ public class TektonBioUnit extends UnitType {
                     //fully regen in 180 seconds
                     percentAmount = 1f / (180f * 60f) * 100f;
                 }},
-        		new AcidBloodDebrisAbility());
-        immunities.addAll(getDefaultImmunities());
+        		new ColorDebrisAbility());
+        immunities.addAll(BiologicalUnit.getDefaultImmunities());
         ammoType = new PowerAmmoType(0f);
         engineSize = 0f;
         itemCapacity = 0;
@@ -65,19 +66,8 @@ public class TektonBioUnit extends UnitType {
         });
         deathExplosionEffect = TektonFx.biologicalDynamicExplosion;
 	}
-	
-	public static StatusEffect[] getDefaultImmunities() {
-		return new StatusEffect[] { TektonStatusEffects.radioactiveContamination, 
-        		TektonStatusEffects.wetInAcid, 
-        		TektonStatusEffects.weaponLock,
-        		TektonStatusEffects.shortCircuit, 
-        		TektonStatusEffects.acidified, 
-        		/*TektonStatusEffects.tarredInMethane,*/ 
-        		TektonStatusEffects.neurosporaSlowed, 
-        		StatusEffects.freezing };
-	}
 
-    @Override
+	@Override
     public void init() {
         super.init();
         if (customFogRadius) {

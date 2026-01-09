@@ -8,6 +8,7 @@ import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
 import arc.graphics.Colors;
+import arc.graphics.g2d.PixmapPacker;
 import arc.math.Mathf;
 import arc.struct.IntSet;
 import arc.struct.Seq;
@@ -16,7 +17,9 @@ import arc.util.Nullable;
 import arc.util.Reflect;
 import arc.util.Time;
 import mindustry.Vars;
+import mindustry.core.UI;
 import mindustry.core.Version;
+import mindustry.game.EventType;
 import mindustry.game.EventType.*;
 import mindustry.game.Team;
 import mindustry.gen.Building;
@@ -28,19 +31,21 @@ import mindustry.type.UnitType;
 import mindustry.ui.dialogs.BaseDialog;
 import mindustry.ui.dialogs.PlanetDialog;
 import mindustry.world.Block;
+import mindustry.world.meta.Env;
 import tekton.content.*;
 import tekton.type.gravity.GravityBlock;
 import tekton.type.gravity.GravityConductor;
 import tekton.type.gravity.GravityConductor.GravityConductorBuild;
+import tekton.type.world.TektonEnv;
+import tekton.type.world.TektonEnvRenderer;
 import ent.anno.Annotations.*;
 import tekton.EntityDefinitions;
 import mindustry.type.*;
 
 import static mindustry.Vars.*;
 
-public class Tekton extends Mod{
+public class Tekton extends Mod {
 
-	public static MultiPacker packer;
     public static String ID = "tekton";
 	protected static boolean contentLoadComplete = false;
 	
@@ -49,18 +54,23 @@ public class Tekton extends Mod{
 	public static final String MOD_GITHUB_URL = "https://github.com/Thepi14/Tekton.git";
 	public static final String MOD_NAME = "tekton";
 	
-	public static boolean hideContent = true;
+	public static boolean hideContent = false;
+	public static boolean drawBiologicalUnitsCell = false; //only made because the cell drawing system of mindustry is bugged.
+	public static boolean showNestSpawnPoints = !hideContent;
+	
+	public static MultiPacker packer;
 
-	public static final boolean loadedComplete(){
+	public static final boolean loadedComplete() {
 		return contentLoadComplete;
 	}
 	
-	public static String name(String name){
+	public static String name(String name) {
 		return MOD_NAME + "-" + name;
 	}
 	
 	public Tekton() {
 		Log.info("Loaded Tekton constructor.");
+        packer = new MultiPacker();
 		
 		//listen for game load event
         /*Events.on(ClientLoadEvent.class, e -> {
@@ -109,7 +119,7 @@ public class Tekton extends Mod{
     }
 	
     @Override
-    public void loadContent(){
+    public void loadContent() {
 		contentLoadComplete = false;
         
         Time.mark();
@@ -127,6 +137,14 @@ public class Tekton extends Mod{
         TektonTechTree.load();
         TektonFx.load();
         TektonLoadouts.load();
+        TektonEnvRenderer.load();
+        
+        Events.on(EventType.WorldLoadEndEvent.class, e -> {
+        	Vars.state.rules.weather.remove(t -> (t.weather == TektonWeathers.methaneRain));
+        	if (Vars.state.rules.planet == TektonPlanets.tekton) {
+        		Vars.state.rules.env = TektonEnv.methane | Env.terrestrial;
+        	}
+        });
         
         Team.blue.emoji = "tekton-hapax";
         //Team.blue.name = "hapax";

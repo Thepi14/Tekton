@@ -28,17 +28,19 @@ public class MinionAI extends AIController implements DependentAI {
         unloadPayloads();
 
         if (unit.type instanceof DependentType typ) {
+        	if (shooter == null) {
+        		despawnUnit();
+            	return;
+        	}
+        	
             float time = unit instanceof TimedKillc t ? t.time() : 1000000f;
             float distance = shooter != null ? new Vec2(shooter.x, shooter.y).dst(this.unit) : typ.maxDistance() + 1f;
             float distanceTarget = shooter != null ? new Vec2(unit.x, unit.y).dst(new Vec2(shooter.aimX, shooter.aimY)) : 0f;
             float attackDistance = unit.type.range * attackDistanceMul;
             
             //remove before missile kills itself
-            if (distance > typ.maxDistance() || time >= unit.type.lifetime - 0.5f) {
-            	if (unit.type instanceof MinionUnitType v) {
-            		v.despawnEffect.at(unit);
-            	}
-            	unit.remove();
+            if (distance > typ.maxDistance() || time >= unit.type.lifetime - 60f) {
+            	despawnUnit();
             	return;
             }
 
@@ -61,6 +63,15 @@ public class MinionAI extends AIController implements DependentAI {
         }
         else
         	Log.info("not attached to a DependentType!");
+    }
+    
+    public void despawnUnit() {
+    	if (unit.type instanceof MinionUnitType v) {
+    		v.despawnEffect.at(unit.x, unit.y, 0, unit);
+    	}
+    	if(!Vars.net.client()) {
+        	unit.remove();
+    	}
     }
     
     public float prefSpeed(){

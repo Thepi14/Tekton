@@ -46,9 +46,9 @@ public class ShockwaveAbility extends Ability {
     
     public float range = 160f;
     public float reload = 60f * 4f;
-    public float bulletDamage = 190f;
+    public float bulletDamage = 100f;
     public float shake = 2f;
-    public float minDamage = 80f;
+    public float minDamage = 0;
     public float checkTimer = 8f;
     public Sound shootSound = Sounds.bang;
     public Color waveColor = Pal.techBlue, shapeColor = Pal.techBlue, shapeHeatColor = Color.white, heatColor = Pal.techBlue;
@@ -68,8 +68,10 @@ public class ShockwaveAbility extends Ability {
         t.add(abilityStat("cooldown", Strings.autoFixed(reload / 60f, 2)));
         t.row();
         t.add(abilityStat("damage", Strings.autoFixed(bulletDamage, 7)));
-        t.row();
-        t.add(abilityStat("minimumdamagetoactivate", Strings.autoFixed(minDamage, 7)));
+        if (minDamage > 0) {
+            t.row();
+            t.add(abilityStat("minimumdamagetoactivate", Strings.autoFixed(minDamage, 7)));
+        }
     }
     
     public String abilityStat(String stat, Object... values) {
@@ -79,7 +81,7 @@ public class ShockwaveAbility extends Ability {
 	@Override
     public void update(Unit unit) {
 		boolean check = false;
-		if ((checkCounter += Time.delta) > checkTimer) {
+		if ((checkCounter += Time.delta) >= checkTimer) {
 			checkCounter = 0f;
 			check = true;
 		}
@@ -99,13 +101,12 @@ public class ShockwaveAbility extends Ability {
             	checkDamage = totalDamage > checkDamage ? totalDamage : checkDamage;
             }
             Units.nearbyEnemies(unit.team, unit.x, unit.y, range, other -> {
-            	Log.info(other.type instanceof MissileUnitType);
                 if(unit.team != other.team && other.hittable() && other.isFlying() && other.type instanceof MissileUnitType) {
                 	unitTargets.add(other);
                 }
             });
 
-            if(checkDamage >= minDamage || unitTargets.size > 0) {
+            if((checkDamage >= minDamage && targets.size > 0) || unitTargets.size > 0) {
                 heat = 1f;
                 reloadCounter = 0f;
                 waveEffect.at(unit.x, unit.y, range, waveColor, Float.valueOf((range / tilesize) / 2f));

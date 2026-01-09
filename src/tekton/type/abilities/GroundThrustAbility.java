@@ -101,11 +101,11 @@ public class GroundThrustAbility extends Ability {
     
     private int thrusterPosID = 0;
 
-    public GroundThrustAbility(){
+    public GroundThrustAbility() {
     	
     }
     
-    public GroundThrustAbility(boolean harmless){
+    public GroundThrustAbility(boolean harmless) {
     	drawHarmlessThrusters = harmless;
     }
     

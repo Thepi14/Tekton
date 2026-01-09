@@ -6,6 +6,7 @@ import mindustry.gen.Building;
 import mindustry.graphics.Drawf;
 import mindustry.world.draw.DrawBlock;
 
+//TODO: maybe remove?
 public class DrawLight extends DrawBlock {
 	public float lightRadius = 30f, lightSinScl = 10f, lightSinMag = 5f;
 	public Color lightColor = Color.white;

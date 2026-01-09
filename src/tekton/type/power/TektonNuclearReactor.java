@@ -35,7 +35,7 @@ import tekton.content.*;
 public class TektonNuclearReactor extends PowerGenerator {
     public final int timerFuel = timers++;
 	
-	public float heating = 0.005f;
+	public float heating = 0.025f;
     public float itemDuration = 120;
     public float fuelThreshold = 0.35f;
     public float heatThreshold = 0.35f;
@@ -126,14 +126,14 @@ public class TektonNuclearReactor extends PowerGenerator {
                     		generateEffect.at(this);
                 }
             	if (coolantFullness >= coolantThreshold) {
-                	heat -= (heating / 2f) * ((coolantFullness - coolantThreshold) + 0.1f) * timeScale;
+                	heat -= (heating / 2f) * ((coolantFullness - coolantThreshold) + 0.1f) * timeScale * Time.delta;
                 }
             	else {
-                	heat += heating * (coolantThreshold - coolantFullness) * timeScale;
+                	heat += heating * (coolantThreshold - coolantFullness) * timeScale * Time.delta;
                 }
             }
             else {
-            	heat -= (heating / 2f) * (coolantFullness + 0.1f) * timeScale;
+            	heat -= (heating / 2f) * (coolantFullness + 0.1f) * timeScale * Time.delta;
             }
             
             if(heat >= heatThreshold) {

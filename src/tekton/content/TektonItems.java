@@ -11,7 +11,7 @@ public class TektonItems {
 	silica,
 	cryogenicCompound;
 	
-	public static final Seq<Item> tektonItems = new Seq<>(), allItems = new Seq<>();
+	public static final Seq<Item> tektonOnlyItems = new Seq<>(), tektonItems = new Seq<>();
 	
 	public static void load(){
 		iron = new Item("iron", Color.valueOf("8c857d")){{
@@ -81,8 +81,8 @@ public class TektonItems {
             alwaysUnlocked = false;
         }};
         
-        tektonItems.addAll(iron, zirconium, polycarbonate, tantalum, magnet, polytalum, uranium, nanoAlloy, silica, cryogenicCompound);
-        allItems.add(tektonItems);
-        allItems.addAll(Items.silicon, Items.sand, Items.graphite, Items.phaseFabric);
+        tektonOnlyItems.addAll(iron, zirconium, polycarbonate, tantalum, magnet, polytalum, uranium, nanoAlloy, silica, cryogenicCompound);
+        tektonItems.add(tektonOnlyItems);
+        tektonItems.addAll(Items.sand, Items.silicon, Items.graphite, Items.phaseFabric);
 	}
 }

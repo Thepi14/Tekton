@@ -7,6 +7,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.struct.EnumSet;
+import arc.struct.IntSet;
 import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Nullable;
@@ -34,13 +35,15 @@ import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
+import tekton.content.TektonColor;
+import tekton.type.gravity.GravityConsumer;
+import tekton.type.gravity.GravityCrafter.GravityCrafterBuild;
 import mindustry.world.draw.*;
 
 import static mindustry.Vars.*;
 
 public class LiquidConverter extends Block {
-
-    /** Written to outputLiquids as a single-element array if outputLiquids is null. */
+	/** Written to outputLiquids as a single-element array if outputLiquids is null. */
     public @Nullable LiquidStack outputLiquid;
     /** Overwrites outputLiquid if not null. */
     public @Nullable LiquidStack[] outputLiquids;
@@ -209,7 +212,7 @@ public class LiquidConverter extends Block {
     }
 	
 	public class LiquidConverterBuild extends Building {
-        public float progress;
+		public float progress;
         public float totalProgress;
         public float warmup;
         public float currentBoost = 0f;

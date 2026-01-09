@@ -12,7 +12,8 @@ public class TektonStat {
         ;
     public static final Stat
     	gravityUse = new Stat("gravityuse", StatCat.crafting),
-		gravityOutput = new Stat("gravityoutput", StatCat.crafting)
+		gravityOutput = new Stat("gravityoutput", StatCat.crafting),
+		slowMultiplierFunction = new Stat("speedmultiplier", StatCat.function)
 		; 
     public static final StatUnit
     	gravityPower = new StatUnit("gravitypower", "[blue]" + Iconc.waves + "[]")

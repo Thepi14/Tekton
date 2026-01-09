@@ -241,7 +241,7 @@ public class BioNode extends PowerNode implements BiologicalBlock {
             super.onDestroyed();
 			Tile tile = world.tileWorld(x + Tmp.v1.x, y + Tmp.v1.y);
             Puddles.deposit(tile, TektonLiquids.acid, 140f * efficiency);
-			Drawt.DrawAcidDebris(x, y, Mathf.random(4) * 90, size);
+			Drawt.DrawAcidDebris(x, y, size);
         }
 		
 		protected void getPotentialLinks(Tile tile, Team team, Cons<Building> others){

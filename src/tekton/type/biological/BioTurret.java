@@ -77,7 +77,7 @@ public class BioTurret extends PowerTurret implements BiologicalBlock {
             super.onDestroyed();
 			Tile tile = world.tileWorld(x + Tmp.v1.x, y + Tmp.v1.y);
             Puddles.deposit(tile, TektonLiquids.acid, 140f * efficiency);
-			Drawt.DrawAcidDebris(x, y, Mathf.random(4) * 90, size);
+			Drawt.DrawAcidDebris(x, y, size);
         }
 
         @Override

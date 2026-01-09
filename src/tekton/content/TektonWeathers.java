@@ -22,28 +22,27 @@ public class TektonWeathers {
 	acidRain,
 	neurosporastorm,
 	electricStorm,
-	cryoVolcanicSnow,
+	methaneSnow,
 	eggStorm
 	;
 	
 	public static void load() {
+		//banned now
 		tektonFog = new FogWeather("fog"){{
-            noiseLayers = 3;
-            noiseLayerSclM = 0.8f;
+            noiseLayers = 0;
             noiseLayerAlphaM = 0.7f;
             noiseLayerSpeedM = 2f;
             noiseLayerSclM = 0.6f;
             baseSpeed = 0.05f;
-            color = noiseColor = TektonColor.methane.cpy().a(0.5f);
+            color = noiseColor = Color.clear.cpy();
             opacity = 0.3f;
             noiseScale = 1100f;
             noisePath = "fog";
             drawParticles = false;
-            drawNoise = true;
+            drawNoise = false;
             useWindVector = false;
             xspeed = 1f;
             yspeed = 0.01f;
-            attrs.set(Attribute.light, -1f);
             opacityMultiplier = 0.47f;
             
             duration = 15f * Time.toMinutes;
@@ -146,7 +145,7 @@ public class TektonWeathers {
             duration = 7f * Time.toMinutes;
 	    }};
         
-        cryoVolcanicSnow = new ParticleWeather("cryovolcanic-snow") {{
+	    methaneSnow = new ParticleWeather("methane-snow") {{
             particleRegion = "particle";
             sizeMax = 13f;
             sizeMin = 2.6f;
@@ -155,7 +154,7 @@ public class TektonWeathers {
             attrs.set(Attribute.water, -0.1f);
 	        attrs.set(TektonAttributes.methane, 0.1f);
 	        
-	        color = TektonItems.cryogenicCompound.color.cpy().add(Color.white.cpy().mul(0.35f));
+	        color = TektonColor.methaneGas.add(Color.white.cpy().mul(0.35f));
 	        status = StatusEffects.freezing;
 
             sound = Sounds.windhowl;

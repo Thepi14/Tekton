@@ -1,10 +1,13 @@
 package tekton.content;
 
 import mindustry.type.*;
+import mindustry.world.Block;
 import mindustry.world.blocks.storage.CoreBlock;
 import tekton.Tekton;
 
 import static tekton.content.TektonPlanets.*;
+
+import java.lang.reflect.Field;
 
 import arc.struct.Seq;
 
@@ -58,15 +61,6 @@ public class TektonSectors {
 			};
         }};
         
-        river = new TektonSectorPreset("river", tekton, 39){{
-            difficulty = 3;
-            rules = r -> {
-				r.hiddenBuildItems.clear();
-				r.attackMode = true;
-				r.waves = false;
-			};
-        }};
-        
         pit = new TektonSectorPreset("pit", tekton, 15){{
             difficulty = 2;
             //captureWave = 20;
@@ -74,6 +68,15 @@ public class TektonSectors {
 				r.hiddenBuildItems.clear();
 				r.attackMode = true;
 				r.waves = true;
+			};
+        }};
+        
+        river = new TektonSectorPreset("river", tekton, 39){{
+            difficulty = 2;
+            rules = r -> {
+				r.hiddenBuildItems.clear();
+				r.attackMode = true;
+				r.waves = false;
 			};
         }};
         
@@ -86,19 +89,19 @@ public class TektonSectors {
 			};
         }};
         
+        rainforest = new TektonSectorPreset("rainforest", tekton, 52){{
+            difficulty = 3;
+            rules = r -> {
+				r.hiddenBuildItems.clear();
+				//r.attackMode = false;
+			};
+        }};
+        
         transit = new TektonSectorPreset("transit", tekton, 38){{
             difficulty = 4;
             rules = r -> {
 				r.hiddenBuildItems.clear();
 				r.waves = true;
-			};
-        }};
-        
-        rainforest = new TektonSectorPreset("rainforest", tekton, 52){{
-            difficulty = 4;
-            rules = r -> {
-				r.hiddenBuildItems.clear();
-				r.attackMode = true;
 			};
         }};
         
@@ -122,7 +125,20 @@ public class TektonSectors {
 			};
         }};
         
-        all.addAll(new SectorPreset[] {satus, scintilla, river, proelium, lake/*, aequor*/});
+		Class<?> sectors = TektonSectors.class;
+		Seq<Field> sectorFields = new Seq<>(sectors.getFields());
+		sectorFields.retainAll(f -> SectorPreset.class.equals(f.getType()));
+		for (var sector : sectorFields) {
+			sector.setAccessible(true);
+			try {
+				if (sector.get(sectors) instanceof SectorPreset preset)
+				all.add(preset);
+			} catch (IllegalArgumentException e) { //java.
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
         
         for (var sectorPreset : all) {
         	if (sectorPreset == satus)

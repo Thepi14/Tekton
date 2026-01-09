@@ -47,7 +47,7 @@ public class GravityConductor extends Block {
 
         //TODO show number
         addBar("gravity", (GravityConductorBuild entity) -> new Bar(
-        		() -> Core.bundle.format(entity.gravity >= 0 ? "bar.gravity" : "bar.antiGravity", (int)(Math.abs(entity.gravity) + 0.01f)), 
+        		() -> Core.bundle.format("bar.gravity", (int)(Math.abs(entity.gravity) + 0.01f)), 
         		() -> TektonColor.gravityColor, 
         		() -> entity.gravity / TektonVars.visualMaxGravity));
     }
@@ -69,7 +69,7 @@ public class GravityConductor extends Block {
         return drawer.finalIcons(this);
     }
 
-    public class GravityConductorBuild extends Building implements GravityBlock, GravityConsumer{
+    public class GravityConductorBuild extends Building implements GravityBlock, GravityConsumer {
         public float gravity = 0f;
         public float[] sideGravity = new float[4];
         public IntSet cameFrom = new IntSet();

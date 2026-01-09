@@ -11,9 +11,10 @@ import mindustry.gen.WeatherState;
 import mindustry.graphics.Layer;
 import mindustry.type.weather.ParticleWeather;
 
+//TODO remove it someday
 public class FogWeather extends ParticleWeather {
 	public float opacity = 1f;
-	public boolean drawColor = true;
+	public boolean drawColor = false;
 	
 	public FogWeather(String name) {
 		super(name);

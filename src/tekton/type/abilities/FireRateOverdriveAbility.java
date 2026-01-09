@@ -15,6 +15,7 @@ import arc.util.Time;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.Vars;
 import mindustry.content.StatusEffects;
 import mindustry.entities.abilities.Ability;
 import mindustry.gen.Unit;
@@ -71,10 +72,10 @@ public class FireRateOverdriveAbility extends Ability {
 	{
 		/*if (boosts == null || boosts.size == 0)
 			return;*/
-		if (unit.isShooting() && (unit.hasEffect(statusCondition) || statusCondition == StatusEffects.none)) {
+		if (unit.isShooting() && !Vars.state.isPaused() && (unit.hasEffect(statusCondition) || statusCondition == StatusEffects.none)) {
 			data += boostIncrease / 60f;
 		}
-		else {
+		else if (!Vars.state.isPaused()) {
 			data -= boostDecrease / 60f;
 		}
 		

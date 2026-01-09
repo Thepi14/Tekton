@@ -10,6 +10,7 @@ import mindustry.type.UnitType;
 import mindustry.type.ammo.ItemAmmoType;
 import mindustry.world.meta.Env;
 import tekton.content.TektonColor;
+import tekton.content.TektonFx;
 import tekton.content.TektonItems;
 import tekton.content.TektonMissileUnitType;
 import tekton.content.TektonStatusEffects;
@@ -17,14 +18,7 @@ import tekton.content.TektonStatusEffects;
 public class MinionUnitType extends UnitType implements DependentType {
 	public float maxDistance = 40f * tilesize;
 	
-	public Effect despawnEffect = new WaveEffect() {{
-		sides = 4;
-		strokeFrom = 1.5f;
-		strokeTo = 0.1f;
-		sizeFrom = 2f;
-		sizeTo = 7f;
-		colorFrom = colorTo = Pal.lancerLaser;
-	}};
+	public Effect despawnEffect = TektonFx.teamColorDespawn;
 	
 	public MinionUnitType(String name) {
         super(name);

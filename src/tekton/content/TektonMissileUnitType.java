@@ -12,6 +12,7 @@ public class TektonMissileUnitType extends MissileUnitType {
 	public TektonMissileUnitType(String name) {
 		super(name);
 		immunities.addAll(defaultImmunities);
+        outlineColor = TektonColor.tektonOutlineColor;
 	}
 	
 	private static ObjectSet<StatusEffect> immunityLister() {

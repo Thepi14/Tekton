@@ -8,8 +8,11 @@ import arc.util.Log;
 import arc.util.noise.Noise;
 import arc.util.noise.Ridged;
 import arc.util.noise.Simplex;
+import mindustry.content.Blocks;
 import mindustry.maps.generators.PlanetGenerator;
 import mindustry.type.Sector;
+import mindustry.world.Block;
+import mindustry.world.TileGen;
 import tekton.content.*;
 
 public class TektonPlanetGenerator extends PlanetGenerator {
@@ -146,3 +149,131 @@ public class TektonPlanetGenerator extends PlanetGenerator {
         return TektonColor.methane.cpy().a(methaneAlbedo);
     }
 }
+
+/*public class TektonPlanetGenerator extends PlanetGenerator {
+float sizeMultipliyer = 1.6f;
+
+float 
+		oceanCoverage = 0.42f,
+		beachCoverage = 0.51f,
+		diatomiteCoverage = 0.4f,
+		brownCoverage = 0.48f,
+		uraniniteCoverage = 0.4f,
+		neurosporaHeight = 0.66f,
+		neurosporaCoverage = 0.53f;
+
+int noiseSeedAdd = -7000,
+		puddleSeedAdd = 7000,
+		waveSeedAdd = 14000;
+
+float maxSize = 0.65f;
+
+public static final Rand rand = new Rand();
+
+Block[] terrain = {Blocks.ferricStone, TektonBlocks.diatomite, TektonBlocks.brownStone, TektonBlocks.neurosporaFloor, TektonBlocks.uraniniteFloor, TektonBlocks.methaneIce, TektonBlocks.methane, TektonBlocks.deepMethane, TektonBlocks.darkSilicaSand};
+
+float oceanHeight = 0.45f;
+
+public float baseNoise(Vec3 position) { return Simplex.noise3d(seed + noiseSeedAdd , 4, 0.8f, 1f, (position.z / 10f) * sizeMultipliyer, (position.y) * sizeMultipliyer, (position.x / 2f) * sizeMultipliyer); }
+
+																//seed, octaves, falloff, scl, mag
+public float diatomiteNoise(Vec3 position) { return Simplex.noise3d(seed, 4, 0.6f, 1f, (position.z / 2f) * sizeMultipliyer, (position.y) * sizeMultipliyer, (position.x / 2f) * sizeMultipliyer); }
+public float brownNoise(Vec3 position) { return Simplex.noise3d(seed - noiseSeedAdd, 4, 0.5f, 1.2f, (position.z / 8f) * sizeMultipliyer, (position.y) * sizeMultipliyer, (position.x / 2f) * sizeMultipliyer); }
+public float uraniniteNoise(Vec3 position) { return Simplex.noise3d(seed + 4, 4, 0.6f, 1f, (position.z / 2f) * sizeMultipliyer, (position.y) * sizeMultipliyer, (position.x / 2f) * sizeMultipliyer); }
+public float neurosporaNoise(Vec3 position) { return Simplex.noise3d(seed + 7, 4, 0.7f, 1f, (position.z / 4f) * sizeMultipliyer, (position.y) * sizeMultipliyer, (position.x / 4f) * sizeMultipliyer); }
+public float waveNoise(Vec3 position) { return Simplex.noise3d(seed - waveSeedAdd, 4, 0.25f, 1.4f, (position.z / 3f) * sizeMultipliyer, (position.y / 3f) * sizeMultipliyer, (position.x / 3f) * sizeMultipliyer); }
+
+public TektonPlanetGenerator() {
+	//super();
+	baseSeed = 14;
+	seed = 71471;
+	defaultLoadout = TektonLoadouts.corePrimal;
+	block = TektonBlocks.methane;
+	rand.setSeed((seed + baseSeed) * 17);
+
+    Noise.setSeed(seed + puddleSeedAdd);
+}
+
+@Override
+public float getHeight(Vec3 position) {
+	float height = baseNoise(position);
+	if (getBiome(position) == Biome.ocean || getBiome(position) == Biome.deepOcean)
+		return oceanHeight;
+    
+    return height;
+}
+
+public enum Biome {
+	ferric,
+	diatomite,
+	brown,
+	uraninite,
+	neurospora,
+	ice,
+	beach,
+	ocean,
+	deepOcean
+}
+
+  public Biome getBiome(Vec3 position) {
+    	float diatomiteNoise = diatomiteNoise(position), 
+    			brownNoise = brownNoise(position), 
+    			uraniniteNoise = uraniniteNoise(position), 
+    			neurosporaNoise = neurosporaNoise(position), 
+    			waveNoise = waveNoise(position);
+    	
+    	if (waveNoise > 1f - oceanCoverage)
+    		return Biome.ocean;
+    	if (waveNoise > 1f - beachCoverage)
+    		return Biome.beach;
+    	
+    	if ((!(position.y > neurosporaHeight - 1f) || !(position.y < 1f - neurosporaHeight)) && neurosporaNoise > 1f - neurosporaCoverage)
+    		return Biome.neurospora;
+    	
+    	if (diatomiteNoise > 1f - diatomiteCoverage)
+    		return Biome.diatomite;
+    	else if (uraniniteNoise > 1f - uraniniteCoverage)
+    		return Biome.uraninite;
+    	else if (brownNoise > 1f - brownCoverage)
+    		return Biome.brown;
+        
+        return Biome.ferric;
+  }
+
+@Override
+public Color getColor(Vec3 position) {
+    var methaneAlbedo = 0.1f;
+	float height = baseNoise(position);
+	
+	switch(getBiome(position)) {
+    	case ferric:
+    		return terrain[0].mapColor;
+    	case diatomite:
+    		return terrain[1].mapColor;
+    	case brown:
+    		return terrain[2].mapColor;
+    	case uraninite:
+    		return terrain[4].mapColor;
+    	case neurospora:
+    		return terrain[3].mapColor;
+    	case ice: 
+    		return terrain[5].mapColor;
+    	case beach:
+    		return terrain[8].mapColor;
+    	case ocean:
+    		return terrain[6].mapColor;
+    	case deepOcean:
+    		return terrain[7].mapColor;
+		default:
+			return Color.red;
+	}
+}
+
+public Color lerpColor(Color colFrom, Color colTo, float progress) {
+	return new Color(
+			Mathf.lerp(colFrom.r, colTo.r, progress),
+			Mathf.lerp(colFrom.g, colTo.g, progress),
+			Mathf.lerp(colFrom.b, colTo.b, progress),
+			Mathf.lerp(colFrom.a, colTo.a, progress));
+}
+}*/

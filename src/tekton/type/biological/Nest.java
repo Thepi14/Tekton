@@ -52,6 +52,7 @@ import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import tekton.Drawt;
+import tekton.Tekton;
 import tekton.content.*;
 import tekton.type.defense.AdvancedWall;
 
@@ -65,6 +66,7 @@ public class Nest extends Block implements BiologicalBlock {
 	public float ticksToSpawn = 60f * 50f;
 	public float ticksRandom = 60f * 20f;
 	public boolean spawnOnDestroy = false;
+	public int unitsSpawnedOnDeath = 1;
 	public boolean spawnOnCenter = false;
 	
 	public float alpha = 0.9f, glowScale = 15f, glowIntensity = 0.5f, shadowAlpha = 0.2f;
@@ -89,6 +91,7 @@ public class Nest extends Block implements BiologicalBlock {
     public Effect explodeEffect = Fx.none;
     public Effect spawnEffect = Fx.none;
     public Sound explodeSound = Sounds.none;
+    public Sound spawnSound = Sounds.none;
 
     public int explosionPuddles = 15;
     public float explosionPuddleRange = tilesize * 3f;
@@ -99,18 +102,18 @@ public class Nest extends Block implements BiologicalBlock {
     public float explosionShake = 1f, explosionShakeDuration = 6f;
     public boolean drawBase = true;
 	public boolean growAnimation = true;
+	public boolean hasGlow = true;
 	public boolean glowAnimation = true;
-    public int upperVariants = 0;
     public float nestShadowOffset = 3f;
     
     public String basePrefix = "nest-";
     public TextureRegion glowRegion;
     public TextureRegion baseRegion;
     public TextureRegion upperShadowRegion;
-    public TextureRegion[] upperShadowRegionVariants;
 	
 	public Nest(String name) {
 		super(name);
+		
 		unitCapModifier = 5;
         envEnabled |= Env.space;
 		creatureTypes = new Seq<UnitType>();
@@ -120,9 +123,11 @@ public class Nest extends Block implements BiologicalBlock {
 		emitLight = true;
 		update = true;
         solid = true;
+        
 		hasPower = true;
         consumesPower = false;
 		outputsPower = true;
+		
 		customShadow = false;
 		createRubble = drawCracks = false;
         sync = true;
@@ -152,6 +157,7 @@ public class Nest extends Block implements BiologicalBlock {
 		hideDetails = true;
 		destroyEffect = TektonFx.biologicalDynamicExplosion;
 		alwaysUnlocked = false;
+		noUpdateDisabled = true;
 	}
 	
 	@Override
@@ -171,7 +177,8 @@ public class Nest extends Block implements BiologicalBlock {
         super.load();
         
         baseRegion = Core.atlas.find("tekton-" + basePrefix + "block-" + size);
-        glowRegion = Core.atlas.find(name + "-glow");
+        if (hasGlow)
+        	glowRegion = Core.atlas.find(name + "-glow");
         upperShadowRegion = Core.atlas.find(name + "-upper-shadow");
     }
 	
@@ -285,14 +292,15 @@ public class Nest extends Block implements BiologicalBlock {
             curRecoil = Mathf.approachDelta(curRecoil, 0, 1f / recoilTime);
             
             if (enabled) {
-            	spawnProgress += Time.delta;
+            	spawnProgress = timer.getTime(timerSpawn);
             	currentTimer = Mathf.lerp(currentTimer(), currentTimer() / spawnSpeedMultipliyer, 1f - (health / maxHealth));
                 if (timer(timerSpawn, currentTimer)) {
                 	curRecoil = 1f;
             		currentRandom = Mathf.random(-ticksRandom, ticksRandom);
             		currentIndex = Mathf.random(creatureTypes.size - 1);
-            		spawnByCurrentIndex();
+            		spawnByCurrentIndex(spawnOnCenter);
             		spawnEffect.at(this);
+            		spawnSound.at(this);
             		
             		for (var creature : spawnedCreatures) {
             			commandCreature(creature, null);
@@ -328,8 +336,10 @@ public class Nest extends Block implements BiologicalBlock {
             }
         }
         
-        public Unit spawn(UnitType unitType) {
-        	if (spawnPositions.size == 0) {
+        private boolean spawnCenter = false;
+        
+        public Unit spawn(UnitType unitType) { //TODO: horrible code
+    		if (spawnPositions.size == 0) {
         		int sx = tileX() - (size / 2) - size % 2, sy = tileY() - (size / 2) - size % 2;
         		for (int i = 0; i <= size + 1; i++) {
         			final Vec2 
@@ -352,42 +362,52 @@ public class Nest extends Block implements BiologicalBlock {
         	Seq<Vec2> availablePositions = new Seq<Vec2>();
         	for (var pos : spawnPositions) {
         		if (!world.tile((int)(pos.x / tilesize), (int)(pos.y / tilesize)).solid()) {
-        			availablePositions.add(pos);
+        			availablePositions.add(new Vec2(pos.x, pos.y));
+        			if (Tekton.showNestSpawnPoints) {
+        				TektonFx.debugRedSquare.at(pos);
+        			}
         		}
         	}
-        	if (availablePositions.size == 0) {
+        	if (availablePositions.size == 0 && !dead && !spawnCenter && !spawnOnCenter) {
+        		spawnCenter = true;
         		kill();
         		return null;
         	}
-    		Vec2 position = spawnOnCenter ? new Vec2(x(), y()) : availablePositions.get(Mathf.random(availablePositions.size - 1)).add(new Vec2(Mathf.range(2.5f), Mathf.range(2.5f)));
-    		if (!spawnOnCenter)
-    			spawnEffect.at(position);
+    		Vec2 position = spawnCenter || spawnOnCenter || availablePositions.size == 0 ? 
+    				new Vec2(x(), y()).add(new Vec2(Mathf.range(size / 2f), Mathf.range(size / 2f))) : 
+    					availablePositions.get(Mathf.random(availablePositions.size - 1)).add(new Vec2(Mathf.range(2.5f), Mathf.range(2.5f)));
+    		spawnEffect.at(position);
         	var creature = unitType.spawn(position, team());
         	creature.rotation = Mathf.atan2(creature.x - x, creature.y - y) * Mathf.radDeg;
 			commandCreature(creature, null);
         	spawnedCreatures.add(creature);
-        	
+
+    		if (Tekton.showNestSpawnPoints) TektonFx.debugGreenSquare.at(position);
+    		
 			return creature;
         }
         
-        public Unit spawnByIndex(int index) {
+        public Unit spawnByIndex(int index, boolean center) {
+        	spawnCenter = center;
         	return spawn(creatureTypes.get(index));
         }
         
-        public Unit spawnByCurrentIndex() {
-        	return spawnByIndex(currentIndex);
+        public Unit spawnByCurrentIndex(boolean center) {
+        	spawnCenter = center;
+        	return spawnByIndex(currentIndex, center);
         }
         
         @Override
         public void onDestroyed() {
             super.onDestroyed();
             createExplosion();
-			Drawt.DrawAcidDebris(x, y, Mathf.random(4) * 90, size);
+			Drawt.DrawAcidDebris(x, y, size);
 			for (Unit creature : spawnedCreatures) {
 				creature.command().moveTo(this, 40f);
 			}
 			if (spawnOnDestroy)
-				spawnByCurrentIndex();
+				for (int i = 0; i < unitsSpawnedOnDeath; i++)
+					spawnByCurrentIndex(true);
         }
         
         @Override
@@ -402,7 +422,7 @@ public class Nest extends Block implements BiologicalBlock {
             
             Color col = damageColor.cpy().lerp(Color.white, health / maxHealth);
             
-            TextureRegion shad = upperVariants == 0 ? upperShadowRegion : upperShadowRegionVariants[Mathf.randomSeed(tile.pos(), 0, Math.max(0, upperShadowRegionVariants.length - 1))];
+            TextureRegion shad = upperShadowRegion;
             
             if (baseRegion.found() && drawBase) {
             	Draw.z(Layer.block - 0.011f);
@@ -423,14 +443,15 @@ public class Nest extends Block implements BiologicalBlock {
             Draw.alpha(1f);
             Draw.rect(region, x, y, xsize, ysize, rot);
             
-            if (layer > 0)
-            	Draw.z(layer);
-            
-            Draw.blend(Blending.additive);
-            Draw.color(glowColor);
-            Draw.alpha(glowAnimation ? currentGlow() * alpha : alpha);
-            Draw.rect(glowRegion, x, y, xsize, ysize, rot);
-            Draw.blend();
+            if (hasGlow) {
+                if (layer > 0)
+                	Draw.z(layer);
+                Draw.blend(Blending.additive);
+                Draw.color(glowColor);
+                Draw.alpha(glowAnimation ? currentGlow() * alpha : alpha);
+                Draw.rect(glowRegion, x, y, xsize, ysize, rot);
+                Draw.blend();
+            }
             
             Draw.z(z);
             Draw.color();
@@ -443,8 +464,10 @@ public class Nest extends Block implements BiologicalBlock {
                 Damage.damage(team, x, y, explosionRadius * tilesize, explosionDamage);
             }
 
-            explodeEffect.at(this);
-            explodeSound.at(this);
+            if (explodeEffect != Fx.none)
+            	explodeEffect.at(this);
+            if (explodeSound != Sounds.none)
+            	explodeSound.at(this);
 
             if(explosionPuddleLiquid != null){
                 for(int i = 0; i < explosionPuddles; i++){
@@ -493,7 +516,7 @@ public class Nest extends Block implements BiologicalBlock {
             write.f(regenCharge);
             
             write.s(spawnedCreatures.size);
-            for(var unit : spawnedCreatures){
+            for(var unit : spawnedCreatures) {
                 write.i(unit.id);
             }
         }
@@ -507,7 +530,7 @@ public class Nest extends Block implements BiologicalBlock {
 
             int count = read.s();
             readCreatures.clear();
-            for(int i = 0; i < count; i++){
+            for(int i = 0; i < count; i++) {
             	readCreatures.add(read.i());
             }
         }

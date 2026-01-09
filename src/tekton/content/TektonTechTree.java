@@ -77,7 +77,7 @@ public class TektonTechTree {
         		
         		//payloads
 				node(ironPayloadConveyor, () -> {
-					node(payloadLauncher, Seq.with(new SectorComplete(lake)), () -> {
+					node(payloadLauncher, Seq.with(new SectorComplete(lake), new Research(magnetizer)), () -> {
 						node(payloadLoader, () -> {
 							node(payloadUnloader, () -> {
 								
@@ -144,24 +144,31 @@ public class TektonTechTree {
             		
                 	//crafting
                 	node(siliconFilter, () -> {
+        				node(siliconCompressor, () -> {
+                    		
+                    	});
         				node(graphiteConcentrator, Seq.with(new SectorComplete(satus)), () -> {
-            				node(siliconCompressor, () -> {
-                        		
-                        	});
         					node(coldElectrolyzer, Seq.with(new OnSector(scintilla)), () -> {
-            					node(atmosphericMethaneConcentrator, () -> {
-            						node(polycarbonateSynthesizer, Seq.with(new SectorComplete(pit)), () -> {
-                						node(cryogenicMixer, Seq.with(new SectorComplete(pit)), () -> {
-                                    		
-                                    	});
+        						node(polycarbonateSynthesizer, Seq.with(new SectorComplete(pit)), () -> {
+            						node(cryogenicMixer, Seq.with(new SectorComplete(pit)), () -> {
+                                		
                                 	});
                             	});
             					node(magnetizer, Seq.with(new OnSector(cave)), () -> {
+                					node(atmosphericMethaneConcentrator, () -> {
+            							node(ammoniaCatalyst, () -> {
+                                    		
+                                    	});
+                                	});
         							node(gravityConductor, Seq.with(new OnSector(cave)), () -> {
                 						node(electricalCoil, Seq.with(new OnSector(cave)), () -> {
                 							node(thermalCoil, Seq.with(new Research(cryogenicMixer), new OnSector(cave)), () -> { //change?
-                								node(phaseNanoCoil, Seq.with(new Research(nanoAlloyCrucible), new Research(phasePrinter)), () -> {
-                        							
+            									node(reinforcedCoil, () -> {
+                									node(expansionCoil, () -> { //maybe make this one more hard to obtain?
+                        								node(phaseNanoCoil, Seq.with(new Research(nanoAlloyCrucible), new Research(phasePrinter)), () -> {
+                                							
+                                						});
+                            						});
                         						});
                     						});
                 							node(polytalumFuser, Seq.with(new Research(polycarbonateSynthesizer)), () -> {
@@ -181,18 +188,16 @@ public class TektonTechTree {
             						});
             					});
         						node(hydrogenIncinerator, () -> {
-        							node(ammoniaCatalyst, () -> {
-                                		
-                                	});
+        							
                             	});
                         	});
             			});
-        				node(silicaTurbine, Seq.with(new SectorComplete(proelium)), () -> {
-            				node(sandFilter, Seq.with(new SectorComplete(scintilla), new Research(reactionDrill)), () -> { //change?
-                        		
-                        	});
-                    	});
         			});
+    				node(silicaTurbine, Seq.with(new SectorComplete(proelium)), () -> {
+        				node(sandFilter, Seq.with(new SectorComplete(scintilla), new Research(reactionDrill)), () -> { //change?
+                    		
+                    	});
+                	});
             	});
             	
             	//power
@@ -235,6 +240,9 @@ public class TektonTechTree {
                 		node(regenerator, Seq.with(new Research(coldElectrolyzer), new SectorComplete(scintilla)), () -> {
                 			node(regenerationDome, Seq.with(new SectorComplete(cave)), () -> {
                 				node(builderDroneCenter, Seq.with(new SectorComplete(aequor)), () -> { //change
+                        			
+                            	});
+            					node(latencyTower, Seq.with(new SectorComplete(aequor)), () -> { //change
                         			
                             	});
                         	});
@@ -426,11 +434,12 @@ public class TektonTechTree {
         	 * scintilla - attack, final: martyris, caravela
         	 * proelium - survival, tantalum, final: electret, nail, spear, azure (make sure player gets tantalum after before ending this map or going to pit)
         	 * 
-        	 * river - attack, polycarbonate final: sagres, bellator, freezer (place after pit)
-        	 * pit - survival, final: strike, interfusion (place before river)
-        	 * lake - argos boss (can be placed before river now)
+        	 * lake - T3 bosses
+        	 * pit - survival, final: strike, interfusion, bellator
+        	 * river - attack, polycarbonate final: naval units, freezer
         	 * cave - attack, magnet final: sword, payload Launchers
-        	 * aequor - idk (place after all for uranium maybe? needs uranium introduction for its higher difficulty, probably a map earlier)
+        	 * aequor - final sector before uranium.
+        	 * 
         	 * */
         	
         	//sectors
@@ -441,11 +450,10 @@ public class TektonTechTree {
             				node(pit, Seq.with(new SectorComplete(proelium), new Research(TektonItems.tantalum)), () -> {
             					node(lake, Seq.with(new SectorComplete(pit)), () -> {
                     				node(river, Seq.with(new SectorComplete(lake), new Research(caravela)), () -> {
-                						node(aequor, Seq.with(new SectorComplete(river), new Research(sagres)), () -> {
-                							
-                                    	});
-                						node(cave, Seq.with(new SectorComplete(aequor)), () -> {
-                    						
+                						node(cave, Seq.with(new SectorComplete(aequor), new Research(magnetizer)), () -> {
+                    						node(aequor, Seq.with(new SectorComplete(river), new Research(sagres)), () -> {
+                    							
+                                        	});
                                     	});
                                 	});
                             	});
@@ -467,24 +475,29 @@ public class TektonTechTree {
     	        		
     	        	});
     				nodeProduce(Items.silicon, () -> {
-    					nodeProduce(TektonItems.magnet, () -> {
-        	        		
+        				nodeProduce(Items.graphite, () -> {
+        					nodeProduce(TektonItems.magnet, () -> {
+            	        		
+            	        	});
         	        	});
     	        	});
             	});
     			nodeProduce(TektonItems.zirconium, () -> {
-    				nodeProduce(Items.graphite, () -> {
-    					nodeProduce(TektonItems.tantalum, () -> {
-        					nodeProduce(TektonItems.uranium, () -> {
-        						nodeProduce(Items.phaseFabric, () -> {
-        							nodeProduce(TektonItems.nanoAlloy, () -> {
-        	        	        		
-        	        	        	});
-                	        	});
+    				nodeProduce(TektonItems.polycarbonate, () -> {
+    					nodeProduce(TektonItems.polytalum, () -> {
+        					
+        	        	});
+    	        	});
+    				nodeProduce(TektonItems.tantalum, () -> {
+    	    			nodeProduce(TektonItems.cryogenicCompound, () -> {
+    		        		
+    		        	});
+    					nodeProduce(TektonItems.uranium, () -> {
+							nodeProduce(TektonItems.nanoAlloy, () -> {
+	        	        		
+	        	        	});
+    						nodeProduce(Items.phaseFabric, () -> {
             	        	});
-        	    			nodeProduce(TektonItems.cryogenicCompound, () -> {
-        		        		
-        		        	});
         	        	});
     	        	});
 	        	});
@@ -493,7 +506,9 @@ public class TektonTechTree {
     			nodeProduce(TektonLiquids.methane, () -> {
             		nodeProduce(Liquids.water, Seq.with(new Research(graphiteConcentrator)), () -> {
             			nodeProduce(TektonLiquids.ammonia, () -> {
-            				
+            				nodeProduce(TektonLiquids.dicyanogen, () -> {
+                				
+                        	});
                     	});
             			nodeProduce(Liquids.hydrogen, () -> {
                 			

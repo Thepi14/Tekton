@@ -6,11 +6,12 @@ import mindustry.Vars;
 import mindustry.game.Team;
 import mindustry.gen.Unit;
 import mindustry.type.unit.MissileUnitType;
+import tekton.content.TektonMissileUnitType;
 import tekton.type.ai.DistanceMissileAI;
 import arc.math.geom.Position;
 import arc.math.geom.Vec2;
 
-public class DistanceMissileUnitType extends MissileUnitType implements DependentType {
+public class DistanceMissileUnitType extends TektonMissileUnitType implements DependentType {
 	public float maxDistance = 43f * Vars.tilesize;
 	
 	public DistanceMissileUnitType(String name) {
@@ -18,26 +19,6 @@ public class DistanceMissileUnitType extends MissileUnitType implements Dependen
 		lifetime = 3.5f * 60f;
 		controller = u -> new DistanceMissileAI();
 	}
-
-    /*@Override
-    public Unit spawn(Position pos) {
-    	return super.spawn(pos);
-    }
-
-    @Override
-    public Unit spawn(Position pos, Team team) {
-    	return super.spawn(pos);
-    }
-
-    @Override
-    public void update(Unit unit) {
-        super.update(unit);
-    }
-    
-    @Override
-    public void init() {
-        super.init();
-    }*/
 
 	@Override
 	public float maxDistance() {

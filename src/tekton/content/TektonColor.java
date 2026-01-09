@@ -26,6 +26,7 @@ public class TektonColor {
 	neurospora = Color.valueOf("46617d"),
 	acid = Color.valueOf("82d629"),
 	cobweb = Color.valueOf("d6d6d6"),
+	radiation = Color.valueOf("bbd658"),
 	
 	commonShootColor = Color.valueOf("fff6d4"),
 	siliconShootColor = Pal.techBlue.cpy(),

@@ -177,7 +177,7 @@ public class RepairWaveTurret extends Block{
                     }
                 }
                 
-                rotation = Mathf.slerpDelta(rotation, angle, 0.5f * efficiency * timeScale);
+                rotation = Mathf.slerpDelta(rotation, angle, 0.5f * efficiency * timeScale * Time.delta);
             }
 
             strength = Mathf.lerpDelta(strength, target != null && efficiency > 0 ? 1f : 0f, Time.delta * 0.5f);

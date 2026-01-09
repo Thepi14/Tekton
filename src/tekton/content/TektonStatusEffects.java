@@ -68,7 +68,7 @@ public class TektonStatusEffects {
 	        speedMultiplier = 0.95f;
 	        reloadMultiplier = 0.95f;
 	        damage = 4f / 60f;
-			transitionDamage = 20f;
+			transitionDamage = 7f;
 	        init(() -> {
                 affinity(acidified, (unit, result, time) -> result.set(acidified, result.time + time));
             });
@@ -153,8 +153,8 @@ public class TektonStatusEffects {
         	}); 
 	    }};
 	    
-	    float rspeedMultiplier = 0.5f,
-    		rbuildSpeedMultiplier = 0.6f,
+	    float rspeedMultiplier = 0.7f,
+    		rbuildSpeedMultiplier = 0.7f,
     		rdamageMultiplier = 0.8f,
     		rdragMultiplier = 1.4f;
 	    
@@ -163,15 +163,14 @@ public class TektonStatusEffects {
 			hideDetails = false;
 			outline = false;
 			permanent = false;
-	        color = Color.valueOf("bbd658");
-			applyColor = Color.valueOf("bbd658");
+	        color = applyColor = TektonColor.radiation;
 	        speedMultiplier = rspeedMultiplier;
 	        buildSpeedMultiplier = rbuildSpeedMultiplier;
 	        damageMultiplier = rdamageMultiplier;
 	        dragMultiplier = rdragMultiplier;
 	        damage = 10f / 60f;
 	        effect = new Effect(40f, e -> {
-	            color(Color.valueOf("bbd658"));
+	            color(TektonColor.radiation);
 
 	            randLenVectors(e.id, 2, 1f + e.fin() * 2f, (x, y) -> {
 	                Fill.square(e.x + x, e.y + y, e.fslope() * 1.1f, 45f);
@@ -184,15 +183,20 @@ public class TektonStatusEffects {
 			hideDetails = false;
 			outline = false;
 			permanent = false;
-	        color = Color.valueOf("bbd658");
-			applyColor = Color.valueOf("bbd658");
+	        color = applyColor = TektonColor.radiation;
 	        speedMultiplier = 2f - rspeedMultiplier;
 	        buildSpeedMultiplier = 2f - rbuildSpeedMultiplier;
 	        damageMultiplier = 2f - rdamageMultiplier;
 	        healthMultiplier = 1.3f;
 	        //dragMultiplier = -rdragMultiplier;
-	        damage = -40f / 60f;
-	        effect = Fx.none;
+	        damage = -20f / 60f;
+	        effect = new Effect(40f, e -> {
+	            color(TektonColor.radiation);
+
+	            randLenVectors(e.id, 2, 1f + e.fin() * 2f, (x, y) -> {
+	                Fill.square(e.x + x, e.y + y, e.fslope() * 1.1f, 45f);
+	            });
+	        });
 	        init(() -> {
 	        	opposite(radioactiveContamination);
 	        });
@@ -205,7 +209,7 @@ public class TektonStatusEffects {
 			outline = false;
 	        color = Color.valueOf("d6d6d6");
 			applyColor = Color.valueOf("d6d6d6");
-	        speedMultiplier = 0.1f;
+	        speedMultiplier = 0.6f;
 	        dragMultiplier = 1.2f;
 	        effect = TektonFx.cobwebbed;
 	    }};

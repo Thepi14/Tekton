@@ -8,6 +8,7 @@ import arc.util.Nullable;
 import arc.util.Tmp;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.defense.turrets.ContinuousTurret;
+import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import tekton.content.TektonColor;
@@ -82,6 +83,19 @@ public class GravitationalContinuousTurret extends ContinuousTurret {
                 entry.bullet.time = entry.bullet.lifetime * entry.bullet.type.optimalLifeFract * Math.min(shootWarmup, efficiency);
                 entry.bullet.keepAlive = true;
             }
+        }
+        
+        @Override
+        public BlockStatus status() {
+            float balance = power.status;
+            if(balance > 0.001f && hasAmmo() && !isShooting()) return BlockStatus.noOutput;
+            if(balance > 0.001f && hasAmmo() && isShooting()) return BlockStatus.active;
+            return BlockStatus.noInput;
+        }
+        
+        @Override
+        public boolean hasAmmo(){
+            return super.hasAmmo() && gravityFrac() > 0.001f;
         }
         
         @Override
