@@ -14,7 +14,7 @@
 	[accent[]](The planet is based off on Titan, one of Saturns moons)[[]]
 	",
     "version": "v0.3.23",
-    "minGameVersion": "146",
+    "minGameVersion": "154",
     "author": "ThePi14",
     "java": true,
     "main": "tekton.Tekton",
