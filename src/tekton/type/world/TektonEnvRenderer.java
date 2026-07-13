@@ -1,14 +1,13 @@
 package tekton.type.world;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.renderer;
+import static mindustry.Vars.state;
 
 import arc.Core;
-import arc.graphics.Color;
 import arc.graphics.Texture;
 import arc.graphics.Texture.TextureFilter;
 import arc.graphics.Texture.TextureWrap;
 import arc.graphics.g2d.Draw;
-import arc.util.Tmp;
 import mindustry.graphics.Layer;
 import mindustry.type.Weather;
 import tekton.content.TektonColor;
@@ -19,7 +18,7 @@ public class TektonEnvRenderer {
             Texture tex = Core.assets.get("sprites/fog.png", Texture.class);
             tex.setWrap(TextureWrap.repeat);
             tex.setFilter(TextureFilter.linear);
-            
+
             var opacity = 0.4f;
             var noiseOpacity = 0.15f;
             var color = TektonColor.liquidMethane.cpy().a(0.5f);
@@ -35,7 +34,7 @@ public class TektonEnvRenderer {
 
             //TODO layer looks better? should not be conditional
             Draw.z(state.rules.fog ? Layer.fogOfWar + 1 : Layer.weather - 1);
-            Weather.drawNoiseLayers(tex, color, 
+            Weather.drawNoiseLayers(tex, color,
             		1100f, //noiseScl
             		noiseOpacity,
             		0.05f, //baseSpeed

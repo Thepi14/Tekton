@@ -1,9 +1,9 @@
 package tekton.type.payloads;
 
-import mindustry.world.blocks.units.*;
-import mindustry.world.meta.Env;
-
 import static tekton.content.TektonBlocks.setPayloadRegions;
+
+import mindustry.world.blocks.units.Reconstructor;
+import mindustry.world.meta.Env;
 
 public class TektonReconstructor extends Reconstructor {
 

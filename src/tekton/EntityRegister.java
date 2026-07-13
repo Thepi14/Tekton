@@ -10,7 +10,7 @@ public class EntityRegister {
 
 	@SuppressWarnings("unchecked")
 	private static final ObjectMap.Entry<Class<? extends Entityc>, Prov<? extends Entityc>>[] types = new ObjectMap.Entry[]{
-			
+
     };
 
     private static final ObjectIntMap<Class<? extends Entityc>> idMap = new ObjectIntMap<>();
@@ -46,7 +46,9 @@ public class EntityRegister {
             if (EntityMapping.idMap[i] == null) {
                 idMap.put(types[j].key, i);
                 EntityMapping.idMap[i] = types[j].value;
-                if (++j >= types.length) break;
+                if (++j >= types.length) {
+					break;
+				}
             }
         }
     }

@@ -4,7 +4,6 @@ import static mindustry.Vars.net;
 import static mindustry.Vars.state;
 import static mindustry.Vars.tilesize;
 
-import arc.util.Log;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.entities.abilities.Ability;
@@ -17,15 +16,15 @@ public class CrushAbility extends Ability {
     public CrushAbility(){
         display = false;
     }
-    
+
 	@Override
 	public void update(Unit unit)
 	{
 		walked = unit.moving();
-		
+
 		//calculate overlapping tiles so it slows down when going "over" walls
         int r = Math.max((int)(unit.hitSize * 0.6f / tilesize), 0);
-        
+
         int solids = 0, total = (r*2+1)*(r*2+1);
         for(int dx = -r; dx <= r; dx++) {
             for(int dy = -r; dy <= r; dy++) {
@@ -33,7 +32,7 @@ public class CrushAbility extends Ability {
                 if(t == null || t.solid()) {
                     solids++;
                 }
-                
+
                 if(unit.type.crushDamage > 0 && !unit.disarmed && (walked || unit.deltaLen() >= 0.01f) && t != null
                     //damage radius is 1 tile smaller to prevent it from just touching walls as it passes
                     && Math.max(Math.abs(dx), Math.abs(dy)) <= r - 1) {
@@ -44,7 +43,7 @@ public class CrushAbility extends Ability {
                 }
             }
         }
-        
+
         if(walked || net.client()) {
             walked = false;
         }

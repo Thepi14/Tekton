@@ -1,12 +1,14 @@
 package tekton.type.draw;
 
-import arc.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.world.*;
+import arc.Core;
+import arc.graphics.Blending;
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
+import mindustry.gen.Building;
+import mindustry.graphics.Layer;
+import mindustry.world.Block;
 import mindustry.world.draw.DrawBlock;
 import tekton.content.TektonColor;
 import tekton.type.gravity.GravityConsumer;
@@ -33,10 +35,12 @@ public class DrawGravityRegion extends DrawBlock{
     @Override
     public void draw(Building build){
         Draw.z(Layer.blockAdditive);
-        
+
         if(build instanceof GravityConsumer hc && hc.gravity() > 0){
             float z = Draw.z();
-            if(layer > 0) Draw.z(layer);
+            if(layer > 0) {
+				Draw.z(layer);
+			}
             Draw.blend(Blending.additive);
             Draw.color(color, Mathf.clamp(hc.gravity() / hc.gravityRequirement()) * (color.a * (1f - pulse + Mathf.absin(pulseScl, pulse))));
             Draw.rect(gravity, build.x, build.y);
@@ -44,7 +48,7 @@ public class DrawGravityRegion extends DrawBlock{
             Draw.color();
             Draw.z(z);
         }
-        
+
         Draw.reset();
     }
 

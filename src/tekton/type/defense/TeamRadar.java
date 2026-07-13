@@ -18,15 +18,15 @@ public class TeamRadar extends Radar {
 	public TeamRadar(String name) {
 		super(name);
 	}
-	
+
 	@Override
     public void load() {
         super.load();
-        
+
     	baseTeamRegion = Core.atlas.find(name + "-base-team");
 		teamGlowRegion = Core.atlas.find(name + "-team-glow");
     }
-	
+
 	public class TeamRadarBuild extends RadarBuild{
 		@Override
         public void draw(){

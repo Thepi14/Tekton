@@ -3,7 +3,6 @@ package tekton.type.bullets;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import mindustry.content.Fx;
-import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
@@ -16,7 +15,7 @@ public class StatusEffectAreaBulletType extends BulletType {
 	public Effect areaEffect = Fx.none;
 	public float effectChance = 0.1f;
 	public StatusEffect[] statuses;
-	
+
 	public StatusEffectAreaBulletType() {
 		super();
 		damage = 0f;
@@ -32,13 +31,13 @@ public class StatusEffectAreaBulletType extends BulletType {
 		shootEffect = smokeEffect = hitEffect = despawnEffect = Fx.none;
 		keepVelocity = false;
 	}
-	
+
 	public StatusEffectAreaBulletType(float lifetime, float radius) {
 		this();
 		this.lifetime = lifetime;
 		statusRadius = radius;
 	}
-	
+
 	@Override
 	public void update(Bullet b){
         updateTrail(b);
@@ -47,8 +46,9 @@ public class StatusEffectAreaBulletType extends BulletType {
         updateTrailEffects(b);
         updateBulletInterval(b);
 
-		if (Mathf.randomBoolean(effectChance))
+		if (Mathf.randomBoolean(effectChance)) {
 			areaEffect.at(new Vec2(b.x + (Mathf.random(statusRadius) * Mathf.cosDeg(Mathf.random(360f))), b.y + (Mathf.random(statusRadius) * Mathf.sinDeg(Mathf.random(360f)))));
+		}
         Units.nearbyEnemies(b.team, b.x, b.y, statusRadius, other -> {
 			if(b.team != other.team && other.hittable() && ((collidesGround && other.isGrounded()) || (collidesAir && other.isFlying()))) {
 				if (statuses != null && statuses.length > 0) {

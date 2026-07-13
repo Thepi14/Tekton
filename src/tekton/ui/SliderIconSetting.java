@@ -1,5 +1,8 @@
 package tekton.ui;
 
+import static arc.Core.atlas;
+import static arc.Core.settings;
+
 import arc.Core;
 import arc.scene.event.Touchable;
 import arc.scene.style.TextureRegionDrawable;
@@ -12,15 +15,12 @@ import arc.util.Align;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.SettingsMenuDialog;
 
-import static arc.Core.atlas;
-import static arc.Core.settings;
-
 public class SliderIconSetting extends SettingsMenuDialog.SettingsTable.SliderSetting {
     int def, min, max, step;
     String icon;
     SettingsMenuDialog.StringProcessor sp;
     public SliderIconSetting(String icon, String name, int def, int min, int max, int step, SettingsMenuDialog.StringProcessor s) {
-        super(name, def, min, max, step, s);
+        super(name, def, min, max, step, s, null);
         this.def = def;
         this.min = min;
         this.max = max;

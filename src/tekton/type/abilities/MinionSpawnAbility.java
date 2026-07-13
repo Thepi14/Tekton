@@ -1,26 +1,24 @@
 package tekton.type.abilities;
 
-import arc.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.scene.ui.layout.*;
-import arc.util.*;
-import mindustry.*;
-import mindustry.ai.types.MissileAI;
-import mindustry.content.*;
-import mindustry.entities.*;
-import mindustry.entities.abilities.UnitSpawnAbility;
-import mindustry.game.EventType.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.type.*;
-import tekton.type.ai.MinionAI;
+import static mindustry.Vars.state;
 
-import static mindustry.Vars.*;
+import arc.Events;
+import arc.graphics.g2d.Draw;
+import arc.math.Angles;
+import arc.util.Time;
+import mindustry.Vars;
+import mindustry.ai.types.MissileAI;
+import mindustry.entities.Units;
+import mindustry.entities.abilities.UnitSpawnAbility;
+import mindustry.game.EventType.UnitCreateEvent;
+import mindustry.gen.Unit;
+import mindustry.graphics.Drawf;
+import mindustry.type.UnitType;
+import tekton.type.ai.MinionAI;
 
 public class MinionSpawnAbility extends UnitSpawnAbility  {
 	public boolean alwaysSpawn = true;
-	
+
 	public MinionSpawnAbility(UnitType unit, float spawnTime, float spawnX, float spawnY){
         this.unit = unit;
         this.spawnTime = spawnTime;
@@ -30,7 +28,7 @@ public class MinionSpawnAbility extends UnitSpawnAbility  {
 
     public MinionSpawnAbility(){
     }
-	
+
 	@Override
     public void update(Unit unit){
         timer += Time.delta * state.rules.unitBuildSpeed(unit.team);
@@ -56,7 +54,7 @@ public class MinionSpawnAbility extends UnitSpawnAbility  {
             timer = 0f;
         }
     }
-	
+
 	@Override
     public void draw(Unit unit){
         if((Units.canCreate(unit.team, this.unit) || alwaysSpawn) && !unit.disarmed && unit.isShooting){

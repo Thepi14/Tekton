@@ -1,6 +1,5 @@
 package tekton.content;
 
-import arc.Core;
 import mindustry.gen.Iconc;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatCat;
@@ -14,7 +13,7 @@ public class TektonStat {
     	gravityUse = new Stat("gravityuse", StatCat.crafting),
 		gravityOutput = new Stat("gravityoutput", StatCat.crafting),
 		slowMultiplierFunction = new Stat("speedmultiplier", StatCat.function)
-		; 
+		;
     public static final StatUnit
     	gravityPower = new StatUnit("gravitypower", "[blue]" + Iconc.waves + "[]")
     	;

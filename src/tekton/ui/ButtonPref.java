@@ -1,18 +1,15 @@
 package tekton.ui;
 
+import static arc.Core.atlas;
+
 import arc.Core;
 import arc.func.Prov;
 import arc.scene.style.Drawable;
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Image;
-import arc.scene.ui.ImageButton;
 import arc.scene.ui.layout.Table;
-import arc.scene.utils.Elem;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.SettingsMenuDialog;
-
-import static arc.Core.atlas;
-import static arc.Core.settings;
 
 public class ButtonPref extends SettingsMenuDialog.SettingsTable.Setting {
     Drawable icon;
@@ -45,7 +42,9 @@ public class ButtonPref extends SettingsMenuDialog.SettingsTable.Setting {
         t.label(title).padLeft(5f).width(width*0.5f-20f).wrap();
 
         t.button(Core.bundle.get("setting." + name + ".btn"), Styles.flatBordert, () -> {
-            if (listener != null) listener.run();
+            if (listener != null) {
+				listener.run();
+			}
         }).height(30f).width(width*0.5f-26f).get();
 
         table.add(t).left().padTop(6f).get();

@@ -1,6 +1,8 @@
 package tekton.type.bullets;
 
-import arc.Events;
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
+
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
@@ -10,21 +12,22 @@ import arc.math.geom.Point2;
 import arc.util.Nullable;
 import arc.util.Tmp;
 import mindustry.content.Fx;
-import mindustry.entities.*;
+import mindustry.entities.Fires;
+import mindustry.entities.Puddles;
 import mindustry.entities.bullet.LiquidBulletType;
-import mindustry.gen.*;
+import mindustry.gen.Bullet;
+import mindustry.gen.Hitboxc;
+import mindustry.gen.Unit;
 import mindustry.type.Liquid;
 import mindustry.type.StatusEffect;
-
-import static mindustry.Vars.*;
 
 public class DoubleLiquidBulletType extends LiquidBulletType {
 	public Liquid secondLiquid;
 	public StatusEffect secondStatus;
-	
+
 	public DoubleLiquidBulletType(@Nullable Liquid liquid1, @Nullable Liquid liquid2){
         super(liquid1);
-        
+
         if(liquid1 != null){
             this.liquid = liquid1;
             this.status = liquid1.effect;
@@ -32,20 +35,21 @@ public class DoubleLiquidBulletType extends LiquidBulletType {
             lightColor = liquid1.lightColor;
             lightOpacity = liquid1.lightColor.a;
         }
-        
+
         if (liquid2 != null) {
             secondLiquid = liquid2;
         	secondStatus = secondLiquid.effect;
-        	
-        	if (status == null)
-        		status = secondStatus;
-        	
+
+        	if (status == null) {
+				status = secondStatus;
+			}
+
         	var col2 = secondLiquid.color.cpy().mul(0.3f);
         	hitColor = hitColor.cpy().mul(0.8f).add(col2);
         	hitColor.a = 1f;
         	col2 = secondLiquid.lightColor.cpy().mul(0.3f);
             lightColor = lightColor.cpy().mul(0.8f).add(col2);
-            
+
             lightOpacity = (lightOpacity + secondLiquid.lightColor.a) / 1.8f;
         }
 
@@ -60,8 +64,8 @@ public class DoubleLiquidBulletType extends LiquidBulletType {
         knockback = 0.55f;
         displayAmmoMultiplier = false;
     }
-	
-	
+
+
 	@Override
     public void draw(Bullet b){
         super.draw(b);
@@ -82,7 +86,7 @@ public class DoubleLiquidBulletType extends LiquidBulletType {
             hitEffect.at(b.x, b.y, b.rotation(), hitColor);
         }
     }
-	
+
 	@Override
     public void hit(Bullet b, float hitx, float hity){
         hitEffect.at(hitx, hity, hitColor);
@@ -96,7 +100,7 @@ public class DoubleLiquidBulletType extends LiquidBulletType {
             }
         }
     }
-	
+
 	public void hitEntity(Bullet b, Hitboxc entity, float health){
         super.hitEntity(b, entity, health);
 

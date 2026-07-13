@@ -1,40 +1,34 @@
 package tekton.type.transport;
 
+import static mindustry.Vars.itemSize;
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
+
 import arc.Core;
-import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
-import arc.math.geom.Point2;
-import arc.util.Log;
 import arc.util.Time;
 import arc.util.Tmp;
-import mindustry.gen.Building;
-import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.Item;
-import mindustry.world.Block;
-import mindustry.world.Edges;
-import mindustry.world.Tile;
-import mindustry.world.blocks.distribution.*;
+import mindustry.world.blocks.distribution.Conveyor;
 import mindustry.world.meta.BlockStatus;
-
-import static mindustry.Vars.*;
 
 public class PoweredConveyor extends Conveyor {
     private static final float itemSpace = 0.4f;
     private static final int capacity = 3;
-    
+
     public float enhancedSpeed = 0.14f;
     public Color glowColor = Pal.accent;
     public TextureRegion[] glowRegions;
 
     public float alpha = 0.6f, glowScale = 10f, glowIntensity = 0.5f;
-    
+
     protected boolean changedAlphaState = false;
     protected float currentAlpha = 0f;
 
@@ -44,7 +38,7 @@ public class PoweredConveyor extends Conveyor {
 		conductivePower = true;
 		consumesPower = true;
 	}
-	
+
 	@Override
 	public void load() {
         super.load();
@@ -53,34 +47,36 @@ public class PoweredConveyor extends Conveyor {
 			glowRegions[i] = Core.atlas.find(name + "-glow-" + i);
 		}
 	}
-	
+
 	public void setAlphaGlowProgress() {
 		changedAlphaState = true;
 		currentAlpha = (Mathf.absin(Time.time, glowScale, alpha) * glowIntensity + 1f - glowIntensity) * alpha;
 	}
-	
+
 	public class PoweredConveyorBuild extends ConveyorBuild {
 		public float currentSpeed = 1f;
-		
+
 		/*@Override
 		public float efficiency() {
 			efficiency = 1f;
 			return 1f;
 		}*/
-		
+
 		@Override
         public BlockStatus status() {
             float balance = power.status;
-            if(balance > 0.001f) return BlockStatus.active;
+            if(balance > 0.001f) {
+				return BlockStatus.active;
+			}
             return BlockStatus.noInput;
         }
-		
+
 		@Override
         public void updateTile(){
 			efficiency = 1f;
             minitem = 1f;
             mid = 0;
-            
+
             currentSpeed = Mathf.lerp(speed, enhancedSpeed, power.status);
 
             //skip updates if possible
@@ -99,8 +95,12 @@ public class PoweredConveyor extends Conveyor {
 
                 ys[i] += maxmove;
 
-                if(ys[i] > nextMax) ys[i] = nextMax;
-                if(ys[i] > 0.5 && i > 0) mid = i - 1;
+                if(ys[i] > nextMax) {
+					ys[i] = nextMax;
+				}
+                if(ys[i] > 0.5 && i > 0) {
+					mid = i - 1;
+				}
                 xs[i] = Mathf.approach(xs[i], 0, moved*2);
 
                 if(ys[i] >= 1f && pass(ids[i])){
@@ -125,12 +125,13 @@ public class PoweredConveyor extends Conveyor {
             changedAlphaState = false;
             //noSleep();
         }
-		
+
 		@Override
         public void draw(){
 			var off = 0.001f;
-            if (!changedAlphaState)
-            	setAlphaGlowProgress();
+            if (!changedAlphaState) {
+				setAlphaGlowProgress();
+			}
             int frame = enabled && clogHeat <= 0.5f ? (int)(((Time.time * currentSpeed * 8f * timeScale)) % 4) : 0;
             //draw extra conveyors facing this one for non-square tiling purposes
             Draw.z(Layer.blockUnder);
@@ -163,12 +164,12 @@ public class PoweredConveyor extends Conveyor {
                 Draw.z(layer + (ix / wwidth + iy / wheight) * scaling);
                 Draw.rect(item.fullIcon, ix, iy, itemSize, itemSize);
             }
-            
-            Drawf.additive(glowRegions[blendbits], glowColor.cpy().a(power.status > 0.001f ? currentAlpha : 0f), x, y, 
-            		(rotation * 90) - 
+
+            Drawf.additive(glowRegions[blendbits], glowColor.cpy().a(power.status > 0.001f ? currentAlpha : 0f), x, y,
+            		(rotation * 90) -
             		((blendsclx < 0 || blendscly < 0) && blendbits == 1 ? 90 : 0));
         }
-		
+
 		/*@Override
         public void unitOn(Unit unit){
 			if(!pushUnits || clogHeat > 0.5f || !enabled) return;
@@ -194,7 +195,7 @@ public class PoweredConveyor extends Conveyor {
                 unit.impulse((tx * mspeed + centerx) * delta(), (ty * mspeed + centery) * delta());
             }
         }*/
-		
+
 		/*@Override
 	    public boolean blends(Tile tile, int rotation, int otherx, int othery, int otherrot, Block otherblock){
 	        return (otherblock.outputsItems() && blendsArmored(tile, rotation, otherx, othery, otherrot, otherblock)) ||
@@ -208,11 +209,11 @@ public class PoweredConveyor extends Conveyor {
 	            Edges.getFacingEdge(otherblock, otherx, othery, tile).relativeTo(tile) == rotation) ||
 	            (otherblock instanceof Conveyor && otherblock.rotatedOutput(otherx, othery, tile) && Point2.equals(otherx + Geometry.d4(otherrot).x, othery + Geometry.d4(otherrot).y, tile.x, tile.y)));
 	    }
-		
+
 		@Override
         public boolean acceptItem(Building source, Item item){
 			//i know the router thing is bad but i don't care no one will see it anyways
-            return super.acceptItem(source, item) && ((source.block instanceof Conveyor || Edges.getFacingEdge(source.tile, tile).relativeTo(tile) == rotation) || 
+            return super.acceptItem(source, item) && ((source.block instanceof Conveyor || Edges.getFacingEdge(source.tile, tile).relativeTo(tile) == rotation) ||
             		(source.block instanceof Router && source.block.conductivePower) || source.block instanceof PoweredJunction || source.block instanceof Duct);
         }*/
 	}

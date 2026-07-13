@@ -1,10 +1,11 @@
 package tekton.type.draw;
 
 import mindustry.content.Items;
-import mindustry.gen.*;
-import mindustry.type.*;
-import mindustry.world.*;
-import mindustry.world.blocks.liquid.*;
+import mindustry.gen.Building;
+import mindustry.type.Item;
+import mindustry.type.Liquid;
+import mindustry.world.Block;
+import mindustry.world.blocks.liquid.LiquidBlock;
 import mindustry.world.draw.DrawBlock;
 
 public class DrawItemLiquidTile extends DrawBlock {
@@ -35,9 +36,17 @@ public class DrawItemLiquidTile extends DrawBlock {
 
     @Override
     public void load(Block block){
-        if(padLeft < 0) padLeft = padding;
-        if(padRight < 0) padRight = padding;
-        if(padTop < 0) padTop = padding;
-        if(padBottom < 0) padBottom = padding;
+        if(padLeft < 0) {
+			padLeft = padding;
+		}
+        if(padRight < 0) {
+			padRight = padding;
+		}
+        if(padTop < 0) {
+			padTop = padding;
+		}
+        if(padBottom < 0) {
+			padBottom = padding;
+		}
     }
 }

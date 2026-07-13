@@ -5,7 +5,7 @@ import arc.math.geom.Vec3;
 import arc.util.noise.Ridged;
 import arc.util.noise.Simplex;
 import mindustry.maps.generators.PlanetGenerator;
-import tekton.content.TektonColor;
+import mindustry.type.Sector;
 import tekton.content.TektonItems;
 import tekton.content.TektonLoadouts;
 
@@ -23,10 +23,10 @@ public class TektonMoonGenerator extends PlanetGenerator {
 		seed = 71471;
 		defaultLoadout = TektonLoadouts.corePrimal;
 	}
-    
+
     /*@Override
     public void generateSector(Sector sector) {
-    	
+
     }*/
 
     @Override
@@ -35,21 +35,43 @@ public class TektonMoonGenerator extends PlanetGenerator {
         float puddleNoise = Simplex.noise3d(seed + puddleSeedAdd, 2, 0.9f, 1f, (position.x / 12f) * sizeMultipliyer, (position.y / 12f) * sizeMultipliyer, (position.z / 12f) * sizeMultipliyer);
         float waveNoise = Ridged.noise3d(seed + waveSeedAdd, (position.y / 2f + noise * 4f) * sizeMultipliyer, 0, 0, 1/4f);
         float actualNoise = noise * 1.2f;
-        
-        if(waveNoise > 0.7f || puddleNoise > 0.7f) return oceanLevel;
+
+        if(waveNoise > 0.7f || puddleNoise > 0.7f) {
+			return oceanLevel;
+		}
         return Math.min(Math.max(actualNoise, oceanLevel), maxSize);
     }
-    
+
     @Override
-    public Color getColor(Vec3 position) {
+    public void getColor(Vec3 position, Color out) {
         float biomeMask = Simplex.noise3d(seed, 3, 0.4, 1f, position.z, position.y, position.x);
         float patternMask = Simplex.noise3d(seed, 1, 0.6, 2f, position.z, position.y, position.x);
 
-        if(getHeight(position) <= oceanLevel) return TektonItems.iron.color;
-        if(biomeMask > 0.6f && patternMask < 0.6f) return Color.valueOf("948881");
-        if(biomeMask > 0.5f) return Color.valueOf("5c5c5c");
-        if(biomeMask > 0.4f && patternMask < 0.3f) return Color.valueOf("515151");
-        if(biomeMask > 0.2f) return Color.valueOf("6e6761");
-        return TektonItems.zirconium.color;
+        if(getHeight(position) <= oceanLevel) {
+        	out.set(TektonItems.iron.color);
+    		return;
+		}
+        if(biomeMask > 0.6f && patternMask < 0.6f) {
+        	out.set(Color.valueOf("948881"));
+    		return;
+		}
+        if(biomeMask > 0.5f) {
+        	out.set(Color.valueOf("5c5c5c"));
+    		return;
+		}
+        if(biomeMask > 0.4f && patternMask < 0.3f) {
+        	out.set(Color.valueOf("515151"));
+    		return;
+		}
+        if(biomeMask > 0.2f) {
+        	out.set(Color.valueOf("6e6761"));
+    		return;
+		}
+        out.set(TektonItems.zirconium.color);
     }
+
+    /*@Override
+    public boolean isEmissive(){
+        return true;
+    }*/
 }

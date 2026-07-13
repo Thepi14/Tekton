@@ -1,27 +1,22 @@
 package tekton.type.abilities;
 
+import static mindustry.Vars.tilesize;
+
 import arc.Core;
-import arc.Events;
 import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Fill;
-import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.math.geom.Vec2;
 import arc.scene.ui.layout.Table;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Strings;
 import arc.util.Time;
-import arc.scene.ui.layout.*;
 import mindustry.content.Fx;
-import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
-import mindustry.game.EventType.Trigger;
 import mindustry.gen.Bullet;
 import mindustry.gen.Groups;
 import mindustry.gen.Sounds;
@@ -31,9 +26,6 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.type.unit.MissileUnitType;
 import tekton.content.TektonFx;
-import mindustry.graphics.*;
-
-import static mindustry.Vars.*;
 
 public class ShockwaveAbility extends Ability {
 	protected float reloadCounter = 0f, checkCounter = 0f;
@@ -41,16 +33,16 @@ public class ShockwaveAbility extends Ability {
 	protected Seq<Unit> unitTargets = new Seq<>();
 	protected float heat = 0f;
     public TextureRegion heatRegion;
-    
+
     public float posY = 0f;
-    
+
     public float range = 160f;
     public float reload = 60f * 4f;
     public float bulletDamage = 100f;
     public float shake = 2f;
     public float minDamage = 0;
     public float checkTimer = 8f;
-    public Sound shootSound = Sounds.bang;
+    public Sound shootSound = Sounds.shockwaveTower;
     public Color waveColor = Pal.techBlue, shapeColor = Pal.techBlue, shapeHeatColor = Color.white, heatColor = Pal.techBlue;
     public float cooldownMultiplier = 1f;
     public Effect hitEffect = Fx.hitSquaresColor;
@@ -59,7 +51,7 @@ public class ShockwaveAbility extends Ability {
     //TODO switch to drawers eventually or something
     public float shapeRotateSpeed = 1f, shapeRadius = 3f;
     public int shapeSides = 4;
-    
+
     @Override
     public void addStats(Table t) {
         super.addStats(t);
@@ -73,11 +65,11 @@ public class ShockwaveAbility extends Ability {
             t.add(abilityStat("minimumdamagetoactivate", Strings.autoFixed(minDamage, 7)));
         }
     }
-    
+
     public String abilityStat(String stat, Object... values) {
         return Core.bundle.format("ability.stat." + stat, values);
     }
-	
+
 	@Override
     public void update(Unit unit) {
 		boolean check = false;
@@ -85,7 +77,7 @@ public class ShockwaveAbility extends Ability {
 			checkCounter = 0f;
 			check = true;
 		}
-		
+
 		if((reloadCounter += Time.delta) >= reload && check) {
             targets.clear();
             unitTargets.clear();
@@ -94,7 +86,7 @@ public class ShockwaveAbility extends Ability {
                     targets.add(b);
                 }
             });
-            
+
             float checkDamage = 0f;
             for(var target : targets) {
             	var totalDamage = target.type.damage + target.type.splashDamage;
@@ -130,19 +122,19 @@ public class ShockwaveAbility extends Ability {
 
         heat = Mathf.clamp(heat - Time.delta / reload * cooldownMultiplier);
     }
-	
+
     public float warmup() {
         return heat;
     }
-    
+
 	@Override
     public void draw(Unit unit) {
         super.draw(unit);
-        
+
         if(heatRegion == null){
         	heatRegion = Core.atlas.find(unit.type.name + "-heat", unit.type.region);
         }
-        
+
         float x = Mathf.cosDeg(unit.rotation) * posY, y = Mathf.sinDeg(unit.rotation) * posY;
         Drawf.additive(heatRegion, heatColor, heat, unit.x, unit.y, unit.rotation - 90f, Layer.effect);
 

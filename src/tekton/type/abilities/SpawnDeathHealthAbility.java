@@ -1,12 +1,12 @@
 package tekton.type.abilities;
 
-import arc.math.*;
-import arc.scene.ui.layout.*;
-import arc.util.*;
-import mindustry.*;
+import arc.math.Mathf;
+import arc.util.Time;
+import arc.util.Tmp;
+import mindustry.Vars;
 import mindustry.entities.abilities.Ability;
-import mindustry.gen.*;
-import mindustry.type.*;
+import mindustry.gen.Unit;
+import mindustry.type.UnitType;
 
 public class SpawnDeathHealthAbility extends Ability { //only used on eggs anyways
 	public UnitType unit;
@@ -34,7 +34,7 @@ public class SpawnDeathHealthAbility extends Ability { //only used on eggs anywa
         super.addStats(t);
         t.add("[stat]" + (randAmount > 0 ? amount + "x-" + (amount + randAmount) : amount) + "x[] " + (unit.hasEmoji() ? unit.emoji() : "") + "[stat]" + unit.localizedName);
     }*/
-    
+
     @Override
     public void update(Unit unit) {
     	timer += Time.delta;
@@ -45,7 +45,7 @@ public class SpawnDeathHealthAbility extends Ability { //only used on eggs anywa
 	            for(int i = 0; i < spawned; i++) {
 	                Tmp.v1.rnd(Mathf.random(spread));
 	                var u = this.unit.spawn(unit.team, unit.x + Tmp.v1.x, unit.y + Tmp.v1.y);
-	                
+
 	                u.rotation = faceOutwards ? Tmp.v1.angle() : unit.rotation + Mathf.range(5f);
 	            }
 	    		unit.kill();

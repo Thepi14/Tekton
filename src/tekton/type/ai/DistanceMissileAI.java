@@ -1,17 +1,14 @@
 package tekton.type.ai;
 
-import arc.math.*;
+import arc.math.Mathf;
 import arc.math.geom.Vec2;
-import arc.util.*;
-import mindustry.*;
+import arc.util.Log;
+import arc.util.Nullable;
 import mindustry.ai.types.MissileAI;
-import mindustry.entities.*;
-import mindustry.entities.units.*;
-import mindustry.gen.*;
-import mindustry.type.unit.*;
+import mindustry.gen.TimedKillc;
+import mindustry.gen.Unit;
 import tekton.type.dependent.DependentAI;
 import tekton.type.dependent.DependentType;
-import tekton.type.dependent.DistanceMissileUnitType;
 
 public class DistanceMissileAI extends MissileAI implements DependentAI {
 	 public @Nullable Unit shooter;
@@ -36,21 +33,21 @@ public class DistanceMissileAI extends MissileAI implements DependentAI {
             if((build != null && build.team != unit.team && (build == target || !build.block.underBullets)) || distance > typ.maxDistance()){
                 unit.kill();
             }
-        }
-        else
-        	Log.info("not attached to a DependentType!");
+        } else {
+			Log.info("not attached to a DependentType!");
+		}
     }
 
     /*@Override
     public Teamc target(float x, float y, float range, boolean air, boolean ground){
-        return Units.closestTarget(unit.team, x, y, 1f, 
-        		
-        		u -> u.checkTarget(air, ground) && 
-        		//!(u.type instanceof MissileUnitType) && 
-        		!(u.type instanceof DistanceMissileUnitType), 
-        		
-        		t -> ground && 
-        		(!t.block.underBullets || (shooter != null 
+        return Units.closestTarget(unit.team, x, y, 1f,
+
+        		u -> u.checkTarget(air, ground) &&
+        		//!(u.type instanceof MissileUnitType) &&
+        		!(u.type instanceof DistanceMissileUnitType),
+
+        		t -> ground &&
+        		(!t.block.underBullets || (shooter != null
         		&& t == Vars.world.buildWorld(shooter.aimX, shooter.aimY))));
     }*/
 

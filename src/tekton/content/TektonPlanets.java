@@ -1,36 +1,26 @@
 package tekton.content;
 
-import arc.graphics.*;
+import arc.graphics.Color;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Time;
-import mindustry.content.*;
-import mindustry.game.*;
-import mindustry.graphics.*;
-import mindustry.graphics.g3d.*;
-import mindustry.graphics.g3d.PlanetGrid.*;
-import mindustry.maps.planet.*;
-import mindustry.type.*;
+import mindustry.content.Blocks;
+import mindustry.content.Items;
+import mindustry.content.Planets;
+import mindustry.game.Team;
+import mindustry.graphics.g3d.HexMesh;
+import mindustry.graphics.g3d.HexSkyMesh;
+import mindustry.graphics.g3d.MultiMesh;
+import mindustry.type.ItemStack;
+import mindustry.type.Planet;
 import mindustry.type.Weather.WeatherEntry;
-import mindustry.world.*;
-import mindustry.world.blocks.Attributes;
-import mindustry.world.meta.*;
-import tekton.Tekton;
-import tekton.type.planetGeneration.*;
+import mindustry.world.meta.Env;
+import tekton.type.planetGeneration.TektonMoonGenerator;
+import tekton.type.planetGeneration.TektonPlanetGenerator;
 import tekton.type.world.TektonEnv;
-import mindustry.content.*;
-
-import arc.func.*;
-import mindustry.graphics.*;
-import mindustry.graphics.g3d.*;
-import mindustry.maps.planet.*;
-import mindustry.world.meta.*;
-
-import static mindustry.Vars.*;
 
 public class TektonPlanets {
 	public static TektonPlanet tekton, mirera;
-	
+
 	public static void load(){
 		tekton = new TektonPlanet("tekton", Planets.sun, 1.1f, 2) {{
 			generator = new TektonPlanetGenerator();
@@ -40,7 +30,7 @@ public class TektonPlanets {
 			allowLaunchToNumbered = false;
 			allowLaunchLoadout = false;
 			allowSectorInvasion = false;
-			allowWaveSimulation = false;
+			//allowWaveSimulation = false;
 			clearSectorOnLose = true;
             prebuildBase = true;
 			startSector = 0;
@@ -61,14 +51,13 @@ public class TektonPlanets {
 			enemyBuildSpeedMultiplier = 0.4f;
 			//methaned now
 			defaultEnv = TektonEnv.methane | Env.terrestrial;
-			
+
 			ruleSetter = r -> {
                 //r.waveTeam = Team.blue;
                 /*r.staticColor = new Color(0f, 0f, 0f, 1f);
                 r.dynamicColor = new Color(0f, 0f, 0f, 0.7f);*/
                 r.cloudColor = Color.valueOf("3e401f");
                 r.placeRangeCheck = false;
-                r.showSpawns = false;
                 r.fog = true;
                 r.staticFog = true;
                 r.lighting = true;
@@ -91,21 +80,21 @@ public class TektonPlanets {
                 r.hideBannedBlocks = true;
                 r.loadout = new Seq<ItemStack>().add(new ItemStack(TektonItems.iron, 200));
             };
-            
+
             /*campaignRuleDefaults.fog = true;
             campaignRuleDefaults.showSpawns = false;
             campaignRuleDefaults.rtsAI = true;*/
-            
+
             accessible = true;
-            
+
             //atmosphere is full of methane
             defaultAttributes.set(TektonAttributes.methane, 1f);
-            
+
 			defaultCore = TektonBlocks.corePrimal;
             unlockedOnLand.add(TektonBlocks.corePrimal);
-            
+
             meshLoader = () -> new HexMesh(this, 5);
-            
+
             var increaseCloudRad = 0.040f;
             cloudMeshLoader = () -> new MultiMesh(
             		//inner
@@ -114,16 +103,16 @@ public class TektonPlanets {
             		//outer
             		new HexSkyMesh(this, 1477, 0.14f, 0.145f + increaseCloudRad, 5, Color.valueOf("74800e").a(0.75f), 4, 0.42f, 1f, 0.43f),
             		new HexSkyMesh(this, 7714, 0.7f, 0.16f + increaseCloudRad, 5, Color.valueOf("c2d175").a(0.75f), 4, 0.42f, 1.2f, 0.45f));
-            
-            hiddenItems.addAll(Items.copper, Items.lead, Items.titanium, Items.plastanium, Items.thorium, Items.surgeAlloy, Items.metaglass, Items.carbide, Items.beryllium, Items.oxide, Items.tungsten, Items.sporePod, Items.pyratite, Items.blastCompound, Items.coal, Items.scrap);
-            
+
+            //hiddenItems.addAll(Items.copper, Items.lead, Items.titanium, Items.plastanium, Items.thorium, Items.surgeAlloy, Items.metaglass, Items.carbide, Items.beryllium, Items.oxide, Items.tungsten, Items.sporePod, Items.pyratite, Items.blastCompound, Items.coal, Items.scrap);
+
             for (var sector : sectors) {
             	if (!TektonSectors.all.contains(sector.preset)) {
             		sector.preset = TektonSectors.satus;
             	}
             }
 		}};
-		
+
 		mirera = new TektonPlanet("mirera", tekton, 0.25f, 1) {{
 			generator = new TektonMoonGenerator();
 			description = "Tekton's moon, has no atmosphere.";
@@ -147,26 +136,25 @@ public class TektonPlanets {
 			atmosphereColor = Color.valueOf("666359");
 			iconColor = Color.valueOf("666359");
 			hasAtmosphere = false;
-			allowWaveSimulation = true;
+			//allowWaveSimulation = true;
 			clearSectorOnLose = true;
 			allowWaves = true;
 			prebuildBase = false;
 			defaultCore = TektonBlocks.corePrimal;
             unlockedOnLand.add(TektonBlocks.corePrimal);
 			solarSystem = Planets.sun;
-			
+
 			meshLoader = () -> new HexMesh(this, 3);
 			cloudMeshLoader = () -> new MultiMesh();
-			
+
 			defaultEnv = Env.terrestrial;
-			
+
 			ruleSetter = r -> {
                 r.waveTeam = Team.blue;
                 r.staticColor = new Color(0f, 0f, 0f, 1f);
                 r.dynamicColor = new Color(0f, 0f, 0f, 0.7f);
                 r.cloudColor = Color.valueOf("3e401f");
                 r.placeRangeCheck = false;
-                r.showSpawns = false;
                 r.fog = true;
                 r.staticFog = true;
                 r.lighting = true;
@@ -188,16 +176,16 @@ public class TektonPlanets {
                 r.loadout = new Seq<ItemStack>().add(new ItemStack(TektonItems.iron, 200));
             };
 		}};
-		
-        Planets.serpulo.hiddenItems.addAll(TektonItems.tektonOnlyItems);
-        Planets.erekir.hiddenItems.addAll(TektonItems.tektonOnlyItems);
+
+        //Planets.serpulo.hiddenItems.addAll(TektonItems.tektonOnlyItems);
+        //Planets.erekir.hiddenItems.addAll(TektonItems.tektonOnlyItems);
 	}
-	
+
 	public static class TektonPlanet extends Planet{
 		public TektonPlanet(String name, Planet parent, float radius, int sectorSize){
 			super(name, parent, radius, sectorSize);
 		}
-		
+
 		public TektonPlanet(String name, Planet parent, float radius){
 			super(name, parent, radius);
 		}

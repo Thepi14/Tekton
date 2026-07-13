@@ -8,7 +8,7 @@ import tekton.Tekton;
 
 public class TektonLiquids {
 	public static Liquid ammonia, oxygen, methane, dicyanogen, liquidMethane, metazotoplasm, acid, cobweb;
-	
+
 	public static void load(){
 		ammonia = new Liquid("ammonia", TektonColor.ammonia) {{
 			gas = false;
@@ -18,10 +18,10 @@ public class TektonLiquids {
 			flammability = 0f;
 			explosiveness = 0;
 			alwaysUnlocked = false;
-			canStayOn.addAll(Liquids.water);
+			canStayOn.add(Liquids.water);
             boilPoint = 0.8f;
 		}};
-		
+
 		oxygen = new Liquid("oxygen", TektonColor.oxygen) {{
             coolant = false;
 			gas = true;
@@ -47,7 +47,7 @@ public class TektonLiquids {
             gasColor = TektonColor.methaneGas;
             effect = TektonStatusEffects.tarredInMethane;
 		}};
-		
+
 		dicyanogen = new Liquid("dicyanogen", TektonColor.dicyanogen) {{
             coolant = false;
 			gas = true;
@@ -61,7 +61,7 @@ public class TektonLiquids {
             gasColor = TektonColor.dicyanogen;
             //effect = TektonStatusEffects.tarredInMethane;
 		}};
-		
+
 		liquidMethane = new Liquid("liquid-methane", TektonColor.liquidMethane) {{ //this one only exists because of freezer
         	hidden = Tekton.hideContent;
             coolant = false;
@@ -73,10 +73,10 @@ public class TektonLiquids {
 			hidden = true;
             boilPoint = 0.15f;
             gasColor = TektonColor.methane;
-			canStayOn.addAll(Liquids.water);
+			canStayOn.add(Liquids.water);
             effect = TektonStatusEffects.tarredInMethane;
 		}};
-		
+
 		acid = new Liquid("acid", TektonColor.acid) {{
         	hidden = false;
             coolant = false;
@@ -87,9 +87,9 @@ public class TektonLiquids {
             lightColor = Color.valueOf("82d629").a(0.3f);
             boilPoint = 0.9f;
 			alwaysUnlocked = false;
-			canStayOn.addAll(Liquids.water);
+			canStayOn.add(Liquids.water);
 		}};
-		
+
 		metazotoplasm = new CellLiquid("metazotoplasm", TektonColor.metazotoplasm){{
         	hidden = true;
             coolant = false;
@@ -108,7 +108,7 @@ public class TektonLiquids {
             colorFrom = Color.valueOf("999999");
             colorTo = Color.valueOf("55ff55");
         }};
-        
+
         cobweb = new Liquid("cobweb", TektonColor.cobweb) {{
             coolant = false;
         	hidden = Tekton.hideContent;
@@ -122,7 +122,7 @@ public class TektonLiquids {
 			alwaysUnlocked = false;
 			canStayOn.addAll(Liquids.water, methane);
 		}};
-        
+
         Liquids.water.canStayOn.addAll(ammonia, methane);
 	}
 }

@@ -1,21 +1,21 @@
 package tekton.type.biological;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.net;
+import static mindustry.Vars.state;
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
 
 import arc.Core;
-import arc.Events;
 import arc.audio.Sound;
-import arc.graphics.*;
+import arc.graphics.Blending;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
-import arc.math.Mat;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
 import arc.struct.EnumSet;
 import arc.struct.IntSeq;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Strings;
 import arc.util.Time;
@@ -23,12 +23,10 @@ import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.Fx;
-import mindustry.content.Fx.*;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Puddles;
-import mindustry.entities.Units;
-import mindustry.entities.effect.*;
+import mindustry.entities.effect.ExplosionEffect;
 import mindustry.game.Team;
 import mindustry.gen.Building;
 import mindustry.gen.Bullet;
@@ -37,13 +35,14 @@ import mindustry.gen.Groups;
 import mindustry.gen.Sounds;
 import mindustry.gen.Teamc;
 import mindustry.gen.Unit;
-import mindustry.graphics.BlockRenderer;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.type.*;
+import mindustry.type.Liquid;
+import mindustry.type.UnitType;
 import mindustry.ui.Bar;
-import mindustry.world.*;
+import mindustry.world.Block;
+import mindustry.world.Tile;
 import mindustry.world.blocks.UnitTetherBlock;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.BlockGroup;
@@ -53,11 +52,9 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import tekton.Drawt;
 import tekton.Tekton;
-import tekton.content.*;
-import tekton.type.defense.AdvancedWall;
-
-import static arc.graphics.g2d.Draw.color;
-import static mindustry.Vars.*;
+import tekton.content.TektonColor;
+import tekton.content.TektonFx;
+import tekton.content.TektonLiquids;
 
 public class Nest extends Block implements BiologicalBlock {
 	public final int timerSpawn = timers++;
@@ -68,7 +65,7 @@ public class Nest extends Block implements BiologicalBlock {
 	public boolean spawnOnDestroy = false;
 	public int unitsSpawnedOnDeath = 1;
 	public boolean spawnOnCenter = false;
-	
+
 	public float alpha = 0.9f, glowScale = 15f, glowIntensity = 0.5f, shadowAlpha = 0.2f;
     public Color glowColor = TektonLiquids.acid.color.cpy();
     public Color damageColor = TektonLiquids.acid.color.cpy();
@@ -76,16 +73,16 @@ public class Nest extends Block implements BiologicalBlock {
     public float powerProduction = 1;
     public float spawnSpeedMultipliyer = 2f;
     public float minRequiredTimeMultipliyer = 0.2f;
-    
+
     public float recoil = 8f;
     public float recoilTime = 60f;
     public float recoilPow = 1.8f;
-    
+
 	public float regenReload = 100f;
 	public float healPercent = 1f;
 	public Color regenColor = Pal.heal;
 	public Effect regenEffect = TektonFx.buildingBiologicalRegeneration.wrap(regenColor);
-    
+
     public int explosionRadius = 12;
     public int explosionDamage = 0;
     public Effect explodeEffect = Fx.none;
@@ -105,15 +102,15 @@ public class Nest extends Block implements BiologicalBlock {
 	public boolean hasGlow = true;
 	public boolean glowAnimation = true;
     public float nestShadowOffset = 3f;
-    
+
     public String basePrefix = "nest-";
     public TextureRegion glowRegion;
     public TextureRegion baseRegion;
     public TextureRegion upperShadowRegion;
-	
+
 	public Nest(String name) {
 		super(name);
-		
+
 		unitCapModifier = 5;
         envEnabled |= Env.space;
 		creatureTypes = new Seq<UnitType>();
@@ -123,11 +120,11 @@ public class Nest extends Block implements BiologicalBlock {
 		emitLight = true;
 		update = true;
         solid = true;
-        
+
 		hasPower = true;
         consumesPower = false;
 		outputsPower = true;
-		
+
 		customShadow = false;
 		createRubble = drawCracks = false;
         sync = true;
@@ -159,29 +156,30 @@ public class Nest extends Block implements BiologicalBlock {
 		alwaysUnlocked = false;
 		noUpdateDisabled = true;
 	}
-	
+
 	@Override
     public void setStats(){
         super.setStats();
 
         stats.add(Stat.basePowerGeneration, powerProduction * 60f, StatUnit.powerSecond);
     }
-	
+
 	@Override
     public TextureRegion[] icons(){
         return new TextureRegion[]{baseRegion, region};
     }
-	
+
 	@Override
     public void load(){
         super.load();
-        
+
         baseRegion = Core.atlas.find("tekton-" + basePrefix + "block-" + size);
-        if (hasGlow)
-        	glowRegion = Core.atlas.find(name + "-glow");
+        if (hasGlow) {
+			glowRegion = Core.atlas.find(name + "-glow");
+		}
         upperShadowRegion = Core.atlas.find(name + "-upper-shadow");
     }
-	
+
 	@Override
     public void setBars(){
         super.setBars();
@@ -203,13 +201,13 @@ public class Nest extends Block implements BiologicalBlock {
     public boolean outputsItems(){
         return false;
     }
-	
+
     @Override
     public void drawShadow(Tile tile){ super.drawShadow(tile); }
 
 	public class NestBuild extends Building implements BiologicalSpawner, UnitTetherBlock {
         protected IntSeq readCreatures = new IntSeq();
-        
+
 		public float currentRandom = 0f;
 		public float totalProgress = 0f;
         public float smoothLight;
@@ -217,10 +215,10 @@ public class Nest extends Block implements BiologicalBlock {
         public float curRecoil = 0f;
 		public boolean needRegen = false;
 		public float regenCharge = Mathf.random(regenReload);
-		public Seq<Vec2> spawnPositions = new Seq<Vec2>();
+		public Seq<Vec2> spawnPositions = new Seq<>();
 		public Seq<Unit> spawnedCreatures = new Seq<Unit>();
 		protected float currentTimer = 0f, spawnProgress = 0f;
-        
+
         @Override
         public void created() {
         	if (currentRandom == 0f) {
@@ -229,21 +227,22 @@ public class Nest extends Block implements BiologicalBlock {
             	timer(timerSpawn, ftimer);
         	}
         	totalProgress = Mathf.random(0f, 1000f);
-        	
+
         	/*Units.nearbyEnemies(team, x, y, 80f * tilesize, other -> {
                 if(other.team == team && other.hittable()){
                 	spawnedCreatures.add(other);
                 }
             });*/
-        	
+
             super.created();
         }
-        
+
         public void commandCreature(Unit creature, @Nullable Entityc target) {
         	if (creature.isCommandable()) {
         		if (target != null) {
-        			if (target instanceof Teamc tgt)
-        				creature.command().moveTo(tgt, Math.min(creature.type.range - 8f, 0f));
+        			if (target instanceof Teamc tgt) {
+						creature.command().moveTo(tgt, Math.min(creature.type.range - 8f, 0f));
+					}
             	}
         		else {
         			creature.command().attackTarget = creature.command().findTarget(x, y, 10000f * tilesize, creature.type.targetAir, creature.type.targetGround);
@@ -254,8 +253,9 @@ public class Nest extends Block implements BiologicalBlock {
     					else {
     						var list = state.teams.cores(Team.sharded);
     						var ran = list.get(Mathf.random(0, list.size - 1));
-    						if (ran != null)
-    							creature.command().moveTo(ran, Math.min(creature.type.range - 8f, 0f));
+    						if (ran != null) {
+								creature.command().moveTo(ran, Math.min(creature.type.range - 8f, 0f));
+							}
     					}
     				}
         		}
@@ -272,7 +272,7 @@ public class Nest extends Block implements BiologicalBlock {
             }
             return true;
         }
-        
+
         @Override
         public void updateTile() {
         	if(!readCreatures.isEmpty()) {
@@ -285,12 +285,12 @@ public class Nest extends Block implements BiologicalBlock {
                 });
         		readCreatures.clear();
             }
-        	
+
         	spawnedCreatures.removeAll(u -> !u.isAdded() || u.dead);
-        	
+
             totalProgress += Time.delta * timeScale * currentBoost();
             curRecoil = Mathf.approachDelta(curRecoil, 0, 1f / recoilTime);
-            
+
             if (enabled) {
             	spawnProgress = timer.getTime(timerSpawn);
             	currentTimer = Mathf.lerp(currentTimer(), currentTimer() / spawnSpeedMultipliyer, 1f - (health / maxHealth));
@@ -301,19 +301,20 @@ public class Nest extends Block implements BiologicalBlock {
             		spawnByCurrentIndex(spawnOnCenter);
             		spawnEffect.at(this);
             		spawnSound.at(this);
-            		
+
             		for (var creature : spawnedCreatures) {
             			commandCreature(creature, null);
             		}
             		spawnProgress = 0f;
                 }
             }
-            
+
 			needRegen = damaged();
-			
-			if (needRegen)
+
+			if (needRegen) {
 				regenCharge += Time.delta * timeScale * efficiency;
-			
+			}
+
 			if (regenCharge >= regenReload && needRegen) {
 				regenCharge = 0f;
 				heal(maxHealth() * (healPercent) / 100f);
@@ -321,49 +322,57 @@ public class Nest extends Block implements BiologicalBlock {
 				regenEffect.at(x + Mathf.range(block.size * tilesize/2f - 1f), y + Mathf.range(block.size * tilesize/2f - 1f));
 			}
         }
-        
+
         public float currentBoost() {
         	return (1f + ((1f - (health / maxHealth)) * spawnSpeedMultipliyer));
         }
-        
+
         public float currentTimer() {
         	return ticksToSpawn + currentRandom;
         }
-        
+
         public void spawned(int id) {
             if(net.client()){
             	readCreatures.set(0, id);
             }
         }
-        
+
         private boolean spawnCenter = false;
-        
+
         public Unit spawn(UnitType unitType) { //TODO: horrible code
     		if (spawnPositions.size == 0) {
         		int sx = tileX() - (size / 2) - size % 2, sy = tileY() - (size / 2) - size % 2;
         		for (int i = 0; i <= size + 1; i++) {
-        			final Vec2 
-        				v1 = new Vec2(sx, sy + i).scl(tilesize), 
-    					v2 = new Vec2(sx + size + 1, sy + i).scl(tilesize), 
-    					v3 = new Vec2(sx + i, sy).scl(tilesize), 
+        			final Vec2
+        				v1 = new Vec2(sx, sy + i).scl(tilesize),
+    					v2 = new Vec2(sx + size + 1, sy + i).scl(tilesize),
+    					v3 = new Vec2(sx + i, sy).scl(tilesize),
     					v4 = new Vec2(sx + i, sy + size + 1).scl(tilesize);
-        			
-        			if (!spawnPositions.contains((vec) -> { return v1.x == vec.x && v1.y == vec.y; }));
+
+        			if (!spawnPositions.contains((vec) -> { return v1.x == vec.x && v1.y == vec.y; })) {
+						;
+					}
         				spawnPositions.add(v1);
-        			if (!spawnPositions.contains((vec) -> { return v2.x == vec.x && v2.y == vec.y; }));
+        			if (!spawnPositions.contains((vec) -> { return v2.x == vec.x && v2.y == vec.y; })) {
+						;
+					}
         				spawnPositions.add(v2);
 
-        			if (!spawnPositions.contains((vec) -> { return v3.x == vec.x && v3.y == vec.y; }));
+        			if (!spawnPositions.contains((vec) -> { return v3.x == vec.x && v3.y == vec.y; })) {
+						;
+					}
         				spawnPositions.add(v3);
-        			if (!spawnPositions.contains((vec) -> { return v4.x == vec.x && v4.y == vec.y; }));
+        			if (!spawnPositions.contains((vec) -> { return v4.x == vec.x && v4.y == vec.y; })) {
+						;
+					}
         				spawnPositions.add(v4);
         		}
         	}
-        	Seq<Vec2> availablePositions = new Seq<Vec2>();
+        	Seq<Vec2> availablePositions = new Seq<>();
         	for (var pos : spawnPositions) {
         		if (!world.tile((int)(pos.x / tilesize), (int)(pos.y / tilesize)).solid()) {
         			availablePositions.add(new Vec2(pos.x, pos.y));
-        			if (Tekton.showNestSpawnPoints) {
+        			if (Tekton.showDebug) {
         				TektonFx.debugRedSquare.at(pos);
         			}
         		}
@@ -373,8 +382,8 @@ public class Nest extends Block implements BiologicalBlock {
         		kill();
         		return null;
         	}
-    		Vec2 position = spawnCenter || spawnOnCenter || availablePositions.size == 0 ? 
-    				new Vec2(x(), y()).add(new Vec2(Mathf.range(size / 2f), Mathf.range(size / 2f))) : 
+    		Vec2 position = spawnCenter || spawnOnCenter || availablePositions.size == 0 ?
+    				new Vec2(x(), y()).add(new Vec2(Mathf.range(size / 2f), Mathf.range(size / 2f))) :
     					availablePositions.get(Mathf.random(availablePositions.size - 1)).add(new Vec2(Mathf.range(2.5f), Mathf.range(2.5f)));
     		spawnEffect.at(position);
         	var creature = unitType.spawn(position, team());
@@ -382,92 +391,101 @@ public class Nest extends Block implements BiologicalBlock {
 			commandCreature(creature, null);
         	spawnedCreatures.add(creature);
 
-    		if (Tekton.showNestSpawnPoints) TektonFx.debugGreenSquare.at(position);
-    		
+    		if (Tekton.showDebug) {
+				TektonFx.debugGreenSquare.at(position);
+			}
+
 			return creature;
         }
-        
+
         public Unit spawnByIndex(int index, boolean center) {
         	spawnCenter = center;
         	return spawn(creatureTypes.get(index));
         }
-        
+
         public Unit spawnByCurrentIndex(boolean center) {
         	spawnCenter = center;
         	return spawnByIndex(currentIndex, center);
         }
-        
+
         @Override
         public void onDestroyed() {
             super.onDestroyed();
             createExplosion();
 			Drawt.DrawAcidDebris(x, y, size);
 			for (Unit creature : spawnedCreatures) {
-				creature.command().moveTo(this, 40f);
+				if (creature.isCommandable()) {
+					creature.command().moveTo(this, 40f);
+				}
 			}
-			if (spawnOnDestroy)
-				for (int i = 0; i < unitsSpawnedOnDeath; i++)
+			if (spawnOnDestroy) {
+				for (int i = 0; i < unitsSpawnedOnDeath; i++) {
 					spawnByCurrentIndex(true);
+				}
+			}
         }
-        
+
         @Override
         public void draw() {
         	float layer = Layer.blockAdditive;
             float z = Draw.z();
-            
-            float 
+
+            float
             xsize = (growAnimation ? (currentGrow() * region.width * region.scl()) : region.width * region.scl()) - (Mathf.pow(curRecoil, recoilPow) * recoil),
     		ysize = (growAnimation ? (currentGrow() * region.height * region.scl()) : region.width * region.scl()) - (Mathf.pow(curRecoil, recoilPow) * recoil),
     		rot = growAnimation ? Mathf.sin(Time.time + x, 50f, 0.5f) + Mathf.sin(Time.time - y, 65f, 0.9f) + Mathf.sin(Time.time + y - x, 85f, 0.9f) : 0;
-            
+
             Color col = damageColor.cpy().lerp(Color.white, health / maxHealth);
-            
+
             TextureRegion shad = upperShadowRegion;
-            
+
             if (baseRegion.found() && drawBase) {
             	Draw.z(Layer.block - 0.011f);
                 Draw.color(col);
                 Draw.alpha(1f);
                 Draw.rect(baseRegion, x, y, baseRegion.width * region.scl(), baseRegion.height * region.scl(), 0);
             }
-            
+
             if (shad.found() && drawBase){
                 Draw.z(Layer.block - 0.01f);
                 Draw.color(Color.white);
                 Draw.alpha(shadowAlpha);
                 Draw.rect(shad, x - nestShadowOffset, y - nestShadowOffset, xsize, ysize, rot);
             }
-            
+
             Draw.z(Layer.block + 0.01f);
             Draw.color(col);
             Draw.alpha(1f);
             Draw.rect(region, x, y, xsize, ysize, rot);
-            
+
             if (hasGlow) {
-                if (layer > 0)
-                	Draw.z(layer);
+                if (layer > 0) {
+					Draw.z(layer);
+				}
                 Draw.blend(Blending.additive);
                 Draw.color(glowColor);
                 Draw.alpha(glowAnimation ? currentGlow() * alpha : alpha);
                 Draw.rect(glowRegion, x, y, xsize, ysize, rot);
                 Draw.blend();
             }
-            
+
             Draw.z(z);
             Draw.color();
             Draw.blend();
             Draw.reset();
-		};
-		
+		}
+
 		public void createExplosion() {
             if(explosionDamage > 0){
                 Damage.damage(team, x, y, explosionRadius * tilesize, explosionDamage);
             }
 
-            if (explodeEffect != Fx.none)
-            	explodeEffect.at(this);
-            if (explodeSound != Sounds.none)
-            	explodeSound.at(this);
+            if (explodeEffect != Fx.none) {
+				explodeEffect.at(this);
+			}
+            if (explodeSound != Sounds.none) {
+				explodeSound.at(this);
+			}
 
             if(explosionPuddleLiquid != null){
                 for(int i = 0; i < explosionPuddles; i++){
@@ -481,29 +499,30 @@ public class Nest extends Block implements BiologicalBlock {
                 Effect.shake(explosionShake, explosionShakeDuration, this);
             }
         }
-		
+
 		public float currentGrow() {
 			return Mathf.absin(totalProgress(), growScale, alpha) * growIntensity + 1f - growIntensity;
 		}
-		
+
 		public float currentGlow() {
 			return Mathf.absin(totalProgress(), glowScale, alpha) * glowIntensity + 1f - glowIntensity;
 		}
-        
+
         @Override
         public float totalProgress() {
             return totalProgress;
         }
-        
+
         @Override
         public float getPowerProduction() {
             return powerProduction * currentBoost();
         }
-		
+
 		@Override
         public void drawLight() {
-			if (!emitLight)
+			if (!emitLight) {
 				return;
+			}
             smoothLight = currentGlow();
             Drawf.light(x, y, ((90f + Mathf.absin(5, 5f)) * smoothLight * lightRadius) / tilesize, Tmp.c1.set(lightColor), 0.4f * smoothLight * efficiency);
         }
@@ -514,7 +533,7 @@ public class Nest extends Block implements BiologicalBlock {
             write.f(currentRandom);
             write.i(currentIndex);
             write.f(regenCharge);
-            
+
             write.s(spawnedCreatures.size);
             for(var unit : spawnedCreatures) {
                 write.i(unit.id);
@@ -534,7 +553,7 @@ public class Nest extends Block implements BiologicalBlock {
             	readCreatures.add(read.i());
             }
         }
-        
+
         @Override
         public boolean canPickup() {
             return false;

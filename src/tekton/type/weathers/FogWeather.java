@@ -3,7 +3,8 @@ package tekton.type.weathers;
 import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.Texture;
-import arc.graphics.Texture.*;
+import arc.graphics.Texture.TextureFilter;
+import arc.graphics.Texture.TextureWrap;
 import arc.graphics.g2d.Draw;
 import arc.util.Time;
 import arc.util.Tmp;
@@ -15,11 +16,11 @@ import mindustry.type.weather.ParticleWeather;
 public class FogWeather extends ParticleWeather {
 	public float opacity = 1f;
 	public boolean drawColor = false;
-	
+
 	public FogWeather(String name) {
 		super(name);
 	}
-	
+
 	@Override
     public void drawOver(WeatherState state) {
         float windx, windy;
@@ -32,7 +33,7 @@ public class FogWeather extends ParticleWeather {
             windx = this.xspeed;
             windy = this.yspeed;
         }
-        
+
         if (drawColor) {
             var z = Draw.z();
             Draw.z(Layer.fogOfWar + 1);
@@ -67,14 +68,14 @@ public class FogWeather extends ParticleWeather {
             drawParticles(region, color, sizeMin, sizeMax, density, state.intensity, state.opacity, windx, windy, minAlpha, maxAlpha, sinSclMin, sinSclMax, sinMagMin, sinMagMax, randomParticleRotation);
         }
     }
-	
+
 	public static void drawNoise(Texture noise, Color color, float noisescl, float opacity, float baseSpeed, float intensity, float vwindx, float vwindy, float offset) {
         Draw.alpha(opacity);
         Draw.tint(color);
-        
+
         float speed = baseSpeed * intensity;
         float windx = vwindx * speed, windy = vwindy * speed;
-        
+
         float scale = 1f / noisescl;
         float scroll = Time.time * scale + offset;
         Tmp.tr1.texture = noise;

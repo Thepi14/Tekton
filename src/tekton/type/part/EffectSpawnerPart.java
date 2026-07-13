@@ -1,16 +1,17 @@
 package tekton.type.part;
 
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import mindustry.*;
-import mindustry.content.*;
-import mindustry.entities.*;
-import mindustry.entities.part.DrawPart;
-import mindustry.graphics.*;
-
 import static arc.math.Mathf.random;
-import static arc.util.Tmp.*;
+import static arc.util.Tmp.v1;
+import static arc.util.Tmp.v2;
+
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.math.Mathf;
+import mindustry.Vars;
+import mindustry.content.Fx;
+import mindustry.entities.Effect;
+import mindustry.entities.part.DrawPart;
+import mindustry.graphics.Layer;
 
 //TODO: change in new version
 /**Spawns effects in a rectangle centered on x and y.*/
@@ -44,7 +45,9 @@ public class EffectSpawnerPart extends DrawPart{
             }
         }
 
-        if(Vars.state.isPaused()) return;
+        if(Vars.state.isPaused()) {
+			return;
+		}
 
         for(int i = 0; i < (mirror ? 2 : 1); i++) {
             if(!Vars.state.isPaused() && Mathf.chanceDelta(effectChance * (useProgress ? progress.getClamp(params) : 1f))){
@@ -60,6 +63,6 @@ public class EffectSpawnerPart extends DrawPart{
 	@Override
 	public void load(String arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

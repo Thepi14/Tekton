@@ -1,31 +1,18 @@
 package tekton.type.dependent;
 
-import arc.*;
-import arc.audio.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.math.geom.*;
-import arc.struct.*;
-import arc.util.*;
-import mindustry.*;
-import mindustry.ai.types.*;
-import mindustry.content.*;
-import mindustry.ctype.*;
-import mindustry.entities.*;
-import mindustry.entities.part.*;
-import mindustry.game.EventType.*;
-import mindustry.game.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.type.*;
-import mindustry.world.*;
-import mindustry.world.blocks.*;
-import tekton.type.ai.DistanceMissileAI;
-import tekton.type.ai.MinionAI;
-import mindustry.entities.bullet.BulletType;
+import static mindustry.Vars.net;
 
-import static mindustry.Vars.*;
+import arc.math.Mathf;
+import arc.util.Nullable;
+import mindustry.entities.Mover;
+import mindustry.entities.bullet.BulletType;
+import mindustry.game.Team;
+import mindustry.gen.Bullet;
+import mindustry.gen.Entityc;
+import mindustry.gen.Healthc;
+import mindustry.gen.Teamc;
+import mindustry.gen.Unit;
+import mindustry.world.blocks.ControlBlock;
 
 public class DependentBulletType extends BulletType {
 	public @Nullable Bullet create(
@@ -34,8 +21,12 @@ public class DependentBulletType extends BulletType {
 	    ){
 	        //angle += angleOffset + Mathf.range(randomAngleOffset);
 
-	        if(!Mathf.chance(createChance)) return null;
-	        if(ignoreSpawnAngle) angle = 0;
+	        if(!Mathf.chance(createChance)) {
+				return null;
+			}
+	        if(ignoreSpawnAngle) {
+				angle = 0;
+			}
 	        if(spawnUnit != null){
 	            //don't spawn units clientside!
 	            if(!net.client()){
@@ -58,7 +49,9 @@ public class DependentBulletType extends BulletType {
 	                spawned.add();
 	            }
 	            //Since bullet init is never called, handle killing shooter here
-	            if(killShooter && owner instanceof Healthc h && !h.dead()) h.kill();
+	            if(killShooter && owner instanceof Healthc h && !h.dead()) {
+					h.kill();
+				}
 
 	            //no bullet returned
 	            return null;

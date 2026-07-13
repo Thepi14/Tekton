@@ -1,14 +1,16 @@
 package tekton.type.draw;
 
-import arc.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.util.*;
-import mindustry.entities.units.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.world.*;
+import arc.Core;
+import arc.graphics.Blending;
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
+import arc.util.Eachable;
+import mindustry.entities.units.BuildPlan;
+import mindustry.gen.Building;
+import mindustry.graphics.Layer;
+import mindustry.world.Block;
 import mindustry.world.draw.DrawBlock;
 import tekton.content.TektonColor;
 import tekton.type.gravity.GravityConsumer;
@@ -27,7 +29,7 @@ public class DrawGravityInput extends DrawBlock {
     }
 
     public DrawGravityInput(){
-    	
+
     }
 
     @Override
@@ -37,11 +39,11 @@ public class DrawGravityInput extends DrawBlock {
     @Override
     public void draw(Building build){
         Draw.z(Layer.blockAdditive);
-        
+
         if(build instanceof GravityConsumer hc){
             float[] side = hc.sideGravity();
-            if (drawSides)
-	            for(int i = 0; i < 4; i++){
+            if (drawSides) {
+				for(int i = 0; i < 4; i++){
 	                if(side[i] > 0){
 	                    Draw.blend(Blending.additive);
 	                    Draw.color(gravityColor, maxAlpha * (side[i] / hc.gravityRequirement() * (gravityColor.a * (1f - gravityPulse + Mathf.absin(gravityPulseScl, gravityPulse)))));
@@ -50,7 +52,7 @@ public class DrawGravityInput extends DrawBlock {
 	                    Draw.color();
 	                }
 	            }
-            else {
+			} else {
             	Draw.blend(Blending.additive);
                 Draw.color(gravityColor, maxAlpha * hc.gravityRequirement() * (gravityColor.a * (1f - gravityPulse + Mathf.absin(gravityPulseScl, gravityPulse))));
                 Draw.rect(gravity, build.x, build.y, build.rotation * 90f);
@@ -58,9 +60,9 @@ public class DrawGravityInput extends DrawBlock {
                 Draw.color();
             }
         }
-        
+
         Draw.z(Layer.block);
-        
+
         Draw.reset();
     }
 

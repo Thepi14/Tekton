@@ -1,24 +1,27 @@
 package tekton;
 
+import static arc.Core.bundle;
+import static arc.Core.settings;
+import static mindustry.Vars.ui;
+
 import arc.Core;
 import arc.func.Boolc;
 import arc.func.Prov;
 import arc.scene.style.Drawable;
-import arc.scene.style.TextureRegionDrawable;
 import mindustry.content.TechTree;
 import mindustry.gen.Icon;
 import mindustry.type.Planet;
 import mindustry.ui.dialogs.SettingsMenuDialog;
 import tekton.content.TektonPlanets;
-import tekton.ui.*;
-
-import static arc.Core.*;
-import static mindustry.Vars.*;
-import static tekton.Tekton.ID;
+import tekton.ui.ButtonPref;
+import tekton.ui.CheckIconSetting;
+import tekton.ui.SeparatorPref;
+import tekton.ui.SliderIconSetting;
+import tekton.ui.SwitchPref;
 
 public class TektonSettings {
 	private static SettingsMenuDialog.SettingsTable table;
-    
+
     public static void load() {
         ui.settings.addCategory(bundle.get("setting.tekton-title"), "tekton-icon-style", t -> {
             table = t;
@@ -70,7 +73,9 @@ public class TektonSettings {
 
     public static void resetSaves(Planet planet) {
         planet.sectors.each(sector -> {
-            if (sector.hasSave()) sector.save.delete();
+            if (sector.hasSave()) {
+				sector.save.delete();
+			}
         });
     }
     public static void resetTree(TechTree.TechNode root) {

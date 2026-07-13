@@ -14,10 +14,12 @@ public interface GravityBlock {
     /** @return gravity as a fraction of max gravity */
     float gravityFrac();
     float calculateGravity(float[] sideGravity, @Nullable IntSet cameFrom);
-    
+
     public default float calculateGravity(Building building, float[] sideGravity, @Nullable IntSet cameFrom) {
     	Arrays.fill(sideGravity, 0f);
-        if(cameFrom != null) cameFrom.clear();
+        if(cameFrom != null) {
+			cameFrom.clear();
+		}
 
         float gravityAmmount = 0f;
 
@@ -25,7 +27,7 @@ public interface GravityBlock {
             if(build != null && build.team == building.team && build instanceof GravityBlock graviter) {
 
                 boolean split = build.block instanceof GravityConductor cond && cond.splitGravity;
-                
+
                 if(!build.block.rotate || (!split && (building.relativeTo(build) + 2) % 4 == build.rotation) || (split && building.relativeTo(build) != build.rotation)) { //TODO hacky
 
                     if(!(build instanceof GravityConductorBuild hc && hc.cameFrom.contains(building.id()))) {
@@ -42,14 +44,14 @@ public interface GravityBlock {
                         sideGravity[Mathf.mod(building.relativeTo(build), 4)] += add;
                         gravityAmmount += add;
                     }
-                    
+
                     if(cameFrom != null) {
                         cameFrom.add(build.id);
                         if(build instanceof GravityConductorBuild gc) {
                             cameFrom.addAll(gc.cameFrom);
                         }
                     }
-                    
+
                     if(graviter instanceof GravityConductorBuild cond) {
                         cond.updateGravity();
                     }

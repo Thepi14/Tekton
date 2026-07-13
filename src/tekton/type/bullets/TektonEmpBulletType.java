@@ -3,7 +3,6 @@ package tekton.type.bullets;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 import static arc.math.Angles.*;
-
 import arc.math.Mathf;
 import mindustry.Vars;
 import mindustry.content.Fx;
@@ -15,7 +14,6 @@ import mindustry.gen.Bullet;
 import mindustry.graphics.Pal;
 import mindustry.world.blocks.defense.Wall;
 import tekton.type.biological.BiologicalBlock;
-import tekton.type.defense.AdvancedWall;
 
 public class TektonEmpBulletType extends BasicBulletType{
     public float radius = 100f;
@@ -32,7 +30,7 @@ public class TektonEmpBulletType extends BasicBulletType{
     }), chainEffect = Fx.chainEmp.wrap(Pal.lancerLaser.cpy()), applyEffect = Fx.hitLancer;
     public boolean hitUnits = true;
     public float unitDamageScl = 0.7f;
-    
+
     public TektonEmpBulletType() {
     	despawnEffect = hitEffect = Fx.none;
     }
@@ -42,14 +40,14 @@ public class TektonEmpBulletType extends BasicBulletType{
         super.hit(b, x, y);
 
         if(!b.absorbed){
-        	if (collidesGround)
-	            Vars.indexer.allBuildings(x, y, radius, other -> {
+        	if (collidesGround) {
+				Vars.indexer.allBuildings(x, y, radius, other -> {
 	                if(b.team != other.team && other.power != null) {
 	                    var absorber = Damage.findAbsorber(b.team, x, y, other.x, other.y);
 	                    if(absorber != null && absorbable) {
 	                        other = absorber;
 	                    }
-	
+
 	                    if(other.power != null && other.power.graph.getLastPowerProduced() > 0f && !(other.block instanceof Wall) && !(other.block instanceof BiologicalBlock)) {
 	                        other.applySlowdown(powerSclDecrease, timeDuration);
 	                        other.damage(damage * powerDamageScl * buildingDamageMultiplier);
@@ -58,6 +56,7 @@ public class TektonEmpBulletType extends BasicBulletType{
 	                    }
 	                }
 	            });
+			}
 
             if(hitUnits){
                 Units.nearbyEnemies(b.team, x, y, radius, other -> {

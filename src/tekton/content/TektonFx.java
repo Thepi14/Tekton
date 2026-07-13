@@ -1,40 +1,57 @@
 package tekton.content;
 
-import arc.*;
+import static mindustry.Vars.headless;
+import static mindustry.Vars.tilesize;
+
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.*;
+import static arc.graphics.g2d.Draw.*;
+import static arc.graphics.g2d.Lines.*;
+
 import arc.math.geom.*;
-import arc.struct.*;
-import arc.util.*;
+import arc.math.*;
+
+import static arc.math.geom.Geometry.*;
+import static arc.math.Angles.*;
+import static arc.math.Mathf.*;
+import static arc.math.Rand.*;
+
+import arc.Core;
+import arc.graphics.Blending;
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Fill;
+import arc.graphics.g2d.Lines;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Interp;
+import arc.math.Mathf;
+import arc.math.Rand;
+import arc.math.geom.Position;
+import arc.math.geom.Vec2;
+import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.Liquids;
-import mindustry.entities.*;
-import mindustry.entities.abilities.*;
+import mindustry.entities.Effect;
 import mindustry.entities.effect.ExplosionEffect;
 import mindustry.entities.effect.MultiEffect;
 import mindustry.entities.effect.ParticleEffect;
 import mindustry.entities.effect.WaveEffect;
-import mindustry.entities.effect.WrapEffect;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.type.*;
-import mindustry.world.*;
-
-import static arc.graphics.g2d.Draw.*;
-import static arc.graphics.g2d.Lines.*;
-import static arc.math.Angles.*;
-import static mindustry.Vars.*;
+import mindustry.gen.Bullet;
+import mindustry.gen.Unit;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
+import mindustry.world.Block;
 
 public class TektonFx {
 	public static final Rand rand = new Rand();
     public static final Vec2 v = new Vec2();
-    
-    public static float time() { return TektonVars.time(); };
 
-    public static final Effect 
-    
+    public static float time() { return TektonVars.time(); }
+
+    public static final Effect
+
     electricPulse = new ParticleEffect() {{
     	particles = 6;
     	line = true;
@@ -47,7 +64,7 @@ public class TektonFx {
     	colorFrom = Color.white;
     	colorTo = Pal.lancerLaser;
     }},
-    
+
 	electricSurgePulse = new ParticleEffect() {{
     	particles = 6;
     	line = true;
@@ -60,7 +77,7 @@ public class TektonFx {
     	colorFrom = Color.white;
     	colorTo = Pal.surge;
     }},
-    
+
     electricPulseBig = new MultiEffect() {{
     	effects = new Effect[]{
     			new WaveEffect() {{
@@ -86,7 +103,7 @@ public class TektonFx {
         		}}
     	};
     }},
-    
+
 	electricSurgePulseBig = new MultiEffect() {{
     	effects = new Effect[]{
     			new WaveEffect() {{
@@ -112,8 +129,8 @@ public class TektonFx {
         		}}
     	};
     }},
-    	    
-    
+
+
     electricExplosionShoot = new ExplosionEffect(){{
         lifetime = 40f;
         waveStroke = 4f;
@@ -127,7 +144,7 @@ public class TektonFx {
         sparkLen = 4f;
         sparkStroke = 3f;
     }},
-    
+
 	electricLaserCharge = new Effect(80f, 100f, e -> {
         color(Pal.lancerLaser);
         stroke(e.fin() * 2f);
@@ -145,7 +162,7 @@ public class TektonFx {
         Fill.circle(e.x, e.y, e.fin() * 10);
         Drawf.light(e.x, e.y, e.fin() * 20f, Pal.lancerLaser, 0.7f);
     }).followParent(true).rotWithParent(true),
-	
+
 	neurosporaContaminationSapped = new Effect(40f, e -> {
         color(TektonColor.neurospora);
 
@@ -153,7 +170,7 @@ public class TektonFx {
             Fill.circle(e.x + x, e.y + y, e.fslope() * 1.1f);
         });
     }),
-	
+
 	pointShockwave = new Effect(20, e -> {
 		if (e.data instanceof Float size) {
 	        color(e.color);
@@ -163,7 +180,7 @@ public class TektonFx {
 	            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 3f));
 		}
     }),
-	
+
 	slowDownWave = new Effect(320f, e -> {
         color(e.color);
         stroke(e.fout() * 2f);
@@ -171,19 +188,19 @@ public class TektonFx {
         randLenVectors(e.id + 1, 5, 1f + 23f * e.finpow(), (x, y) ->
             lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 3f));
     }),
-	
+
 	slowDownDomeHitEffect = new Effect(10f, e -> {
 		if (e.data instanceof Bullet target) {
 	        color(e.color);
 
 	        stroke(1.5f * e.fout());
-	        
+
 	        Lines.square(e.x, e.y, 0.2f + (target.hitSize * 1.7f * target.fout()), e.rotation + (time() * 1f));
 
 	        Drawf.light(e.x, e.y, 20f, e.color, 0.6f * e.fout());
 		}
     }),
-	
+
 	buildingBiologicalRegeneration = new Effect(35f, e -> {
         color(e.color, e.color.cpy().mul(1.2f), e.fin());
 
@@ -191,18 +208,20 @@ public class TektonFx {
         	Fill.circle(e.x + x, e.y + y, e.fslope() * 1.5f + 0.5f);
         });
     }),
-	
+
 	cobwebbed = new Effect(80f, e -> {
         color(TektonColor.cobweb);
         alpha(Mathf.clamp(e.fin() * 2f));
 
         Fill.circle(e.x, e.y, e.fout());
     }),
-	
+
 	arteryPowerTransfer = new Effect(140f, e -> {
         e.lifetime = Mathf.randomSeed(e.id, 120f, 200f);
 
-        if(!(e.data instanceof Position to)) return;
+        if(!(e.data instanceof Position to)) {
+			return;
+		}
 
         Tmp.v2.set(to).sub(e.x, e.y).nor().rotate90(1).scl(Mathf.randomSeedRange(e.id, 1f) * 25f);
 
@@ -213,7 +232,7 @@ public class TektonFx {
         color(e.color);
         Fill.circle(Tmp.v4.x, Tmp.v4.y, e.fslope() * 2f + 0.1f);
     }).followParent(false).rotWithParent(false),
-	
+
 	biologicalDynamicExplosion = new Effect(30, 500f, b -> {
         float intensity = b.rotation;
         float baseLifetime = 26f + intensity * 15f;
@@ -250,7 +269,7 @@ public class TektonFx {
             });
         });
     }),
-	
+
 	biologicalAmmoniaDynamicExplosion = new Effect(30, 500f, b -> {
         float intensity = b.rotation;
         float baseLifetime = 26f + intensity * 15f;
@@ -287,7 +306,7 @@ public class TektonFx {
             });
         });
     }),
-	
+
 	cyaneaExplosion = new Effect(30, 500f, b -> {
         float size = 5f;
         if (b.data instanceof Float s) {
@@ -331,33 +350,34 @@ public class TektonFx {
             });
         });
     }),
-	
+
 	biologicalFallingEgg = new Effect(60f, e -> {
         String regionName = "tekton-egg";
         TextureRegion region = Core.atlas.find(regionName);
         float scale = region.scale;
         float rw = (region.width * scale) / 4f, rh = (region.height * scale) / 4f;
-        
-        float 
+
+        float
         		tx = e.x + 50f + Mathf.randomSeedRange(e.id, 20f),
         		ty = e.y + 160f + Mathf.randomSeedRange(e.id, 60f),
         		cx = Mathf.lerp(tx, e.x, e.fin()),
 				cy = Mathf.lerp(ty, e.y, e.fin()),
         		rotation = (Mathf.atan2(cx - e.x, cy - e.y) * Mathf.radDeg) - 90f;
-        
+
         Draw.z(Layer.effect + 1f);
-        if (Mathf.chance(e.id * 8) && Mathf.chance(e.id) && !Vars.state.isPaused())
-	        new Effect(110, f -> {
+        if (Mathf.chance(e.id * 8) && Mathf.chance(e.id) && !Vars.state.isPaused()) {
+			new Effect(110, f -> {
 	            color(TektonColor.acid.cpy().a(f.color.a), TektonColor.methane.cpy().a(f.color.a), f.rotation);
 	            Fill.circle(f.x, f.y, f.fout() * 3.5f);
 	        }).wrap(Color.white.cpy().a(e.fin() + 0.1f)).at(cx + Mathf.range(7f), cy + Mathf.range(7f));
-        
+		}
+
         Draw.alpha(e.fin());
-        
+
         Draw.rect(region, cx, cy, rw, rh, rotation);
-        
+
         //Fill.light(cx, cy, 10, 25f, Color.white, Color.white);
-        
+
         Draw.z();
         Draw.color();
 
@@ -378,21 +398,21 @@ public class TektonFx {
             }}.at(e.x, e.y);
         }
     }),
-	
+
 	shootBig = new Effect(9, e -> {
         color(e.color.cpy(), Color.gray, e.fin());
         float w = 1.2f + 7 * e.fout();
         Drawf.tri(e.x, e.y, w, 25f * e.fout(), e.rotation);
         Drawf.tri(e.x, e.y, w, 4f * e.fout(), e.rotation + 180f);
     }),
-	
+
 	shootBig2 = new Effect(11, e -> {
         color(e.color.cpy(), Color.gray, e.fin());
         float w = 1.2f +9 * e.fout();
         Drawf.tri(e.x, e.y, w, 32f * e.fout(), e.rotation);
         Drawf.tri(e.x, e.y, w, 3f * e.fout(), e.rotation + 180f);
     }),
-	
+
 	shootBigSmoke = new Effect(17f, e -> {
         color(e.color.cpy().mul(1.2f), e.color, Color.gray, e.fin());
 
@@ -408,7 +428,7 @@ public class TektonFx {
             Fill.circle(e.x + x, e.y + y, e.fout() * 2.4f + 0.2f);
         });
     }),
-    
+
 	blastExplosionColor = new Effect(22, e -> {
         color(e.color.cpy().mul(1.2f));
 
@@ -432,7 +452,7 @@ public class TektonFx {
 
         Drawf.light(e.x, e.y, 45f, e.color, 0.8f * e.fout());
     }),
-	
+
 	blastExplosionColorSlow = new Effect(60, e -> {
         color(e.color.cpy().mul(1.2f));
 
@@ -456,7 +476,7 @@ public class TektonFx {
 
         Drawf.light(e.x, e.y, 45f, e.color, 0.8f * e.fout());
     }),
-	
+
 	massiveExplosionColor = new Effect(30, e -> {
         color(e.color);
 
@@ -480,19 +500,19 @@ public class TektonFx {
 
         Drawf.light(e.x, e.y, 50f, e.color, 0.8f * e.fout());
     }),
-	
+
 	regenParticleHydrogen = new Effect(100f, e -> {
         color(Pal.heal);
 
         Fill.square(e.x, e.y, e.fslope() * 1.7f + 0.14f, 45f);
     }),
-    
+
 	regenParticleOxygen = new Effect(140f, e -> {
         color(Pal.heal);
 
         Fill.square(e.x, e.y, e.fslope() * 2f + 0.17f, 0f);
     }),
-    
+
 	instShoot = new Effect(24f, e -> {
         e.scaled(10f, b -> {
             color(Color.white, b.color, b.fin());
@@ -509,7 +529,7 @@ public class TektonFx {
 
         Drawf.light(e.x, e.y, 180f, e.color, 0.9f * e.fout());
     }),
-	
+
 	instHit = new Effect(20f, 200f, e -> {
         color(e.color);
 
@@ -539,7 +559,7 @@ public class TektonFx {
             });
         });
     }),
-	
+
 	instBomb = new Effect(15f, 100f, e -> {
         color(e.color);
         stroke(e.fout() * 4f);
@@ -556,7 +576,7 @@ public class TektonFx {
 
         Drawf.light(e.x, e.y, 150f, e.color, 0.9f * e.fout());
     }),
-	
+
 	sparks = new Effect(30f, 20f, e -> {
         rand.setSeed(e.id + 1);
 		color(e.color);
@@ -577,28 +597,28 @@ public class TektonFx {
 
         Drawf.light(e.x + ex, e.y + ey, circleRad * 1.6f, Pal.heal, e.fout());
     }),
-    
+
 	lancerLaserCharge = copyEffect(Fx.lancerLaserCharge),
 	lancerLaserChargeBegin = copyEffect(Fx.lancerLaserChargeBegin),
-	
+
 	phalanxSmoke = new MultiEffect(
 		new Effect(30f, 160f, e -> {
 	        color(Pal.sapBullet);
 	        stroke(e.fout() * 3f);
 	        float circleRad = 6f + e.finpow() * 60f;
 	        Lines.circle(e.x, e.y, circleRad);
-	
+
 	        rand.setSeed(e.id);
 	        for(int i = 0; i < 16; i++){
 	            float angle = rand.random(360f);
 	            float lenRand = rand.random(0.5f, 1f);
 	            Lines.lineAngle(e.x, e.y, angle, e.foutpow() * 50f * rand.random(1f, 0.6f) + 2f, e.finpow() * 70f * lenRand + 6f);
 	        }
-	    }) 
+	    })
 		{{followParent = false;}},
 		new Effect(300f, 300f, b -> {
 	        float intensity = 3f;
-	
+
 	        color(Pal.sapBullet, 0.7f);
 	        for(int i = 0; i < 4; i++){
 	            rand.setSeed(b.id*2 + i);
@@ -608,7 +628,7 @@ public class TektonFx {
 	                randLenVectors(e.id + fi - 1, e.fin(Interp.pow10Out), (int)(2.9f * intensity), 22f * intensity, (x, y, in, out) -> {
 	                    float fout = e.fout(Interp.pow5Out) * rand.random(0.5f, 1f);
 	                    float rad = fout * ((2f + intensity) * 2.35f);
-	
+
 	                    Fill.circle(e.x + x, e.y + y, rad);
 	                    Drawf.light(e.x + x, e.y + y, rad * 2.5f, b.color, 0.5f);
 	                });
@@ -618,25 +638,25 @@ public class TektonFx {
 	    {{followParent = false;}}
 	)
 	{{followParent = false;}},
-	
+
 	techSmoke = new MultiEffect(
 			new Effect(40f, 160f, e -> {
 		        color(Pal.techBlue);
 		        stroke(e.fout() * 3f);
 		        float circleRad = 6f + e.finpow() * 60f;
 		        Lines.circle(e.x, e.y, circleRad);
-		
+
 		        rand.setSeed(e.id);
 		        for(int i = 0; i < 16; i++){
 		            float angle = rand.random(360f);
 		            float lenRand = rand.random(0.5f, 1f);
 		            Lines.lineAngle(e.x, e.y, angle, e.foutpow() * 50f * rand.random(1f, 0.6f) + 2f, e.finpow() * 70f * lenRand + 6f);
 		        }
-		    }) 
+		    })
 			{{followParent = false;}},
 			new Effect(100f, 250f, b -> {
 		        float intensity = 2.5f;
-		
+
 		        color(Pal.techBlue, 0.7f);
 		        for(int i = 0; i < 4; i++){
 		            rand.setSeed(b.id*2 + i);
@@ -646,7 +666,7 @@ public class TektonFx {
 		                randLenVectors(e.id + fi - 1, e.fin(Interp.pow10Out), (int)(2.9f * intensity), 20f * intensity, (x, y, in, out) -> {
 		                    float fout = e.fout(Interp.pow5Out) * rand.random(0.5f, 1f);
 		                    float rad = fout * ((2f + intensity) * 1.74f);
-		
+
 		                    Fill.circle(e.x + x, e.y + y, rad);
 		                    Drawf.light(e.x + x, e.y + y, rad * 2f, b.color, 0.5f);
 		                });
@@ -673,7 +693,7 @@ public class TektonFx {
 		    {{followParent = false;}}
 		)
 		{{followParent = false;}},
-	
+
 	techCharge = new Effect(80f, 80f, e -> {
         color(Pal.techBlue);
         stroke(e.fin() * 2f);
@@ -691,50 +711,54 @@ public class TektonFx {
         Fill.circle(e.x, e.y, e.fin() * 10);
         Drawf.light(e.x, e.y, e.fin() * 20f, Pal.techBlue, 0.7f);
     }).followParent(true).rotWithParent(true),
-	
+
 	weaponLockEffect = new Effect(40f, e -> {
         color(Pal.techBlue, Pal.techBlue, e.fin());
-        
+
         stroke(1f * e.fslope());
         Lines.square(e.x, e.y, 7f, 45f);
         Drawf.light(e.x, e.y, 9f, e.color, e.fout() * 0.7f);
     }),
-	
+
 	waveTechTrail = new Effect(20f, e -> {
         Draw.z(Layer.bullet - 0.0001f);
         color(Pal.techBlue);
         //Lines.beginLine();
         stroke(2f * e.fslope());
-        
+
         var width = 10f;
-        float 
-        	x1 = e.x + (Mathf.cosDeg(e.rotation + 90f) * width * e.fout()), 
-        	y1 = e.y + (Mathf.sinDeg(e.rotation + 90f) * width * e.fout()), 
-        	x2 = e.x + (Mathf.cosDeg(e.rotation + 90f*-1f) * width * e.fout()), 
+        float
+        	x1 = e.x + (Mathf.cosDeg(e.rotation + 90f) * width * e.fout()),
+        	y1 = e.y + (Mathf.sinDeg(e.rotation + 90f) * width * e.fout()),
+        	x2 = e.x + (Mathf.cosDeg(e.rotation + 90f*-1f) * width * e.fout()),
         	y2 = e.y + (Mathf.sinDeg(e.rotation + 90f*-1f) * width * e.fout());
-        
+
         line(x1, y1, x2, y2);
-        
+
         color();
     	//blend();
         Draw.z();
     }),
-	
+
 	techDamageBlock = new MultiEffect(new Effect(60f, e -> {
-        if(!(e.data instanceof Block block)) return;
-        
+        if(!(e.data instanceof Block block)) {
+			return;
+		}
+
         mixcol(e.color, 1f);
         alpha(e.fout());
         Draw.rect(block.fullIcon, e.x, e.y);
     }), new Effect(120f, e -> {
-        if(!(e.data instanceof Block block)) return;
-        
+        if(!(e.data instanceof Block block)) {
+			return;
+		}
+
         color(Pal.techBlue);
         alpha(1f);
         stroke(1.7f * e.fslope());
         Lines.square(e.x, e.y, (block.size * tilesize) / 2f, 45f);
     })),
-	
+
 	concentrationChargeEffect = new Effect(60f, 100f, e -> {
     	TektonFx.rand.setSeed(e.id + 1);
 		color(e.color);
@@ -755,14 +779,14 @@ public class TektonFx {
 
         Drawf.light(e.x + ex, e.y + ey, circleRad * 1.6f, e.color, e.fin());
     }),
-	
+
 	methanespark = new Effect(18, e -> {
         randLenVectors(e.id, 5, e.fin() * 8f, (x, y) -> {
             color(TektonColor.methane, Color.gray, e.fin());
             Fill.circle(e.x + x, e.y + y, e.fout() * 4f /2f);
         });
     }),
-	
+
 	oxygenCombustionSmoke = new Effect(240f, e -> {
         color(TektonColor.oxygen);
         alpha(0.5f);
@@ -777,7 +801,7 @@ public class TektonFx {
             });
         }
     }),
-	
+
 	acidGenerateSmoke = new Effect(300f, e -> {
         color(TektonColor.acid.cpy().mul(1.1f));
         alpha(0.6f);
@@ -792,7 +816,7 @@ public class TektonFx {
             });
         }
     }),
-	
+
 	nuclearSmoke = new Effect(240f, e -> {
         color(Liquids.water.gasColor);
         alpha(0.4f);
@@ -807,7 +831,7 @@ public class TektonFx {
             });
         }
     }),
-    
+
 	nuclearExplosion = new Effect(30, 700f, b -> {
         float intensity = 6.8f;
         float baseLifetime = 25f + intensity * 11f;
@@ -848,7 +872,7 @@ public class TektonFx {
             });
         });
     }),
-	
+
 	nuclearFusionExplosion = new Effect(30, 1500f, b -> {
         float intensity = 15f;
         float baseLifetime = 25f + intensity * 15f;
@@ -889,9 +913,11 @@ public class TektonFx {
             });
         });
     }),
-	
+
 	tempestChain = new Effect(30f, 300f, e -> {
-                if(!(e.data instanceof Position p)) return;
+                if(!(e.data instanceof Position p)) {
+					return;
+				}
                 float tx = p.getX(), ty = p.getY(), dst = Mathf.dst(e.x, e.y, tx, ty);
                 Tmp.v1.set(p).sub(e.x, e.y).nor();
 
@@ -937,7 +963,7 @@ public class TektonFx {
             Fill.circle(e.x + x / 2f, e.y + y / 2f, e.fout());
         });
     }),
-	
+
 	biologicalPulse = new ParticleEffect() {{
     	particles = 6;
     	line = true;
@@ -950,7 +976,7 @@ public class TektonFx {
     	colorFrom = Color.valueOf("ffffff");
     	colorTo = TektonColor.acid;
     }},
-	
+
 	biologicalPulseBig = new MultiEffect() {{
     	effects = new Effect[]{
     			new WaveEffect() {{
@@ -976,14 +1002,14 @@ public class TektonFx {
     			}}
 			};
     }},
-	
+
 	shootColorBig = new Effect(10, e -> {
         color(Color.white, e.color, e.fin());
         float w = 1.3f + 10 * e.fout();
         Drawf.tri(e.x, e.y, w, 35f * e.fout(), e.rotation);
         Drawf.tri(e.x, e.y, w, 6f * e.fout(), e.rotation + 180f);
     }),
-	
+
 	shootColorSmokeBig = new Effect(70f, e -> {
         rand.setSeed(e.id);
         for(int i = 0; i < 13; i++){
@@ -994,9 +1020,11 @@ public class TektonFx {
             });
         }
     }),
-	
+
 	colorDebris = new Effect(3600f, 300f, e -> {
-		if(headless) return;
+		if(headless) {
+			return;
+		}
         rand.setSeed(e.id * 2);
         TextureRegion region = Core.atlas.find("scorch-" + (int)e.rotation + "-" + rand.random(2));
         var z = Draw.z();
@@ -1011,16 +1039,18 @@ public class TektonFx {
         Draw.color();
         Draw.reset();
     }),
-    
+
     incinerateHydrogen = new Effect(34, e -> {
         randLenVectors(e.id, 4, e.finpow() * 5f, (x, y) -> {
             color(Pal.techBlue, Color.gray, e.fin());
             Fill.circle(e.x + x, e.y + y, e.fout() * 1.7f);
         });
     }),
-    
+
 	chainTesla = new Effect(30f, 300f, e -> {
-        if(!(e.data instanceof Position p)) return;
+        if(!(e.data instanceof Position p)) {
+			return;
+		}
         float tx = p.getX(), ty = p.getY(), dst = Mathf.dst(e.x, e.y, tx, ty);
         Tmp.v1.set(p).sub(e.x, e.y).nor();
 
@@ -1055,9 +1085,11 @@ public class TektonFx {
 
         Lines.endLine();
     }).followParent(false).rotWithParent(false),
-	
+
 	teamColorDespawn = new Effect(60f, e -> {
-        if(!(e.data instanceof Unit select) || select.type == null) return;
+        if(!(e.data instanceof Unit select) || select.type == null) {
+			return;
+		}
 
         float scl = e.fout(Interp.pow2Out);
         float p = Draw.scl;
@@ -1069,14 +1101,14 @@ public class TektonFx {
 
         Draw.scl = p;
     }),
-	
+
 	debugRedSquare = new Effect(1200f, e -> {
         color(Color.red);
         Lines.stroke(1f);
         Lines.square(e.x,  e.y, 3f);
         reset();
     }),
-	
+
 	debugGreenSquare = new Effect(1200f, e -> {
         color(Color.green);
         var z = z();
@@ -1088,12 +1120,12 @@ public class TektonFx {
     })
 
     ;
-    
+
 	public static void load() {
 		biologicalFallingEgg.clip = 10000f;
 		concentrationChargeEffect.followParent = true;
 	}
-	
+
 	private static Effect copyEffect(Effect effect) {
 		var Ceffect = effect;
 		Ceffect.followParent(true);

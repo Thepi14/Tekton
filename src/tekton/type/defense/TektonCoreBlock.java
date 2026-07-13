@@ -1,17 +1,13 @@
 package tekton.type.defense;
 
-import mindustry.world.blocks.storage.CoreBlock;
-import tekton.Drawt;
-import mindustry.entities.Effect;
-import mindustry.entities.effect.*;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Pal;
-
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilesize;
 
 import arc.graphics.Color;
-import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Lines;
+import mindustry.entities.Effect;
+import mindustry.entities.effect.WaveEffect;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Pal;
+import mindustry.world.blocks.storage.CoreBlock;
 
 public class TektonCoreBlock extends CoreBlock {
 	public float lightningProtectionRadius = 20f * tilesize;
@@ -27,31 +23,31 @@ public class TektonCoreBlock extends CoreBlock {
 		strokeFrom = 2f;
 		strokeTo = 0f;
 	}};
-	
+
 	public TektonCoreBlock(String name) {
 		super(name);
-		
+
 	}
-	
+
 	@Override
     public void drawPlace(int x, int y, int rotation, boolean valid) {
         super.drawPlace(x, y, rotation, valid);
 		Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, lightningProtectionRadius, Pal.lightOrange);
     }
-	
+
 	public class TektonCoreBlockBuild extends CoreBuild implements LightningAbsorber {
-		
+
 		@Override
         public void drawSelect(){
             super.drawSelect();
         	Drawf.dashCircle(x, y, lightningProtectionRadius, Pal.lightOrange);
 		}
-		
+
 		@Override
 		public void absorbLightning() {
 			lightningAbsorptionEffect.at(this);
 		}
-		
+
 		@Override
 		public float lightningProtectionRadius() {
 			return lightningProtectionRadius;

@@ -1,53 +1,43 @@
 package tekton.type.production;
 
+import static mindustry.Vars.tilesize;
+
 import arc.Core;
-import arc.Events;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.math.geom.Geometry;
 import arc.struct.EnumSet;
-import arc.struct.IntSet;
 import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Nullable;
-import arc.util.Strings;
-import arc.util.Time;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.units.BuildPlan;
-import mindustry.game.EventType.Trigger;
 import mindustry.gen.Building;
 import mindustry.gen.Sounds;
+import mindustry.graphics.Pal;
 import mindustry.logic.LAccess;
 import mindustry.type.Item;
-import mindustry.type.ItemStack;
-import mindustry.type.Liquid;
 import mindustry.type.LiquidStack;
-import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
-import mindustry.world.Tile;
-import mindustry.world.blocks.liquid.Conduit.ConduitBuild;
+import mindustry.world.draw.DrawBlock;
+import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
-import tekton.content.TektonColor;
-import tekton.type.gravity.GravityConsumer;
-import tekton.type.gravity.GravityCrafter.GravityCrafterBuild;
-import mindustry.world.draw.*;
-
-import static mindustry.Vars.*;
 
 public class LiquidConverter extends Block {
 	/** Written to outputLiquids as a single-element array if outputLiquids is null. */
     public @Nullable LiquidStack outputLiquid;
     /** Overwrites outputLiquid if not null. */
     public @Nullable LiquidStack[] outputLiquids;
-    
+
     public LiquidStack[] convertableLiquids;
     public float liquidConsumption = 10f / 60f;
 
@@ -57,10 +47,10 @@ public class LiquidConverter extends Block {
     public float updateEffectChance = 0.04f;
     public float updateEffectSpread = 4f;
     public float warmupSpeed = 0.019f;
-    
+
     public boolean dumpExtraLiquid = true;
     public boolean ignoreLiquidFullness = false;
-    
+
     public int[] liquidOutputDirections = {-1};
 
     public DrawBlock drawer = new DrawDefault();
@@ -70,7 +60,7 @@ public class LiquidConverter extends Block {
         update = true;
         solid = true;
         hasItems = true;
-        ambientSound = Sounds.machine;
+        ambientSound = Sounds.loopElectricHum;
         sync = true;
         ambientSoundVolume = 0.03f;
         flags = EnumSet.of(BlockFlag.factory);
@@ -78,37 +68,53 @@ public class LiquidConverter extends Block {
         itemCapacity = 0;
         convertableLiquids = new LiquidStack[0];
 	}
-	
+
 	@Override
     public void setBars(){
-        super.setBars();
+        //super.setBars();
+
+        addBar("health", entity -> new Bar("stat.health", Pal.health, entity::healthf).blink(Color.white));
+
+        if(consPower != null){
+        	addBar("power", (LiquidConverterBuild entity) -> new Bar(
+        		() -> Core.bundle.format("bar.power"),
+                () -> Pal.powerBar,
+                () -> entity.power.status
+            ));
+        }
 
         //set up liquid bars for liquid outputs
-        if(outputLiquids != null && outputLiquids.length > 0){
+        if(outputLiquids != null && outputLiquids.length > 0) {
             //no need for dynamic liquid bar
             removeBar("liquid");
 
             //then display output buffer
-            for(var stack : outputLiquids){
+            for(var stack : outputLiquids) {
                 addLiquidBar(stack.liquid);
             }
         }
-        
-        addBar("efficiency", (LiquidConverterBuild entity) -> new Bar(
+
+        addBar("liquids", (LiquidConverterBuild entity) -> new Bar(
+		        () -> Core.bundle.format("bar.efficiency", (int)(entity.currentBoost * 100)),
+		        () -> entity.getCurrentConvertionColor(),
+		        () -> entity.getCurrentConvertion()));
+
+        /*addBar("efficiency", (LiquidConverterBuild entity) -> new Bar(
 		        () -> Core.bundle.format("bar.efficiency", (int)(entity.currentBoost * 100)),
 		        () -> Pal.lightOrange,
-		        () -> Math.min(entity.currentBoost, 1f)));
+		        () -> Math.min(entity.currentBoost, 1f)));*/
     }
-	
+
 	private int bId = 0;
 	public float getBoost() {
 		bId++;
-		if (bId > convertableLiquids.length)
+		if (bId > convertableLiquids.length) {
 			bId = 0;
+		}
 		return convertableLiquids[bId - 1].amount;
-				
+
 	}
-	
+
 	@Override
     public void setStats(){
         stats.timePeriod = craftTime;
@@ -117,10 +123,10 @@ public class LiquidConverter extends Block {
         if(outputLiquids != null){
             stats.add(Stat.output, StatValues.liquids(1f, outputLiquids));
         }
-        
+
         if(convertableLiquids.length > 1){
             stats.remove(Stat.booster);
-            /*stats.add(Stat.booster, StatValues.boosters(liquidConsumption, liquidConsumption / 60f, getBoost() / liquidConsumption, false, r -> { 
+            /*stats.add(Stat.booster, StatValues.boosters(liquidConsumption, liquidConsumption / 60f, getBoost() / liquidConsumption, false, r -> {
             	for (int i = 0; i < convertableLiquids.length; i++) {
             		if (r == convertableLiquids[i].liquid) {
             			return true;
@@ -128,10 +134,10 @@ public class LiquidConverter extends Block {
             } return false; }));*/
         	stats.add(Stat.booster,
 	                StatValues.speedBoosters("{0}" + StatUnit.percent.localized(),
-	    	        		liquidConsumption, 
-	    	        		(liquidConsumption / getBoost()) * 100, 
-	    	                false, 
-	    	                r -> { 
+	    	        		liquidConsumption,
+	    	        		(liquidConsumption / getBoost()) * 100,
+	    	                false,
+	    	                r -> {
 	    	                	for (int i = 0; i < convertableLiquids.length; i++) {
 	    	                		if (r == convertableLiquids[i].liquid) {
 	    	                			return true;
@@ -140,7 +146,7 @@ public class LiquidConverter extends Block {
 	    	            );
         }
     }
-	
+
 	@Override
     public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
         drawer.drawPlan(this, plan, list);
@@ -173,7 +179,7 @@ public class LiquidConverter extends Block {
             }
         }
     }
-    
+
     /*@Override
     public boolean rotatedOutput(int fromX, int fromY, Tile destination){
         if(!(destination.build instanceof ConduitBuild)) return false;
@@ -194,7 +200,7 @@ public class LiquidConverter extends Block {
 
         drawer.load(this);
     }
-	
+
 	@Override
     public void init(){
         if(outputLiquids == null && outputLiquid != null){
@@ -205,12 +211,14 @@ public class LiquidConverter extends Block {
             outputLiquid = outputLiquids[0];
         }
         outputsLiquid = outputLiquids != null;
-        
-        if(outputLiquids != null) hasLiquids = true;
+
+        if(outputLiquids != null) {
+			hasLiquids = true;
+		}
 
         super.init();
     }
-	
+
 	public class LiquidConverterBuild extends Building {
 		public float progress;
         public float totalProgress;
@@ -221,7 +229,7 @@ public class LiquidConverter extends Block {
         public void updateTile(){
         	defineCurrentBoost();
         	efficiency *= currentBoost;
-        	
+
             if(efficiency > 0){
                 progress += getProgressIncrease(craftTime);
                 warmup = Mathf.approachDelta(warmup, warmupTarget(), warmupSpeed);
@@ -250,7 +258,7 @@ public class LiquidConverter extends Block {
 
             dumpOutputs();
         }
-        
+
         @Override
         public boolean shouldConsume(){
             if(outputLiquids != null && !ignoreLiquidFullness){
@@ -274,7 +282,35 @@ public class LiquidConverter extends Block {
 
             return enabled;
         }
-        
+
+    	protected float getCurrentConvertion() {
+    		float f = 0f;
+
+    		for(var stack : convertableLiquids) {
+                f += liquids.get(stack.liquid) / block.liquidCapacity;
+            }
+    		f /= ((float)convertableLiquids.length);
+
+    		return f;
+    	}
+
+    	protected Color getCurrentConvertionColor() {
+    		int l = convertableLiquids.length;
+    		float rt = 0f, gt = 0f, bt = 0f, total = 0f;
+
+    		for (int i = 0; i < l; i++) {
+            	var stack = convertableLiquids[i];
+            	var f = liquids.get(stack.liquid) / block.liquidCapacity;
+    			total += f;
+
+    			rt += stack.liquid.color.r * f;
+    			gt += stack.liquid.color.g * f;
+    			bt += stack.liquid.color.b * f;
+            }
+
+    		return new Color(rt /= total, gt /= total, bt /= total);
+    	}
+
         public void defineCurrentBoost() {
         	var newBoost = 0f;
             for (int i = 0; i < convertableLiquids.length; i++) {
@@ -284,10 +320,10 @@ public class LiquidConverter extends Block {
                 	newBoost += stack.amount / liquidConsumption;
             	}
             }
-            
+
             currentBoost = newBoost;
         }
-        
+
         public void craft() {
             //consume();
 
@@ -299,7 +335,7 @@ public class LiquidConverter extends Block {
             if(wasVisible){
                 craftEffect.at(x, y);
             }
-            
+
             progress %= 1f;
         }
 
@@ -312,7 +348,7 @@ public class LiquidConverter extends Block {
                 }
             }
         }
-        
+
         @Override
         public float getProgressIncrease(float baseTime){
             if(ignoreLiquidFullness){
@@ -387,12 +423,16 @@ public class LiquidConverter extends Block {
             progress = read.f();
             warmup = read.f();
         }
-		
+
         @Override
         public double sense(LAccess sensor){
-            if(sensor == LAccess.progress) return progress();
+            if(sensor == LAccess.progress) {
+				return progress();
+			}
             //attempt to prevent wild total liquid fluctuation, at least for crafters
-            if(sensor == LAccess.totalLiquids && outputLiquid != null) return liquids.get(outputLiquid.liquid);
+            if(sensor == LAccess.totalLiquids && outputLiquid != null) {
+				return liquids.get(outputLiquid.liquid);
+			}
             return super.sense(sensor);
         }
 	}

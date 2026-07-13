@@ -1,14 +1,18 @@
 package tekton.content;
 
-import static tekton.content.TektonItems.*;
+import static tekton.content.TektonItems.cryogenicCompound;
+import static tekton.content.TektonItems.magnet;
+import static tekton.content.TektonItems.polytalum;
+import static tekton.content.TektonItems.tantalum;
+import static tekton.content.TektonItems.uranium;
 
 import arc.graphics.Color;
 import mindustry.content.Items;
 import mindustry.graphics.Pal;
 
 public class TektonColor {
-	public static Color 
-	
+	public static Color
+
 	//liquids
 	ammonia = Color.valueOf("e6cd43"),
 	liquidMethane = Color.valueOf("515423"),
@@ -18,16 +22,16 @@ public class TektonColor {
 	dicyanogen = Color.valueOf("75c1ff").mul(1.1f),
 	metazotoplasm = Color.valueOf("aaccaa"),
 	zirconiumSpark = Color.valueOf("fdff8c"),
-	
+
 	tektonOutlineColor = Color.valueOf("3d352f"),
-	
+
 	gravityColor = Color.valueOf("639bff"),
-	
+
 	neurospora = Color.valueOf("46617d"),
 	acid = Color.valueOf("82d629"),
 	cobweb = Color.valueOf("d6d6d6"),
 	radiation = Color.valueOf("bbd658"),
-	
+
 	commonShootColor = Color.valueOf("fff6d4"),
 	siliconShootColor = Pal.techBlue.cpy(),
 	zirconiumShootColor,
@@ -42,7 +46,7 @@ public class TektonColor {
 	redShootColor = Color.valueOf("ff4545"),
 	redShootColorLightning = Color.valueOf("ff5959")
 	;
-	
+
 	public static void load() { //waaaa
 		zirconiumShootColor = TektonColor.zirconiumSpark.cpy();
 		tantalumShootColor = tantalum.color.cpy().lerp(Color.white, 0.5f);

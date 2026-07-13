@@ -1,6 +1,7 @@
 package tekton.type.biological;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
 
 import arc.graphics.Color;
 import arc.math.Mathf;
@@ -26,7 +27,7 @@ public class BioTurret extends PowerTurret implements BiologicalBlock {
 	public float healPercent = 1f;
 	public Color regenColor = Pal.heal;
 	public Effect regenEffect = TektonFx.buildingBiologicalRegeneration.wrap(regenColor);
-	
+
 	public BioTurret(String name) {
 		super(name);
 		createRubble = drawCracks = false;
@@ -47,16 +48,17 @@ public class BioTurret extends PowerTurret implements BiologicalBlock {
 	public class BioTurretBuild extends PowerTurretBuild {
 		public boolean needRegen = false;
 		public float regenCharge = Mathf.random(regenReload);
-        
+
         @Override
         public void updateTile() {
         	super.updateTile();
-        	
+
 			needRegen = damaged();
-			
-			if (needRegen)
+
+			if (needRegen) {
 				regenCharge += Time.delta * timeScale * power.status;
-			
+			}
+
 			if (regenCharge >= regenReload && needRegen) {
 				regenCharge = 0f;
 				heal(maxHealth() * (healPercent) / 100f);
@@ -64,14 +66,15 @@ public class BioTurret extends PowerTurret implements BiologicalBlock {
 				regenEffect.at(x + Mathf.range(block.size * tilesize/2f - 1f), y + Mathf.range(block.size * tilesize/2f - 1f));
 			}
         }
-        
+
 		@Override
         public void drawLight() {
-			if (!emitLight)
+			if (!emitLight) {
 				return;
+			}
             Drawf.light(x, y, ((90f + Mathf.absin(5, 5f)) * lightRadius * warmup()) / tilesize, Tmp.c1.set(lightColor), 0.4f * lightRadius * efficiency);
         }
-        
+
         @Override
         public void onDestroyed() {
             super.onDestroyed();
@@ -91,7 +94,7 @@ public class BioTurret extends PowerTurret implements BiologicalBlock {
             super.read(read, revision);
             regenCharge = read.f();
         }
-        
+
         @Override
         public boolean canPickup() {
             return false;

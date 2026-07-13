@@ -1,12 +1,12 @@
 package tekton.ui;
 
+import static arc.Core.atlas;
+
 import arc.scene.style.TextureRegionDrawable;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Cell;
 import arc.util.Align;
 import mindustry.ui.dialogs.SettingsMenuDialog;
-
-import static arc.Core.atlas;
 
 public class IconPref extends SettingsMenuDialog.SettingsTable.Setting {
     float width;

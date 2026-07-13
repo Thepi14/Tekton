@@ -1,18 +1,20 @@
 package tekton.type.ai;
 
-import arc.math.*;
+import arc.math.Angles;
+import arc.math.Mathf;
 import arc.math.geom.Vec2;
-import arc.util.*;
-import mindustry.*;
-import mindustry.entities.*;
-import mindustry.entities.units.*;
-import mindustry.gen.*;
+import arc.util.Log;
+import arc.util.Nullable;
+import arc.util.Tmp;
+import mindustry.Vars;
+import mindustry.entities.Units;
+import mindustry.entities.units.AIController;
+import mindustry.gen.Teamc;
+import mindustry.gen.TimedKillc;
+import mindustry.gen.Unit;
 import tekton.type.dependent.DependentAI;
 import tekton.type.dependent.DependentType;
-import tekton.type.dependent.DistanceMissileUnitType;
 import tekton.type.dependent.MinionUnitType;
-
-import static mindustry.Vars.*;
 
 public class MinionAI extends AIController implements DependentAI {
 	 public @Nullable Unit shooter;
@@ -32,12 +34,12 @@ public class MinionAI extends AIController implements DependentAI {
         		despawnUnit();
             	return;
         	}
-        	
+
             float time = unit instanceof TimedKillc t ? t.time() : 1000000f;
             float distance = shooter != null ? new Vec2(shooter.x, shooter.y).dst(this.unit) : typ.maxDistance() + 1f;
             float distanceTarget = shooter != null ? new Vec2(unit.x, unit.y).dst(new Vec2(shooter.aimX, shooter.aimY)) : 0f;
             float attackDistance = unit.type.range * attackDistanceMul;
-            
+
             //remove before missile kills itself
             if (distance > typ.maxDistance() || time >= unit.type.lifetime - 60f) {
             	despawnUnit();
@@ -48,23 +50,24 @@ public class MinionAI extends AIController implements DependentAI {
             	if(time >= unit.type.homingDelay && !shooter.dead()){
     	            unit.lookAt(shooter.aimX, shooter.aimY);
     	        }
-                
+
                 unit.aimX = shooter.aimX;
                 unit.aimY = shooter.aimY;
-            	
-            	if (distanceTarget >= attackDistance)
-            		moveTo(new Vec2(shooter.aimX, shooter.aimY), attackDistance, 0.5f, true, null, true);
-            	else
-            		moveTo(new Vec2(shooter.aimX, shooter.aimY), attackDistance, 0.5f, true, null, false);
+
+            	if (distanceTarget >= attackDistance) {
+					moveTo(new Vec2(shooter.aimX, shooter.aimY), attackDistance, 0.5f, true, null, true);
+				} else {
+					moveTo(new Vec2(shooter.aimX, shooter.aimY), attackDistance, 0.5f, true, null, false);
+				}
             }
             else {
             	unit.moveAt(vec.trns(unit.rotation, unit.type.missileAccelTime <= 0f ? unit.speed() : Mathf.pow(Math.min(time / unit.type.missileAccelTime, 1f), 2f) * unit.speed()));
             }
-        }
-        else
-        	Log.info("not attached to a DependentType!");
+        } else {
+			Log.info("not attached to a DependentType!");
+		}
     }
-    
+
     public void despawnUnit() {
     	if (unit.type instanceof MinionUnitType v) {
     		v.despawnEffect.at(unit.x, unit.y, 0, unit);
@@ -73,14 +76,16 @@ public class MinionAI extends AIController implements DependentAI {
         	unit.remove();
     	}
     }
-    
+
     public float prefSpeed(){
         return unit.speed();
     }
-    
+
     public void moveTo(Vec2 target, float circleLength, float smooth, boolean keepDistance, @Nullable Vec2 offset, boolean arrive){
-        if(target == null) return;
-        
+        if(target == null) {
+			return;
+		}
+
         float speed = prefSpeed();
 
         vec.set(target).sub(unit);
@@ -110,7 +115,9 @@ public class MinionAI extends AIController implements DependentAI {
         }
 
         //ignore invalid movement values
-        if(vec.isNaN() || vec.isInfinite() || vec.isZero()) return;
+        if(vec.isNaN() || vec.isInfinite() || vec.isZero()) {
+			return;
+		}
 
         if(!unit.type.omniMovement && unit.type.rotateMoveFirst){
             float angle = vec.angle();

@@ -1,27 +1,40 @@
 package tekton.type.defense;
 
-import arc.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.math.geom.*;
-import arc.struct.*;
-import arc.util.*;
-import arc.util.io.*;
-import mindustry.content.*;
-import mindustry.entities.*;
-import mindustry.game.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.logic.*;
-import mindustry.world.*;
-import mindustry.world.blocks.*;
-import mindustry.world.consumers.*;
-import mindustry.world.meta.*;
-import tekton.content.TektonColor;
-import tekton.type.bullets.WaveBulletType;
+import static mindustry.Vars.tilesize;
 
-import static mindustry.Vars.*;
+import arc.Core;
+import arc.graphics.Blending;
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Angles;
+import arc.math.Mathf;
+import arc.math.Rand;
+import arc.math.geom.Rect;
+import arc.math.geom.Vec2;
+import arc.struct.EnumSet;
+import arc.util.Time;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
+import mindustry.content.Fx;
+import mindustry.entities.Effect;
+import mindustry.entities.Units;
+import mindustry.gen.Building;
+import mindustry.gen.Unit;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
+import mindustry.logic.Ranged;
+import mindustry.world.Block;
+import mindustry.world.consumers.ConsumeCoolant;
+import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.BlockGroup;
+import mindustry.world.meta.BlockStatus;
+import mindustry.world.meta.Env;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.StatValues;
+import tekton.type.bullets.WaveBulletType;
 
 public class RepairWaveTurret extends Block{
     static final Rect rect = new Rect();
@@ -58,7 +71,7 @@ public class RepairWaveTurret extends Block{
         outlineIcon = true;
         //yeah, this isn't the same thing, but it's close enough
         group = BlockGroup.projectors;
-        
+
         bullet = new WaveBulletType() {{
         	//range = repairRadius;
         	circleDeegres = repairAngle;
@@ -87,7 +100,7 @@ public class RepairWaveTurret extends Block{
     @Override
     public void load() {
     	super.load();
-    	
+
     	baseRegion = Core.atlas.find(name + "-base", "block-" + size);
     	heatRegion = Core.atlas.find(name + "-heat");
     }
@@ -101,7 +114,7 @@ public class RepairWaveTurret extends Block{
 
         consumePowerCond(powerUse, (RepairTurretBuild entity) -> entity.target != null);
         updateClipRadius(repairRadius + tilesize);
-        
+
         super.init();
     }
 
@@ -116,7 +129,7 @@ public class RepairWaveTurret extends Block{
     public TextureRegion[] icons(){
         return new TextureRegion[]{baseRegion, region};
     }
-    
+
     //TODO implement rotBlock interface next update
     public class RepairTurretBuild extends Building implements Ranged/*, RotBlock*/ {
         public Unit target;
@@ -142,7 +155,7 @@ public class RepairWaveTurret extends Block{
             Draw.rect(heatRegion, x, y, rotation - 90);
             Draw.blend();
             Draw.color();
-            
+
             Draw.reset();
         }
 
@@ -168,7 +181,7 @@ public class RepairWaveTurret extends Block{
 
             if (target != null && efficiency > 0) {
                 float angle = Angles.angle(x, y, target.x + offset.x, target.y + offset.y);
-                
+
                 if(reloadTimer > reload){
                     float nx = x + (Mathf.cosDeg(rotation) * bulletOffset), ny = y + (Mathf.sinDeg(rotation) * bulletOffset);
                     if(Angles.angleDist(angle, rotation) < bullet.circleDeegres / 2f){
@@ -176,7 +189,7 @@ public class RepairWaveTurret extends Block{
                         reloadTimer = 0f;
                     }
                 }
-                
+
                 rotation = Mathf.slerpDelta(rotation, angle, 0.5f * efficiency * timeScale * Time.delta);
             }
 

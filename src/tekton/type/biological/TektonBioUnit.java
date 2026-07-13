@@ -1,40 +1,28 @@
 package tekton.type.biological;
 
-import static arc.graphics.g2d.Draw.color;
+import static mindustry.Vars.tilesize;
 
-import arc.graphics.Color;
-import static arc.graphics.g2d.Draw.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.struct.Seq;
-
-import static tekton.content.TektonFx.*;
-
-import mindustry.content.StatusEffects;
+import arc.graphics.g2d.Fill;
 import mindustry.entities.Effect;
-import mindustry.entities.abilities.*;
-import mindustry.graphics.Drawf;
-import mindustry.graphics.Layer;
-import mindustry.graphics.Pal;
-import mindustry.type.StatusEffect;
+import mindustry.entities.abilities.LiquidExplodeAbility;
+import mindustry.entities.abilities.RegenAbility;
 import mindustry.type.UnitType;
 import mindustry.type.Weapon;
-import mindustry.type.ammo.*;
 import mindustry.world.meta.Env;
 import tekton.Tekton;
 import tekton.content.TektonColor;
 import tekton.content.TektonFx;
 import tekton.content.TektonLiquids;
-import tekton.content.TektonStatusEffects;
 import tekton.type.abilities.ColorDebrisAbility;
 
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
-import static arc.math.Angles.*;
-import static mindustry.Vars.*;
 
 public class TektonBioUnit extends UnitType implements BiologicalUnit {
 	public boolean customFogRadius = false;
-	
+
 	public TektonBioUnit(String name) {
 		super(name);
         drawCell = Tekton.drawBiologicalUnitsCell;
@@ -48,7 +36,7 @@ public class TektonBioUnit extends UnitType implements BiologicalUnit {
         lightColor = TektonColor.acid;
         lightOpacity = 0.35f;
         abilities.addAll(
-        		new LiquidExplodeAbility() {{ 
+        		new LiquidExplodeAbility() {{
         			liquid = TektonLiquids.acid;
 	        	}},
         		new RegenAbility() {{
@@ -57,7 +45,6 @@ public class TektonBioUnit extends UnitType implements BiologicalUnit {
                 }},
         		new ColorDebrisAbility());
         immunities.addAll(BiologicalUnit.getDefaultImmunities());
-        ammoType = new PowerAmmoType(0f);
         engineSize = 0f;
         itemCapacity = 0;
         fallEffect = new Effect(110, e -> {

@@ -1,10 +1,5 @@
 package tekton;
 
-import ent.anno.Annotations.EntityDef;
-import mindustry.gen.*;
-import mindustry.type.UnitType;
-import tekton.type.weathers.ObstaclesWeather.*;
-
 @SuppressWarnings("unused")
 public class EntityDefinitions<E>{
     // This will generate `MyUnit` entity class that implements both `MyComp` and `Unit` in `mymod.gen.entities`.

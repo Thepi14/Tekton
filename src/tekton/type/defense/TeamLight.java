@@ -10,7 +10,7 @@ public class TeamLight extends LightBlock {
 		super(name);
         flags = EnumSet.of(BlockFlag.hasFogRadius);
 	}
-    
+
     public class TeamLightBuild extends LightBuild {
     	@Override
         public float fogRadius(){

@@ -1,20 +1,17 @@
 package tekton.type.part;
 
-import arc.*;
+import arc.Core;
 import arc.graphics.Color;
-import arc.graphics.g2d.*;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
 import arc.struct.Seq;
 import arc.util.Nullable;
+import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.part.DrawPart;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
-import mindustry.type.Weapon;
-import arc.graphics.*;
-import arc.math.*;
-import arc.struct.*;
-import arc.util.*;
-import mindustry.graphics.*;
+import mindustry.graphics.Pal;
 
 public class FramePart extends DrawPart{
     /** Appended to unit/weapon/block name and drawn. */
@@ -45,14 +42,14 @@ public class FramePart extends DrawPart{
     public TextureRegion outlineRegion;
     public TextureRegion[] regions;
     public TextureRegion[] outlines = {};
-    
+
     public float layer = -1, layerOffset = 0f, heatLayerOffset = 1f, turretHeatLayer = Layer.turretHeat;
     public float outlineLayerOffset = -0.001f;
 
     public FramePart() {
         outline = false;
     }
-    
+
     public FramePart(String region) {
         this.suffix = region;
         outline = false;
@@ -67,26 +64,30 @@ public class FramePart extends DrawPart{
         int currentFrame = loop ? (int)(counter % frames) : (int)(frames * prog);
     	currentFrame = currentFrame >= regions.length ? regions.length - 1 : currentFrame;
         var currentRegion = regions[(prog >= 0.01f || (alwaysAnimate && loop) ? currentFrame : 0)];
-        
+
     	float z = Draw.z();
         float prevZ = Draw.z();
-    	if(layer > 0) Draw.z(layer);
+    	if(layer > 0) {
+			Draw.z(layer);
+		}
         //TODO 'under' should not be special cased like this...
-        if(under && turretShading) Draw.z(z - 0.0001f);
+        if(under && turretShading) {
+			Draw.z(z - 0.0001f);
+		}
         Draw.z(Draw.z() + layerOffset);
-        
+
         var rot = params.rotation + rotation - 90;
         var rx = params.x + x;
         var ry = params.y + y;
-        
+
         Draw.rect(currentRegion, rx, ry, rot);
         Draw.blend();
-        
+
         if(heat.found()){
             heatColor.write(Tmp.c1).a(hprog * heatColor.a);
             Drawf.additive(heat, Tmp.c1, rx, ry, rot, turretShading ? turretHeatLayer : Draw.z() + heatLayerOffset);
         }
-        
+
         if(outline && drawRegion){
             Draw.z(prevZ + outlineLayerOffset);
             if (outlineRegion == null) {
@@ -97,9 +98,9 @@ public class FramePart extends DrawPart{
             }
             Draw.z(prevZ);
         }
-        
+
         Draw.reset();
-        
+
         Draw.z(z);
     }
 
@@ -123,7 +124,7 @@ public class FramePart extends DrawPart{
         }
         heat = Core.atlas.find(realName + "-heat");
     }
-    
+
     @Override
     public void getOutlines(Seq<TextureRegion> out){
         if(outline && drawRegion){

@@ -4,7 +4,7 @@ import mindustry.content.Fx;
 import mindustry.entities.bullet.BulletType;
 
 public class EmptyBulletType extends BulletType{
-	
+
 	public static EmptyBulletType empty = new EmptyBulletType();
 
     public EmptyBulletType(){

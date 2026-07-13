@@ -1,22 +1,18 @@
 package tekton.type.gravity;
 
-import java.util.Arrays;
-
 import arc.Core;
-import arc.math.*;
+import arc.math.Mathf;
 import arc.struct.IntSet;
-import arc.util.Log;
-import arc.util.io.*;
-import mindustry.Vars;
-import mindustry.graphics.*;
-import mindustry.ui.*;
-import mindustry.world.blocks.production.*;
-import mindustry.world.draw.*;
-import mindustry.world.meta.*;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
+import mindustry.ui.Bar;
+import mindustry.world.blocks.production.GenericCrafter;
+import mindustry.world.draw.DrawDefault;
+import mindustry.world.draw.DrawMulti;
+import mindustry.world.meta.BlockGroup;
 import tekton.content.TektonColor;
 import tekton.content.TektonStat;
 import tekton.type.draw.DrawGravityOutput;
-import tekton.type.gravity.GravityConductor.GravityConductorBuild;
 
 public class GravityProducer extends GenericCrafter{
     public int gravityOutput = 10;
@@ -47,8 +43,8 @@ public class GravityProducer extends GenericCrafter{
         super.setBars();
 
         addBar("gravity", (GravityProducerBuild entity) -> new Bar(
-        		() -> Core.bundle.format(entity.gravity >= 0 ? "bar.gravity" : "bar.antiGravity", (int)(Math.abs(entity.gravity) + 0.01f)), 
-        		() -> TektonColor.gravityColor, 
+        		() -> Core.bundle.format(entity.gravity >= 0 ? "bar.gravity" : "bar.antiGravity", (int)(Math.abs(entity.gravity) + 0.01f)),
+        		() -> TektonColor.gravityColor,
 				() -> entity.gravity / gravityOutput));
     }
 
@@ -58,7 +54,7 @@ public class GravityProducer extends GenericCrafter{
         @Override
         public void updateTile(){
             super.updateTile();
-            
+
             //gravity approaches target at the same speed regardless of efficiency
             gravity = Mathf.approachDelta(gravity, gravityOutput * efficiency, warmupRate * delta());
         }

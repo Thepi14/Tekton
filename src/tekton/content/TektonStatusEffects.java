@@ -1,29 +1,34 @@
 package tekton.content;
 
-import arc.*;
-import arc.graphics.*;
+import arc.graphics.Color;
 import arc.graphics.g2d.Fill;
-import arc.math.*;
+import arc.math.Mathf;
 import arc.struct.Seq;
-import mindustry.game.EventType.*;
-import mindustry.game.*;
-import mindustry.graphics.*;
-import mindustry.type.*;
-import mindustry.type.StatusEffect;
 import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.content.Liquids;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
+import mindustry.graphics.Pal;
+import mindustry.type.StatusEffect;
 
-import static arc.graphics.g2d.Draw.color;
-import static arc.math.Angles.randLenVectors;
-import static mindustry.Vars.*;
+import arc.graphics.*;
+import arc.graphics.g2d.*;
+import static arc.graphics.g2d.Draw.*;
+import static arc.graphics.g2d.Lines.*;
+
+import arc.math.geom.*;
+import arc.math.*;
+
+import static arc.math.geom.Geometry.*;
+import static arc.math.Angles.*;
+import static arc.math.Mathf.*;
+import static arc.math.Rand.*;
 
 
 public class TektonStatusEffects {
 	public static StatusEffect tarredInMethane, wetInAcid, acidified, shortCircuit, weaponLock, incineration, radioactiveContamination, radiationAbsorption, cobwebbed, neurosporaSlowed, foggerStatus;
-	
+
 	public static void load(){
 		tarredInMethane = new StatusEffect("status-tarred-in-methane") {{
 			show = true;
@@ -46,7 +51,7 @@ public class TektonStatusEffects {
                 affinity(StatusEffects.blasted, (unit, result, time) -> result.set(StatusEffects.blasted, result.time + time));
             });
 		}};
-	    
+
 		neurosporaSlowed = new StatusEffect("status-neurospora-slowed") {{
 			show = true;
 			hideDetails = false;
@@ -57,7 +62,7 @@ public class TektonStatusEffects {
             effect = TektonFx.neurosporaContaminationSapped;
             effectChance = 0.04f;
 	    }};
-		
+
 		wetInAcid = new StatusEffect("status-wet-in-acid") {{
 			show = true;
 			alwaysUnlocked = false;
@@ -74,13 +79,13 @@ public class TektonStatusEffects {
             });
 	        effect = new Effect(40f, e -> {
 	            color(Color.valueOf("82d629"), Pal.berylShot, e.fout() / 5f + Mathf.randomSeedRange(e.id, 0.12f));
-	
+
 	            randLenVectors(e.id, 2, 1f + e.fin() * 3f, (x, y) -> {
 	                Fill.circle(e.x + x, e.y + y, .2f + e.fout() * 1.2f);
 	            });
 	        });
 	    }};
-		
+
 		acidified = new StatusEffect("status-acidified") {{
 			show = true;
 			alwaysUnlocked = false;
@@ -94,13 +99,13 @@ public class TektonStatusEffects {
 	        damage = 10f / 60f;
 	        effect = new Effect(40f, e -> {
 	            color(Color.valueOf("82d629"), Pal.berylShot, e.fout() / 5f + Mathf.randomSeedRange(e.id, 0.12f));
-	
+
 	            randLenVectors(e.id, 2, 1f + e.fin() * 3f, (x, y) -> {
 	                Fill.circle(e.x + x, e.y + y, .2f + e.fout() * 1.2f);
 	            });
 	        });
 	    }};
-	    
+
 	    shortCircuit = new StatusEffect("status-short-circuit") {{
 			show = true;
 			hideDetails = false;
@@ -118,17 +123,17 @@ public class TektonStatusEffects {
 	            });
 	        });
 	    }};
-	    
+
 	    weaponLock = new StatusEffect("status-weapon-lock") {{
 	    	disarm = true;
 			outline = false;
 	        color = Pal.techBlue.cpy();
 			applyColor = Pal.techBlue.cpy();
-			
+
 			effect = TektonFx.weaponLockEffect;
 			effectChance = 0.6f;
 	    }};
-		
+
 		incineration = new StatusEffect("status-incineration") {{
 			show = true;
 			hideDetails = false;
@@ -138,26 +143,26 @@ public class TektonStatusEffects {
 	        speedMultiplier = 0.4f;
 	        healthMultiplier = 0.8f;
 	        damage = 4f;
-	        
+
 	        effect = new Effect(40f, e -> {
 	            color(Pal.redSpark, Liquids.slag.color, e.fout() / 5f + Mathf.randomSeedRange(e.id, 0.12f));
-	
+
 	            randLenVectors(e.id, 2, 1f + e.fin() * 3f, (x, y) -> {
 	                Fill.circle(e.x + x, e.y + y, .2f + e.fout() * 1.2f);
 	            });
 	        });
-	        
+
 	        init(() -> {
 	        	opposite(StatusEffects.freezing);
 	        	opposite(StatusEffects.wet);
-        	}); 
+        	});
 	    }};
-	    
+
 	    float rspeedMultiplier = 0.7f,
     		rbuildSpeedMultiplier = 0.7f,
     		rdamageMultiplier = 0.8f,
     		rdragMultiplier = 1.4f;
-	    
+
 	    radioactiveContamination = new StatusEffect("status-radioactive-contamination") {{
 			show = true;
 			hideDetails = false;
@@ -177,7 +182,7 @@ public class TektonStatusEffects {
 	            });
 	        });
 	    }};
-	    
+
 	    radiationAbsorption = new StatusEffect("status-radiation-absorption") {{
 			show = true;
 			hideDetails = false;
@@ -201,7 +206,7 @@ public class TektonStatusEffects {
 	        	opposite(radioactiveContamination);
 	        });
 	    }};
-	    
+
 	    cobwebbed = new StatusEffect("status-cobwebbed") {{
 			show = true;
 			alwaysUnlocked = false;
@@ -213,7 +218,7 @@ public class TektonStatusEffects {
 	        dragMultiplier = 1.2f;
 	        effect = TektonFx.cobwebbed;
 	    }};
-	    
+
 	    foggerStatus = new StatusEffect("status-fogger") {{
 	    	show = false;
 			hideDetails = true;
@@ -222,12 +227,12 @@ public class TektonStatusEffects {
 	        effect = Fx.none;
 	    }};
 	}
-	
+
 	public static Seq<StatusEffect> returnAllTektonStatus() {
     	var b = new Seq<StatusEffect>();
 		if (!Vars.headless) {
 	    	var a = TektonStatusEffects.class.getFields();
-	    	
+
 	    	for (var c : a) {
 	    		c.setAccessible(true);
 	            try {

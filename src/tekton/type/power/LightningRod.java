@@ -1,20 +1,21 @@
 package tekton.type.power;
 
-import static mindustry.Vars.*;
+import static mindustry.Vars.tilesize;
 
 import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.util.io.*;
+import arc.util.io.Reads;
+import arc.util.io.Writes;
 import mindustry.Vars;
 import mindustry.entities.Effect;
 import mindustry.entities.effect.WaveEffect;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.world.blocks.power.*;
+import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import tekton.Drawt;
@@ -30,9 +31,9 @@ public class LightningRod extends PowerGenerator {
 	public boolean diamondArea = true;
 	public boolean cummulative = true;
 	public float maxPowerEfficiency = 4f;
-	
+
     public TextureRegion glowRegion;
-    
+
     public Effect lightningAbsorptionEffect = new WaveEffect() {{
 		sides = 4;
 		rotation = 0f;
@@ -45,99 +46,103 @@ public class LightningRod extends PowerGenerator {
 		strokeFrom = 2f;
 		strokeTo = 0f;
 	}};
-    
+
 	public LightningRod(String name) {
 		super(name);
 		powerProduction = 10f;
 		//outlineIcon = true;
 	}
-	
+
 	@Override
     public void load() {
         super.load();
-        
+
         glowRegion = Core.atlas.find(name + "-glow");
     }
-	
+
 	@Override
     public void setBars() {
         super.setBars();
     }
-	
+
 	@Override
     public void setStats() {
         super.setStats();
-        
+
         stats.add(Stat.productionTime, powerOutputDuration / 60f, StatUnit.seconds);
     }
-	
+
 	@Override
     public void drawPlace(int x, int y, int rotation, boolean valid) {
-        if (circleArea)
-            Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, protectionRadius, Pal.lightOrange);
-        else if (squareArea)
-        	Drawf.dashSquare(Pal.lightOrange, x * tilesize + offset, y * tilesize + offset, protectionRadius * 2f);
-        else if (diamondArea)
-        	Drawt.dashDiamond(Pal.lightOrange, x * tilesize + offset, y * tilesize + offset, protectionRadius);
-        
+        if (circleArea) {
+			Drawf.dashCircle(x * tilesize + offset, y * tilesize + offset, protectionRadius, Pal.lightOrange);
+		} else if (squareArea) {
+			Drawf.dashSquare(Pal.lightOrange, x * tilesize + offset, y * tilesize + offset, protectionRadius * 2f);
+		} else if (diamondArea) {
+			Drawt.dashDiamond(Pal.lightOrange, x * tilesize + offset, y * tilesize + offset, protectionRadius);
+		}
+
         super.drawPlace(x, y, rotation, valid);
     }
-	
+
 	@Override
     public TextureRegion[] icons(){
         return new TextureRegion[]{region};
     }
-	
+
 	public class LightningRodBuild extends GeneratorBuild implements LightningAbsorber {
-		
+
 		public boolean hit = false;
 		public float powerOutput = 0f;
-		
+
 		@Override
 		public void updateTile() {
 			powerOutput -= 1f / powerOutputDuration;
-			
-			if (cummulative)
+
+			if (cummulative) {
 				powerOutput = Mathf.clamp(powerOutput, 0f, maxPowerEfficiency);
-			else
+			} else {
 				powerOutput = Mathf.clamp(powerOutput);
-			
+			}
+
 			productionEfficiency = powerOutput;
-			
+
 			if (hit) {
-				if (cummulative)
+				if (cummulative) {
 					powerOutput += 1f;
-				else
+				} else {
 					powerOutput = 1f;
+				}
 				hit = false;
 			}
 		}
-		
+
 		@Override
-		public float efficiency() {
-			return productionEfficiency;
+		public float efficiencyScale() {
+			return super.efficiencyScale() * productionEfficiency;
 		}
-		
+
 		@Override
         public float totalProgress() {
             return powerOutput;
         }
-        
+
         @Override
         public float getPowerProduction() {
             return productionEfficiency * powerProduction;
         }
-		
+
 		@Override
         public void drawSelect() {
-			if (circleArea)
-	            Drawf.dashCircle(x + offset, y + offset, protectionRadius, Pal.lightOrange);
-			else if (squareArea)
-	        	Drawf.dashSquare(Pal.lightOrange, x + offset, y + offset, protectionRadius * 2f);
-			else if (diamondArea)
+			if (circleArea) {
+				Drawf.dashCircle(x + offset, y + offset, protectionRadius, Pal.lightOrange);
+			} else if (squareArea) {
+				Drawf.dashSquare(Pal.lightOrange, x + offset, y + offset, protectionRadius * 2f);
+			} else if (diamondArea) {
 				Drawt.dashDiamond(Pal.lightOrange, x + offset * tilesize, y + offset * tilesize, protectionRadius);
+			}
         }
-		
+
 		@Override
 		public void draw() {
             var z = Draw.z();
@@ -147,28 +152,28 @@ public class LightningRod extends PowerGenerator {
             Draw.z(z);
             Draw.reset();
 		}
-		
+
 		@Override
         public void drawLight() {
             Drawf.light(x, y, (powerOutput + 0.5f) * (protectionRadius / 2f), lightColor, Mathf.clamp(powerOutput, 0f, 1f / glowOpacity) * glowOpacity);
         }
-		
+
 		@Override
 		public void write(Writes write) {
 			super.write(write);
-			
+
 			write.bool(hit);
 			write.f(powerOutput);
 		}
-		
+
 		@Override
 		public void read(Reads read, byte revision) {
 			super.read(read, revision);
-			
+
 			hit = read.bool();
 			powerOutput = read.f();
 		}
-		
+
 		@Override
         public boolean canPickup() {
             return false;
@@ -179,7 +184,7 @@ public class LightningRod extends PowerGenerator {
 			hit = true;
 			lightningAbsorptionEffect.at(this);
 		}
-		
+
 		@Override
 		public float lightningProtectionRadius() {
 			return protectionRadius;

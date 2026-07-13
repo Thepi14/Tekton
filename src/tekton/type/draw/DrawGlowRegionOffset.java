@@ -7,7 +7,7 @@ import mindustry.world.draw.DrawGlowRegion;
 
 public class DrawGlowRegionOffset extends DrawGlowRegion  {
 	public float offset = 0f;
-	
+
 	public DrawGlowRegionOffset(){
     }
 
@@ -23,13 +23,17 @@ public class DrawGlowRegionOffset extends DrawGlowRegion  {
     public DrawGlowRegionOffset(String suffix){
         super(suffix);
     }
-	
+
 	@Override
     public void draw(Building build){
-        if(build.warmup() <= 0.001f) return;
+        if(build.warmup() <= 0.001f) {
+			return;
+		}
 
         float z = Draw.z();
-        if(layer > 0) Draw.z(layer);
+        if(layer > 0) {
+			Draw.z(layer);
+		}
         Draw.blend(blending);
         Draw.color(color);
         Draw.alpha((Mathf.absin(build.totalProgress() + offset, glowScale, alpha) * glowIntensity + 1f - glowIntensity) * build.warmup() * alpha);

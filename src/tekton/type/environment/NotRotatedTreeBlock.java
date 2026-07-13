@@ -1,10 +1,11 @@
 package tekton.type.environment;
 
-import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.util.*;
-import mindustry.graphics.*;
-import mindustry.world.*;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
+import arc.util.Time;
+import mindustry.graphics.Layer;
+import mindustry.world.Tile;
 import mindustry.world.blocks.environment.TreeBlock;
 
 public class NotRotatedTreeBlock extends TreeBlock {
@@ -12,7 +13,7 @@ public class NotRotatedTreeBlock extends TreeBlock {
 	public NotRotatedTreeBlock(String name) {
 		super(name);
 	}
-	
+
 	@Override
     public void drawBase(Tile tile){
         float
@@ -28,7 +29,7 @@ public class NotRotatedTreeBlock extends TreeBlock {
         }
 
         TextureRegion reg = variants == 0 ? region : variantRegions[Mathf.randomSeed(tile.pos(), 0, Math.max(0, variantRegions.length - 1))];
-        
+
         Draw.z(Layer.power + 1);
         Draw.rectv(reg, x, y, w, h, 0, vec -> vec.add(
         Mathf.sin(vec.y*3 + Time.time, scl, mag) + Mathf.sin(vec.x*3 - Time.time, 70, 0.8f),

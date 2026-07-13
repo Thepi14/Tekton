@@ -10,22 +10,20 @@ import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.IntSet;
+import arc.util.Eachable;
 import arc.util.Nullable;
 import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.Vars;
-import mindustry.content.Fx;
-import mindustry.entities.Damage;
-import mindustry.entities.Effect;
 import mindustry.entities.Puddles;
+import mindustry.entities.TargetPriority;
+import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
-import mindustry.gen.Sounds;
-import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
+import mindustry.graphics.Pal;
 import mindustry.type.Liquid;
 import mindustry.ui.Bar;
 import mindustry.world.Tile;
-import mindustry.world.blocks.liquid.ArmoredConduit;
 import mindustry.world.blocks.liquid.Conduit;
 import mindustry.world.meta.BuildVisibility;
 import mindustry.world.meta.Env;
@@ -34,14 +32,11 @@ import tekton.content.TektonColor;
 import tekton.content.TektonFx;
 import tekton.content.TektonLiquids;
 import tekton.content.TektonVars;
-import tekton.type.gravity.GravityBlock;
-import tekton.type.gravity.GravityConsumer;
-import tekton.type.gravity.GravityConductor.GravityConductorBuild;
 
 public class Vein extends Conduit implements BiologicalBlock {
 	public float visualMaxHeat = 15f;
     public boolean splitBiopower = false;
-    
+
     public @Nullable Liquid explosionPuddleLiquid = TektonLiquids.ammonia;
     public int explosionPuddles = 1;
     public float explosionPuddleRange = tilesize * 3f;
@@ -49,7 +44,7 @@ public class Vein extends Conduit implements BiologicalBlock {
 
     public Color glowColor = TektonColor.ammonia.cpy();
     public float alpha = 0.9f, glowScale = 15f, glowIntensity = 1f;
-    
+
     public float deathTimer = 10f;
     private TextureRegion glowRegion;
 
@@ -58,7 +53,7 @@ public class Vein extends Conduit implements BiologicalBlock {
 
         envEnabled |= Env.space;
 		buildVisibility = BuildVisibility.sandboxOnly;
-		
+
 		botColor = Color.clear;
 		createRubble = drawCracks = false;
 		update = true;
@@ -69,14 +64,15 @@ public class Vein extends Conduit implements BiologicalBlock {
 		emitLight = true;
         lightColor = TektonColor.ammonia.cpy();
         lightRadius = 1f;
-        
+		priority = TargetPriority.wall;
+
 		destroyEffect = TektonFx.biologicalAmmoniaDynamicExplosion;
 	}
-	
+
 	@Override
 	public void load() {
 		super.load();
-		
+
 		glowRegion = Core.atlas.find(name + "-glow");
 	}
 
@@ -86,16 +82,38 @@ public class Vein extends Conduit implements BiologicalBlock {
 
         //TODO show number
         addBar("biopower", (VeinBuild entity) -> new Bar(
-        		() -> Core.bundle.format("bar.gravity", (int)(Math.abs(entity.biopower) + 0.01f)), 
-        		() -> TektonColor.ammonia, 
+        		() -> Core.bundle.format("bar.gravity", (int)(Math.abs(entity.biopower) + 0.01f)),
+        		() -> TektonColor.ammonia,
         		() -> entity.biopower / TektonVars.visualMaxGravity));
     }
 
-    /*@Override
+    @Override
     public TextureRegion[] icons(){
-        return drawer.finalIcons(this);
-    }*/
-	
+    	return new TextureRegion[]{botRegions[0]};
+    }
+
+    @Override
+    public void drawPlan(BuildPlan plan, Eachable<BuildPlan> list, boolean valid, float alpha){
+        Draw.reset();
+        Draw.mixcol(!valid ? Pal.breakInvalid : Color.white, (!valid ? 0.4f : 0.24f) + Mathf.absin(Time.globalTime, 6f, 0.28f));
+        Draw.alpha(alpha);
+        float prevScale = Draw.scl;
+        Draw.scl *= plan.animScale;
+        drawPlanRegion(plan, list);
+        Draw.scl = prevScale;
+        Draw.reset();
+    }
+
+    @Override
+    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+        drawDefaultPlanRegion(plan, list);
+    }
+
+    @Override
+    public void drawDefaultPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
+        Draw.rect(botRegions[0], plan.drawx(), plan.drawy(), !rotate || !rotateDraw ? 0 : plan.rotation * 90);
+    }
+
 	public class VeinBuild extends ConduitBuild implements BiopowerBlock, BiopowerConsumer {
 		public float biopower = 0f;
         public float[] sideBiopower = new float[4];
@@ -103,12 +121,13 @@ public class Vein extends Conduit implements BiologicalBlock {
         public long lastBiopowerUpdate = -1;
 		public float totalProgress = Mathf.random(1000f);
 	    public float currentDeathTimer = 0f;
-        
+
         @Override
         public void drawLight() {
             super.drawLight();
-			if (!emitLight)
+			if (!emitLight) {
 				return;
+			}
             Drawf.light(x, y, (90f + Mathf.absin(5, 5f)) * currentGlow(), Tmp.c1.set(lightColor), 0.4f * currentGlow() * efficiency);
         }
 
@@ -127,29 +146,31 @@ public class Vein extends Conduit implements BiologicalBlock {
         	//super.updateTile();
             smoothLiquid = Mathf.lerpDelta(smoothLiquid, liquids.currentAmount() / liquidCapacity, 0.05f);
             health = block.health;
-            
+
         	updateBiopower();
         	totalProgress += Time.delta * timeScale * efficiency;
-        	if (((back() == null && left() == null && right() == null && front() == null) || (back() == null && left() == null && right() == null && front() != null)) && biopower == 0)
-        		currentDeathTimer += Time.delta * timeScale * efficiency;
-        	else
-        		currentDeathTimer = 0f;
-        	
-        	if (currentDeathTimer > deathTimer)
-        		kill();
+        	if (((back() == null && left() == null && right() == null && front() == null) || (back() == null && left() == null && right() == null && front() != null)) && biopower == 0) {
+				currentDeathTimer += Time.delta * timeScale * efficiency;
+			} else {
+				currentDeathTimer = 0f;
+			}
+
+        	if (currentDeathTimer > deathTimer) {
+				kill();
+			}
 
             if(liquids.currentAmount() > 0.0001f && timer(timerFlow, 1)){
                 moveLiquidForward(true, liquids.current());
             }
         }
-        
+
         @Override
         public void onDestroyed() {
             super.onDestroyed();
             createExplosion();
 			Drawt.DrawAmmoniaDebris(x, y, size);
         }
-        
+
         public void createExplosion() {
         	if(explosionPuddleLiquid != null){
                 for(int i = 0; i < explosionPuddles; i++){
@@ -160,7 +181,7 @@ public class Vein extends Conduit implements BiologicalBlock {
                 Puddles.deposit(tile, explosionPuddleLiquid, explosionPuddleAmount);
             }
         }
-		
+
 		@Override
         public void onProximityUpdate(){
             super.onProximityUpdate();
@@ -177,7 +198,9 @@ public class Vein extends Conduit implements BiologicalBlock {
         }
 
         public void updateBiopower() {
-            if(lastBiopowerUpdate == Vars.state.updateId) return;
+            if(lastBiopowerUpdate == Vars.state.updateId) {
+				return;
+			}
 
             lastBiopowerUpdate = Vars.state.updateId;
             biopower = calculateBiopower(sideBiopower, cameFrom);
@@ -207,7 +230,7 @@ public class Vein extends Conduit implements BiologicalBlock {
 		public float calculateBiopower(Building building, float[] sideBiopower, IntSet cameFrom) {
 			return BiopowerBlock.super.calculateBiopower(building, sideBiopower, cameFrom);
 		}
-		
+
 		public float currentGlow() {
 			return Math.max(0.1f, Mathf.absin(totalProgress, glowScale, alpha) * glowIntensity);
 		}
@@ -219,21 +242,21 @@ public class Vein extends Conduit implements BiologicalBlock {
             Draw.blend(Blending.additive);
             Draw.color(glowColor);
             Draw.alpha(currentGlow() * efficiency * alpha);
-            
+
             Draw.rect(glowRegion, x, y);
-            
+
             Draw.blend();
             Draw.color();
             Draw.reset();
 		}
-		
+
 		protected void drawAt(float x, float y, int bits, int rotation, SliceMode slice) {
             float angle = rotation * 90f;
             //Draw.color(botColor);
             Draw.rect(sliced(botRegions[bits], slice), x, y, angle);
-            
+
             //Draw.rect(sliced(topRegions[bits], slice), x, y, angle);
-            
+
             //Drawf.additive(sliced(topRegions[bits], slice), glowColor.cpy().a(currentGlow() * efficiency * alpha), x, y, angle);
             //Draw.reset();
 
@@ -255,6 +278,11 @@ public class Vein extends Conduit implements BiologicalBlock {
             Draw.scl(1f, 1f);
             Drawf.liquid(sliced(liquidr, slice), x + ox, y + oy, smoothLiquid, liquids.current().color.write(Tmp.c1).a(1f));
             Draw.scl(xscl, yscl);*/
+        }
+
+        @Override
+        public boolean canPickup(){
+            return false;
         }
 	}
 }

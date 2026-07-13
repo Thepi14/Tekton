@@ -1,14 +1,16 @@
 package tekton.type.draw;
 
-import arc.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.util.*;
-import mindustry.entities.units.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.world.*;
+import arc.Core;
+import arc.graphics.Blending;
+import arc.graphics.Color;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
+import arc.util.Eachable;
+import mindustry.entities.units.BuildPlan;
+import mindustry.gen.Building;
+import mindustry.graphics.Layer;
+import mindustry.world.Block;
 import mindustry.world.draw.DrawBlock;
 import tekton.content.TektonColor;
 import tekton.type.gravity.GravityBlock;
@@ -39,13 +41,17 @@ public class DrawGravityOutput extends DrawBlock {
             Draw.z(Layer.blockAdditive);
             Draw.blend(Blending.additive);
             Draw.color(gravityColor, maxAlpha * graviter.gravityFrac() * (gravityColor.a * (1f - gravityPulse + Mathf.absin(gravityPulseScl, gravityPulse))));
-            if(gravity.found()) Draw.rect(gravity, build.x, build.y, rotdeg);
+            if(gravity.found()) {
+				Draw.rect(gravity, build.x, build.y, rotdeg);
+			}
             Draw.color(Draw.getColor().mul(glowMult));
-            if(drawGlow && glow.found()) Draw.rect(glow, build.x, build.y);
+            if(drawGlow && glow.found()) {
+				Draw.rect(glow, build.x, build.y);
+			}
             Draw.blend();
             Draw.color();
         }
-        
+
         Draw.reset();
     }
 

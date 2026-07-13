@@ -1,5 +1,8 @@
 package tekton.ui;
 
+import static arc.Core.atlas;
+import static arc.Core.settings;
+
 import arc.Core;
 import arc.func.Boolc;
 import arc.scene.style.TextureRegionDrawable;
@@ -8,10 +11,6 @@ import arc.scene.ui.TextButton;
 import arc.scene.ui.layout.Table;
 import mindustry.ui.Styles;
 import mindustry.ui.dialogs.SettingsMenuDialog;
-
-import static arc.Core.atlas;
-import static arc.Core.settings;
-import static mindustry.Vars.ui;
 
 public class SwitchPref extends SettingsMenuDialog.SettingsTable.CheckSetting {
     String icon;
@@ -42,12 +41,16 @@ public class SwitchPref extends SettingsMenuDialog.SettingsTable.CheckSetting {
 
             falseBtn = t2.button(Core.bundle.get("setting." + name + ".1"), Styles.flatTogglet, () -> {
                 settings.put(name, false);
-                if (upt[0] != null) upt[0].run();
+                if (upt[0] != null) {
+					upt[0].run();
+				}
             }).height(30f).width(width*0.3f-20f).get();
 
             trueBtn = t2.button(Core.bundle.get("setting." + name + ".2"), Styles.flatTogglet, () -> {
                 settings.put(name, true);
-                if (upt[0] != null) upt[0].run();
+                if (upt[0] != null) {
+					upt[0].run();
+				}
             }).height(30f).width(width*0.3f-20f).get();
 
             upt[0] = () -> {
@@ -55,7 +58,9 @@ public class SwitchPref extends SettingsMenuDialog.SettingsTable.CheckSetting {
                 falseBtn.setChecked(!value);
                 trueBtn.setChecked(value);
 
-                if(changed != null) changed.get(value);
+                if(changed != null) {
+					changed.get(value);
+				}
             };
 
             upt[0].run();

@@ -3,27 +3,24 @@ package tekton.type.production;
 import arc.math.Mathf;
 import arc.util.Time;
 import mindustry.Vars;
-import mindustry.content.Liquids;
 import mindustry.world.blocks.production.AttributeCrafter;
-import mindustry.world.consumers.Consume;
 import mindustry.world.consumers.ConsumeLiquidBase;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import mindustry.world.meta.StatValues;
-import mindustry.world.modules.LiquidModule.LiquidConsumer;
 
 public class AttributeCrafterBoosted extends AttributeCrafter {
 	public float liquidBoostIntensity = 2f;
-	
+
 	public AttributeCrafterBoosted(String name) {
 		super(name);
-		
+
 	}
 
     @Override
     public void setStats(){
         super.setStats();
-        
+
         stats.remove(Stat.booster);
         if(liquidBoostIntensity != 1 && findConsumer(f -> f instanceof ConsumeLiquidBase && f.booster) instanceof ConsumeLiquidBase consBase){
             stats.remove(Stat.booster);
@@ -40,7 +37,7 @@ public class AttributeCrafterBoosted extends AttributeCrafter {
         @Override
         public void updateTile() {
         	totalProgress += (warmup * Time.delta * currentLiquidBoost);
-        	
+
         	for (var liquid : Vars.content.liquids()) {
             	if (block.consumesLiquid(liquid) && findConsumer(f -> f instanceof ConsumeLiquidBase && f.booster) instanceof ConsumeLiquidBase consBase) {
             		var amount = liquids.get(liquid);
@@ -52,12 +49,12 @@ public class AttributeCrafterBoosted extends AttributeCrafter {
             		}
             	}
         	}
-        	
+
         	super.updateTile();
-        	
+
         	//efficiency *= currentLiquidBoost;
         }
-		
+
         @Override
         public float efficiencyScale() {
             return (scaleLiquidConsumption ? efficiencyMultiplier() : super.efficiencyScale()) + currentLiquidBoost;

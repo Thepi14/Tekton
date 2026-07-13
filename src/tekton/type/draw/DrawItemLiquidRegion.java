@@ -1,12 +1,13 @@
 package tekton.type.draw;
 
-import arc.*;
-import arc.graphics.g2d.*;
+import arc.Core;
+import arc.graphics.g2d.TextureRegion;
 import mindustry.content.Items;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.type.*;
-import mindustry.world.*;
+import mindustry.gen.Building;
+import mindustry.graphics.Drawf;
+import mindustry.type.Item;
+import mindustry.type.Liquid;
+import mindustry.world.Block;
 import mindustry.world.draw.DrawBlock;
 
 public class DrawItemLiquidRegion extends DrawBlock{
@@ -22,7 +23,7 @@ public class DrawItemLiquidRegion extends DrawBlock{
     }
 
     public DrawItemLiquidRegion(){
-    	
+
     }
 
     @Override

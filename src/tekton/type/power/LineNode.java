@@ -1,5 +1,8 @@
 package tekton.type.power;
 
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
+
 import arc.math.geom.Geometry;
 import mindustry.Vars;
 import mindustry.gen.Building;
@@ -9,24 +12,23 @@ import mindustry.world.blocks.power.BeamNode;
 import mindustry.world.blocks.power.PowerGraph;
 import mindustry.world.modules.PowerModule;
 
-import static mindustry.Vars.*;
-
 public class LineNode extends BeamNode {
 
 	public LineNode(String name) {
 		super(name);
 	}
-	
+
 	public int returnLinkSize(Building entity) {
     	PowerModule power = entity.power;
     	int num = 0;
     	for (var node : power.links.toArray()) {
-    		if (Vars.world.build(node).block() instanceof LongPowerNodeLink)
-    			num++;
+    		if (Vars.world.build(node).block instanceof LongPowerNodeLink) {
+				num++;
+			}
     	}
     	return num;
     }
-	
+
 	@Override
     public void drawPlace(int x, int y, int rotation, boolean valid){
         for(int i = 0; i < 4; i++){
@@ -62,9 +64,9 @@ public class LineNode extends BeamNode {
             }
         }
     }
-	
+
 	public class LineNodeBuild extends BeamNodeBuild {
-		
+
 		@Override
 		public void updateDirections(){
             for(int i = 0; i < 4; i ++){
@@ -82,7 +84,7 @@ public class LineNode extends BeamNode {
                         break;
                     }
 
-                    //power nodes do NOT play nice with beam nodes, do not touch them as that forcefully modifies their links 
+                    //power nodes do NOT play nice with beam nodes, do not touch them as that forcefully modifies their links
                     //hmmmmm...
                     if(other != null && other.block.hasPower && other.block.connectedPower && other.team == team){
                         links[i] = other;

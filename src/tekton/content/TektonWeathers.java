@@ -1,18 +1,18 @@
 package tekton.content;
 
-import arc.graphics.*;
-import arc.util.*;
-import mindustry.content.Fx;
+import arc.graphics.Color;
+import arc.util.Time;
 import mindustry.content.StatusEffects;
-import mindustry.entities.Effect;
-import mindustry.entities.bullet.BulletType;
 import mindustry.game.Team;
-import mindustry.gen.*;
-import mindustry.type.*;
-import mindustry.type.weather.*;
-import mindustry.world.meta.*;
+import mindustry.gen.Sounds;
+import mindustry.type.Weather;
+import mindustry.type.weather.ParticleWeather;
+import mindustry.type.weather.RainWeather;
+import mindustry.world.meta.Attribute;
 import tekton.type.bullets.EmptyBulletType;
-import tekton.type.weathers.*;
+import tekton.type.weathers.FogWeather;
+import tekton.type.weathers.ObstaclesWeather;
+import tekton.type.weathers.StormWeather;
 
 public class TektonWeathers {
 	public static Weather
@@ -25,7 +25,7 @@ public class TektonWeathers {
 	methaneSnow,
 	eggStorm
 	;
-	
+
 	public static void load() {
 		//banned now
 		tektonFog = new FogWeather("fog"){{
@@ -44,10 +44,10 @@ public class TektonWeathers {
             xspeed = 1f;
             yspeed = 0.01f;
             opacityMultiplier = 0.47f;
-            
+
             duration = 15f * Time.toMinutes;
         }};
-		
+
 		methaneRain = new RainWeather("methane-rain") {{
 	        attrs.set(Attribute.light, -0.2f);
 	        attrs.set(TektonAttributes.methane, 0.2f);
@@ -56,10 +56,10 @@ public class TektonWeathers {
 	        soundVol = 0.25f;
 	        liquid = TektonLiquids.methane;
 	        color = TektonColor.liquidMethane.cpy().mul(1.3f);
-	        
+
             //duration = 8f * Time.toMinutes;
 	    }};
-	    
+
 	    darkSandstorm = new ParticleWeather("dark-sandstorm") {{
             color = noiseColor = Color.valueOf("3d352f");
             particleRegion = "particle";
@@ -82,7 +82,7 @@ public class TektonWeathers {
 
             duration = 7f * Time.toMinutes;
         }};
-	    
+
 	    neurosporastorm = new ParticleWeather("neurosporastorm") {{
             color = noiseColor = TektonColor.neurospora;
             particleRegion = "circle-small";
@@ -103,10 +103,10 @@ public class TektonWeathers {
             force = 0.1f;
             sound = Sounds.wind;
             soundVol = 0.7f;
-            
+
             duration = 7f * Time.toMinutes;
         }};
-	    
+
 	    acidRain = new RainWeather("acid-rain") {{
 	        attrs.set(Attribute.light, -0.3f);
 	        attrs.set(Attribute.water, -0.2f);
@@ -117,7 +117,7 @@ public class TektonWeathers {
 	        color = TektonLiquids.acid.color.cpy();
             duration = 5f * Time.toMinutes;
 	    }};
-	    
+
 	    electricStorm = new StormWeather("electric-storm") {{
 	    	color = noiseColor = Color.valueOf("ffe14a");
             particleRegion = "particle";
@@ -141,10 +141,10 @@ public class TektonWeathers {
 
 	        status = TektonStatusEffects.shortCircuit;
 	        statusGround = false;
-	        
+
             duration = 7f * Time.toMinutes;
 	    }};
-        
+
 	    methaneSnow = new ParticleWeather("methane-snow") {{
             particleRegion = "particle";
             sizeMax = 13f;
@@ -153,19 +153,19 @@ public class TektonWeathers {
             attrs.set(Attribute.light, -0.15f);
             attrs.set(Attribute.water, -0.1f);
 	        attrs.set(TektonAttributes.methane, 0.1f);
-	        
+
 	        color = TektonColor.methaneGas.add(Color.white.cpy().mul(0.35f));
 	        status = StatusEffects.freezing;
 
-            sound = Sounds.windhowl;
+            sound = Sounds.windHowl;
             soundVol = 0f;
             soundVolOscMag = 1.5f;
             soundVolOscScl = 1100f;
             soundVolMin = 0.02f;
-            
+
             duration = 7f * Time.toMinutes;
         }};
-        
+
         eggStorm = new ObstaclesWeather("egg-storm") {{
         	color = noiseColor = TektonColor.acid;
             particleRegion = "circle-small";
@@ -186,7 +186,7 @@ public class TektonWeathers {
             force = 0.2f;
             sound = Sounds.wind;
             soundVol = 0.8f;
-        	
+
         	obstacle = new EmptyBulletType() {{
         		lifetime = 1f;
         		splashDamage = 40f;
@@ -200,7 +200,7 @@ public class TektonWeathers {
         	}};
         	obstacleFallEffect = TektonFx.biologicalFallingEgg;
         	obstacleTeam = Team.green;
-        	
+
             duration = 4f * Time.toMinutes;
         }};
 	}

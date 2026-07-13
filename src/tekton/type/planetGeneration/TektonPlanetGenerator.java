@@ -1,104 +1,107 @@
 package tekton.type.planetGeneration;
 
 import arc.graphics.Color;
+import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.Rand;
 import arc.math.geom.Vec3;
-import arc.util.Log;
 import arc.util.noise.Noise;
 import arc.util.noise.Ridged;
 import arc.util.noise.Simplex;
-import mindustry.content.Blocks;
+import mindustry.game.Team;
 import mindustry.maps.generators.PlanetGenerator;
 import mindustry.type.Sector;
-import mindustry.world.Block;
-import mindustry.world.TileGen;
-import tekton.content.*;
+import tekton.content.TektonBlocks;
+import tekton.content.TektonColor;
+import tekton.content.TektonLoadouts;
+import tekton.content.TektonPlanets;
 
 public class TektonPlanetGenerator extends PlanetGenerator {
 	float sizeMultipliyer = 1.6f,
 			oceanLevelChangerGeneral = -0.1f,
-			beachLevel = 0.46f + oceanLevelChangerGeneral,
-			subBeachLevel = 0.45f + oceanLevelChangerGeneral,
-			oceanLevel = 0.44f + oceanLevelChangerGeneral,
-			deepOceanLevel = 0.43f + oceanLevelChangerGeneral;
+			beachLevel = 0.5f + oceanLevelChangerGeneral,
+			subBeachLevel = 0.49f + oceanLevelChangerGeneral,
+			oceanLevel = 0.48f + oceanLevelChangerGeneral,
+			deepOceanLevel = 0.47f + oceanLevelChangerGeneral;
 
-    float iceCoverage = 0.35f, 
-    		iceHeight = 0.25f, 
+    float iceCoverage = 0.35f,
+    		iceHeight = 0.25f,
     		completeIceHeight = 0.9f,
     		iceLevel = 0.42f;
-	
-	int noiseSeedAdd = -7000;
-	int puddleSeedAdd = 7000;
-	int waveSeedAdd = 14000;
-	float maxSize = 0.65f, noiseMultipliyer = 1.2f;
-	
+
+	int noiseSeedAdd = -2193;
+	int puddleSeedAdd = 1298;
+	int waveSeedAdd = 2449;
+	float maxSize = 0.62f, noiseMultipliyer = 1.1f;
+
 	public static final Rand rand = new Rand();
 
 	public TektonPlanetGenerator() {
 		//super();
-		baseSeed = 14;
-		seed = 71471;
+		baseSeed = 5287;
+		seed = 4224;
 		defaultLoadout = TektonLoadouts.corePrimal;
 		block = TektonBlocks.methane;
-		rand.setSeed((seed + baseSeed) * 17);
+		rand.setSeed((seed + baseSeed) * 14);
 
         Noise.setSeed(seed + puddleSeedAdd);
 	}
-    
+
     /*@Override
     public void generateSector(Sector sector) {
-    	
-    }*/
-	
-	/*@Override
-    public boolean isEmissive(){
-        return true;
+
     }*/
 
     @Override
     public float getHeight(Vec3 position) {
     	float pers = 1/4f;
-    	
-    	float deepOceanHeight = 0.8f;
-    	float oceanHeight = 0.71f;
-    	float beachMethaneHeight = 0.68f;
-    	float beachHeight = 0.64f;
-    	
+    	var mul = 1.5f;
+
+    	float deepOceanHeight = 0.7f;
+    	float oceanHeight = 0.65f;
+    	float beachMethaneHeight = 0.62f;
+    	float beachHeight = 0.58f;
+
         float noise = Simplex.noise3d(seed + noiseSeedAdd , 4, 0.9f, 1f, (position.z / 10f) * sizeMultipliyer, (position.y) * sizeMultipliyer, (position.x / 2f) * sizeMultipliyer);
-        float puddleNoise = Simplex.noise3d(seed + puddleSeedAdd, 2, 0.9f, 1f / 12f, (position.x) * sizeMultipliyer, (position.y) * sizeMultipliyer, (position.z) * sizeMultipliyer);
-        //float puddleNoise = Noise.snoise3((position.x) * sizeMultipliyer, (position.y) * sizeMultipliyer, (position.z) * sizeMultipliyer, 1f, 1f);
+        float puddleNoise = Simplex.noise3d(seed + puddleSeedAdd, 2, 0.8f, 1f / 4.5f, (position.x) * sizeMultipliyer * mul, (position.y) * sizeMultipliyer * mul, (position.z) * sizeMultipliyer * mul);
         float waveNoise = Ridged.noise3d(seed + waveSeedAdd, (position.y / 2f + noise * 4f) * sizeMultipliyer, 0, 0, pers);
-        //float waveNoise = Simplex.noise3d(seed + waveSeedAdd, 2, 0.9f, 2.5f, (position.x / 12f) * sizeMultipliyer, (position.y / 2f + noise * 4f) * sizeMultipliyer, (position.z / 12f) * sizeMultipliyer);
-        
+
         float actualNoise = noise * noiseMultipliyer;
 
         if (Math.abs(position.y) > completeIceHeight && (waveNoise >= beachMethaneHeight || puddleNoise >= beachMethaneHeight)) {
             return iceLevel;
         }
-        
-        if(waveNoise >= deepOceanHeight || puddleNoise >= deepOceanHeight) return deepOceanLevel;
-        if(waveNoise >= oceanHeight || puddleNoise >= oceanHeight) return oceanLevel;
-        if(waveNoise >= beachMethaneHeight || puddleNoise >= beachMethaneHeight) return subBeachLevel;
-        if(waveNoise >= beachHeight || puddleNoise >= beachHeight) return beachLevel;
-        
+
+        if(waveNoise >= deepOceanHeight || puddleNoise >= deepOceanHeight) {
+			return deepOceanLevel;
+		}
+        if(waveNoise >= oceanHeight || puddleNoise >= oceanHeight) {
+			return oceanLevel;
+		}
+        if(waveNoise >= beachMethaneHeight || puddleNoise >= beachMethaneHeight) {
+			return subBeachLevel;
+		}
+        if(waveNoise >= beachHeight || puddleNoise >= beachHeight) {
+			return beachLevel;
+		}
+
         return Math.min(Math.max(actualNoise, oceanLevel), maxSize);
     }
-    
+
     public float rawHeight(Vec3 position){
     	float noise = Simplex.noise3d(seed + noiseSeedAdd , 4, 0.9f, 1f, (position.z / 10f) * sizeMultipliyer, (position.y) * sizeMultipliyer, (position.x / 2f) * sizeMultipliyer);
         float actualNoise = noise * noiseMultipliyer;
 
         return Math.min(Math.max(actualNoise, oceanLevel), maxSize);
     }
-    
+
     public float oceanDepth(Vec3 position){
         float noise = Simplex.noise3d(seed + noiseSeedAdd , 4, 0.9f, 1f, (position.z / 10f) * sizeMultipliyer, (position.y) * sizeMultipliyer, (position.x / 2f) * sizeMultipliyer);
         float actualNoise = noise * noiseMultipliyer;
-        
+
         return Math.min(actualNoise, maxSize);
     }
-    
+
     public Color lerpColor(Color colFrom, Color colTo, float progress) {
     	return new Color(
     			Mathf.lerp(colFrom.r, colTo.r, progress),
@@ -106,54 +109,148 @@ public class TektonPlanetGenerator extends PlanetGenerator {
     			Mathf.lerp(colFrom.b, colTo.b, progress),
     			Mathf.lerp(colFrom.a, colTo.a, progress));
     }
-    
+
     @Override
-    public Color getColor(Vec3 position) {
+    public void getColor(Vec3 position, Color out) {
         float biomeMask = Simplex.noise3d(seed, 3, 0.4, 1f, position.z, position.y, position.x);
         float patternMask = Simplex.noise3d(seed, 1, 0.6, 2f, position.z, position.y, position.x);
-        
+
         var methaneAlbedo = 0.1f;
-        
+
         if (
-        		(rawHeight(position) > iceCoverage && rawHeight(position) < 1f - iceCoverage && 
-        		(!(position.y > iceHeight - 1f) || !(position.y < 1f - iceHeight)) || 
-        		Math.abs(position.y) > completeIceHeight)) 
-        	return biomeMask > 0.8f || Math.abs(position.y) > completeIceHeight ? Color.valueOf("d0e36f") : Color.valueOf("b6c953").a(methaneAlbedo);
-        
+        		(rawHeight(position) > iceCoverage && rawHeight(position) < 1f - iceCoverage &&
+        		(!(position.y > iceHeight - 1f) || !(position.y < 1f - iceHeight)) ||
+        		Math.abs(position.y) > completeIceHeight)) {
+        	out.set(biomeMask > 0.8f || Math.abs(position.y) > completeIceHeight ? Color.valueOf("d0e36f") : Color.valueOf("b6c953").a(methaneAlbedo));
+    		return;
+		}
+
     	if (getHeight(position) <= deepOceanLevel) {
-        	return lerpColor(TektonColor.liquidMethane.cpy().a(methaneAlbedo), TektonColor.methane.cpy().a(methaneAlbedo), 0.65f);
+    		out.set(TektonBlocks.deepMethane.mapColor.cpy().a(methaneAlbedo));
+    		return;
         }
     	else if (getHeight(position) <= oceanLevel) {
-        	return TektonColor.methane.cpy().a(methaneAlbedo);
+    		out.set(TektonColor.liquidMethane.cpy().a(methaneAlbedo));
+    		return;
         }
-        else if (getHeight(position) <= subBeachLevel) {
-        	return lerpColor(Color.valueOf("4f4646").a(methaneAlbedo), TektonColor.methane.cpy().a(methaneAlbedo), 0.35f);
-        }
+        /*else if (getHeight(position) <= subBeachLevel) {
+        	out.set(lerpColor(Color.valueOf("4f4646").a(methaneAlbedo), TektonColor.methane.cpy().a(methaneAlbedo), 0.35f));
+    		return;
+        }*/
         else if (getHeight(position) <= beachLevel) {
-        	return Color.valueOf("4f4646");
+        	out.set(Color.valueOf("4f4646"));
+    		return;
         }
-        
+
         var vegetationCoverage = 0.39f;
         var vegetationHeight = 0.66f;
-        
+
         if (
-        		rawHeight(position) > vegetationCoverage && rawHeight(position) < 1f - vegetationCoverage && 
-        		(!(position.y > vegetationHeight - 1f) || !(position.y < 1f - vegetationHeight))) 
-        	return rand.random(1f) > 0.07f ? lerpColor(Color.valueOf("2c3c4d"), Color.valueOf("506873"), Mathf.round(rawHeight(position) - 0.02f)) : Color.valueOf("84ff00").a(methaneAlbedo);
-        
-        if(biomeMask > 0.6f && patternMask < 0.6f) return Color.valueOf("948881");
-        if(biomeMask > 0.5f) return Color.valueOf("5c483e");
-        if(biomeMask > 0.4f && patternMask < 0.3f) return Color.valueOf("515151");
-        if(biomeMask > 0.2f) return Color.valueOf("6e6761");
-        
-        return TektonColor.methane.cpy().a(methaneAlbedo);
+        		rawHeight(position) > vegetationCoverage && rawHeight(position) < 1f - vegetationCoverage &&
+        		(!(position.y > vegetationHeight - 1f) || !(position.y < 1f - vegetationHeight))) {
+        	out.set(rand.random(1f) > 0.07f ? lerpColor(Color.valueOf("2c3c4d"), Color.valueOf("506873"), Mathf.round(rawHeight(position) - 0.02f)) : acidColor);
+    		return;
+		}
+
+        if(biomeMask > 0.6f && patternMask < 0.6f) {
+        	out.set(Color.valueOf("948881"));
+    		return;
+		}
+        if(biomeMask > 0.5f) {
+        	out.set(Color.valueOf("5c483e"));
+    		return;
+		}
+        if(biomeMask > 0.4f && patternMask < 0.3f) {
+        	out.set(Color.valueOf("515151"));
+    		return;
+		}
+        if(biomeMask > 0.2f) {
+        	out.set(Color.valueOf("6e6761"));
+    		return;
+		}
+
+        out.set(TektonColor.liquidMethane.cpy().a(methaneAlbedo));
+    }
+    
+    Color acidColor = Color.valueOf("84ff00").a(0.1f);
+    
+    //TODO: placeholder?
+    static double metalDstScl = 0.25;
+    Vec3 basePos = new Vec3(1, 0.0, 0.0);
+    
+    @Override
+    public void getEmissiveColor(Vec3 position, Color out){
+    	Color col = new Color();
+    	getColor(position, col);
+    	if (col == acidColor) {
+    		out.set(acidColor).toFloatBits();
+    		return;
+    	}
+    	
+        float dst = 999f, captureDst = 999f, lightScl = 0f;
+
+        Object[] sectors = TektonPlanets.tekton.sectors.items;
+        int size = TektonPlanets.tekton.sectors.size;
+
+        for(int i = 0; i < size; i ++){
+            var sector = (Sector)sectors[i];
+
+            if(sector.hasEnemyBase() && !sector.isCaptured()){
+                dst = Math.min(dst, position.dst(sector.tile.v) - (sector.preset != null ? sector.preset.difficulty/10f * 0.03f - 0.03f : 0f));
+            }else if(sector.hasBase()){
+                float cdst = position.dst(sector.tile.v);
+                if(cdst < captureDst){
+                    captureDst = cdst;
+                    lightScl = sector.info.lightCoverage;
+                }
+            }
+        }
+
+        lightScl = Math.min(lightScl / 50000f, 1.3f);
+        if(lightScl < 1f) lightScl = Interp.pow5Out.apply(lightScl);
+
+        float freq = 0.05f;
+        //TODO: once the old megabase returns, change it to 0.55f
+        if(position.dst(basePos) < 0.3f ?
+
+            dst*metalDstScl + Simplex.noise3d(seed + 1, 3, 0.4, 5.5f, position.x, position.y + 200f, position.z)*0.08f + ((basePos.dst(position) + 0.00f) % freq < freq/2f ? 1f : 0f) * 0.07f < 0.08f/* || dst <= 0.0001f*/ :
+            dst*metalDstScl + Simplex.noise3d(seed, 3, 0.4, 9f, position.x, position.y + 370f, position.z)*0.06f < 0.045){
+
+            out.set(Team.blue.color)
+                .mul(0.8f + Simplex.noise3d(seed, 1, 1, 9f, position.x, position.y + 99f, position.z) * 0.4f)
+                .lerp(Team.sharded.color, 0.2f*Simplex.noise3d(seed, 1, 1, 9f, position.x, position.y + 999f, position.z)).toFloatBits();
+        }else if(captureDst*metalDstScl + Simplex.noise3d(seed, 3, 0.4, 9f, position.x, position.y + 600f, position.z)*0.07f < 0.05 * lightScl){
+            out.set(Team.sharded.color).mul(0.7f + Simplex.noise3d(seed, 1, 1, 9f, position.x, position.y + 99f, position.z) * 0.4f)
+                .lerp(Team.crux.color, 0.3f*Simplex.noise3d(seed, 1, 1, 9f, position.x, position.y + 999f, position.z)).toFloatBits();
+
+        }
+    }
+    
+    @Override
+    public void onSectorCaptured(Sector sector){
+        sector.planet.reloadMeshAsync();
+    }
+
+    @Override
+    public void onSectorLost(Sector sector){
+        sector.planet.reloadMeshAsync();
+    }
+
+    @Override
+    public void beforeSaveWrite(Sector sector){
+        sector.planet.reloadMeshAsync();
+    }
+
+	@Override
+    public boolean isEmissive(){
+        return true;
     }
 }
 
 /*public class TektonPlanetGenerator extends PlanetGenerator {
 float sizeMultipliyer = 1.6f;
 
-float 
+float
 		oceanCoverage = 0.42f,
 		beachCoverage = 0.51f,
 		diatomiteCoverage = 0.4f,
@@ -199,7 +296,7 @@ public float getHeight(Vec3 position) {
 	float height = baseNoise(position);
 	if (getBiome(position) == Biome.ocean || getBiome(position) == Biome.deepOcean)
 		return oceanHeight;
-    
+
     return height;
 }
 
@@ -216,27 +313,27 @@ public enum Biome {
 }
 
   public Biome getBiome(Vec3 position) {
-    	float diatomiteNoise = diatomiteNoise(position), 
-    			brownNoise = brownNoise(position), 
-    			uraniniteNoise = uraniniteNoise(position), 
-    			neurosporaNoise = neurosporaNoise(position), 
+    	float diatomiteNoise = diatomiteNoise(position),
+    			brownNoise = brownNoise(position),
+    			uraniniteNoise = uraniniteNoise(position),
+    			neurosporaNoise = neurosporaNoise(position),
     			waveNoise = waveNoise(position);
-    	
+
     	if (waveNoise > 1f - oceanCoverage)
     		return Biome.ocean;
     	if (waveNoise > 1f - beachCoverage)
     		return Biome.beach;
-    	
+
     	if ((!(position.y > neurosporaHeight - 1f) || !(position.y < 1f - neurosporaHeight)) && neurosporaNoise > 1f - neurosporaCoverage)
     		return Biome.neurospora;
-    	
+
     	if (diatomiteNoise > 1f - diatomiteCoverage)
     		return Biome.diatomite;
     	else if (uraniniteNoise > 1f - uraniniteCoverage)
     		return Biome.uraninite;
     	else if (brownNoise > 1f - brownCoverage)
     		return Biome.brown;
-        
+
         return Biome.ferric;
   }
 
@@ -244,7 +341,7 @@ public enum Biome {
 public Color getColor(Vec3 position) {
     var methaneAlbedo = 0.1f;
 	float height = baseNoise(position);
-	
+
 	switch(getBiome(position)) {
     	case ferric:
     		return terrain[0].mapColor;
@@ -256,7 +353,7 @@ public Color getColor(Vec3 position) {
     		return terrain[4].mapColor;
     	case neurospora:
     		return terrain[3].mapColor;
-    	case ice: 
+    	case ice:
     		return terrain[5].mapColor;
     	case beach:
     		return terrain[8].mapColor;

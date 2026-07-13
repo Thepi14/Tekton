@@ -6,7 +6,7 @@ import mindustry.world.blocks.payloads.PayloadLoader;
 import mindustry.world.meta.Env;
 
 public class TektonPayloadLoader extends PayloadLoader {
-	
+
 	public TektonPayloadLoader(String name) {
 		super(name);
 		envEnabled = Env.any;

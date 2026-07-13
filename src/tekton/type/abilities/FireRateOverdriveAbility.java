@@ -1,20 +1,13 @@
 package tekton.type.abilities;
 
-import arc.*;
+import arc.Core;
 import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.scene.ui.layout.*;
-import arc.struct.Seq;
-import arc.util.Log;
+import arc.scene.ui.layout.Table;
 import arc.util.Strings;
-import arc.util.Time;
-import mindustry.gen.*;
-import mindustry.type.*;
-import mindustry.ui.*;
 import mindustry.Vars;
 import mindustry.content.StatusEffects;
 import mindustry.entities.abilities.Ability;
@@ -22,6 +15,9 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.type.StatusEffect;
+import mindustry.type.UnitType;
+import mindustry.ui.Bar;
 
 public class FireRateOverdriveAbility extends Ability {
 	public float minBoost = 0.1f, maxBoost = 2f, boostIncrease = 0.04f, boostDecrease = 0.2f;
@@ -29,7 +25,7 @@ public class FireRateOverdriveAbility extends Ability {
 	public Color heatColor = Pal.turretHeat.cpy();
 	public TextureRegion heatRegion;
 	public float heat = 0f;
-	
+
 	/*private static int divisions = 200;
 	public static Seq<StatusEffect> boosts;*/
 
@@ -41,11 +37,11 @@ public class FireRateOverdriveAbility extends Ability {
         t.row();
         t.add(abilityStat("minreload", Strings.autoFixed((int)(minBoost * 100f), 3)));
     }
-    
+
     public String abilityStat(String stat, Object... values) {
         return Core.bundle.format("ability.stat." + stat, values);
     }
-    
+
     @Override
     public void displayBars(Unit unit, Table bars){
         bars.add(new Bar("bar.heat", Pal.lightOrange, () -> (data - minBoost) / (maxBoost - minBoost))).row();
@@ -66,7 +62,7 @@ public class FireRateOverdriveAbility extends Ability {
 			}
 		}*/
 	}
-	
+
 	@Override
 	public void update(Unit unit)
 	{
@@ -78,25 +74,25 @@ public class FireRateOverdriveAbility extends Ability {
 		else if (!Vars.state.isPaused()) {
 			data -= boostDecrease / 60f;
 		}
-		
+
 		data = Mathf.clamp(data, minBoost, maxBoost);
 		heat = (data - minBoost) / (maxBoost - minBoost);
-		
+
 		//int currentIndex = Math.min((int)(data * (200 / 4)), 199);
 		//Log.info(data + ", " + currentIndex + ", " + boosts.get(currentIndex).reloadMultiplier);
 		//unit.apply(boosts.get(currentIndex));
-		
+
 		unit.reloadMultiplier *= data;
 	}
-	
+
 	@Override
     public void draw(Unit unit) {
         super.draw(unit);
-        
+
         if(heatRegion == null){
         	heatRegion = Core.atlas.find(unit.type.name + "-heat", unit.type.region);
         }
-        
+
         Draw.blend(Blending.additive);
         Drawf.additive(heatRegion, heatColor, heat, unit.x, unit.y, unit.rotation - 90f, unit.isGrounded() ? unit.type.groundLayer + 0.01f : unit.type.lowAltitude ? Layer.flyingUnitLow + 0.01f : Layer.flyingUnit + 0.01f);
         Draw.color();

@@ -1,5 +1,8 @@
 package tekton.ui;
 
+import static arc.Core.atlas;
+import static arc.Core.settings;
+
 import arc.Core;
 import arc.func.Boolc;
 import arc.scene.Element;
@@ -8,9 +11,6 @@ import arc.scene.ui.CheckBox;
 import arc.scene.ui.Image;
 import arc.scene.ui.layout.Table;
 import mindustry.ui.dialogs.SettingsMenuDialog;
-
-import static arc.Core.atlas;
-import static arc.Core.settings;
 
 public class CheckIconSetting extends SettingsMenuDialog.SettingsTable.CheckSetting {
     boolean def;

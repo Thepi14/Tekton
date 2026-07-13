@@ -11,7 +11,7 @@ public class TektonPayloadDeconstructor extends PayloadDeconstructor {
 		super(name);
 		envEnabled = Env.any;
 	}
-	
+
 	@Override
     public void load(){
         super.load();

@@ -1,20 +1,18 @@
 package tekton.type.production;
 
 import arc.Core;
-import arc.audio.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.util.*;
-import mindustry.content.*;
-import mindustry.entities.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.type.*;
+import arc.graphics.Blending;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Interp;
+import arc.math.Mathf;
+import arc.util.Tmp;
+import mindustry.content.Liquids;
+import mindustry.entities.Effect;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Layer;
+import mindustry.type.Liquid;
 import mindustry.world.blocks.production.BurstDrill;
-import mindustry.world.consumers.*;
-import mindustry.world.meta.*;
-import tekton.content.TektonLiquids;
 
 //TODO Eliminate this class on the Build 149, or not
 public class BurstDrillBoosted extends BurstDrill {
@@ -22,12 +20,12 @@ public class BurstDrillBoosted extends BurstDrill {
     public float alpha = 0.9f, glowScale = 10f, glowIntensity = 0.5f;
     public Liquid boostLiquid = Liquids.water;
     public float boostConsumptionAmount = 2f / 60f;
-	
+
     public BurstDrillBoosted(String name) {
 		super(name);
 		// TODO Auto-generated constructor stub
 	}
-    
+
     @Override
     public void load() {
     	super.load();
@@ -50,7 +48,9 @@ public class BurstDrillBoosted extends BurstDrill {
                 return;
             }
 
-            if(invertTime > 0f) invertTime -= delta() / invertedTime;
+            if(invertTime > 0f) {
+				invertTime -= delta() / invertedTime;
+			}
 
             if(timer(timerDump, dumpTime)){
                 dump(items.has(dominantItem) ? dominantItem : null);
@@ -140,7 +140,7 @@ public class BurstDrillBoosted extends BurstDrill {
             if(glowRegion.found()){
                 Drawf.additive(glowRegion, Tmp.c2.set(glowColor).a(Mathf.pow(fract, 3f) * glowColor.a), x, y);
             }
-            
+
             if (topBoostRegion.found()) {
                 Draw.blend(Blending.additive);
                 Draw.color(heatColor);

@@ -2,8 +2,11 @@ package tekton.type.draw;
 
 import arc.graphics.Blending;
 import arc.graphics.Color;
-import arc.graphics.g2d.*;
-import arc.math.*;
+import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
+import arc.math.Angles;
+import arc.math.Interp;
+import arc.math.Mathf;
 import arc.util.Time;
 import mindustry.gen.Building;
 import mindustry.world.draw.DrawBlock;
@@ -17,13 +20,13 @@ public class DrawLinesToCenter extends DrawBlock {
     public int particles = 10;
     public float particleLife = 40f, particleRad = 7f, particleStroke = 1.1f, particleLen = 3f;
     public float flameRad = 1f, circleSpace = 2f, lineRadiusScl = 3f, lineRadiusMag = 0.3f, circleStroke = 1.5f;
-    
+
     public int lines = 4;
     public float angleOffset = 45f;
     public float distanceCenter = 8f;
     public float lineStroke = 1.5f;
     public float particlesRand = 60f;
-	
+
 	@Override
     public void draw(Building build){
         if(build.warmup() > 0f && lineColor.a > 0.001f){
@@ -33,9 +36,9 @@ public class DrawLinesToCenter extends DrawBlock {
 
             float base = (Time.time / particleLife);
             rand.setSeed(build.id);
-            
+
             for(int i = 0; i < lines; i++){
-                float angle = ((float)i * (360f / (float)lines)) + angleOffset;
+                float angle = (i * (360f / lines)) + angleOffset;
                 float xPos = build.x + (Mathf.cosDeg(angle) * distanceCenter), yPos = build.y + (Mathf.sinDeg(angle) * distanceCenter);
 
                 Draw.blend(blending);

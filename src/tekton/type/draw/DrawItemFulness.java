@@ -20,7 +20,7 @@ public class DrawItemFulness extends DrawBlock {
     }
 
     public DrawItemFulness(){
-    	
+
     }
 
     @Override

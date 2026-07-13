@@ -1,23 +1,37 @@
 package tekton.type.defense;
 
-import arc.func.Boolf;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.struct.*;
-import arc.util.*;
-import mindustry.content.*;
-import mindustry.entities.*;
-import mindustry.entities.units.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.world.*;
-import mindustry.world.draw.*;
-import mindustry.world.meta.*;
+import static mindustry.Vars.indexer;
+import static mindustry.Vars.player;
+import static mindustry.Vars.state;
+import static mindustry.Vars.tilesize;
+import static mindustry.Vars.world;
+
+import arc.graphics.Color;
+import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
+import arc.struct.EnumSet;
+import arc.struct.IntFloatMap;
+import arc.struct.IntSet;
+import arc.struct.Seq;
+import arc.util.Eachable;
+import arc.util.Time;
+import arc.util.Tmp;
+import mindustry.content.Fx;
+import mindustry.entities.Effect;
+import mindustry.entities.units.BuildPlan;
+import mindustry.gen.Building;
+import mindustry.graphics.Drawf;
+import mindustry.graphics.Pal;
+import mindustry.world.Block;
+import mindustry.world.draw.DrawBlock;
+import mindustry.world.draw.DrawDefault;
+import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.BlockGroup;
+import mindustry.world.meta.Env;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 import tekton.Drawt;
 import tekton.math.TekMath;
-
-import static mindustry.Vars.*;
 
 public class Regenerator extends Block{
     private static final IntSet taken = new IntSet();
@@ -53,7 +67,7 @@ public class Regenerator extends Block{
     @Override
     public void drawPlace(int x, int y, int rotation, boolean valid) {
         super.drawPlace(x, y, rotation, valid);
-        
+
         final float ex = (x * tilesize) + offset, ey = (y * tilesize) + offset;
 
         Drawt.dashDiamond(baseColor, ex, ey, (range / 2f) * tilesize);
@@ -121,7 +135,7 @@ public class Regenerator extends Block{
                 lastChange = world.tileChanges;
                 updateTargets();
             }
-        	
+
             warmup = Mathf.approachDelta(warmup, didRegen ? 1f : 0f, 1f / 70f);
             totalTime += warmup * Time.delta;
             didRegen = false;
@@ -144,12 +158,14 @@ public class Regenerator extends Block{
 
                 //use Math.max to prevent stacking
                 for(var build : targets){
-                    if(!build.damaged() || build.isHealSuppressed()) continue;
+                    if(!build.damaged() || build.isHealSuppressed()) {
+						continue;
+					}
 
                     didRegen = true;
 
                     int pos = build.pos();
-                    
+
                     float value = mendMap.get(pos);
                     mendMap.put(pos, Math.min(Math.max(value, healAmount * edelta() * build.block.health / 100f), build.block.health - build.health));
 

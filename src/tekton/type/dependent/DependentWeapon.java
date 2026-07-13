@@ -1,44 +1,29 @@
 package tekton.type.dependent;
 
-import arc.*;
-import arc.audio.*;
-import arc.func.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-import arc.math.*;
-import arc.math.geom.*;
-import arc.scene.ui.layout.*;
-import arc.struct.*;
-import arc.util.*;
-import mindustry.ai.types.*;
-import mindustry.audio.*;
-import mindustry.content.*;
-import mindustry.entities.*;
-import mindustry.entities.bullet.*;
-import mindustry.entities.part.*;
-import mindustry.entities.pattern.*;
-import mindustry.entities.units.*;
-import mindustry.gen.*;
-import mindustry.graphics.*;
-import mindustry.world.meta.*;
-import tekton.type.ai.DistanceMissileAI;
-import tekton.type.ai.MinionAI;
+import arc.math.Angles;
+import arc.math.Mathf;
+import arc.util.Tmp;
+import mindustry.entities.Effect;
+import mindustry.entities.Mover;
+import mindustry.entities.units.WeaponMount;
+import mindustry.gen.Entityc;
+import mindustry.gen.Unit;
 import mindustry.type.Weapon;
 
-import static mindustry.Vars.*;
-
 public class DependentWeapon extends Weapon {
-	
+
 	public DependentWeapon() {
 		super();
 	}
-	
+
 	public DependentWeapon(String name) {
 		super(name);
 	}
-	
+
 	protected void bullet(Unit unit, WeaponMount mount, float xOffset, float yOffset, float angleOffset, Mover mover){
-        if(!unit.isAdded()) return;
+        if(!unit.isAdded()) {
+			return;
+		}
 
         mount.charging = false;
         float
