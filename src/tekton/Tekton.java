@@ -45,7 +45,7 @@ public class Tekton extends Mod {
 	public static final String MOD_GITHUB_URL = "https://github.com/Thepi14/Tekton.git";
 	public static final String MOD_NAME = "tekton";
 
-	public static boolean hideContent = false;
+	public static boolean hideContent = true;
 	public static boolean drawBiologicalUnitsCell = false; //only made because the cell drawing system of mindustry is bugged (or is it? vsauce theme plays).
 	public static boolean showDebug = false;
 
