@@ -24,10 +24,16 @@ public class PoweredConveyor extends Conveyor {
     private static final int capacity = 3;
 
     public float enhancedSpeed = 0.14f;
-    public Color glowColor = Pal.accent;
+    public Color glowColor = Pal.lightishOrange;
     public TextureRegion[] glowRegions;
 
-    public float alpha = 0.6f, glowScale = 10f, glowIntensity = 0.5f;
+    public float alpha = 0.5f, glowScale = 10f, glowIntensity = 0.5f;
+    
+    public int arrows = 2;
+    public Color arrowGlowColor = Pal.accent;
+    public TextureRegion[][] arrowRegions;
+    
+    public float arrowAlpha = 0.7f, arrowGlowScale = 20f, arrowGlowIntensity = 0.9f;
 
     protected boolean changedAlphaState = false;
     protected float currentAlpha = 0f;
@@ -42,9 +48,15 @@ public class PoweredConveyor extends Conveyor {
 	@Override
 	public void load() {
         super.load();
+        //it always is five
 		glowRegions = new TextureRegion[5];
-		for (int i = 0; i < glowRegions.length; i++) {
+		arrowRegions = new TextureRegion[5][arrows];
+		for (int i = 0; i < 5; i++) {
 			glowRegions[i] = Core.atlas.find(name + "-glow-" + i);
+			
+			for (int j = 0; j < arrows; j++) {
+				arrowRegions[i][j] = Core.atlas.find(name + "-arrows-" + i + "-" + j);
+			}
 		}
 	}
 
@@ -168,6 +180,15 @@ public class PoweredConveyor extends Conveyor {
             Drawf.additive(glowRegions[blendbits], glowColor.cpy().a(power.status > 0.001f ? currentAlpha : 0f), x, y,
             		(rotation * 90) -
             		((blendsclx < 0 || blendscly < 0) && blendbits == 1 ? 90 : 0));
+            
+            float arrowScale = (arrowGlowScale / arrows) * 6f; //i don't know how this works
+            
+            for (int i = 0; i < arrows; i++) {
+        		float currentArrowAlpha = Mathf.clamp(Mathf.sin(Time.time + (arrowScale * i), arrowGlowScale, arrowAlpha) * arrowGlowIntensity + 1f - arrowGlowIntensity) * arrowAlpha;
+                Drawf.additive(arrowRegions[blendbits][i], arrowGlowColor.cpy().a(power.status > 0.001f ? currentArrowAlpha : 0f), x, y,
+                		(rotation * 90) -
+                		((blendsclx < 0 || blendscly < 0) && blendbits == 1 ? 90 : 0));
+			}
         }
 
 		/*@Override

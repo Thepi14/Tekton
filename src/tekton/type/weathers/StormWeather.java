@@ -4,28 +4,35 @@ import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.Lines;
+import arc.math.Interp;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
+import arc.util.Time;
 import mindustry.Vars;
 import mindustry.content.Fx;
+import mindustry.entities.Damage;
 import mindustry.entities.Effect;
+import mindustry.entities.Lightning;
 import mindustry.entities.bullet.BasicBulletType;
 import mindustry.game.Team;
 import mindustry.gen.Groups;
 import mindustry.gen.Unit;
 import mindustry.gen.WeatherState;
+import mindustry.graphics.Drawf;
 import mindustry.type.weather.ParticleWeather;
 import mindustry.world.Tile;
 import tekton.content.TektonSounds;
 import tekton.math.TekMath;
 import tekton.type.defense.LightningAbsorber;
-import tekton.type.power.LightningRod;
+import tekton.type.defense.LightningRod;
 
 public class StormWeather extends ParticleWeather {
 	/** big numbers causes amargeddon */
 	public float
 			lightningChance = 0.01f,
-			unitLightningChance = 0.0001f,
+			unitLightningChance = 0.00001f;
+	
+	public float
 			lightningSplashDamage = 50f,
 			lightningSplashDamageRadius = 60f,
 			lightningsDamage = 60f,
@@ -33,7 +40,8 @@ public class StormWeather extends ParticleWeather {
 			lightningHitSoundPitchMin = 0.8f,
 			lightningHitSoundPitchMax = 1f,
 			lightningShake = 8f,
-			lightningLightRadius = 70f;
+			lightningLightRadius = 70f,
+			lightningLightOpacity = 1f;
 
 	public int lightningRays = 12, lightningLengthMin = 6, lightningRandExtension = 16;
 
@@ -68,9 +76,8 @@ public class StormWeather extends ParticleWeather {
 	        }
 
 	        Lines.endLine();
+	        Drawf.light(e.x, e.y, e.fout() * lightningLightRadius, lightningLightColor, lightningLightOpacity);
 	    }).followParent(false).rotWithParent(false);
-
-	public BasicBulletType lightningBullet;
 
 	private float trand = 0f;
 
@@ -80,53 +87,14 @@ public class StormWeather extends ParticleWeather {
 
 	@Override
     public void update(WeatherState state){
-		if (lightningBullet == null) {
-			lightningBullet = new BasicBulletType(0f, 0f) {{
-				/*lifetime = 20f;
-				width = height = 20f;*/
-				instantDisappear = true;
-
-				splashDamage = lightningSplashDamage;
-				splashDamageRadius = lightningSplashDamageRadius;
-				scaledSplashDamage = true;
-
-				lightning = lightningRays;
-	            lightningLength = lightningLengthMin;
-	            lightningLengthRand = lightningRandExtension;
-	            lightningDamage = lightningsDamage;
-
-	            hitColor = hitsColor;
-	            lightningColor = lightningsColor;
-	            lightRadius = lightningLightRadius;
-	            lightColor = lightningLightColor;
-
-	            hitShake = despawnShake = lightningShake;
-				absorbable = false;
-	            reflectable = false;
-	            hittable = false;
-	            pierce = true;
-	            pierceBuilding = true;
-	            pierceArmor = true;
-
-	            hitSoundPitch = 1f;
-	            hitSoundVolume = lightningVolume;
-
-	            despawnSound = hitSound = lightningHitSound;
-
-	            despawnEffect = hitEffect = lightningHitEffect;
-
-				buildingDamageMultiplier = 0.5f;
-			}};
-		}
 		super.update(state);
 		if (Groups.unit.isEmpty() || Vars.state.isPaused()) {
 			return;
 		}
-		lightningBullet.hitSoundPitch = Mathf.random(lightningHitSoundPitchMin, lightningHitSoundPitchMax);
 
 		trand = Mathf.random(0f, 100f) / 100f;
-		var randX = Mathf.random(0, Vars.world.width()) * Vars.tilesize;
-		var randY = Mathf.random(0, Vars.world.height()) * Vars.tilesize;
+		var randX = Mathf.random(0, Vars.world.width() - 1) * Vars.tilesize;
+		var randY = Mathf.random(0, Vars.world.height() - 1) * Vars.tilesize;
 		if (trand <= lightningChance) {
 			createLightning(randX, randY);
 		}
@@ -144,6 +112,7 @@ public class StormWeather extends ParticleWeather {
     }
 
 	private void createLightning(float x, float y) {
+		
 		if (absorbableByLightningRods) {
 			var pos = new Vec2(x, y);
 			for (Tile tile : Vars.world.tiles) {
@@ -155,7 +124,7 @@ public class StormWeather extends ParticleWeather {
 								if (pos.dst(new Vec2(bx, by)) <= rod.lightningProtectionRadius()) {
 									rod.absorbLightning();
 									lightningBoltEffect.at(bx, by);
-									lightningBullet.hitSound.at(bx, by);
+									lightningHitSound.at(bx, by);
 									return;
 								}
 							}
@@ -164,7 +133,7 @@ public class StormWeather extends ParticleWeather {
 									(bx >= x - rod.lightningProtectionRadius() && by >= y - rod.lightningProtectionRadius())) {
 									rod.absorbLightning();
 									lightningBoltEffect.at(bx, by);
-									lightningBullet.hitSound.at(bx, by);
+									lightningHitSound.at(bx, by);
 									return;
 								}
 							}
@@ -172,7 +141,7 @@ public class StormWeather extends ParticleWeather {
 								if (TekMath.insideDiamond(x, y, bx, by, rod.lightningProtectionRadius())) {
 									rod.absorbLightning();
 									lightningBoltEffect.at(bx, by);
-									lightningBullet.hitSound.at(bx, by);
+									lightningHitSound.at(bx, by);
 									return;
 								}
 							}
@@ -181,7 +150,7 @@ public class StormWeather extends ParticleWeather {
 							if (pos.dst(new Vec2(bx, by)) <= rod.lightningProtectionRadius()) {
 								rod.absorbLightning();
 								lightningBoltEffect.at(bx, by);
-								lightningBullet.hitSound.at(bx, by);
+								lightningHitSound.at(bx, by);
 								return;
 							}
 						}
@@ -189,9 +158,17 @@ public class StormWeather extends ParticleWeather {
 				}
 			}
 		}
-		//yeah, i don't like it too.
-		lightningBullet.create(Groups.unit.first(), Team.derelict, x, y, 0f);
+		
 		lightningBoltEffect.at(x, y);
+		lightningHitEffect.at(x, y, hitsColor);
+		lightningHitSound.at(x, y, Mathf.random(lightningHitSoundPitchMin, lightningHitSoundPitchMax));
+		
+		Damage.damage(x, y, 8f, lightningsDamage);
+		Damage.damage(x, y, lightningSplashDamageRadius, lightningSplashDamage);
+		
+		for(int i = 0; i < lightningRays; i++){
+            Time.run(i * 0.8f + Mathf.random(4f), () -> Lightning.create(Team.derelict, lightningsColor, lightningsDamage, x, y, Mathf.random(360f), lightningLengthMin + Mathf.random(lightningRandExtension)));
+        }
 		//Log.info("Lightning Created, pos: " + x + ", " + y);
 	}
 }

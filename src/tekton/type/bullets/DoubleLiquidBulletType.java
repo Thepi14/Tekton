@@ -101,6 +101,7 @@ public class DoubleLiquidBulletType extends LiquidBulletType {
         }
     }
 
+	@Override
 	public void hitEntity(Bullet b, Hitboxc entity, float health){
         super.hitEntity(b, entity, health);
 

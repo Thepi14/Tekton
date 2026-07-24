@@ -27,7 +27,6 @@ public class ObstaclesWeather extends ParticleWeather {
 
 	public ObstaclesWeather(String name) {
 		super(name);
-
 	}
 
 	@Override
@@ -39,8 +38,8 @@ public class ObstaclesWeather extends ParticleWeather {
 
 		trand = Mathf.random(0f, 100f) / 100f;
 		if (trand <= obstacleChance) {
-			var randX = Mathf.random(0, Vars.world.width()) * Vars.tilesize;
-			var randY = Mathf.random(0, Vars.world.height()) * Vars.tilesize;
+			var randX = Mathf.random(0, Vars.world.width() - 1) * Vars.tilesize;
+			var randY = Mathf.random(0, Vars.world.height() - 1) * Vars.tilesize;
 			timerList.add(new ObstacleFallTimer(randX, randY));
 			obstacleFallEffect.at(randX, randY);
 		}

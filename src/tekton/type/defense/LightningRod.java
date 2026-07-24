@@ -1,4 +1,4 @@
-package tekton.type.power;
+package tekton.type.defense;
 
 import static mindustry.Vars.tilesize;
 
@@ -18,11 +18,11 @@ import mindustry.graphics.Pal;
 import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.StatValues;
 import tekton.Drawt;
-import tekton.type.defense.LightningAbsorber;
 
 public class LightningRod extends PowerGenerator {
-	public float protectionRadius = 40f * Vars.tilesize;
+	public float protectionRadius = 40f * tilesize;
 	public float powerOutputDuration = 600f;
 	public Color glowColor = Color.orange.cpy().a(1f);
 	public float glowOpacity = 0.25f;
@@ -70,8 +70,9 @@ public class LightningRod extends PowerGenerator {
         super.setStats();
 
         stats.add(Stat.productionTime, powerOutputDuration / 60f, StatUnit.seconds);
+        stats.add(Stat.range, protectionRadius / tilesize, StatUnit.blocks);
     }
-
+	
 	@Override
     public void drawPlace(int x, int y, int rotation, boolean valid) {
         if (circleArea) {

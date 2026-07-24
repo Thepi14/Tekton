@@ -27,7 +27,7 @@ import static arc.math.Rand.*;
 
 
 public class TektonStatusEffects {
-	public static StatusEffect tarredInMethane, wetInAcid, acidified, shortCircuit, weaponLock, incineration, radioactiveContamination, radiationAbsorption, cobwebbed, neurosporaSlowed, foggerStatus;
+	public static StatusEffect tarredInMethane, wetInAcid, acidified, shortCircuit, weaponLock, incineration, radioactiveContamination, radiationAbsorption, cobwebbed, neurosporaSlowed/*, foggerStatus*/;
 
 	public static void load(){
 		tarredInMethane = new StatusEffect("status-tarred-in-methane") {{
@@ -161,6 +161,7 @@ public class TektonStatusEffects {
 	    float rspeedMultiplier = 0.7f,
     		rbuildSpeedMultiplier = 0.7f,
     		rdamageMultiplier = 0.8f,
+    		rreloadMultiplier = 0.8f,
     		rdragMultiplier = 1.4f;
 
 	    radioactiveContamination = new StatusEffect("status-radioactive-contamination") {{
@@ -191,7 +192,8 @@ public class TektonStatusEffects {
 	        color = applyColor = TektonColor.radiation;
 	        speedMultiplier = 2f - rspeedMultiplier;
 	        buildSpeedMultiplier = 2f - rbuildSpeedMultiplier;
-	        damageMultiplier = 2f - rdamageMultiplier;
+	        //damageMultiplier = 2f - rdamageMultiplier;
+	        reloadMultiplier = 2f - rreloadMultiplier;
 	        healthMultiplier = 1.3f;
 	        //dragMultiplier = -rdragMultiplier;
 	        damage = -20f / 60f;
@@ -219,13 +221,13 @@ public class TektonStatusEffects {
 	        effect = TektonFx.cobwebbed;
 	    }};
 
-	    foggerStatus = new StatusEffect("status-fogger") {{
+	    /*foggerStatus = new StatusEffect("status-fogger") {{
 	    	show = false;
 			hideDetails = true;
 			outline = false;
 			permanent = true;
 	        effect = Fx.none;
-	    }};
+	    }};*/
 	}
 
 	public static Seq<StatusEffect> returnAllTektonStatus() {

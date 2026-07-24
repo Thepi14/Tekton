@@ -1,5 +1,7 @@
 package tekton.type.biological;
 
+import static mindustry.Vars.headless;
+import static mindustry.Vars.renderer;
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 
@@ -14,6 +16,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.Effect;
 import mindustry.entities.Puddles;
+import mindustry.game.Team;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -22,11 +25,12 @@ import mindustry.world.blocks.power.LightBlock;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Env;
 import tekton.Drawt;
+import tekton.content.TektonBlocks;
 import tekton.content.TektonColor;
 import tekton.content.TektonFx;
 import tekton.content.TektonLiquids;
 
-public class GlowPod extends LightBlock implements BiologicalBlock {
+public class GlowPod extends LightBlock implements BiologicalBlock { //deprecated, i still dont know why i used LightBlock in the first place
     public Color damageColor = TektonLiquids.acid.color.cpy();
 
     public float alpha = 0.9f, glowScale = 15f, glowIntensity = 0.5f, shadowAlpha = 0.2f;
@@ -43,10 +47,12 @@ public class GlowPod extends LightBlock implements BiologicalBlock {
     public float nestShadowOffset = 3f;
 
     public String basePrefix = "nest-";
-    public TextureRegion baseRegion;
+    /*public TextureRegion baseRegion;
     public TextureRegion lightRegion;
     public TextureRegion glowRegion;
-    public TextureRegion upperShadowRegion;
+    public TextureRegion upperShadowRegion;*/
+    
+	BioGlowPod newBlock = (BioGlowPod)TektonBlocks.glowPod;
 
 	public GlowPod(String name) {
 		super(name);
@@ -58,7 +64,7 @@ public class GlowPod extends LightBlock implements BiologicalBlock {
         envEnabled |= Env.space;
         swapDiagonalPlacement = true;
 
-		outlineIcon = true;
+		outlineIcon = false; //change
         outlineColor = TektonColor.tektonOutlineColor;
         lightColor = TektonColor.acid;
 		drawTeamOverlay = false;
@@ -70,6 +76,7 @@ public class GlowPod extends LightBlock implements BiologicalBlock {
 
 	@Override
     public TextureRegion[] icons(){
+		TextureRegion baseRegion = newBlock.baseRegion, region = newBlock.region;
         return new TextureRegion[]{baseRegion, region};
     }
 
@@ -77,10 +84,10 @@ public class GlowPod extends LightBlock implements BiologicalBlock {
 	public void load() {
 		super.load();
 
-        baseRegion = Core.atlas.find("tekton-" + basePrefix + "block-" + size);
+        /*baseRegion = Core.atlas.find("tekton-" + basePrefix + "block-" + size);
 		glowRegion = Core.atlas.find(name + "-glow");
 		lightRegion = Core.atlas.find(name + "-light");
-        upperShadowRegion = Core.atlas.find(name + "-upper-shadow");
+        upperShadowRegion = Core.atlas.find(name + "-upper-shadow");*/
 	}
 
 	public class GlowPodBuild extends LightBuild {
@@ -91,6 +98,11 @@ public class GlowPod extends LightBlock implements BiologicalBlock {
 		@Override
 		public void updateTile() {
 			super.updateTile();
+			
+			//tile.setBlock(TektonBlocks.glowPod, team, rotation); //change to new
+			
+			color = team.color.rgba();
+			if(!headless) renderer.minimap.update(tile);
 
             totalProgress += Time.delta * timeScale * efficiency;
 			needRegen = damaged() && efficiency > 0.1f;
@@ -113,11 +125,13 @@ public class GlowPod extends LightBlock implements BiologicalBlock {
             float z = Draw.z();
 
             float
-            xsize = currentGrow() * region.width * region.scl(),
-    		ysize = currentGrow() * region.height * region.scl(),
+            xsize = currentGrow() * (region.width + 12) * region.scl(),
+    		ysize = currentGrow() * (region.height + 12) * region.scl(),
     		rot = Mathf.sin(Time.time + x, 50f, 0.5f) + Mathf.sin(Time.time - y, 65f, 0.9f) + Mathf.sin(Time.time + y - x, 85f, 0.9f);
 
 			Color col = damageColor.cpy().lerp(Color.white, health / maxHealth);
+			
+			TextureRegion baseRegion = newBlock.baseRegion, region = newBlock.region, upperShadowRegion = newBlock.upperShadowRegion, lightRegion = newBlock.lightRegion, glowRegion = newBlock.glowRegion; //replace all
 
             if (baseRegion.found() && drawBase) {
             	Draw.z(Layer.block - 0.011f);
@@ -171,9 +185,9 @@ public class GlowPod extends LightBlock implements BiologicalBlock {
 
 		@Override
         public void drawLight() {
-			if (!emitLight) {
+			/*if (!emitLight) {
 				return;
-			}
+			}*/
             Drawf.light(x, y, (90f + Mathf.absin(5, 5f)) * currentGlow(), Tmp.c1.set(lightColor), 0.4f * currentGlow() * efficiency);
         }
 

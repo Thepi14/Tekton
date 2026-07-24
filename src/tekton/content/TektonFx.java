@@ -2,6 +2,7 @@ package tekton.content;
 
 import static mindustry.Vars.headless;
 import static mindustry.Vars.tilesize;
+import static tekton.content.TektonColor.dicyanogenShootColor;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -226,6 +227,24 @@ public class TektonFx {
         Tmp.v2.set(to).sub(e.x, e.y).nor().rotate90(1).scl(Mathf.randomSeedRange(e.id, 1f) * 25f);
 
         Tmp.bz2.set(Tmp.v1.set(e.x, e.y), Tmp.v2.add(e.x, e.y), Tmp.v3.set(to));
+
+        Tmp.bz2.valueAt(Tmp.v4, e.fout());
+
+        color(e.color);
+        Fill.circle(Tmp.v4.x, Tmp.v4.y, e.fslope() * 2f + 0.1f);
+    }).followParent(false).rotWithParent(false),
+	
+	arteryPowerTransferInverted = new Effect(140f, e -> {
+        e.lifetime = Mathf.randomSeed(e.id, 120f, 200f);
+        var pos = new Vec2(e.x, e.y);
+
+        if(!(e.data instanceof Position to)) {
+			return;
+		}
+
+        Tmp.v2.set(pos).sub(to).nor().rotate90(1).scl(Mathf.randomSeedRange(e.id, 1f) * 25f);
+
+        Tmp.bz2.set(Tmp.v1.set(to), Tmp.v2.add(to), Tmp.v3.set(pos));
 
         Tmp.bz2.valueAt(Tmp.v4, e.fout());
 
@@ -475,6 +494,30 @@ public class TektonFx {
         });
 
         Drawf.light(e.x, e.y, 45f, e.color, 0.8f * e.fout());
+    }),
+
+	blastExplosionColorSlowerWave = new Effect(100, e -> {
+        color(e.color.cpy().mul(1.2f));
+
+        e.scaled(8, i -> {
+            stroke(3f * i.fout());
+            Lines.circle(e.x, e.y, 4f + i.fin() * 15f);
+        });
+
+        color(e.color.cpy());
+
+        randLenVectors(e.id, 7, 4f + 28f * e.finpow(), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fout() * 4f + 0.5f);
+        });
+
+        color(e.color);
+        stroke(e.fout());
+
+        randLenVectors(e.id + 1, 6, 2f + 29f * e.finpow(), (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 3f);
+        });
+
+        Drawf.light(e.x, e.y, 52f, e.color, 0.8f * e.fout());
     }),
 
 	massiveExplosionColor = new Effect(30, e -> {
@@ -1085,6 +1128,19 @@ public class TektonFx {
 
         Lines.endLine();
     }).followParent(false).rotWithParent(false),
+	
+	radiancePointEffect = new ParticleEffect() {{
+		particles = 1;
+		line = true;
+		lifetime = 30;
+		length = 30;
+		lenFrom = 3;
+		lenTo = 0;
+		strokeFrom = 2;
+		strokeTo = 0;
+		colorFrom = Color.white;
+		colorTo = dicyanogenShootColor;
+	}},
 
 	teamColorDespawn = new Effect(60f, e -> {
         if(!(e.data instanceof Unit select) || select.type == null) {

@@ -83,7 +83,7 @@ public class GroundThrustAbility extends Ability {
     }).layer(Layer.debris).followParent(false),
 	sparkEffect = Fx.none;
 
-	public float thrustSoundVolume = 0.5f;
+	public float thrustSoundVolume = 0.125f;
 	public Sound thrustSound = Sounds.loopMissileTrail;
 
 	public Color heatColor = Pal.turretHeat;

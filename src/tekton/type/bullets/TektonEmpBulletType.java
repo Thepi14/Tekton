@@ -15,10 +15,15 @@ import mindustry.graphics.Pal;
 import mindustry.world.blocks.defense.Wall;
 import tekton.type.biological.BiologicalBlock;
 
-public class TektonEmpBulletType extends BasicBulletType{
-    public float radius = 100f;
+//essentialy a copy of EmpBulletType, but because the original one heals and accounts for biological blocks, it cannot be used.
+public class TektonEmpBulletType extends BasicBulletType {
+	public float radius = 100f;
     public float timeIncrease = 2.5f, timeDuration = 60f * 10f;
     public float powerDamageScl = 2f, powerSclDecrease = 0.2f;
+    public boolean hitUnits = true;
+    public float unitDamageScl = 0.7f;
+    
+    //EMP part
     public Effect hitPowerEffect = new Effect(40, e -> {
         color(e.color);
         stroke(e.fout() * 1.6f);
@@ -27,17 +32,17 @@ public class TektonEmpBulletType extends BasicBulletType{
             float ang = Mathf.angle(x, y);
             lineAngle(e.x + x, e.y + y, ang, e.fout() * 6 + 1f);
         });
-    }), chainEffect = Fx.chainEmp.wrap(Pal.lancerLaser.cpy()), applyEffect = Fx.hitLancer;
-    public boolean hitUnits = true;
-    public float unitDamageScl = 0.7f;
+    }),
+    chainEffect = Fx.chainEmp,
+    applyEffect = Fx.hitLancer;
 
     public TektonEmpBulletType() {
     	despawnEffect = hitEffect = Fx.none;
     }
 
     @Override
-    public void hit(Bullet b, float x, float y){
-        super.hit(b, x, y);
+    public void hit(Bullet b, float x, float y, boolean createFrags){
+        super.hit(b, x, y, createFrags);
 
         if(!b.absorbed){
         	if (collidesGround) {

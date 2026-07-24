@@ -20,6 +20,7 @@ import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
+import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
 import mindustry.world.Block;
@@ -62,6 +63,8 @@ public class Regenerator extends Block{
         envEnabled |= Env.space;
         rotateDraw = false;
         flags = EnumSet.of(BlockFlag.repair);
+        ambientSound = Sounds.loopRegen;
+        ambientSoundVolume = 0.45f;
     }
 
     @Override

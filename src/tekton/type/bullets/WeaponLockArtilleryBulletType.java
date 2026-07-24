@@ -49,7 +49,7 @@ public class WeaponLockArtilleryBulletType extends ArtilleryBulletType {
             Units.nearbyEnemies(b.team, x, y, splashDamageRadius, other -> {
                 if(other.team != b.team && other.hittable() && ((other.isGrounded() && collidesGround) || (other.isFlying() && collidesAir)) && TekMath.insideDiamond(x,  y, other.x, other.y, splashDamageRadius)) {
                 	var dst = TekMath.insideDiamondDst(x, y, other.x, other.y);
-                	var dmg = splashDamage * Mathf.clamp((1.05f - (dst / splashDamageRadius)));
+                	var dmg = splashDamage * Mathf.clamp(1.05f - ((dst - (other.hitSize() * .5f)) / splashDamageRadius));
                     other.damage(dmg, splashDamagePierce);
                     if(status != StatusEffects.none) {
                     	other.apply(status, statusDuration);
@@ -60,7 +60,7 @@ public class WeaponLockArtilleryBulletType extends ArtilleryBulletType {
             indexer.eachBlock(null, x, y, splashDamageRadius, other -> TekMath.insideDiamond(x,  y, other.x, other.y, splashDamageRadius), other -> {
             	if (other.team != b.team) {
                 	var dst = TekMath.insideDiamondDst(x, y, other.x, other.y);
-                	var dmg = splashDamage * Mathf.clamp((1.05f - ((dst - (other.hitSize() / 2f)) / splashDamageRadius)));
+                	var dmg = splashDamage * Mathf.clamp(1.05f - ((dst - (other.hitSize() * .5f)) / splashDamageRadius));
 
                     if (other.health > dmg && other.block instanceof Turret blc && !(blc instanceof BiologicalBlock)) {
                     	other.applySlowdown(0f, weaponLockDuration);
@@ -69,14 +69,6 @@ public class WeaponLockArtilleryBulletType extends ArtilleryBulletType {
                     other.damage(dmg);
             	}
         	});
-        }
-    }
-
-    @Override
-	public void updateHoming(Bullet b){
-        if(homingPower > 0.0001f && b.time >= homingDelay){
-            float angle = b.angleTo(b.aimX, b.aimY);
-            b.vel.setAngle(Angles.moveToward(b.vel.angle(), angle, homingPower * Time.delta));
         }
     }
 }

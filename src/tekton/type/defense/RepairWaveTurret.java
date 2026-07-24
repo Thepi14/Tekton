@@ -43,7 +43,6 @@ public class RepairWaveTurret extends Block{
     public int timerTarget = timers++;
 
     public float bulletOffset = 7f;
-    public float repairAmount = 1.4f;
     public float repairRadius = 100f;
     public float repairAngle = 90f;
     public WaveBulletType bullet;
@@ -79,7 +78,7 @@ public class RepairWaveTurret extends Block{
         	linePoints = 24;
             lightColor = hitColor = Pal.heal;
             collidesAir = collidesGround = collidesTeam = true;
-            healAmount = (repairAmount / damageInterval) / 5f;
+            healAmount = (10f / damageInterval);
         }};
 
         envEnabled |= Env.space;
@@ -89,7 +88,7 @@ public class RepairWaveTurret extends Block{
     public void setStats(){
         super.setStats();
         stats.add(Stat.range, repairRadius / tilesize, StatUnit.blocks);
-        stats.add(Stat.repairSpeed, (repairAmount / reload) * 60f, StatUnit.perSecond);
+        stats.add(Stat.repairSpeed, (((((bullet.healAmount * bullet.lifetime) / bullet.damageInterval) / 12f)) / reload) * 60f, StatUnit.perSecond); //rough approximation
 
         if(acceptCoolant){
             stats.remove(Stat.booster);

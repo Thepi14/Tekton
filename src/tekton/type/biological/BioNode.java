@@ -74,6 +74,7 @@ public class BioNode extends PowerNode implements BiologicalBlock {
         lightRadius = 25f;
 		lightColor = glowColor;
 		destroyEffect = TektonFx.biologicalDynamicExplosion;
+		drawCached = false;
 
 		update = true;
 		alwaysUnlocked = false;

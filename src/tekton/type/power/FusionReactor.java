@@ -119,9 +119,21 @@ public class FusionReactor extends PowerGenerator {
     public void setStats(){
         super.setStats();
 
-        stats.add(Stat.productionTime, itemDuration / 60f, StatUnit.seconds);
+        if(hasItems){
+            stats.add(Stat.productionTime, itemDuration / 60f, StatUnit.seconds);
+        }
         //stats.add(Stat.maxEfficiency, (maxGravity / requiredGravity) * 100f, StatUnit.percent);
         stats.add(TektonStat.gravityUse, requiredGravity, TektonStat.gravityPower);
+        
+        if(consPower != null){
+            //exponential decay formula
+            float max = -(float)Math.log(0.001f) / warmupSpeed / 60f;
+            float equal = -(float)Math.log(1f - Mathf.pow(consPower.usage / powerProduction, 1f / 5f)) / warmupSpeed / 60f;
+            stats.add(Stat.warmupTime, t -> {
+                t.add(Strings.autoFixed(max, 2) + " " + StatUnit.seconds.localized() + (consPower != null ?
+                " ~ " + Strings.autoFixed(equal, 2) + " " + StatUnit.seconds.localized() + " " + StatUnit.powerEquilibrium.localized() : ""));
+            });
+        }
     }
 
 	public class FusionReactorBuild extends GeneratorBuild implements GravityConsumer {

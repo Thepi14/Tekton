@@ -9,6 +9,7 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
+import arc.struct.EnumSet;
 import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Time;
@@ -23,8 +24,11 @@ import mindustry.graphics.Pal;
 import mindustry.world.Block;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
+import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.BlockGroup;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
+import tekton.content.TektonColor;
 import tekton.content.TektonFx;
 import tekton.content.TektonStat;
 
@@ -36,13 +40,12 @@ public class BulletSlowdownDome extends Block {
 
 	public float range = 20f * tilesize;
 	public float strokeSize = 3f, waveEffectReload = 320f;
-    public Color waveColor = Color.valueOf("83eff2"), heatColor = Pal.techBlue, shapeColor = Color.valueOf("83eff2");
+    public Color waveColor = TektonColor.dicyanogenShootColor, heatColor = Pal.techBlue, shapeColor = TektonColor.dicyanogenShootColor;
     public Effect hitEffect = TektonFx.slowDownDomeHitEffect;
     public Effect waveEffect = TektonFx.slowDownWave;
     public float speedMultiplier = 0.5f;
 
-    public float shapeRotateSpeed = 1f, shapeRadius = 6f;
-    public int shapeSides = 4;
+    public float shapeRadius = 7f;
     public float warmupSpeed = 0.5f;
 
     public TextureRegion heatRegion;
@@ -53,6 +56,8 @@ public class BulletSlowdownDome extends Block {
 		super(name);
         update = true;
         solid = true;
+        flags = EnumSet.of(BlockFlag.shield);
+        group = BlockGroup.projectors;
 	}
 
     @Override
@@ -152,7 +157,7 @@ public class BulletSlowdownDome extends Block {
             Draw.color(shapeColor, waveColor, Mathf.pow(heat, 2f));
             Lines.stroke(strokeSize * heat);
             Lines.square(x, y, range / 2f);
-            Fill.poly(x, y, shapeSides, shapeRadius * heat, Time.time * shapeRotateSpeed);
+            Lines.circle(x, y, shapeRadius * heat);
             Draw.color();
         }
 

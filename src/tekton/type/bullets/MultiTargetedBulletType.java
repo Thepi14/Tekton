@@ -104,6 +104,11 @@ public class MultiTargetedBulletType extends ContinuousBulletType {
     protected void updateBullets(Bullet main, Seq<BulletEntry> entries){
     	int i = 0;
     	for (var entry : entries) {
+    		if (entry == null)
+    			continue;
+    		else if (entry.bullet == null)
+    			continue;
+    		
     		var pos = spawnPositions.get(i);
     		var newPos = new Vec2(Angles.trnsx(main.rotation(), pos.x, pos.y), Angles.trnsy(main.rotation(), pos.x, pos.y));
 	        float angle = (Mathf.atan2(main.aimX - (main.x + newPos.x), main.aimY - (main.y + newPos.y)) * Mathf.radDeg);

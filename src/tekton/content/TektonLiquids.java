@@ -7,7 +7,7 @@ import mindustry.type.Liquid;
 import tekton.Tekton;
 
 public class TektonLiquids {
-	public static Liquid ammonia, oxygen, methane, dicyanogen, liquidMethane, metazotoplasm, acid, cobweb;
+	public static Liquid ammonia, methane, acid, cobweb, liquidMethane, metazotoplasm, oxygen, dicyanogen;
 
 	public static void load(){
 		ammonia = new Liquid("ammonia", TektonColor.ammonia) {{
@@ -22,61 +22,6 @@ public class TektonLiquids {
             boilPoint = 0.8f;
 		}};
 
-		oxygen = new Liquid("oxygen", TektonColor.oxygen) {{
-            coolant = false;
-			gas = true;
-			temperature = 0.5f;
-			heatCapacity = 0.6f;
-			viscosity = 0.1f;
-			flammability = 0.1f;
-			explosiveness = 0.5f;
-			alwaysUnlocked = false;
-		}};
-
-        var add = 0.1f;
-		methane = new Liquid("methane", TektonColor.methane.cpy().add(add, add, add)) {{
-            coolant = false;
-			gas = true;
-			temperature = 0.3f;
-			heatCapacity = 0.6f;
-			viscosity = 0.1f;
-			flammability = 0.9f;
-			explosiveness = 0.5f;
-			alwaysUnlocked = true;
-            lightColor = TektonColor.methaneGas.cpy().a(0.3f);
-            gasColor = TektonColor.methaneGas;
-            effect = TektonStatusEffects.tarredInMethane;
-		}};
-
-		dicyanogen = new Liquid("dicyanogen", TektonColor.dicyanogen) {{
-            coolant = false;
-			gas = true;
-			temperature = 0.5f;
-			heatCapacity = 0.6f;
-			viscosity = 0.1f;
-			flammability = 2.5f;
-			explosiveness = 0.5f;
-			alwaysUnlocked = true;
-            lightColor = TektonColor.dicyanogen.cpy().a(0.3f);
-            gasColor = TektonColor.dicyanogen;
-            //effect = TektonStatusEffects.tarredInMethane;
-		}};
-
-		liquidMethane = new Liquid("liquid-methane", TektonColor.liquidMethane) {{ //this one only exists because of freezer
-        	hidden = Tekton.hideContent;
-            coolant = false;
-			gas = false;
-			temperature = 0.1f;
-			heatCapacity = 0.8f;
-			viscosity = 0.6f;
-			alwaysUnlocked = false;
-			hidden = true;
-            boilPoint = 0.15f;
-            gasColor = TektonColor.methane;
-			canStayOn.add(Liquids.water);
-            effect = TektonStatusEffects.tarredInMethane;
-		}};
-
 		acid = new Liquid("acid", TektonColor.acid) {{
         	hidden = false;
             coolant = false;
@@ -88,6 +33,34 @@ public class TektonLiquids {
             boilPoint = 0.9f;
 			alwaysUnlocked = false;
 			canStayOn.add(Liquids.water);
+		}};
+
+        cobweb = new Liquid("cobweb", TektonColor.cobweb) {{
+            coolant = false;
+        	hidden = Tekton.hideContent;
+            coolant = false;
+			gas = false;
+			temperature = 0.25f;
+            viscosity = 0.9f;
+            effect = TektonStatusEffects.cobwebbed;
+            lightColor = Color.valueOf("d6d6d6").a(0.3f);
+            boilPoint = 0.9f;
+			alwaysUnlocked = false;
+			canStayOn.addAll(Liquids.water, methane);
+		}};
+
+		liquidMethane = new Liquid("liquid-methane", TektonColor.liquidMethane) {{ //this one only exists because of freezer
+			hidden = true;
+            coolant = false;
+			gas = false;
+			temperature = 0.1f;
+			heatCapacity = 0.8f;
+			viscosity = 0.6f;
+			alwaysUnlocked = false;
+            boilPoint = 0.15f;
+            gasColor = TektonColor.methane;
+			canStayOn.add(Liquids.water);
+            effect = TektonStatusEffects.tarredInMethane;
 		}};
 
 		metazotoplasm = new CellLiquid("metazotoplasm", TektonColor.metazotoplasm){{
@@ -109,18 +82,44 @@ public class TektonLiquids {
             colorTo = Color.valueOf("55ff55");
         }};
 
-        cobweb = new Liquid("cobweb", TektonColor.cobweb) {{
+        var add = 0.1f;
+		methane = new Liquid("methane", TektonColor.methane.cpy().add(add, add, add)) {{
             coolant = false;
-        	hidden = Tekton.hideContent;
+			gas = true;
+			temperature = 0.3f;
+			heatCapacity = 0.6f;
+			viscosity = 0.1f;
+			flammability = 0.9f;
+			explosiveness = 0.5f;
+			alwaysUnlocked = true;
+            lightColor = TektonColor.methaneGas.cpy().a(0.3f);
+            gasColor = TektonColor.methaneGas;
+            effect = TektonStatusEffects.tarredInMethane;
+		}};
+
+		oxygen = new Liquid("oxygen", TektonColor.oxygen) {{
             coolant = false;
-			gas = false;
-			temperature = 0.25f;
-            viscosity = 0.9f;
-            effect = TektonStatusEffects.cobwebbed;
-            lightColor = Color.valueOf("d6d6d6").a(0.3f);
-            boilPoint = 0.9f;
+			gas = true;
+			temperature = 0.5f;
+			heatCapacity = 0.6f;
+			viscosity = 0.1f;
+			flammability = 0.1f;
+			explosiveness = 0.5f;
 			alwaysUnlocked = false;
-			canStayOn.addAll(Liquids.water, methane);
+		}};
+
+		dicyanogen = new Liquid("dicyanogen", TektonColor.dicyanogen) {{
+            coolant = false;
+			gas = true;
+			temperature = 0.5f;
+			heatCapacity = 0.6f;
+			viscosity = 0.1f;
+			flammability = 2.5f;
+			explosiveness = 0.5f;
+			alwaysUnlocked = true;
+            lightColor = TektonColor.dicyanogen.cpy().a(0.3f);
+            gasColor = TektonColor.dicyanogen;
+            //effect = TektonStatusEffects.tarredInMethane;
 		}};
 
         Liquids.water.canStayOn.addAll(ammonia, methane);

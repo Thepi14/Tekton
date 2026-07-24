@@ -40,8 +40,8 @@ public class TektonBioUnit extends UnitType implements BiologicalUnit {
         			liquid = TektonLiquids.acid;
 	        	}},
         		new RegenAbility() {{
-                    //fully regen in 180 seconds
-                    percentAmount = 1f / (180f * 60f) * 100f;
+                    //fully regen in 300 seconds
+                    percentAmount = 1f / (300f * 60f) * 100f;
                 }},
         		new ColorDebrisAbility());
         immunities.addAll(BiologicalUnit.getDefaultImmunities());

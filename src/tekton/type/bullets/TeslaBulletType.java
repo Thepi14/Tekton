@@ -15,8 +15,6 @@ import mindustry.gen.Bullet;
 import tekton.content.TektonColor;
 
 public class TeslaBulletType extends BulletType{
-     public float trailSpacing = 10f;
-
 	 public Effect chainEffect = Fx.chainEmp.wrap(TektonColor.redShootColorLightning),
 	 applyEffect = Fx.titanExplosion.wrap(Color.valueOf("ffaaaa"));
 	 public int chains = 3;
@@ -60,7 +58,9 @@ public class TeslaBulletType extends BulletType{
 		 absorbable = true;
 		 optimalLifeFract = 0.5f;
 		 shootEffect = smokeEffect = Fx.none;
-		 despawnHit = true;
+		 despawnHit = false;
+		 fragOnDespawn = false;
+		 setDefaults = false;
 
 		 //just make it massive, users of this bullet can adjust as necessary
 		 drawSize = 1000f;
@@ -74,8 +74,8 @@ public class TeslaBulletType extends BulletType{
         var maxDistY = pos.dst(b.aimX, b.aimY) >= maxRange ? b.y + (Mathf.sin(Mathf.atan2(b.aimX - b.x, b.aimY - b.y)) * maxRange) : b.aimY;
         var absorber = Damage.findAbsorber(b.team, b.x, b.y, maxDistX, maxDistY);
 
-        if(absorber != null && absorbable){
-        	hitAt(b, absorber.x, absorber.y);
+        if(absorber != null &&absorbable){
+            hitAt(b, absorber.x, absorber.y);
         }
         else {
         	hitAt(b, maxDistX, maxDistY);

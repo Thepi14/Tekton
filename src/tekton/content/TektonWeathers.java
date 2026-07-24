@@ -10,9 +10,7 @@ import mindustry.type.weather.ParticleWeather;
 import mindustry.type.weather.RainWeather;
 import mindustry.world.meta.Attribute;
 import tekton.type.bullets.EmptyBulletType;
-import tekton.type.weathers.FogWeather;
-import tekton.type.weathers.ObstaclesWeather;
-import tekton.type.weathers.StormWeather;
+import tekton.type.weathers.*;
 
 public class TektonWeathers {
 	public static Weather
@@ -41,6 +39,7 @@ public class TektonWeathers {
             drawParticles = false;
             drawNoise = false;
             useWindVector = false;
+            hidden = true;
             xspeed = 1f;
             yspeed = 0.01f;
             opacityMultiplier = 0.47f;
@@ -107,7 +106,7 @@ public class TektonWeathers {
             duration = 7f * Time.toMinutes;
         }};
 
-	    acidRain = new RainWeather("acid-rain") {{
+	    acidRain = new DamagingRainWeather("acid-rain") {{
 	        attrs.set(Attribute.light, -0.3f);
 	        attrs.set(Attribute.water, -0.2f);
 	        status = TektonStatusEffects.wetInAcid;
@@ -137,12 +136,11 @@ public class TektonWeathers {
             force = 0.4f;
             sound = Sounds.wind;
             soundVol = 1.1f;
-            duration = 2f * Time.toMinutes;
 
 	        status = TektonStatusEffects.shortCircuit;
 	        statusGround = false;
 
-            duration = 7f * Time.toMinutes;
+            duration = 3f * Time.toMinutes;
 	    }};
 
 	    methaneSnow = new ParticleWeather("methane-snow") {{

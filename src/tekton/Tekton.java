@@ -46,8 +46,8 @@ public class Tekton extends Mod {
 	public static final String MOD_NAME = "tekton";
 
 	public static boolean hideContent = false;
-	public static boolean drawBiologicalUnitsCell = false; //only made because the cell drawing system of mindustry is bugged.
-	public static boolean showDebug = !hideContent;
+	public static boolean drawBiologicalUnitsCell = false; //only made because the cell drawing system of mindustry is bugged (or is it? vsauce theme plays).
+	public static boolean showDebug = false;
 
 	public static short version = 157;
 
@@ -65,25 +65,7 @@ public class Tekton extends Mod {
 		Log.info("Loaded Tekton constructor.");
         packer = new MultiPacker();
 
-		//listen for game load event
-        /*Events.on(ClientLoadEvent.class, e -> {
-            //show dialog upon startup
-            Time.runTask(5f * 60f, () -> {
-                BaseDialog dialog = new BaseDialog("frog");
-                var text = "";
-                for (var item : TektonPlanets.tekton.defaultCore.requirements) {
-                	text += item.item.name;
-                	text += item.amount;
-                }
-                dialog.cont.add(text).row();
-                //mod sprites are prefixed with the mod name (this mod is called 'example-java-mod' in its config)
-                dialog.cont.image(Core.atlas.find("example-java-mod-frog")).pad(20f).row();
-                dialog.cont.button("I see", dialog::hide).size(100f, 50f);
-                dialog.show();
-            });
-        });*/
-
-		//the gambiarra must not stop
+		//the gambiarra must continue
 		Events.on(WorldLoadEvent.class, e -> {
 			TektonVars.clearAllLists();
 		});
@@ -94,19 +76,6 @@ public class Tekton extends Mod {
         super.init();
         packer = new MultiPacker();
         TektonSettings.load();
-
-        /*try {
-            if(Version.isAtLeast("147")) {
-                Reflect.invoke(Vars.logicVars, "put", new Object[] {"@martyris", TektonUnits.martyris},
-                        String.class, Object.class);
-            }
-            else {
-                Reflect.invoke(Vars.logicVars, "put", new Object[] {"@martyris", TektonUnits.martyris},
-                        String.class, Object.class);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
 
     	PlanetDialog.debugSelect = !hideContent;
     }
@@ -133,13 +102,14 @@ public class Tekton extends Mod {
         TektonEnvRenderer.load();
 
         Events.on(EventType.WorldLoadEndEvent.class, e -> {
-        	Vars.state.rules.weather.remove(t -> (t.weather == TektonWeathers.methaneRain));
-        	if (Vars.state.rules.planet == TektonPlanets.tekton) {
+        	//remove old fog
+        	Vars.state.rules.weather.remove(t -> (t.weather == TektonWeathers.tektonFog));
+        	/*if (Vars.state.rules.planet == TektonPlanets.tekton) {
         		Vars.state.rules.env = TektonEnv.methane | Env.terrestrial;
-        	}
+        	}*/
         });
 
-        Team.blue.emoji = "tekton-hapax";
+        //Team.blue.emoji = "tekton-team-hapax";
         //Team.blue.name = "hapax";
 
         Log.info("Tekton loaded, non-hidden content: " + returnResourcesSize());
@@ -148,8 +118,8 @@ public class Tekton extends Mod {
     }
 
 	public static int returnResourcesSize() {
-		int environment = 46;
-		int hidden = 6;
+		int environment = 55;
+		int hidden = 5;
 		int currentTests = environment + hidden;
 		Class<?> bloc = TektonBlocks.class;
 		Seq<Field> blocFields = new Seq<>(bloc.getFields());

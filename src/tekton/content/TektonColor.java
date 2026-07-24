@@ -44,7 +44,8 @@ public class TektonColor {
 	phaseFabricShootColor,
 	nanoAlloyShootColor,
 	redShootColor = Color.valueOf("ff4545"),
-	redShootColorLightning = Color.valueOf("ff5959")
+	redShootColorLightning = Color.valueOf("ff5959"),
+	dicyanogenShootColor = Color.valueOf("83eff2");
 	;
 
 	public static void load() { //waaaa

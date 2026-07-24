@@ -1,5 +1,6 @@
 package tekton.type.bullets;
 
+import arc.graphics.Color;
 import arc.math.Angles;
 import arc.math.Mathf;
 import arc.math.geom.Vec2;
@@ -10,42 +11,76 @@ import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Lightning;
 import mindustry.entities.Units;
+import mindustry.entities.bullet.BulletType;
+import mindustry.entities.effect.MultiEffect;
+import mindustry.entities.effect.ParticleEffect;
+import mindustry.entities.effect.WaveEffect;
 import mindustry.gen.Bullet;
+import tekton.content.TektonColor;
 
-public class HomingTeslaBulletType extends TeslaBulletType{
+public class HomingTeslaBulletType extends BulletType{
+	 public Effect chainEffect = Fx.chainEmp.wrap(TektonColor.redShootColorLightning),
+	 applyEffect = Fx.titanExplosion.wrap(Color.valueOf("ffaaaa"));
+	 public int chains = 3;
+	 
     public float lengthRand = 100f;
 
     public HomingTeslaBulletType() {
-        removeAfterPierce = false;
-        speed = 0f;
-        hitEffect = Fx.none;
+		 removeAfterPierce = false;
+		 speed = 0f;
+		 hitEffect = new MultiEffect() {{
+		 	effects = new Effect[]{
+					new WaveEffect() {{
+		    	    	sizeFrom = 2;
+		    	    	sizeTo = 14;
+		    	    	lifetime = 10;
+		    	    	strokeFrom = 2;
+		    	    	strokeTo = 0;
+		    	    	colorFrom = Color.valueOf("ffffff");
+				    	colorTo = Color.valueOf("ff4545");
+				    }},
+					new ParticleEffect() {{
+						particles = 6;
+						line = true;
+						lifetime = 15;
+						length = 15;
+						lenFrom = 3;
+						lenTo = 0;
+						strokeFrom = 1;
+						strokeTo = 0;
+						colorFrom = Color.valueOf("ffffff");
+						colorTo = Color.valueOf("ff4545");
+		    		}}
+			};
+		}};
 		maxRange = 100f;
-		despawnEffect = Fx.none;
-		lifetime = 20f;
-		impact = true;
-		keepVelocity = false;
-		collides = false;
-		pierce = true;
-		hittable = false;
-		absorbable = true;
-		optimalLifeFract = 0.5f;
-		shootEffect = smokeEffect = Fx.none;
-		despawnHit = true;
-		homingRange = 5f * 8f;
+		 despawnEffect = Fx.none;
+		 lifetime = 20f;
+		 impact = true;
+		 keepVelocity = false;
+		 collides = false;
+		 pierce = true;
+		 hittable = false;
+		 absorbable = true;
+		 optimalLifeFract = 0.5f;
+		 shootEffect = smokeEffect = Fx.none;
+		 despawnHit = false;
+		 fragOnDespawn = false;
+		 setDefaults = false;
 
-		//just make it massive, users of this bullet can adjust as necessary
-    	drawSize = 1000f;
-	}
+		 //just make it massive, users of this bullet can adjust as necessary
+		 drawSize = 1000f;
+    }
 
    @Override
    public void init(Bullet b){
        super.init(b);
        var maxDistX = b.x + Angles.trnsx(b.rotation(), maxRange - Mathf.range(0f, lengthRand));
        var maxDistY = b.y + Angles.trnsy(b.rotation(), maxRange - Mathf.range(0f, lengthRand));
-       var absorber = Damage.findAbsorber(b.team, b.x, b.y, maxDistX, maxDistY);
+	   var absorber = Damage.findAbsorber(b.team, b.x, b.y, maxDistX, maxDistY);
 
-       if(absorber != null && absorbable){
-    	   hitAt(b, absorber.x, absorber.y);
+       if(absorber != null &&absorbable){
+           hitAt(b, absorber.x, absorber.y);
        }
        else {
     	   hitAt(b, maxDistX, maxDistY);

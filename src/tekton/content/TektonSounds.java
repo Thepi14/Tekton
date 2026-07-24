@@ -27,7 +27,9 @@ public class TektonSounds {
 	shoothuge,
 	sonarloop,
 	sonarping,
+	chargesword,
 	freezer,
+	freezershoot,
 	freezeexplosion,
 	freezeexplosionbig,
 	lightningstrike,
@@ -35,7 +37,9 @@ public class TektonSounds {
 	gravity,
 	gravityemission,
 	explosionbig,
-	shootmeltdownmodified
+	shootmeltdownmodified,
+	latencyloop,
+	teslaexplosion
 	;
 
 	public static void load(){

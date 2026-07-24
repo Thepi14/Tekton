@@ -6,6 +6,8 @@ import static mindustry.Vars.world;
 
 import arc.graphics.*;
 import arc.graphics.g2d.*;
+
+import static arc.Core.settings;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 
@@ -47,12 +49,15 @@ import mindustry.entities.Units;
 import mindustry.entities.bullet.BulletType;
 import mindustry.entities.effect.ExplosionEffect;
 import mindustry.gen.Building;
+import mindustry.gen.Bullet;
 import mindustry.gen.Sounds;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
+import mindustry.logic.Ranged;
 import mindustry.type.Liquid;
+import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 import mindustry.world.Block;
@@ -69,6 +74,7 @@ import tekton.content.TektonFx;
 import tekton.content.TektonLiquids;
 import tekton.content.TektonSounds;
 import tekton.content.TektonStatusEffects;
+import tekton.content.TektonUnits;
 import tekton.content.TektonVars;
 import tekton.type.bullets.EmptyBulletType;
 
@@ -76,56 +82,77 @@ import tekton.type.bullets.EmptyBulletType;
 public class Cyanea extends Block implements BiologicalBlock {
 	public final int timerSpawn = timers++;
 	public final int timerShoot = timers++;
-
-	public Seq<UnitType> creatureTypes;
-
-    public Color glowColor = TektonColor.ammonia.cpy();
-    public Color damageColor = TektonColor.ammonia.cpy();
-    public Color hitColor = Pal.surge;
-
+    
 	public Color regenColor = TektonColor.ammonia.cpy();
 	public Effect regenEffect = TektonFx.buildingBiologicalRegeneration.wrap(regenColor);
-
+	
 	public float alpha = 0.9f, glowScale = 15f, glowIntensity = 0.5f, shadowAlpha = 0.2f;
     public float shadowOffset = 6f;
-
-    public int explosionDamage = 0;
-    public Effect explodeEffect = TektonFx.cyaneaExplosion;
-    public Effect spawnEffect = Fx.none;
-    public Effect shootEffect = Fx.none;
-    public Sound explodeSound = TektonSounds.explosionbig;
-
+    
     public float minBiopower = 0f;
+    
+    //basic shoot related
     public float reload = 120f;
-    public Sound shootSound = Sounds.none;
-
+    public int maxNumberOfShots = 15;
+    
     public BulletType bullet1 = new EmptyBulletType();
     public BulletType bullet2 = new EmptyBulletType();
     public BulletType bullet3 = new EmptyBulletType();
-
+    
+    public Effect shootEffect = Fx.none;
+    public Sound shootSound = Sounds.none;
+    
+    ///building damage related
+    public float buildingDamageApplyParticleChance = 0.2f;
+    public Effect buildingDamageEffect = Fx.regenSuppressSeek;
+    
+    //emp attack related
 	public float enemyDetectionRadiusMultiplier = 2f * tilesize;
 	public Effect chainEffect = Fx.chainEmp.wrap(Pal.surge.cpy());
+	
 	public float empDamageMultiplier = 10f;
-
+	
+	//spawn related
+    public Effect spawnEffect = Fx.none;
+	public Seq<UnitType> creatureTypes;
+	
+	//tesla attack related
+	public float teslaDamageScale = 1000;
+	public StatusEffect teslaAttackStatusEffect = TektonStatusEffects.shortCircuit;
+	
+	//death related
     public int shieldHealth = 1000000000;
     public int explosionPuddles = 15;
     public float explosionPuddleAmount = 140f;
     public @Nullable Liquid explosionPuddleLiquid = TektonLiquids.ammonia;
     public float explosionMinWarmup = 0f;
-
+    public int explosionDamage = 0;
+    
+    public Sound explodeSound = TektonSounds.explosionbig;
+    public Effect explodeEffect = TektonFx.cyaneaExplosion;
+    
     public float explosionShake = 1f, explosionShakeDuration = 6f;
-
+    
+    //graphics related
+    public Color glowColor = TektonColor.ammonia.cpy();
+    public Color damageColor = TektonColor.ammonia.cpy();
+    public Color hitColor = Pal.surge;
+    
     public boolean hasGlow = true;
     public boolean glowAnimation = true;
     public boolean drawBase = true;
-    public String basePrefix = "nest-";
+    
+    public String basePrefix = "cyanea-";
+    
     public int shells = 4;
     public float shellRotationOffset = 0f;
     public float shellOpeningSpeed = 0.05f;
     public float shellOpening = 3.5f;
-    public TextureRegion baseRegion;
+    
     public TextureRegion[] shellRegions;
     public TextureRegion[] shellOutlineRegions;
+    
+    public TextureRegion baseRegion;
     public TextureRegion glowRegion;
     public TextureRegion upperShadowRegion;
     public TextureRegion previewRegion;
@@ -137,7 +164,7 @@ public class Cyanea extends Block implements BiologicalBlock {
 		armor = 20;
 		size = 3;
 
-		creatureTypes = new Seq<UnitType>();
+		creatureTypes = new Seq<UnitType>().addAll(TektonUnits.achlyos);
 		unitCapModifier = 5;
         envEnabled |= Env.space;
 		buildVisibility = BuildVisibility.sandboxOnly;
@@ -162,6 +189,7 @@ public class Cyanea extends Block implements BiologicalBlock {
         envEnabled |= Env.space;
 
         outlineIcon = true;
+        noUpdateDisabled = true;
         outlineColor = TektonColor.tektonOutlineColor;
         baseExplosiveness = 5f;
 
@@ -179,8 +207,7 @@ public class Cyanea extends Block implements BiologicalBlock {
             sparkLen = 3f;
             sparkStroke = 0f;
 		}};
-
-		basePrefix = "uranium-";
+		
 		damageColor = glowColor = regenColor = lightColor = TektonColor.ammonia.cpy();
 		regenEffect = TektonFx.buildingBiologicalRegeneration.wrap(regenColor);
 		destroyEffect = TektonFx.biologicalAmmoniaDynamicExplosion;
@@ -246,7 +273,7 @@ public class Cyanea extends Block implements BiologicalBlock {
 
 	protected float detectionDelay = 5f;
 
-	public class CyaneaBuild extends Building implements BiopowerConsumer, UnitTetherBlock {
+	public class CyaneaBuild extends Building implements BiopowerConsumer, UnitTetherBlock, Ranged {
         protected IntSeq readCreatures = new IntSeq();
 
         public boolean dead = true;
@@ -269,10 +296,37 @@ public class Cyanea extends Block implements BiologicalBlock {
 			return super.create(block, team);
 		}*/
 
+	    /*@Override
+	    public float hitSize(){
+	    	if (dead)
+	    		return 0f;
+	    	else
+	    		return tile.block().size * tilesize;
+	    }
+
+	    @Override
+	    public void hitbox(Rect out){
+	    	if (dead)
+	    		out.setCentered(x, y, 0f, 0f);
+	    	else
+	    		out.setCentered(x, y, block.size * tilesize, block.size * tilesize);
+	    }*/
+
+		@Override
+		public boolean checkSolid(){
+	        return dead;
+	    }
+		
+		@Override
+		public boolean collide(Bullet other){
+	        return dead;
+	    }
+
         @Override
         public void updateTile() {
         	super.updateTile();
         	updateBiopower();
+        	Vars.fogControl.forceUpdate(team, this);
 
         	currentUpdateDelay++;
 
@@ -290,6 +344,8 @@ public class Cyanea extends Block implements BiologicalBlock {
                     createExplosion();
             		dead = true;
             	}
+            	
+            	damageBuildings();
         	}
 
         	if (!dead) {
@@ -333,45 +389,67 @@ public class Cyanea extends Block implements BiologicalBlock {
 
             			b.shootEffect.at(this);
         				b.homingRange = detectionRadius() * 0.9f;
-        				b.homingPower = 0.14f;
-        				b.homingDelay = 0f;
+        				b.homingPower = 0.09f;
+        				b.homingDelay = 0.1f;
 
 	            		if (maxBiopower >= 40) {
-                    		for (int i = 0; i < (int)maxBiopower / 8; i++) {
+                    		for (int i = 0; i < Math.min(maxNumberOfShots, (int)maxBiopower / 8); i++) {
                     			if (b != null) {
-                            		b.create(this, team, x, y, Mathf.range(360f), 1f, maxBiopower / 2f);
+                            		b.create(this, team, x + (Mathf.range(-size / 2f, size / 2f)), y + (Mathf.range(-size / 2f, size / 2f)), Mathf.range(360f), 1f, maxBiopower / 2f);
                     			}
                     		}
 	            		}
 	            		else if (maxBiopower >= 20) {
-                    		for (int i = 0; i < (int)maxBiopower / 2; i++) {
+                    		for (int i = 0; i < Math.min(maxNumberOfShots, (int)maxBiopower / 2); i++) {
                     			if (b != null) {
-                            		b.create(this, team, x, y, Mathf.range(360f), 1f, maxBiopower / 2f);
+                            		b.create(this, team, x + (Mathf.range(-size / 2f, size / 2f)), y + (Mathf.range(-size / 2f, size / 2f)), Mathf.range(360f), 1f, maxBiopower / 2f);
                     			}
                     		}
 	            		}
 	            		else if (maxBiopower >= 1) {
-                    		for (int i = 0; i < Math.min(15, (int)maxBiopower); i++) {
+                    		for (int i = 0; i < Math.min(maxNumberOfShots, (int)maxBiopower); i++) {
                     			if (b != null) {
-                            		b.create(this, team, x, y, Mathf.range(360f), 1f, maxBiopower / 2f);
+                            		b.create(this, team, x + (Mathf.range(-size / 2f, size / 2f)), y + (Mathf.range(-size / 2f, size / 2f)), Mathf.range(360f), 1f, maxBiopower / 2f);
                     			}
                     		}
 	                	}
 	            	}
-
+                	
             		shootProgress = 0f;
-
-                	if (maxBiopower >= 10) {
+            		
+            		//emp section
+                	if (maxBiopower >= 20) {
                 		if (previousBiopower > biopower) {
                 			empAttack();
                 		}
                 	}
-
+                	
                 	//spawnProgress = timer.getTime(timerSpawn);
             	}
         	}
 
         	previousBiopower = biopower;
+        }
+        
+        public void damageBuildings() {
+        	float rad = detectionRadius();
+
+            Vars.indexer.allBuildings(x, y, rad + 10f, other -> {
+            	if (Tekton.showDebug) {
+					TektonFx.debugGreenSquare.at(other.x, other.y);
+				}
+
+                if(team != other.team) {
+                	float scaledChance = (buildingDamageApplyParticleChance / updateDelay) / other.block.size;
+
+                    if(Mathf.chance(scaledChance)){
+                        buildingDamageEffect.at(other.x + Mathf.range(other.block.size * tilesize / 2f), other.y + Mathf.range(other.block.size * tilesize / 2f), 0f, Pal.surge.cpy(), other);
+                    }
+
+                	other.damage(updateDelay / 6f);
+                    other.applySlowdown(0.7f, 120f);
+                }
+            });
         }
 
         public void empAttack() {
@@ -411,24 +489,7 @@ public class Cyanea extends Block implements BiologicalBlock {
                     lineAngle(e.x + x, e.y + y, ang, e.fout() * 6 + 1f);
                 });
             });
-
-            Vars.indexer.allBuildings(x, y, rad, other -> {
-            	if (Tekton.showDebug) {
-					TektonFx.debugGreenSquare.at(other.x, other.y);
-				}
-
-                if(team != other.team) {
-                	var absorber = Damage.findAbsorber(team, x, y, other.x, other.y);
-                    if(absorber != null) {
-                        other = absorber;
-                    }
-                    hitPowerEffect.at(other.x, other.y, this.angleTo(other), hitColor);
-                	chainEffect.at(x, y, 0, hitColor, other);
-
-                	other.damage(empDamageMultiplier * maxBiopower + ((empDamageMultiplier * biopowerMul()) * 0.1f));
-                    other.applySlowdown(0.7f, 120f);
-                }
-            });
+            
             Units.nearbyEnemies(team, x, y, rad, other -> {
             	if (Tekton.showDebug) {
 					TektonFx.debugRedSquare.at(other.x, other.y);
@@ -448,6 +509,10 @@ public class Cyanea extends Block implements BiologicalBlock {
             });
         }
 
+        public void teslaAttack() {
+        	
+        }
+        
         @Override
         public void draw() {
         	float layer = Layer.blockAdditive;
@@ -500,8 +565,9 @@ public class Cyanea extends Block implements BiologicalBlock {
                 Draw.alpha(1f);
             	Draw.rect(shellRegions[i], x + Angles.trnsx(rotShell * i, shellOpening * openingProgress), y + Angles.trnsy(rotShell * i, shellOpening * openingProgress));
             }
-
-            Drawf.circles(x, y, detectionRadius());
+            
+            if (Tekton.showDebug || settings.getBool("drawhitboxes"))
+            	Drawf.circles(x, y, detectionRadius());
 
             Draw.z(z);
             Draw.color();
@@ -515,7 +581,7 @@ public class Cyanea extends Block implements BiologicalBlock {
 
     	@Override
         public float fogRadius() {
-            return fogRadius * maxBiopower;
+            return fogRadius * maxBiopower * 2f;
         }
 
     	public float biopowerMul() {
@@ -581,7 +647,7 @@ public class Cyanea extends Block implements BiologicalBlock {
         public void read(Reads read, byte revision) {
             super.read(read, revision);
             openingProgress = read.f();
-            enemiesClose = openingProgress > 0.5f;
+            enemiesClose = openingProgress > 0.001f;
             maxBiopower = read.f();
             dead = read.bool();
 
@@ -629,5 +695,10 @@ public class Cyanea extends Block implements BiologicalBlock {
         public boolean canPickup(){
             return false;
         }
+
+		@Override
+		public float range() {
+			return detectionRadius();
+		}
 	}
 }

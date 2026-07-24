@@ -1,9 +1,7 @@
 package tekton.type.biological;
 
-import static mindustry.Vars.net;
-import static mindustry.Vars.state;
-import static mindustry.Vars.tilesize;
-import static mindustry.Vars.world;
+import static arc.Core.*;
+import static mindustry.Vars.*;
 
 import arc.Core;
 import arc.audio.Sound;
@@ -22,6 +20,7 @@ import arc.util.Time;
 import arc.util.Tmp;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.Vars;
 import mindustry.content.Fx;
 import mindustry.entities.Damage;
 import mindustry.entities.Effect;
@@ -250,7 +249,7 @@ public class Nest extends Block implements BiologicalBlock {
     					if (state.teams.closestEnemyCore(x,  y, team) != null) {
     						creature.command().moveTo(state.teams.closestEnemyCore(x,  y, team), Math.min(creature.type.range - 8f, 0f));
     					}
-    					else {
+    					else if (state.teams.cores(Team.sharded).size > 0) {
     						var list = state.teams.cores(Team.sharded);
     						var ran = list.get(Mathf.random(0, list.size - 1));
     						if (ran != null) {
@@ -272,9 +271,17 @@ public class Nest extends Block implements BiologicalBlock {
             }
             return true;
         }
+        
+        @Override
+        public boolean allowUpdate(){
+            return super.allowUpdate() && inMapArea();
+		}
 
         @Override
         public void updateTile() {
+        	if (isPayload()) //made to prevent people from corrupting or losing games accidentally
+        		return;
+        	
         	if(!readCreatures.isEmpty()) {
         		spawnedCreatures.clear();
         		readCreatures.each(i -> {
@@ -342,6 +349,7 @@ public class Nest extends Block implements BiologicalBlock {
         public Unit spawn(UnitType unitType) { //TODO: horrible code
     		if (spawnPositions.size == 0) {
         		int sx = tileX() - (size / 2) - size % 2, sy = tileY() - (size / 2) - size % 2;
+        		
         		for (int i = 0; i <= size + 1; i++) {
         			final Vec2
         				v1 = new Vec2(sx, sy + i).scl(tilesize),
@@ -368,15 +376,17 @@ public class Nest extends Block implements BiologicalBlock {
         				spawnPositions.add(v4);
         		}
         	}
+    		
         	Seq<Vec2> availablePositions = new Seq<>();
         	for (var pos : spawnPositions) {
         		if (!world.tile((int)(pos.x / tilesize), (int)(pos.y / tilesize)).solid()) {
         			availablePositions.add(new Vec2(pos.x, pos.y));
-        			if (Tekton.showDebug) {
+        			if (Tekton.showDebug || settings.getBool("drawhitboxes")) {
         				TektonFx.debugRedSquare.at(pos);
         			}
         		}
         	}
+        	
         	if (availablePositions.size == 0 && !dead && !spawnCenter && !spawnOnCenter) {
         		spawnCenter = true;
         		kill();
@@ -391,7 +401,7 @@ public class Nest extends Block implements BiologicalBlock {
 			commandCreature(creature, null);
         	spawnedCreatures.add(creature);
 
-    		if (Tekton.showDebug) {
+    		if (Tekton.showDebug || settings.getBool("drawhitboxes")) {
 				TektonFx.debugGreenSquare.at(position);
 			}
 

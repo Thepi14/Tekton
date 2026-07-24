@@ -21,7 +21,7 @@ import tekton.content.TektonFx;
 import tekton.content.TektonStatusEffects;
 
 public class RadiationFieldAbility extends Ability {
-    public float duration = 300f, reload = 180f, range = 20, damage = 20, unitDamageScale = 3f, buildingEfficiencyMultiplier = 0.8f;
+    public float duration = 300f, reload = 180f, range = 20, damage = 20, unitDamageScale = 2f, buildingEfficiencyMultiplier = 0.8f;
 
     public boolean parentizeEffects, effectSizeParam = true;
     public boolean onShoot = false;
@@ -42,11 +42,6 @@ public class RadiationFieldAbility extends Ability {
         this.range = range;
     }
 
-    public String getBundle(){
-        var type = getClass();
-        return "ability." + (type.isAnonymousClass() ? type.getSuperclass() : type).getSimpleName().replace("Ability", "").toLowerCase();
-    }
-
     @Override
     public void addStats(Table t){
         //super.addStats(t);
@@ -64,11 +59,6 @@ public class RadiationFieldAbility extends Ability {
             t.row();
             t.add(abilityStat("buildingefficiencymultiplier", Strings.autoFixed(buildingEfficiencyMultiplier * 100, 7)));
         }
-
-    }
-
-    public String abilityStat(String stat, Object... values) {
-        return Core.bundle.format("ability.stat." + stat, values);
     }
 
     @Override

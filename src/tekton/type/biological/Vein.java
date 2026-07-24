@@ -2,6 +2,7 @@ package tekton.type.biological;
 
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
+import static mindustry.Vars.*;
 
 import arc.Core;
 import arc.graphics.Blending;
@@ -34,6 +35,10 @@ import tekton.content.TektonLiquids;
 import tekton.content.TektonVars;
 
 public class Vein extends Conduit implements BiologicalBlock {
+	
+    static final float rotatePad = 6, hpad = rotatePad / 2f / 4f;
+    static final float[][] rotateOffsets = {{hpad, hpad}, {-hpad, hpad}, {-hpad, -hpad}, {hpad, -hpad}};
+    
 	public float visualMaxHeat = 15f;
     public boolean splitBiopower = false;
 
@@ -51,6 +56,7 @@ public class Vein extends Conduit implements BiologicalBlock {
 	public Vein(String name) {
 		super(name);
 
+		botColor = Color.clear;
         envEnabled |= Env.space;
 		buildVisibility = BuildVisibility.sandboxOnly;
 
@@ -58,7 +64,8 @@ public class Vein extends Conduit implements BiologicalBlock {
 		createRubble = drawCracks = false;
 		update = true;
         sync = true;
-
+        
+        targetable = false;
 		drawTeamOverlay = false;
 		hideDetails = true;
 		emitLight = true;
@@ -89,29 +96,7 @@ public class Vein extends Conduit implements BiologicalBlock {
 
     @Override
     public TextureRegion[] icons(){
-    	return new TextureRegion[]{botRegions[0]};
-    }
-
-    @Override
-    public void drawPlan(BuildPlan plan, Eachable<BuildPlan> list, boolean valid, float alpha){
-        Draw.reset();
-        Draw.mixcol(!valid ? Pal.breakInvalid : Color.white, (!valid ? 0.4f : 0.24f) + Mathf.absin(Time.globalTime, 6f, 0.28f));
-        Draw.alpha(alpha);
-        float prevScale = Draw.scl;
-        Draw.scl *= plan.animScale;
-        drawPlanRegion(plan, list);
-        Draw.scl = prevScale;
-        Draw.reset();
-    }
-
-    @Override
-    public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
-        drawDefaultPlanRegion(plan, list);
-    }
-
-    @Override
-    public void drawDefaultPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){
-        Draw.rect(botRegions[0], plan.drawx(), plan.drawy(), !rotate || !rotateDraw ? 0 : plan.rotation * 90);
+        return new TextureRegion[]{topRegions[0]};
     }
 
 	public class VeinBuild extends ConduitBuild implements BiopowerBlock, BiopowerConsumer {
@@ -249,35 +234,34 @@ public class Vein extends Conduit implements BiologicalBlock {
             Draw.color();
             Draw.reset();
 		}
-
-		protected void drawAt(float x, float y, int bits, int rotation, SliceMode slice) {
+		
+		@Override
+		protected void drawAt(float x, float y, int bits, int rotation, SliceMode slice, boolean under){
             float angle = rotation * 90f;
-            //Draw.color(botColor);
-            Draw.rect(sliced(botRegions[bits], slice), x, y, angle);
+            if(under){
+                Draw.rect(sliced(botRegions[bits], slice), x, y, angle);
+            }else{
+                int offset = yscl == -1 ? 3 : 0;
 
-            //Draw.rect(sliced(topRegions[bits], slice), x, y, angle);
+                int frame = liquids.current().getAnimationFrame();
+                int gas = liquids.current().gas ? 1 : 0;
+                float ox = 0f, oy = 0f;
+                int wrapRot = (rotation + offset) % 4;
+                TextureRegion liquidr = bits == 1 && padCorners ? rotateRegions[wrapRot][gas][frame] : renderer.fluidFrames[gas][frame];
 
-            //Drawf.additive(sliced(topRegions[bits], slice), glowColor.cpy().a(currentGlow() * efficiency * alpha), x, y, angle);
-            //Draw.reset();
+                if(bits == 1 && padCorners){
+                    ox = rotateOffsets[wrapRot][0];
+                    oy = rotateOffsets[wrapRot][1];
+                }
 
-            /*int offset = yscl == -1 ? 3 : 0;
+                //the drawing state machine sure was a great design choice with no downsides or hidden behavior!!! //son :wilted_flower:
+                float xscl = Draw.xscl, yscl = Draw.yscl;
+                Draw.scl(1f, 1f);
+                //Drawf.liquid(sliced(liquidr, slice), x + ox, y + oy, smoothLiquid, liquids.current().color.write(Tmp.c1).a(1f));
+                Draw.scl(xscl, yscl);
 
-            int frame = liquids.current().getAnimationFrame();
-            int gas = liquids.current().gas ? 1 : 0;
-            float ox = 0f, oy = 0f;
-            int wrapRot = (rotation + offset) % 4;
-            TextureRegion liquidr = bits == 1 && padCorners ? rotateRegions[wrapRot][gas][frame] : renderer.fluidFrames[gas][frame];
-
-            if(bits == 1 && padCorners){
-                ox = rotateOffsets[wrapRot][0];
-                oy = rotateOffsets[wrapRot][1];
+                Draw.rect(sliced(topRegions[bits], slice), x, y, angle);
             }
-
-            //the drawing state machine sure was a great design choice with no downsides or hidden behavior!!!
-            float xscl = Draw.xscl, yscl = Draw.yscl;
-            Draw.scl(1f, 1f);
-            Drawf.liquid(sliced(liquidr, slice), x + ox, y + oy, smoothLiquid, liquids.current().color.write(Tmp.c1).a(1f));
-            Draw.scl(xscl, yscl);*/
         }
 
         @Override

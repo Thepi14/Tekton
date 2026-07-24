@@ -49,13 +49,9 @@ public class TektonPlanets {
 			hasAtmosphere = true;
 			solarSystem = Planets.sun;
 			enemyBuildSpeedMultiplier = 0.4f;
-			//methaned now
 			defaultEnv = TektonEnv.methane | Env.terrestrial;
 
 			ruleSetter = r -> {
-                //r.waveTeam = Team.blue;
-                /*r.staticColor = new Color(0f, 0f, 0f, 1f);
-                r.dynamicColor = new Color(0f, 0f, 0f, 0.7f);*/
                 r.cloudColor = Color.valueOf("3e401f");
                 r.placeRangeCheck = false;
                 r.fog = true;
@@ -63,27 +59,22 @@ public class TektonPlanets {
                 r.lighting = true;
                 r.fire = false;
                 r.ambientLight = Color.valueOf("101805a4");
+            	
             	if (r.weather.size == 0) {
-	                r.weather = new Seq<WeatherEntry>().addAll(new WeatherEntry(TektonWeathers.methaneRain) {{  }}, new WeatherEntry(TektonWeathers.darkSandstorm) {{ minFrequency = 20f * Time.toMinutes; maxFrequency = 60f * Time.toMinutes; }});
+	                r.weather = new Seq<WeatherEntry>().addAll(
+	                		new WeatherEntry(TektonWeathers.methaneRain) {{  }}, 
+	                		new WeatherEntry(TektonWeathers.darkSandstorm) {{ minFrequency = 20f * Time.toMinutes; maxFrequency = 60f * Time.toMinutes; }}
+                		);
             	}
-            	//foolish
-            	if (r.weather.contains(t -> (t.weather == TektonWeathers.tektonFog))) {
-            		r.weather.remove(t -> (t.weather == TektonWeathers.tektonFog));
-            	}
+            	
                 r.coreDestroyClear = true;
                 r.onlyDepositCore = true;
-                //r.teams.get(Team.blue).rtsAi = true;
-                //r.teams.get(Team.green).rtsAi = true;
                 r.coreIncinerates = true;
                 r.solarMultiplier = 0.1f;
-                r.bannedBlocks.addAll(Blocks.phaseWall, Blocks.phaseWallLarge);
-                r.hideBannedBlocks = true;
+                /*r.bannedBlocks.addAll(Blocks.phaseWall, Blocks.phaseWallLarge);
+                r.hideBannedBlocks = true;*/
                 r.loadout = new Seq<ItemStack>().add(new ItemStack(TektonItems.iron, 200));
             };
-
-            /*campaignRuleDefaults.fog = true;
-            campaignRuleDefaults.showSpawns = false;
-            campaignRuleDefaults.rtsAI = true;*/
 
             accessible = true;
 
