@@ -75,6 +75,10 @@ public class TektonPlanets {
                 r.hideBannedBlocks = true;*/
                 r.loadout = new Seq<ItemStack>().add(new ItemStack(TektonItems.iron, 200));
             };
+            
+            campaignRuleDefaults.fog = true;
+            campaignRuleDefaults.hideSpawns = true;
+            campaignRuleDefaults.clearSectorOnLose = true;
 
             accessible = true;
 

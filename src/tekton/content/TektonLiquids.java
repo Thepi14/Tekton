@@ -91,7 +91,6 @@ public class TektonLiquids {
 			viscosity = 0.1f;
 			flammability = 0.9f;
 			explosiveness = 0.5f;
-			alwaysUnlocked = true;
             lightColor = TektonColor.methaneGas.cpy().a(0.3f);
             gasColor = TektonColor.methaneGas;
             effect = TektonStatusEffects.tarredInMethane;
