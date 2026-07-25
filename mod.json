@@ -5,9 +5,9 @@
 	"name": "tekton",
     "main": "tekton.Tekton"
 	
-    "subtitle": "Now you can launch on Rainforest (and save it properly too), added a new gas called Dicyanogen to the game.",
+    "subtitle": "Finally updated to V8.",
 	
-    "description": "A Mindustry Java mod adding a new planet called Tekton, with it's own campaign, mechanics, hazards, blocks and units. 
+    "description": "A Mindustry Java mod adding a new planet called Tekton, with it's own campaign, blocks, units, mechanics and hazards.
 	
 	Tekton is a extremely cold planet far away from the sun, where a agressive faction called Hapax is located. Because of the low temperature the physical properties of many elements here are radically different from the other planets. The dense  methane rich atmosphere blocks the vision and unknown threats lure on the poles of the planet.
 	
