@@ -34,6 +34,7 @@ import tekton.content.TektonVars;
 import tekton.content.TektonWeathers;
 import tekton.type.world.TektonEnv;
 import tekton.type.world.TektonEnvRenderer;
+import tekton.ui.TektonSettings;
 
 public class Tekton extends Mod {
 

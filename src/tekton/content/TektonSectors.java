@@ -84,6 +84,7 @@ public class TektonSectors {
 
         lake = new TektonSectorPreset("lake", tekton, 12){{
             difficulty = 4;
+            captureWave = 41;
             rules = r -> {
 				//r.hiddenBuildItems.clear();
 				r.attackMode = false;

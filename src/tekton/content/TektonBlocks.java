@@ -69,6 +69,7 @@ import tekton.type.biological.*;
 import tekton.type.bullets.*;
 import tekton.type.defense.*;
 import tekton.type.draw.*;
+import tekton.type.entities.TekUnitSorts;
 import tekton.type.environment.*;
 import tekton.type.gravity.*;
 import tekton.type.part.*;
@@ -1004,7 +1005,7 @@ public class TektonBlocks {
             itemCapacity = 0;
             consumePower(40f / 60f);
 
-            ambientSound = TektonSounds.gravity;
+            ambientSound = TektonSounds.loopGravity;
             ambientSoundVolume = 0.03f;
 
 			researchCostMultiplier = 0.2f;
@@ -1023,7 +1024,7 @@ public class TektonBlocks {
             itemCapacity = 0;
             consumePower(60f / 60f);
 
-            ambientSound = TektonSounds.gravity;
+            ambientSound = TektonSounds.loopGravity;
             ambientSoundVolume = 0.03f;
 
 			researchCostMultiplier = 0.4f;
@@ -1043,7 +1044,7 @@ public class TektonBlocks {
             craftTime = 60f * 4f;
             consumePower(60f / 60f);
 
-            ambientSound = TektonSounds.gravity;
+            ambientSound = TektonSounds.loopGravity;
             ambientSoundVolume = 0.03f;
 
 			researchCostMultiplier = 0.4f;
@@ -1062,7 +1063,7 @@ public class TektonBlocks {
             consumeLiquid(Liquids.hydrogen, 3f / 60f);
             consumePower(80f / 60f);
 
-            ambientSound = TektonSounds.gravity;
+            ambientSound = TektonSounds.loopGravity;
             ambientSoundVolume = 0.03f;
 
 			researchCostMultiplier = 0.55f;
@@ -1082,7 +1083,7 @@ public class TektonBlocks {
             craftTime = 60f * 8f;
             consumePower(80f / 60f);
 
-            ambientSound = TektonSounds.gravity;
+            ambientSound = TektonSounds.loopGravity;
             ambientSoundVolume = 0.03f;
 
 			researchCostMultiplier = 0.55f;
@@ -1432,7 +1433,7 @@ public class TektonBlocks {
 			range = 50f * tilesize;
 
 			liquidCapacity = 10f;
-			ambientSound = TektonSounds.latencyloop;
+			ambientSound = TektonSounds.loopLatency;
 	        ambientSoundVolume = 0.1f;
 
 			consumePower(200f / 60f);
@@ -2417,7 +2418,12 @@ public class TektonBlocks {
 			drawer = new DrawTurret("quad-");
 			health = 250;
 			reload = 60;
-			shootSound = Sounds.shootDuo;
+			
+			shootSound = TektonSounds.shootOne;
+			soundPitchMin = 1.4f;
+			soundPitchMax = 1.45f;
+			shootSoundVolume = 0.7f;
+			
 			predictTarget = true;
 			maxAmmo = 10;
 			inaccuracy = 5;
@@ -2532,14 +2538,16 @@ public class TektonBlocks {
 			health = 800;
 			reload = 40f;
 			range = 160f;
-			//shootSound = Sounds.pew;
 			maxAmmo = 20;
 			inaccuracy = 3;
 			ammoPerShot = 1;
 			recoils = 6;
-
-			soundPitchMin = 1.3f;
-			soundPitchMax = 1.5f;
+			
+			shootSound = TektonSounds.shootDuel;
+			soundPitchMin = 1.2f;
+			soundPitchMax = 1.3f;
+			shootSoundVolume = 0.7f;
+			
 			ammo(
 					iron, new BasicBulletType(5.15f, 20) {{
 						width = 7f;
@@ -2706,9 +2714,11 @@ public class TektonBlocks {
 			reload = 80f;
 			shootEffect = Fx.none;
 			heatColor = Color.red;
-			shootSound = TektonSounds.tchau;
+			
+			shootSound = TektonSounds.shootCompass;
 			soundPitchMin = 1.0f;
 			soundPitchMax = 1.1f;
+			
 			shootWarmupSpeed = 0.08f;
 			minWarmup = 0.9f;
 			//heatColor = Color.valueOf("ff3333df");
@@ -2730,6 +2740,8 @@ public class TektonBlocks {
 				colorFrom = Color.white;
 				colorTo = redShootColor;
 			}});
+            
+            unitSort = TekUnitSorts.mostCrowded;
 
 			consumePower(120f / 60f);
 			//consumeLiquid(Liquids.water, 0.5f);
@@ -2824,13 +2836,16 @@ public class TektonBlocks {
 			health = 600;
 			reload = 25f;
 			range = 204f;
-			//shootSound = Sounds.pew;
+			
+			shootSound = TektonSounds.shootSkyscraper;
+			soundPitchMin = 0.8f;
+			soundPitchMax = 0.95f;
+			shootSoundVolume = 0.6f;
+			
 			maxAmmo = 10;
 			inaccuracy = 7f;
 			ammoPerShot = 1;
 			recoils = 2;
-			soundPitchMin = 0.9f;
-			soundPitchMax = 1f;
 			targetGround = false;
 			ammo(
 					iron, new FlakBulletType(7f, 6) {{
@@ -3000,9 +3015,11 @@ public class TektonBlocks {
 			health = 1900;
 			reload = 100f;
 			range = 260f;
-			shootSound = Sounds.explosionDull;
-			soundPitchMin = 0.7f;
-			soundPitchMax = 0.85f;
+			shootSound = TektonSounds.shootSpear;
+			soundPitchMin = 1f;
+			soundPitchMax = 1.15f;
+			shootSoundVolume = 1f;
+			
 			maxAmmo = 10;
 			inaccuracy = 2;
 			accurateDelay = true;
@@ -3034,7 +3051,7 @@ public class TektonBlocks {
 						splashDamageRadius = 24f;
 						splashDamage = 50f;
 
-						fragOnHit = true;
+						fragOnHit = despawnHit = true;
 						fragRandomSpread = 0f;
 						fragSpread = 10f;
 						fragBullets = 5;
@@ -3089,12 +3106,13 @@ public class TektonBlocks {
 						splashDamageRadius = 40f;
 						splashDamage = 70f;
 
-						fragOnHit = true;
+						fragOnHit = despawnHit = true;
 						fragRandomSpread = 0f;
+		                fragOffsetMin = fragOffsetMax = 0f;
 						fragSpread = 10f;
 						fragBullets = 1;
 						fragVelocityMin = 1f;
-						despawnSound = TektonSounds.gravityemission;
+						hitSound = despawnSound = TektonSounds.explosionMagnetic;
 
 						trailChance = -1;
 						trailInterval = 2f;
@@ -3156,8 +3174,8 @@ public class TektonBlocks {
 
 						fragOnHit = true;
 						fragBullets = 1;
-						fragVelocityMin = 1f;
-						hitSound = despawnSound = TektonSounds.freezeexplosion;
+		                fragOffsetMin = fragOffsetMax = 0f;
+						hitSound = despawnSound = TektonSounds.explosionFreeze;
 
 						fragBullet = new StatusEffectAreaBulletType(180f, 40f) {{
 							status = StatusEffects.freezing;
@@ -3258,8 +3276,8 @@ public class TektonBlocks {
 						fragOnHit = true;
 						fragSpread = 50f / 7f;
 						fragBullets = 7;
-						fragVelocityMin = 0f;
-						fragVelocityMax = 0f;
+						fragVelocityMin = fragVelocityMax = 0f;
+		                fragOffsetMin = fragOffsetMax = 0f;
 						despawnSound = hitSound = Sounds.shootArc;
 						reloadMultiplier = 0.8f;
 
@@ -3415,7 +3433,7 @@ public class TektonBlocks {
 			heatColor = Color.red;
 			
 			shootSound = Sounds.shootLancer;
-            chargeSound = TektonSounds.chargesword;
+            chargeSound = TektonSounds.chargeSword;
 			soundPitchMin = 1.3f;
 			soundPitchMax = 1.45f;
 			
@@ -3427,6 +3445,9 @@ public class TektonBlocks {
 			inaccuracy = 0;
 			cooldownTime = 120f;
 			warmupMaintainTime = 30f;
+			
+			targetBlocks = false;
+			unitSort = UnitSorts.farthest;
 
 			consumePower(4f);
 			consumeLiquid(Liquids.water, 3f / 60f);
@@ -3435,7 +3456,7 @@ public class TektonBlocks {
 			
 			var timeScale = 0.75f;
 
-			shootType = new WidthLaserBulletType(60f * timeScale) {{
+			shootType = new WidthLaserBulletType(60f) {{
 				colors = new Color[]{redShootColor, Color.valueOf("ff5959"), Color.valueOf("ff6e6e"), Color.valueOf("ff9191")};
 				
 				Seq<Effect> effects = new Seq<Effect>();
@@ -3642,14 +3663,14 @@ public class TektonBlocks {
 			reload = 6f;
 			range = 220f;
 			rotateSpeed = 8f;
-			//shootSound = Sounds.pew;
+			shootSound = TektonSounds.shootAzure;
+			soundPitchMin = 0.98f;
+			soundPitchMax = 1.02f;
+			shootSoundVolume = 0.35f;
+			
 			maxAmmo = 10;
 			inaccuracy = 7f;
 			ammoPerShot = 1;
-			
-			soundPitchMin = 0.9f;
-			soundPitchMax = 1f;
-			shootSoundVolume = 0.7f;
 			
 			targetGround = false;
 			ammo(
@@ -3799,7 +3820,7 @@ public class TektonBlocks {
 			targetUnderBlocks = false;
 			range = 160f;
 			shootSound = Sounds.none;
-			loopSound = TektonSounds.freezer;
+			loopSound = TektonSounds.loopFreezer;
 			loopSoundVolume = 0.6f;
 			soundPitchMin = 1f;
 			soundPitchMax = 1f;
@@ -3815,6 +3836,9 @@ public class TektonBlocks {
 			minWarmup = 0f;
 			reload = 1f;
             shootEffect = Fx.shootLiquid;
+            
+            //can't really prioritize biological creatures when they are immune to almost everything you shoot
+            unitSort = TekUnitSorts.notBiological;
 			
             flags = EnumSet.of(BlockFlag.turret, BlockFlag.extinguisher);
 
@@ -3968,7 +3992,7 @@ public class TektonBlocks {
 			shootWarmupSpeed = 0.15f;
 			minWarmup = 0.95f;
 			var tRange = range;
-			shootSound = TektonSounds.shotheavy;
+			shootSound = TektonSounds.shootInterfusion;
 			maxAmmo = 50;
 			inaccuracy = 0;
 			ammoPerShot = 2;
@@ -4089,7 +4113,7 @@ public class TektonBlocks {
 			                backColor = hitColor = lightColor = trailColor = phaseFabricShootColor;
 			                frontColor = Color.white;
 
-			                hitSound = despawnSound = TektonSounds.shotheavy;
+			                hitSound = despawnSound = TektonSounds.shootInterfusion;
 
 			                fragBullets = 1;
 							fragRandomSpread = 0f;
@@ -4131,7 +4155,7 @@ public class TektonBlocks {
 					                backColor = hitColor = lightColor = trailColor = phaseFabricShootColor;
 					                frontColor = Color.white;
 
-					                hitSound = despawnSound = TektonSounds.shotheavy;
+					                hitSound = despawnSound = TektonSounds.shootInterfusion;
 
 					                fragBullets = 1;
 									fragRandomSpread = 0f;
@@ -4238,10 +4262,12 @@ public class TektonBlocks {
 
             ammoPerShot = 4;
             maxAmmo = ammoPerShot * 3;
+            
+            unitSort = TekUnitSorts.mostCrowded;
 
 			smokeEffect = Fx.none;
 			heatColor = Color.red;
-			shootSound = TektonSounds.explosionbig;
+			shootSound = TektonSounds.shootHavoc;
 			soundPitchMin = 0.7f;
 			soundPitchMax = 0.9f;
 			shootWarmupSpeed = 0.08f;
@@ -4340,19 +4366,20 @@ public class TektonBlocks {
 		                backColor = hitColor = trailColor = lightColor = magnetShootColor;
 		                frontColor = Color.white;
 		                ammoMultiplier = 2f;
-		                hitSound = Sounds.explosionTitan;
+		                hitSound = TektonSounds.explosionMagneticBig;
 
 						fragBullets = 1;
-						fragVelocityMin = 1f;
+		                fragOffsetMin = fragOffsetMax = 0f;
 
-						fragBullet = new BulletSpawnerBullet(60f * 1.2f, 60f) {{
+						fragBullet = new BulletSpawnerBullet(60f * 1.2f, 00f) {{
 							bulletInterval = 5f;
-							spawnSound = TektonSounds.gravityemission;
+							spawnSound = TektonSounds.shootRepulsion;
+							spawnSoundVolume = 0.2f;
 							intervalBullet = new WaveBulletType(7f / 2.5f, 8f) {{
 								minRadius = 1f;
-								knockback = 30f;
+								knockback = -30f;
 								backColor = hitColor = trailColor = lightColor = magnetShootColor;
-								lifetime = 9f;
+								lifetime = 26f;
 								circleDeegres = 360f;
 							}};
 							buildingDamageMultiplier = 0f;
@@ -4398,14 +4425,14 @@ public class TektonBlocks {
 		                backColor = hitColor = trailColor = lightColor = cryogenicCompoundShootColor;
 		                frontColor = Color.white;
 		                ammoMultiplier = 2f;
-						hitSound = despawnSound = TektonSounds.freezeexplosionbig;
+						hitSound = despawnSound = TektonSounds.explosionFreezeBig;
 
 		                status = StatusEffects.freezing;
 		                statusDuration = 60f * 10f;
 
 						fragBullets = 1;
-						fragVelocityMin = 1f;
-
+		                fragOffsetMin = fragOffsetMax = 0f;
+		                
 						fragBullet = new StatusEffectAreaBulletType(60f * 7f, 60f) {{
 							status = StatusEffects.freezing;
 							areaEffect = StatusEffects.freezing.effect;
@@ -4475,6 +4502,8 @@ public class TektonBlocks {
                         lightningLengthRand = 10;
 
 		                fragBullets = 1;
+		                fragOffsetMin = fragOffsetMax = 0f;
+		                
             			fragBullet = new TektonEmpBulletType() {{
                             collidesAir = true;
                             instantDisappear = true;
@@ -4610,7 +4639,7 @@ public class TektonBlocks {
 			shake = 2f;
 			smokeEffect = Fx.none;
 			heatColor = Color.red;
-			shootSound = TektonSounds.tesla;
+			shootSound = TektonSounds.shootTesla;
 			soundPitchMin = 0.9f;
 			soundPitchMax = 1.0f;
 			shootWarmupSpeed = 0.08f;
@@ -4923,7 +4952,7 @@ public class TektonBlocks {
             heatColor = Color.clear;
             recoil = 0;
             reload = 8f;
-            shootSound = TektonSounds.gravityemission;
+            shootSound = TektonSounds.shootRepulsion;
             shootSoundVolume = 0.65f;
             loopSound = Sounds.none;
             soundPitchMin = soundPitchMax = 0.45f;
@@ -4981,7 +5010,92 @@ public class TektonBlocks {
             requirements(Category.turret, tek(), with(iron, 300, nanoAlloy, 100, uranium, 180, magnet, 120, Items.silicon, 250));
 			squareSprite = false;
 			outlineColor = tektonOutlineColor;
+
+            var col = Pal.techBlue;
+            var mov = 9f;
+
+            moveWhileCharging = false;
+            shoot.firstShotDelay = 60f;
+
+            heatColor = Pal.turretHeat;
+            drawer = new DrawTurret("quad-") {{
+            	//((RegionPart)parts.get(0)).outlineLayerOffset = -0.01f;
+				parts.addAll(
+						new RegionPart("-blade") {{
+							progress = PartProgress.warmup;
+							mirror = true;
+							x = 0;
+							y = 0;
+							moveX = mov / 2f;
+							moveY = 0;
+							under = true;
+							layerOffset = -0.00001f;
+							outlineLayerOffset = -0.01f;
+
+							moveRot = -30f;
+							heatColor = col;
+							heatProgress = PartProgress.warmup;
+						}},
+						new RegionPart("-blade2") {{
+							progress = PartProgress.warmup;
+							mirror = true;
+							x = 0;
+							y = 0;
+							moveX = mov;
+							moveY = 0;
+							under = true;
+							layerOffset = -0.00002f;
+							outlineLayerOffset = -0.01f;
+
+							moveRot = -60f;
+							heatColor = col;
+							heatProgress = PartProgress.warmup;
+						}},
+						new RegionPart("-glow") {{
+							progress = PartProgress.warmup;
+							mirror = false;
+							x = 0;
+							y = 0;
+							heatColor = col;
+							heatProgress = PartProgress.warmup;
+						}}/*,
+						new FlarePart() {{
+	        				progress = PartProgress.charge;
+	        				color1 = col;
+	        				color2 = Color.white.cpy();
+	        				spinSpeed = 0f;
+	        				radius = 0f;
+	        				radiusTo = 27f;
+	        				layer = Layer.effect;
+	        				x = 0f;
+	        				y = 14f;
+	        			}}*/
+				);
+			}};
+
+			health = 3100;
+
 			var div = 1.4f;
+			range = 580f / div;
+			minWarmup = 0.98f;
+            maxAmmo = 40;
+            ammoPerShot = 4;
+            rotateSpeed = 2f;
+            reload = 120f;
+            ammoUseEffect = Fx.casing3Double;
+            recoil = 3f;
+            cooldownTime = reload;
+            warmupMaintainTime = 90f;
+            shootWarmupSpeed = 0.055f;
+            shake = 4f;
+            size = 4;
+            shootCone = 2f;
+            shootSound = Sounds.shootForeshadow;
+            chargeSound = TektonSounds.chargeConcentration;
+            unitSort = UnitSorts.strongest;
+            envEnabled |= Env.space;
+            minGravity = 8 * gravityMul;
+            maxGravity = 16 * gravityMul;
             ammo(
             		Items.silicon, new BasicBulletType(14f, 550f) {{
 	        			lifetime /= div;
@@ -5031,6 +5145,7 @@ public class TektonBlocks {
 	                    fragBullets = 1;
 	                    fragAngle = 0f;
 	                    fragRandomSpread = 0f;
+		                fragOffsetMin = fragOffsetMax = 0f;
 	                    fragBullet =
 	                		new ShrapnelBulletType() {{
 		                    	damage = 70f;
@@ -5097,6 +5212,7 @@ public class TektonBlocks {
 	                    fragBullets = 1;
 	                    fragAngle = 0f;
 	                    fragRandomSpread = 0f;
+		                fragOffsetMin = fragOffsetMax = 0f;
 	                    fragBullet =
 	                		new ShrapnelBulletType() {{
 		                    	damage = 140f;
@@ -5176,6 +5292,7 @@ public class TektonBlocks {
                         fragBullets = 1;
                         fragAngle = 0f;
                         fragRandomSpread = 0f;
+		                fragOffsetMin = fragOffsetMax = 0f;
                         fragBullet =
                     		new ShrapnelBulletType() {{
     	                    	damage = 140f;
@@ -5200,91 +5317,6 @@ public class TektonBlocks {
                 		}}
             );
 
-            var col = Pal.techBlue;
-            var mov = 9f;
-
-            moveWhileCharging = false;
-            shoot.firstShotDelay = 60f;
-
-            heatColor = Pal.turretHeat;
-            drawer = new DrawTurret("quad-") {{
-            	//((RegionPart)parts.get(0)).outlineLayerOffset = -0.01f;
-				parts.addAll(
-						new RegionPart("-blade") {{
-							progress = PartProgress.warmup;
-							mirror = true;
-							x = 0;
-							y = 0;
-							moveX = mov / 2f;
-							moveY = 0;
-							under = true;
-							layerOffset = -0.00001f;
-							outlineLayerOffset = -0.01f;
-
-							moveRot = -30f;
-							heatColor = col;
-							heatProgress = PartProgress.warmup;
-						}},
-						new RegionPart("-blade2") {{
-							progress = PartProgress.warmup;
-							mirror = true;
-							x = 0;
-							y = 0;
-							moveX = mov;
-							moveY = 0;
-							under = true;
-							layerOffset = -0.00002f;
-							outlineLayerOffset = -0.01f;
-
-							moveRot = -60f;
-							heatColor = col;
-							heatProgress = PartProgress.warmup;
-						}},
-						new RegionPart("-glow") {{
-							progress = PartProgress.warmup;
-							mirror = false;
-							x = 0;
-							y = 0;
-							heatColor = col;
-							heatProgress = PartProgress.warmup;
-						}}/*,
-						new FlarePart() {{
-	        				progress = PartProgress.charge;
-	        				color1 = col;
-	        				color2 = Color.white.cpy();
-	        				spinSpeed = 0f;
-	        				radius = 0f;
-	        				radiusTo = 27f;
-	        				layer = Layer.effect;
-	        				x = 0f;
-	        				y = 14f;
-	        			}}*/
-				);
-			}};
-
-			range = 580f / div;
-			minWarmup = 0.98f;
-            maxAmmo = 40;
-            ammoPerShot = 4;
-            rotateSpeed = 2f;
-            reload = 120f;
-            ammoUseEffect = Fx.casing3Double;
-            recoil = 3f;
-            cooldownTime = reload;
-            warmupMaintainTime = 90f;
-            shootWarmupSpeed = 0.055f;
-            shake = 4f;
-            size = 4;
-            shootCone = 2f;
-            shootSound = Sounds.shootForeshadow;
-            chargeSound = TektonSounds.greencharge;
-            unitSort = UnitSorts.strongest;
-            envEnabled |= Env.space;
-            minGravity = 8 * gravityMul;
-            maxGravity = 16 * gravityMul;
-
-			health = 3100;
-
 			//consumeLiquid(Liquids.hydrogen, 3.5f / 60f);
             //coolant = consume(new ConsumeLiquid(TektonLiquids.ammonia, 4f / 60f));
             consumePower(6f);
@@ -5299,8 +5331,8 @@ public class TektonBlocks {
             reload = 1f;
             shootCone = (360f / 7f) * 2f;
             rotateSpeed = 1.7f;
-            shootSound = TektonSounds.shootmeltdownmodified;
-            loopSound = TektonSounds.exterminationbeam;
+            shootSound = TektonSounds.shootRadiance;
+            loopSound = TektonSounds.radianceBeam;
             loopSoundVolume = 3.5f * 1.8f;
             ambientSound = Sounds.loopMalign;
             ambientSoundVolume = 1.3f;
@@ -5775,7 +5807,7 @@ public class TektonBlocks {
                         chainEffect = TektonFx.tempestChain;
             			applyEffect = Fx.titanExplosion.wrap(Pal.lightOrange);
 
-            			hitSound = TektonSounds.tesla;
+            			hitSound = TektonSounds.shootTesla;
     					despawnSound = Sounds.none;
             			hitSoundPitch = 1.4f;
             			hitSoundVolume = 0.3f;

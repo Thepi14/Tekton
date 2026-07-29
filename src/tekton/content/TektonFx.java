@@ -1016,7 +1016,7 @@ public class TektonFx {
     	lenTo = 0;
     	strokeFrom = 1;
     	strokeTo = 0;
-    	colorFrom = Color.valueOf("ffffff");
+    	colorFrom = Color.white;
     	colorTo = TektonColor.acid;
     }},
 
@@ -1028,7 +1028,7 @@ public class TektonFx {
         	    	lifetime = 12;
         	    	strokeFrom = 3;
         	    	strokeTo = 0;
-			    	colorFrom = Color.valueOf("ffffff");
+			    	colorFrom = Color.white;
 			    	colorTo = TektonColor.acid;
         	    }},
     			new ParticleEffect() {{
@@ -1040,7 +1040,7 @@ public class TektonFx {
 			    	lenTo = 0;
 			    	strokeFrom = 2;
 			    	strokeTo = 0;
-			    	colorFrom = Color.valueOf("ffffff");
+			    	colorFrom = Color.white;
 			    	colorTo = TektonColor.acid;
     			}}
 			};

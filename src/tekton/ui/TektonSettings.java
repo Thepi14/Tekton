@@ -1,4 +1,4 @@
-package tekton;
+package tekton.ui;
 
 import static arc.Core.bundle;
 import static arc.Core.settings;
@@ -13,11 +13,6 @@ import mindustry.gen.Icon;
 import mindustry.type.Planet;
 import mindustry.ui.dialogs.SettingsMenuDialog;
 import tekton.content.TektonPlanets;
-import tekton.ui.ButtonPref;
-import tekton.ui.CheckIconSetting;
-import tekton.ui.SeparatorPref;
-import tekton.ui.SliderIconSetting;
-import tekton.ui.SwitchPref;
 
 public class TektonSettings {
 	private static SettingsMenuDialog.SettingsTable table;

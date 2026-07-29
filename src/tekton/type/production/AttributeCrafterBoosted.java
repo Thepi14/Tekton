@@ -56,7 +56,7 @@ public class AttributeCrafterBoosted extends AttributeCrafter {
             removeBar("power");
             
             addBar("power", entity -> new Bar(
-                () -> { var build = (AttributeCrafterBoostedBuild)entity; return Core.bundle.get("stat.poweruse") + ": " + UI.formatAmount((int)((build.currentLiquidBoost > liquidBoostIntensity - 1.002f ? 1f : build.currentLiquidBoost) * basePowerUse * 60f)); },
+                () -> { var build = (AttributeCrafterBoostedBuild)entity; return Core.bundle.get("stat.poweruse") + ": " + UI.formatAmount((int)((build.efficiencyScale() /*build.currentLiquidBoost > liquidBoostIntensity - 1.002f ? 1f : build.currentLiquidBoost*/) * basePowerUse * 60f)); },
                 () -> Pal.powerBar,
                 () -> entity.power.status)
             );

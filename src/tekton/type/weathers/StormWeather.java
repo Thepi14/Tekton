@@ -50,7 +50,7 @@ public class StormWeather extends ParticleWeather {
 			hitsColor = Color.valueOf("ffea82"),
 			lightningLightColor = Color.valueOf("ffea82");
 
-	public Sound lightningHitSound = TektonSounds.lightningstrike;
+	public Sound lightningHitSound = TektonSounds.lightningStrike;
 	public int minLines = 6, maxLines = 12;
 	public boolean absorbableByLightningRods = true;
 

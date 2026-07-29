@@ -38,10 +38,6 @@ public class FireRateOverdriveAbility extends Ability {
         t.add(abilityStat("minreload", Strings.autoFixed((int)(minBoost * 100f), 3)));
     }
 
-    public String abilityStat(String stat, Object... values) {
-        return Core.bundle.format("ability.stat." + stat, values);
-    }
-
     @Override
     public void displayBars(Unit unit, Table bars){
         bars.add(new Bar("bar.heat", Pal.lightOrange, () -> (data - minBoost) / (maxBoost - minBoost))).row();

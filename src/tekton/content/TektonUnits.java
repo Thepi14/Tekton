@@ -3,7 +3,6 @@ package tekton.content;
 import static mindustry.Vars.tilesize;
 
 import arc.Core;
-import arc.graphics.Blending;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.Angles;
@@ -67,6 +66,8 @@ public class TektonUnits {
 	isoptera, //longicornis, //termites
 	araneae, latrodectus, //spiders
 	danaus, antheraea, //caterpillars
+	amecephalus, //amecephalus
+	
 	colobopsis, //others
 
 	//air biological
@@ -233,6 +234,7 @@ public class TektonUnits {
 
 		electron = new MinionUnitType("electron") {{
 			constructor = TimedKillUnit::create;
+            health = 80f;
             aiController = MinionAI::new;
 			flying = true;
 			hoverable = true;
@@ -253,7 +255,6 @@ public class TektonUnits {
             lifetime = 60f * 4f;
             outlineColor = TektonColor.tektonOutlineColor.cpy();
             engineOffset = 7;
-            health = 30f;
             loopSoundVolume = 0f;
             rotateSpeed = 10f;
             baseRotateSpeed = 10f;
@@ -263,7 +264,7 @@ public class TektonUnits {
             alwaysShootWhenMoving = true;
             rotateMoveFirst = false;
             circleTarget = true;
-            autoFindTarget = true;
+            //autoFindTarget = true;
             faceTarget = true;
             physics = true;
             bounded = false;
@@ -297,12 +298,26 @@ public class TektonUnits {
             	x = 0;
             	y = weapY;
     			shootSound = Sounds.none;
-                autoTarget = true;
                 predictTarget = false;
-                controllable = false;
-                shoot.firstShotDelay = 30f;
+                /*autoTarget = true;
+                controllable = false;*/
+                //shoot.firstShotDelay = 30f;
+                activeSound = TektonSounds.loopElectron;
+                activeSoundVolume = 0.2f;
+                
+                continuous = alwaysContinuous = true;
+                
+                bullet = new PointLaserBulletType(){{
+                	sprite = "tekton-electron-laser";
+                    damage = 4f;
+                    pierceArmor = true;
+                    color = hitColor = Pal.lancerLaser;
+                    range = rangeOverride = rang;
+                    
+                    beamEffectSize = 1f;
+                }};
 
-                bullet = new TeslaBulletType(){{
+                /*bullet = new TeslaBulletType(){{
                 	chains = 1;
     				maxRange = rang;
     				hitSize = 1f;
@@ -315,7 +330,7 @@ public class TektonUnits {
     				hitSound = Sounds.shootArc;
     				hitSoundVolume = 0.2f;
     				chainEffect = Fx.chainEmp.wrap(Pal.lancerLaser);
-    			}};
+    			}};*/
             }});
 		}};
 
@@ -490,14 +505,9 @@ public class TektonUnits {
                 y = 0f;
                 parentizeEffects = true;
                 ejectEffect = Fx.none;
-                shootSound = Sounds.shootLaser;
+                shootSound = TektonSounds.shootPiezo;
+                shootSoundVolume = 1f;
                 inaccuracy = 2;
-                //cooldownTime = 30f;
-
-                /*shoot = new ShootPattern() {{
-                	shots = 3;
-                	shotDelay = 7f;
-                }};*/
 
                 bullet = new LaserBoltBulletType(6f, 24f) {{
                     //sprite = "tekton-retangular-bullet";
@@ -562,7 +572,8 @@ public class TektonUnits {
                 mirror = false;
                 parentizeEffects = true;
                 ejectEffect = Fx.none;
-                shootSound = TektonSounds.tchau;
+                shootSound = TektonSounds.shootElectret;
+                shootSoundVolume = 0.25f;
                 inaccuracy = 2;
                 //cooldownTime = 30f;
 
@@ -615,12 +626,13 @@ public class TektonUnits {
             drownTimeMultiplier = 1.2f;
 
             treadPullOffset = 0;
+            treadFrames = 12;
             abilities.add(new ForceFieldAbility(80f, 0.15f * 4f, 800f, 60f * 10f, 4, 45f));
 
             treadRects = new Rect[]{
-            		//i am starting to understand
-            		new Rect(13f, -53f, 31, 44), // upper
-            		new Rect(-13f, 12f, 29, 44) // down
+            		//i understand now.
+            		new Rect(15f, -53f, 32, 36), //two
+            		new Rect(-16f, 22f, 32, 36) //one
             		};
 
             weapons.add(new Weapon(name + "-weapon") {{
@@ -676,18 +688,19 @@ public class TektonUnits {
 
             abilities.add(new ShieldArcAbility() {{
                 region = "tekton-hysteresis-shield";
-                radius = 36f;
+                radius = 45f;
                 angle = 82f;
-                regen = 0.6f;
+                regen = 60f / 60f;
                 cooldown = 60f * 8f;
-                max = 2000f;
-                y = -18f;
-                width = 5f;
+                max = 2600f;
+                y = -22f;
+                width = 8f;
                 whenShooting = false;
             }});
 
             crushFragile = true;
             treadPullOffset = 0;
+            treadFrames = 14;
             treadRects = new Rect[]{new Rect(-57, -68, 31, 140)};
             crushDamage = 13f / 5f;
 
@@ -891,12 +904,12 @@ public class TektonUnits {
             tankMoveVolume *= 1.5f;
             tankMoveSound = Sounds.tankMoveHeavy;
 
-            var weapPos = -9f;
-
-            abilities.add(new ForceFieldAbility(140f, 120f / 60f, 3000f, 60f * 20f, 6, 0f));
             for (int i : Mathf.signs) {
             	abilities.add(new MinionSpawnAbility(electron, 60f, 16f * i, -1f));
             }
+            abilities.add(new ForceFieldAbility(140f, 120f / 60f, 3000f, 60f * 20f, 6, 0f));
+            
+            var weapPos = -9f;
 
             weapons.add(new Weapon(name + "-weapon") {{
                 chargeSound = Sounds.chargeCorvus;
@@ -907,13 +920,12 @@ public class TektonUnits {
                 shake = 14f;
                 shootY = weapPos;
                 x = y = 0;
-                reload = 350f;
+                reload = 360f;
                 recoil = 0f;
-                rotateSpeed = 0;
-                inaccuracy = 0.1f;
+                rotateSpeed = inaccuracy = 0f;
                 rotate = false;
                 heatColor = Color.valueOf("4a9eff");
-                shootCone = 7f;
+                shootCone = 1f;
                 autoTarget = true;
 
                 cooldownTime = 350f;
@@ -1182,12 +1194,12 @@ public class TektonUnits {
 
             		smokeEffect = Fx.colorSpark;
             		lightColor = hitColor = Pal.suppress;
-            		hitEffect = despawnEffect = endEffect = Fx.hitBulletColor;
+            		hitEffect = despawnEffect = Fx.hitBulletColor;
 
             		layer = Layer.flyingUnit + 0.01f;
 
                     endEffect = new Effect(14f, e -> {
-                        color(e.color);
+                        color(Pal.suppress);
                         Drawf.tri(e.x, e.y, e.fout() * 1.5f, 5f, e.rotation);
                     });
 
@@ -1273,7 +1285,8 @@ public class TektonUnits {
             	rotationLimit = 0;
             	rotateSpeed = 0;
             	parentizeEffects = true;
-            	shootSound = Sounds.shootMissileSmall;
+            	shootSound = TektonSounds.shootEques;
+            	shootSoundVolume = 0.75f;
                 heatColor = Pal.turretHeat;
             	layerOffset = -0.001f;
             	top = false;
@@ -1899,7 +1912,9 @@ public class TektonUnits {
                 recoil = 1.5f;
                 shake = 2f;
                 ejectEffect = Fx.casing2;
-                shootSound = Sounds.explosionDull;
+                shootSound = TektonSounds.shootHammer;
+                shootSoundVolume = 0.8f;
+                
                 bullet = new ArtilleryBulletType(7f, 40f) {{
                     collidesTiles = collides = true;
                 	collidesAir = true;
@@ -2037,7 +2052,11 @@ public class TektonUnits {
             for (float i : new float[] {0f, 1f, 2f}) {
             	weapons.add(new DependentWeapon(name + "-weapon") {{
             		var deg = -45 * i;
-                    shootSound = Sounds.shootMissileLarge;
+                    shootSound = TektonSounds.shootImpact;
+                    shootSoundVolume = 0.6f;
+                    soundPitchMin = 0.9f + i * .5f;
+                    soundPitchMax += i * .5f;
+                    
                     mirror = true;
                     alternate = false;
                     rotate = false;
@@ -2131,18 +2150,20 @@ public class TektonUnits {
             targetAir = false;
             
         	abilities.add(new ArmorPlateAbility() {{ }
-	            public float speedMultiplier = 0.5f;
+	            public StatusEffect status = StatusEffects.slow;
 	            
 	            @Override
 	            public void addStats(Table t){
 	                super.addStats(t);
-	                t.add(abilityStat("speedreduction", Strings.autoFixed((1f - speedMultiplier) * 100f, 1)));
+	                t.row();
+	                t.add(abilityStat("speedreduction", Strings.autoFixed((1f - status.speedMultiplier) * 100f, 1)));
 	            }
 
 	        	@Override
 	        	public void update(Unit unit) {
 	                super.update(unit);
-	                unit.speedMultiplier -= warmup * speedMultiplier;
+	                if (warmup > 0.1f)
+	                	unit.apply(status);
 	        	}
         	});
 
@@ -2193,8 +2214,8 @@ public class TektonUnits {
                 shake = 7f;
                 shootCone = 60f;
 
-            	/*shootStatus = StatusEffects.slow;
-            	shootStatusDuration = reload + 30f;*/
+            	shootStatus = StatusEffects.slow;
+            	shootStatusDuration = reload + 30f;
 
                 var movX = 5f;
                 var movY = -movX;
@@ -2229,8 +2250,9 @@ public class TektonUnits {
                 //layerOffset = -0.0001f;
 
                 ejectEffect = Fx.none;
-                chargeSound = TektonSounds.redlasercharge;
-                shootSound = TektonSounds.electricorbshoot;
+                chargeSound = TektonSounds.chargeEarthquake;
+                shootSound = TektonSounds.shootEarthquake;
+                soundPitchMin = 0.95f;
                 shoot.firstShotDelay = TektonFx.techCharge.lifetime - 1f;
                 parentizeEffects = true;
 
@@ -2503,9 +2525,10 @@ public class TektonUnits {
                   shootY = 8.25f;
                   rotate = true;
                   ejectEffect = Fx.casing1;
-                  shootSound = TektonSounds.machinegunsound;
-              	soundPitchMin = 1.1f;
-      			soundPitchMax = 1.2f;
+                  shootSound = TektonSounds.shootArgos;
+              	soundPitchMin = 0.95f;
+      			soundPitchMax = 1.05f;
+      			shootSoundVolume = 0.5f;
                   ignoreRotation = true;
                   shootCone = 360f;
                   shootWarmupSpeed = 0.001f;
@@ -2820,10 +2843,10 @@ public class TektonUnits {
                   y = -4f;
                   ejectEffect = Fx.casing4;
               	inaccuracy = 6f;
-              	shootSound = TektonSounds.shoothuge;
+              	shootSound = TektonSounds.shootCastelo;
               	soundPitchMin = 0.7f;
               	soundPitchMax = 0.85f;
-              	shootSoundVolume = 0.7f;
+              	shootSoundVolume = 0.6f;
 
 				layerOffset = 0.0001f;
 				reload = 20f;
@@ -3069,7 +3092,7 @@ public class TektonUnits {
 
         var bioRegenAmount = 3f;
 
-		formica = new TektonBioUnit("formica") {{
+		formica = new TektonBioUnitType("formica") {{
 			this.constructor = LegsUnit::create;
 			customFogRadius = true;
 			fogRadius = 6f;
@@ -3143,7 +3166,7 @@ public class TektonUnits {
             }});
         }};
 
-		formicaEgg = new TektonBioUnit("egg") {{
+		formicaEgg = new TektonBioUnitType("egg") {{
 			constructor = TimedKillUnit::create;
 			//hidden = true;
 			legPhysicsLayer = true;
@@ -3162,7 +3185,7 @@ public class TektonUnits {
             abilities.add(new SpawnDeathHealthAbility() {{ amount = 1; spread = 0.1f; unit = formica; }});
 		}};
 
-        gracilipes = new TektonBioUnit("gracilipes") {{
+        gracilipes = new TektonBioUnitType("gracilipes") {{
 			this.constructor = LegsUnit::create;
             speed = 1f;
             drag = 0.1f;
@@ -3291,7 +3314,7 @@ public class TektonUnits {
             }});
         }};
 
-        carabidae = new TektonBioUnit("carabidae") {{
+        carabidae = new TektonBioUnitType("carabidae") {{
 			this.constructor = LegsUnit::create;
             speed = 0.83f;
             drag = 0.1f;
@@ -3372,7 +3395,7 @@ public class TektonUnits {
             }});
         }};
 
-        colobopsis = new TektonBioUnit("colobopsis") {{
+        colobopsis = new TektonBioUnitType("colobopsis") {{
         	this.constructor = CrawlUnit::create;
 			customFogRadius = true;
 			fogRadius = 6f;
@@ -3439,7 +3462,7 @@ public class TektonUnits {
             }});
         }};
 
-        isoptera = new TektonBioUnit("isoptera") {{
+        isoptera = new TektonBioUnitType("isoptera") {{
 			this.constructor = LegsUnit::create;
 			customFogRadius = true;
 			fogRadius = 8f;
@@ -3524,7 +3547,7 @@ public class TektonUnits {
             }});
         }};
 
-        araneae = new TektonBioUnit("araneae") {{
+        araneae = new TektonBioUnitType("araneae") {{
         	this.constructor = LegsUnit::create;
             speed = 0.84f;
             hitSize = 12f;
@@ -3630,7 +3653,7 @@ public class TektonUnits {
             }});
         }};
 
-        latrodectus = new TektonBioUnit("latrodectus") {{
+        latrodectus = new TektonBioUnitType("latrodectus") {{
         	this.constructor = LegsUnit::create;
             speed = 0.6f;
             hitSize = 28f;
@@ -3699,7 +3722,7 @@ public class TektonUnits {
             targetAir = true;
             researchCostMultiplier = 0f;
 
-           singleTarget = true;
+            singleTarget = true;
 
             weapons.add(new Weapon(name + "-head") {{
             	parts.add(
@@ -3874,7 +3897,7 @@ public class TektonUnits {
                         Draw.color();
 
                         Draw.reset();
-                    }) {{}};
+                    });
 
                 	hitSound = despawnSound = Sounds.explosionDull;
                 	trailChance = -1;
@@ -3906,7 +3929,7 @@ public class TektonUnits {
             }});
 		}};
 
-		danaus = new TektonBioUnit("danaus"){{
+		danaus = new TektonBioUnitType("danaus"){{
 			this.constructor = CrawlUnit::create;
 			customFogRadius = true;
 			fogRadius = 3f;
@@ -3928,7 +3951,7 @@ public class TektonUnits {
             speed = 1.1f;
         }};
 
-		antheraea = new TektonBioUnit("antheraea"){{
+		antheraea = new TektonBioUnitType("antheraea"){{
 			this.constructor = CrawlUnit::create;
 			abilities.addAll(new SpawnDeathAbility(danaus, 4, 8f) {{ randAmount = 3; }}, new RadiationFieldAbility(300f, 180f, 30f * tilesize));
 			immunities.add(TektonStatusEffects.radiationAbsorption); //this creature would be too OP if it was enabled to consume radiation
@@ -3950,17 +3973,130 @@ public class TektonUnits {
             segmentPhase = 5f;
             speed = 0.4f;
         }};
+        
+        amecephalus = new TektonBioUnitType("amecephalus"){{
+			this.constructor = CrawlUnit::create;
+			float holeX = 1.7f * tilesize, holeY = 2.7f * tilesize, holeDelay = 20f, holeChance = -1f, minVelocityHole = 0f;
+			Effect holeEffect = new Effect(140f, e -> {
+		        float length = 2f + e.finpow() * 8f;
+		        TektonFx.rand.setSeed(e.id);
+		        for(int i = 0; i < 2; i++){
+		        	TektonFx.v.trns(TektonFx.rand.random(360f), TektonFx.rand.random(length));
+		            float sizer = TektonFx.rand.random(1.0f, 2.8f);
+
+		            e.scaled(e.lifetime * TektonFx.rand.random(0.5f, 1f), b -> {
+		                color(e.color, b.fslope() * 0.93f);
+
+		                Fill.circle(e.x + TektonFx.v.x, e.y + TektonFx.v.y, sizer + b.fslope() * 1.2f);
+		            });
+		        }
+		    });
+			
+			abilities.addAll(new DeflectBulletAbility(), new MoveEffectAbility(holeX, holeY, TektonLiquids.acid.color, holeEffect, holeDelay) {{ chance = holeChance; minVelocity = minVelocityHole; }}, new MoveEffectAbility(-holeX, holeY, TektonLiquids.acid.color, holeEffect, holeDelay) {{ chance = holeChance; minVelocity = minVelocityHole; }});
+			immunities.add(TektonStatusEffects.radiationAbsorption); //this creature would be too OP if it was enabled to consume radiation
+			customFogRadius = true;
+			fogRadius = 9f;
+			health = 24000;
+            armor = 24f;
+            hitSize = 48f;
+            omniMovement = false;
+            rotateSpeed = 1f;
+            speed = 0.15f;
+            
+            aiController = HugAI::new;
+            targetAir = false;
+            
+            canDrown = false;
+            drownTimeMultiplier = 1000f;
+            
+            crushDamage = 10f;
+            crushFragile = true;
+
+            crawlSlowdown = 0.075f;
+            crawlSlowdownFrac = 0.9f;
+
+            drawBody = false;
+            segments = 10;
+            segmentRotSpeed = 0.5f;
+            segmentScl = 4f;
+            segmentPhase = 2f;
+            segmentMag = 1f;
+            
+            weapons.add(new Weapon() {{
+            	top = true;
+            	mirror = true;
+                x = holeX;
+                y = holeY;
+                shootY = recoil = 0f;
+                ejectEffect = Fx.none;
+                
+                reload = 120f;
+                rotate = true;
+                rotateSpeed = 10f;
+
+                targetAir = false;
+                shootSound = Sounds.shootArtillery;
+                
+                bullet = new ArtilleryBulletType(3f, 10) {{
+                	Color col = TektonLiquids.acid.color.cpy();
+                    
+                	shootEffect = TektonFx.shootColorBig;
+                	smokeEffect = TektonFx.shootColorSmokeBig;
+
+                	collidesTiles = true;
+                	collidesGround = collidesAir = true;
+                	hittable = true;
+                	collides = true;
+                	reflectable = false;
+                	
+                    backColor = hitColor = frontColor = trailColor =  col;
+
+                    knockback = 0.8f;
+                    lifetime = 120f;
+                    width = height = 9f;
+                    
+                    splashDamageRadius = 2f * tilesize;
+                    splashDamage = 120f;
+                    
+                    status = TektonStatusEffects.wetInAcid;
+                    statusDuration = 60f * 5f;
+                    
+                    trailInterval = 0.1f;
+                    trailChance = 0.25f;
+                    trailSpread = 5f;
+
+                    trailEffect = new Effect(80, f -> {
+                                Draw.z(Layer.effect - 0.1f);
+                	            color(col);
+                	            Fill.circle(f.x, f.y, f.fout() * 3.5f);
+                                Draw.z();
+                                
+                                Draw.reset();
+                	        });
+
+                    trailLength = 27;
+                    trailWidth = 2.5f;
+                    hitShake = 1f;
+
+                    trailInterp = Interp.slope;
+
+                    shrinkX = 0.6f;
+                    shrinkY = 0.2f;
+
+                    hitEffect = despawnEffect = TektonFx.blastExplosionColorSlowerWave;
+                }};
+            }});
+        }};
 
 		//air biological
 
-        diptera = new TektonBioUnit("diptera") {{
+        diptera = new TektonBioUnitType("diptera") {{
 			this.constructor = ElevationMoveUnit::create;
             hoverable = true;
             hovering = true;
 
             shadowElevation = 0.1f;
 
-            //layer 91?
             abilities.addAll(generateDefaultWing(3.25f, -0.5f, 180f, 200f, 15f, name + "-wing", Layer.groundUnit + 1f));
             abilities.add(new SpeedDamageAbility());
 
@@ -3992,7 +4128,6 @@ public class TektonUnits {
                 ejectEffect = Fx.none;
                 parentizeEffects = false;
                 bullet = new BulletType(3.4f, 7f) {{
-                    ammoMultiplier = 3f;
                     hitSize = 7f;
                     lifetime = 9f;
                     pierce = false;
@@ -4015,7 +4150,7 @@ public class TektonUnits {
             }});
 		}};
 
-		groundPolyphaga = new TektonBioUnit("polyphaga-ground") {{
+		groundPolyphaga = new TektonBioUnitType("polyphaga-ground") {{
 			this.constructor = CrawlUnit::create;
             flying = false;
             hidden = true;
@@ -4071,7 +4206,7 @@ public class TektonUnits {
             }});
 		}};
 
-		polyphaga = new TektonBioUnit("polyphaga") {{
+		polyphaga = new TektonBioUnitType("polyphaga") {{
 			this.constructor = UnitEntity::create;
             flying = true;
 
@@ -4131,7 +4266,7 @@ public class TektonUnits {
             }});
 		}};
 
-		lepidoptera = new TektonBioUnit("lepidoptera") {{
+		lepidoptera = new TektonBioUnitType("lepidoptera") {{
 			this.constructor = UnitEntity::create;
             flying = true;
 
@@ -4205,7 +4340,7 @@ public class TektonUnits {
             }});
 		}};
 
-		aedes = new TektonBioUnit("aedes") {{
+		aedes = new TektonBioUnitType("aedes") {{
 			this.constructor = UnitEntity::create;
             flying = true;
 
@@ -4362,7 +4497,7 @@ public class TektonUnits {
             }});
 		}};
 
-		achlyos = new TektonBioUnit("achlyos") {{
+		achlyos = new TektonBioUnitType("achlyos") {{
 			this.constructor = UnitEntity::create;
             flying = true;
             health = 240;
@@ -4376,6 +4511,9 @@ public class TektonUnits {
 
             faceTarget = true;
             lowAltitude = false;
+            
+            loopSound = TektonSounds.loopBioHover;
+            loopSoundVolume = 0.065f;
 
             ((LiquidExplodeAbility)abilities.get(0)).liquid = TektonLiquids.ammonia;
             ((ColorDebrisAbility)abilities.get(2)).color = TektonColor.ammonia;

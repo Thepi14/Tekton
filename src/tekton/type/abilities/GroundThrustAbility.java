@@ -110,11 +110,6 @@ public class GroundThrustAbility extends Ability {
     	drawHarmlessThrusters = harmless;
     }
 
-    public String getBundle(){
-        var type = getClass();
-        return "ability." + (type.isAnonymousClass() ? type.getSuperclass() : type).getSimpleName().replace("Ability", "").toLowerCase();
-    }
-
     @Override
     public void addStats(Table t) {
         //super.addStats(t);
@@ -399,11 +394,7 @@ public class GroundThrustAbility extends Ability {
 
         Draw.z(z);
     }
-
-    public String abilityStat(String stat, Object... values) {
-        return Core.bundle.format("ability.stat." + stat, values);
-    }
-
+    
     public void drawEngine(Unit unit, float x, float y, float radius, float rotation) {
         var z = Draw.z();
 

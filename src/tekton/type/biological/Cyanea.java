@@ -128,7 +128,7 @@ public class Cyanea extends Block implements BiologicalBlock {
     public float explosionMinWarmup = 0f;
     public int explosionDamage = 0;
     
-    public Sound explodeSound = TektonSounds.explosionbig;
+    public Sound explodeSound = TektonSounds.shootHavoc;
     public Effect explodeEffect = TektonFx.cyaneaExplosion;
     
     public float explosionShake = 1f, explosionShakeDuration = 6f;

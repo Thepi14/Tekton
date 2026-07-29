@@ -9,9 +9,11 @@ import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.entities.Units;
 import mindustry.entities.units.AIController;
+import mindustry.gen.Groups;
 import mindustry.gen.Teamc;
 import mindustry.gen.TimedKillc;
 import mindustry.gen.Unit;
+import mindustry.type.Weapon;
 import tekton.type.dependent.DependentAI;
 import tekton.type.dependent.DependentType;
 import tekton.type.dependent.MinionUnitType;
@@ -24,6 +26,40 @@ public class MinionAI extends AIController implements DependentAI {
     protected void resetTimers(){
         timer.reset(timerTarget, 5f);
     }*/
+
+    @Override
+    public void updateTargeting() {
+        if (shooter != null) {
+            unit.aimX = shooter.aimX;
+            unit.aimY = shooter.aimY;
+            
+            unit.isShooting = shooter.isShooting && unit.canShoot();
+            
+            for(var mount : unit.mounts){
+                Weapon weapon = mount.weapon;
+                float wrange = weapon.range();
+                
+            	mount.aimX = shooter.aimX;
+            	mount.aimY = shooter.aimY;
+            	mount.shoot = unit.dst(new Vec2(shooter.aimX, shooter.aimY)) < wrange;
+                
+                //mount.shoot = shooter.isShooting && unit.canShoot();
+            }
+        }
+        
+        /*if (target == null) {
+        	target = Units.closestTarget(unit.team, unit.aimX, unit.aimY, unit.type.range - 1f);
+        }
+        
+        if (target != null) {
+	        if (checkTarget(target, unit.aimX, unit.aimY, unit.type.range - 1f)) {
+	        	target = null;
+	        }
+        }*/
+        
+        //updateWeapons();
+    	//super.updateTargeting();
+    }
 
     @Override
     public void updateMovement(){
@@ -50,9 +86,6 @@ public class MinionAI extends AIController implements DependentAI {
             	if(time >= unit.type.homingDelay && !shooter.dead()){
     	            unit.lookAt(shooter.aimX, shooter.aimY);
     	        }
-
-                unit.aimX = shooter.aimX;
-                unit.aimY = shooter.aimY;
 
             	if (distanceTarget >= attackDistance) {
 					moveTo(new Vec2(shooter.aimX, shooter.aimY), attackDistance, 0.5f, true, null, true);

@@ -148,7 +148,7 @@ public class LongPowerNodeLink extends LongPowerNode {
         maxNodes = 2;
         envEnabled |= Env.space;
         flags = EnumSet.of(BlockFlag.battery);
-        destroySound = TektonSounds.explosionbig;
+        destroySound = TektonSounds.shootHavoc;
         drawRange = true;
         destroyEffect = new MultiEffect(Fx.titanExplosion.wrap(Pal.lighterOrange), new Effect(30f, 160f, e -> {
             color(Pal.lighterOrange);

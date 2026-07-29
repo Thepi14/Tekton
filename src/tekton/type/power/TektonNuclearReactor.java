@@ -77,7 +77,7 @@ public class TektonNuclearReactor extends PowerGenerator {
         explosionDamage = 1250 * 4;
 
         explodeEffect = TektonFx.nuclearExplosion.wrap(Color.valueOf("bbd658"));
-        explodeSound = TektonSounds.explosionbig;
+        explodeSound = TektonSounds.shootHavoc;
 	}
 
 	@Override

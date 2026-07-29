@@ -10,6 +10,7 @@ public class BulletSpawnerBullet extends BulletType { //horrible name
 	public float spawnRadius = 4f * 80f;
 	public boolean randomRotation = true;
 	public Sound spawnSound = null;
+	public float spawnSoundVolume = 1f;
 
 	public BulletSpawnerBullet() {
 		super();
@@ -45,7 +46,7 @@ public class BulletSpawnerBullet extends BulletType { //horrible name
 				float x = b.x + (Mathf.random(spawnRadius) * Mathf.cosDeg(Mathf.random(360f))), y = b.y + (Mathf.random(spawnRadius) * Mathf.sinDeg(Mathf.random(360f)));
 				intervalBullet.create(b, x, y, randomRotation ? Mathf.random(360f) : 0f);
 				if (spawnSound != null) {
-					spawnSound.at(x, y);
+					spawnSound.at(x, y, 1f, spawnSoundVolume);
 				}
 			}
 		}

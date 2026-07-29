@@ -42,16 +42,13 @@ public class CoreRadar extends Block {
     public float laserScale = 0.7f;
     public float warmupSpeed = 0.1f;
 
-    public TextureRegion laser;
-    public TextureRegion laserEnd;
-
     public TextureRegion baseRegion;
     public TextureRegion baseTeamRegion;
     public TextureRegion glowRegion;
     public TextureRegion teamGlowRegion;
     public TextureRegion arrowRegion;
 
-    public Sound sonarSound = TektonSounds.sonarloop, pingSound = TektonSounds.sonarping;
+    public Sound sonarSound = TektonSounds.loopSonar, pingSound = TektonSounds.pingSonar;
 
     public float arrowSpacing = 24f, arrowDistance = 44f, symbolDistance = 30f;
 
@@ -102,9 +99,6 @@ public class CoreRadar extends Block {
 		teamGlowRegion = Core.atlas.find(name + "-team-glow");
 
 		arrowRegion = Core.atlas.find(name + "-arrow");
-
-		laser = Core.atlas.find(name + "-laser", "tekton-laser");
-		laserEnd = Core.atlas.find(name + "-laser-end", "tekton-laser-end");
     }
 
     @Override

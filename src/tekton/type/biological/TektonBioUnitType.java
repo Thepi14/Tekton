@@ -20,10 +20,10 @@ import arc.graphics.g2d.*;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 
-public class TektonBioUnit extends UnitType implements BiologicalUnit {
+public class TektonBioUnitType extends UnitType implements BiologicalUnit {
 	public boolean customFogRadius = false;
 
-	public TektonBioUnit(String name) {
+	public TektonBioUnitType(String name) {
 		super(name);
         drawCell = Tekton.drawBiologicalUnitsCell;
 		createScorch = false;

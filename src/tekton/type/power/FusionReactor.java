@@ -91,7 +91,7 @@ public class FusionReactor extends PowerGenerator {
         explosionDamage = 1900 * 4;
         explosionMinWarmup = 0.15f;
         explodeEffect = TektonFx.nuclearFusionExplosion;
-        explodeSound = TektonSounds.explosionbig;
+        explodeSound = TektonSounds.shootHavoc;
 	}
 
 	@Override

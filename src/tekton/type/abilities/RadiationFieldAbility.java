@@ -15,6 +15,7 @@ import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.Ability;
+import mindustry.entities.effect.ParticleEffect;
 import mindustry.gen.Unit;
 import tekton.content.TektonColor;
 import tekton.content.TektonFx;
@@ -26,6 +27,18 @@ public class RadiationFieldAbility extends Ability {
     public boolean parentizeEffects, effectSizeParam = true;
     public boolean onShoot = false;
     public Effect applyEffect = TektonFx.biologicalPulse;
+    public Effect buildingApplyEffect = new ParticleEffect() {{
+    	particles = 1;
+    	line = true;
+    	lifetime = 15;
+    	length = 15;
+    	lenFrom = 3;
+    	lenTo = 0;
+    	strokeFrom = 1;
+    	strokeTo = 0;
+    	colorFrom = Color.white;
+    	colorTo = TektonColor.acid;
+    }};
     public Effect activeEffect = Fx.overdriveWave;
     public Effect areaEffect = TektonStatusEffects.radioactiveContamination.effect;
 	public float effectChance = 0.1f;
@@ -72,23 +85,23 @@ public class RadiationFieldAbility extends Ability {
         if(timer >= reload && (!onShoot || unit.isShooting)){
             Units.nearby(null, unit.x, unit.y, range, other -> {
             	if (other.hittable() && other != unit) {
-                    if(other.team != unit.team) {
+                    if(other.team != unit.team && !other.isImmune(TektonStatusEffects.radioactiveContamination)) {
                         other.damage(damage * unitDamageScale);
                         other.apply(TektonStatusEffects.radioactiveContamination, duration);
+                        applyEffect.at(other, parentizeEffects);
                     }
-                    else {
+                    else if (other.isImmune(TektonStatusEffects.radioactiveContamination) && !other.isImmune(TektonStatusEffects.radiationAbsorption)) {
                         other.apply(TektonStatusEffects.radiationAbsorption, duration);
+                        applyEffect.at(other, parentizeEffects);
                     }
-                    applyEffect.at(other, parentizeEffects);
                 }
             });
 
             Vars.indexer.allBuildings(unit.x, unit.y, range, other -> {
                 if(unit.team != other.team) {
-                    other.applySlowdown(0.6f, reload);
+                    other.applySlowdown(buildingEfficiencyMultiplier, reload);
                     other.damage(damage);
-                    //TODO: too much effect
-                    //applyEffect.at(other, parentizeEffects);
+                    buildingApplyEffect.at(other, parentizeEffects);
                 }
             });
 
