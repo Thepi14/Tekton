@@ -2016,7 +2016,7 @@ public class TektonBlocks {
 			size = 2;
 			range = 3;
 			drillTime = 350f;
-			tier = 3;
+			tier = 2;
 			ambientSoundVolume = 0.1f;
 			squareSprite = false;
 			alwaysUnlocked = true;
@@ -2854,7 +2854,7 @@ public class TektonBlocks {
 						lifetime = 30f;
 						shootEffect = Fx.shootSmall;
 						smokeEffect = Fx.shootSmallSmoke;
-						hitEffect = despawnEffect = Fx.hitBulletColor;
+						hitEffect = despawnEffect = TektonFx.flakExplosionBigColor;
 						sprite = "tekton-basic-bullet";
 						backSprite = "tekton-basic-bullet-back";
 						frontColor = Color.white;
@@ -5090,7 +5090,7 @@ public class TektonBlocks {
             shake = 4f;
             size = 4;
             shootCone = 2f;
-            shootSound = Sounds.shootForeshadow;
+            shootSound = TektonSounds.shootConcentration;
             chargeSound = TektonSounds.chargeConcentration;
             unitSort = UnitSorts.strongest;
             envEnabled |= Env.space;

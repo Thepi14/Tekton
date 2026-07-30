@@ -141,7 +141,7 @@ public class TektonTechTree {
 
                 	});
             	});
-            	node(silicaAspirator, () -> {
+            	node(silicaAspirator, Seq.with(new SectorComplete(satus)), () -> {
 
                 	//crafting
                 	node(siliconFilter, () -> {

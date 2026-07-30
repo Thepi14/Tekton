@@ -921,11 +921,10 @@ public class TektonUnits {
                 shootY = weapPos;
                 x = y = 0;
                 reload = 360f;
-                recoil = 0f;
-                rotateSpeed = inaccuracy = 0f;
+                recoil = rotateSpeed = inaccuracy = 0f;
                 rotate = false;
                 heatColor = Color.valueOf("4a9eff");
-                shootCone = 1f;
+                shootCone = 7f;
                 autoTarget = true;
 
                 cooldownTime = 350f;
@@ -1844,7 +1843,8 @@ public class TektonUnits {
                     reload = treload * 3f;
                     ejectEffect = Fx.none;
                     recoil = 0f;
-                    shootSound = Sounds.shootMissile;
+                    shootSound = TektonSounds.shootStrike;
+                    shootSoundVolume = .85f;
                     heatColor = Pal.turretHeat;
                     //velocityRnd = 0.5f;
                     inaccuracy = 15f;
@@ -2150,20 +2150,20 @@ public class TektonUnits {
             targetAir = false;
             
         	abilities.add(new ArmorPlateAbility() {{ }
-	            public StatusEffect status = StatusEffects.slow;
+	            public float speedMultiplier = 0.4f;
 	            
 	            @Override
 	            public void addStats(Table t){
 	                super.addStats(t);
 	                t.row();
-	                t.add(abilityStat("speedreduction", Strings.autoFixed((1f - status.speedMultiplier) * 100f, 1)));
+	                t.add(abilityStat("speedreduction", Strings.autoFixed((1f - speedMultiplier) * 100f, 1)));
 	            }
 
 	        	@Override
 	        	public void update(Unit unit) {
 	                super.update(unit);
-	                if (warmup > 0.1f)
-	                	unit.apply(status);
+	                if (warmup > 0.05f)
+	                	unit.speedMultiplier *= speedMultiplier;
 	        	}
         	});
 
@@ -2446,16 +2446,18 @@ public class TektonUnits {
               weapons.add(new Weapon("tekton-mount-weapon") {{
                   reload = 65f;
                   x = 4.85f;
-                  shootY = 3.2f;
+                  shootY = 1.6f;
                   y = 5.95f;
+                  
                   rotate = true;
                   ejectEffect = Fx.casing2;
-                  shootSound = Sounds.shoot;
-              	rotateSpeed = 6f;
-              	inaccuracy = 6;
+                  shootSound = TektonSounds.shootSagres;
+                  shootSoundVolume = 0.4f;
+              	  rotateSpeed = 6f;
+              	  inaccuracy = 6;
                   shoot = new ShootPattern() {{
-                  	shots = 3;
-                  	shotDelay = 6;
+                  shots = 3;
+                  shotDelay = 6;
                   }};
                   bullet = new BasicBulletType(4f, 3) {{
                       lifetime = 33f;
@@ -2640,149 +2642,149 @@ public class TektonUnits {
               }};
 
               weapons.add(
-      		new Weapon("tekton-mount-weapon") {{
-                  reload = 60f;
-                  x = 13f;
-                  shootY = 3.2f;
-                  y = 1.7f;
-                  rotate = true;
-                  shootCone = 360f;
-                  ejectEffect = Fx.none;
-                  shootSound = Sounds.shootMissile;
-              	inaccuracy = 4;
-                  //controllable = false;
-                  //autoTarget = true;
-              	layerOffset = 0.01f;
-
-                  shoot = new ShootPattern() {{
-                  	shots = 2;
-                  	shotDelay = 8;
-                  }};
-
-                  bullet = missile;
-              }},
-      		new Weapon("tekton-mount-weapon") {{
-                  reload = 80f;
-                  x = 18.5f;
-                  shootY = 3.2f;
-                  y = -1.8f;
-                  rotate = true;
-                  shootCone = 360f;
-                  ejectEffect = Fx.none;
-                  shootSound = Sounds.shootMissile;
-              	inaccuracy = 4;
-                  //controllable = false;
-                  //autoTarget = true;
-              	layerOffset = 0.01f;
-
-                  shoot = new ShootPattern() {{
-                  	shots = 2;
-                  	shotDelay = 8;
-                  	firstShotDelay = 20f;
-                  }};
-
-                  bullet = missile;
-              }});
-              
-              weapons.add(new Weapon(name + "-weapon") {{
-              	mirror = false;
+        		  new Weapon(name + "-weapon") {{
+                	mirror = false;
                   reload = 12f;
                   x = 0f;
                   y = 0f;
-              	shoot = new ShootBarrel() {{
-      				shots = 1;
-      				var y = 10f;
-      				barrels = new float[] {
-      					-5f, y, 0,
-      					5f, y, 0,
-      				};
-      			}};
-  				recoils = 2;
+                	shoot = new ShootBarrel() {{
+        				shots = 1;
+        				var y = 10f;
+        				barrels = new float[] {
+        					-5f, y, 0,
+        					5f, y, 0,
+        				};
+        			}};
+    				recoils = 2;
                   shake = 2f;
                   rotateSpeed = 2f;
                   ejectEffect = Fx.casing3;
-                  shootSound = Sounds.shootScepter;
+                  shootSound = TektonSounds.shootAriete;
+                  shootSoundVolume = 0.9f;
                   rotate = true;
                   shadow = 8f;
-              	inaccuracy = 3;
-              	rotateSpeed = 2f;
-              	layerOffset = 0.02f;
+                	inaccuracy = 3;
+                	rotateSpeed = 2f;
+                	layerOffset = 0.02f;
 
-              	/*shootStatus = StatusEffects.slow;
-              	shootStatusDuration = 60f * 2f;*/
+                	/*shootStatus = StatusEffects.slow;
+                	shootStatusDuration = 60f * 2f;*/
 
-              	//i don't know why one of the cannons does not display the hit color
-              	parts.add(
-          			new RegionPart("-cannon-left") {{
-              		progress = PartProgress.recoil;
-  					moveY = -1.5f;
-  					recoilIndex = 0;
-  					mirror = false;
-  					under = false;
-  					heatColor = Color.clear;
-              	}},	new RegionPart("-cannon-right") {{
-              		progress = PartProgress.recoil;
-  					moveY = -1.5f;
-  					recoilIndex = 1;
-  					mirror = false;
-  					under = false;
-  					heatColor = Color.clear;
-              	}}, new RegionPart("-cannon-left-heat") {{
-              		progress = PartProgress.recoil;
-  					moveY = -1.5f;
-  					recoilIndex = 0;
-  					mirror = false;
-  					under = false;
-  					color = heatColor = Color.clear;
-  					colorTo = Pal.turretHeat;
-  					blending = Blending.additive;
-  					outline = false;
-              	}},	new RegionPart("-cannon-right-heat") {{
-              		progress = PartProgress.recoil;
-  					moveY = -1.5f;
-  					recoilIndex = 1;
-  					mirror = false;
-  					under = false;
-  					color = heatColor = Color.clear;
-  					colorTo = Pal.turretHeat;
-  					blending = Blending.additive;
-  					outline = false;
-              	}}
-      			);
+                	//i don't know why one of the cannons does not display the hit color
+                	parts.add(
+            			new RegionPart("-cannon-left") {{
+                		progress = PartProgress.recoil;
+    					moveY = -1.5f;
+    					recoilIndex = 0;
+    					mirror = false;
+    					under = false;
+    					heatColor = Color.clear;
+                	}},	new RegionPart("-cannon-right") {{
+                		progress = PartProgress.recoil;
+    					moveY = -1.5f;
+    					recoilIndex = 1;
+    					mirror = false;
+    					under = false;
+    					heatColor = Color.clear;
+                	}}, new RegionPart("-cannon-left-heat") {{
+                		progress = PartProgress.recoil;
+    					moveY = -1.5f;
+    					recoilIndex = 0;
+    					mirror = false;
+    					under = false;
+    					color = heatColor = Color.clear;
+    					colorTo = Pal.turretHeat;
+    					blending = Blending.additive;
+    					outline = false;
+                	}},	new RegionPart("-cannon-right-heat") {{
+                		progress = PartProgress.recoil;
+    					moveY = -1.5f;
+    					recoilIndex = 1;
+    					mirror = false;
+    					under = false;
+    					color = heatColor = Color.clear;
+    					colorTo = Pal.turretHeat;
+    					blending = Blending.additive;
+    					outline = false;
+                	}}
+        			);
 
-                  bullet = new BasicBulletType(7f, 40f) {{
-                      width = 12f;
-                      height = 18f;
-                      lifetime = 30f;
-                      shootEffect = Fx.shootBig;
-                      /*pierce = true;
-                      pierceBuilding = true;
-                      pierceCap = 2;
-                      splashDamage = 10f;
-                      splashDamageRadius = 35f;*/
-                      hitColor = backColor = trailColor = Color.valueOf("feb380");
-                      frontColor = Color.white;
-                      trailWidth = 2f;
-                      trailLength = 4;
-                      recoil = 0.1f;
-                      pierceArmor = true;
-                      hitEffect = Fx.flakExplosion;
-                      fragBullets = 4;
-                      
-                      splashDamage = 20f;
-                      splashDamageRadius = 20f;
-                      
-                      fragBullet = new BasicBulletType(4f, 30f / fragBullets) {{
-                          lifetime = 8f;
-                          pierce = true;
-                          pierceBuilding = true;
-                          pierceCap = 4;
-                          splashDamage = 20f;
-                          splashDamageRadius = 30f;
-                          status = StatusEffects.blasted;
-                      }};
-                  }};
-              }});
+                    bullet = new BasicBulletType(7f, 40f) {{
+                        width = 12f;
+                        height = 18f;
+                        lifetime = 30f;
+                        shootEffect = Fx.shootBig;
+                        /*pierce = true;
+                        pierceBuilding = true;
+                        pierceCap = 2;
+                        splashDamage = 10f;
+                        splashDamageRadius = 35f;*/
+                        hitColor = backColor = trailColor = Color.valueOf("feb380");
+                        frontColor = Color.white;
+                        trailWidth = 2f;
+                        trailLength = 4;
+                        recoil = 0.1f;
+                        pierceArmor = true;
+                        hitEffect = Fx.flakExplosion;
+                        fragBullets = 4;
+                        
+                        splashDamage = 20f;
+                        splashDamageRadius = 20f;
+                        
+                        fragBullet = new BasicBulletType(4f, 30f / fragBullets) {{
+                            lifetime = 8f;
+                            pierce = true;
+                            pierceBuilding = true;
+                            pierceCap = 4;
+                            splashDamage = 20f;
+                            splashDamageRadius = 30f;
+                            status = StatusEffects.blasted;
+                        }};
+                    }};
+                }},
+		  		new Weapon("tekton-mount-weapon") {{
+		              reload = 80f;
+		              x = 18.5f;
+		              shootY = 1.6f;
+		              y = -1.8f;
+		              rotate = true;
+		              shootCone = 360f;
+		              ejectEffect = Fx.none;
+		              shootSound = Sounds.shootMissile;
+		          	  inaccuracy = 4;
+		              //controllable = false;
+		              //autoTarget = true;
+		          	  layerOffset = 0.01f;
+		
+		              shoot = new ShootPattern() {{
+		              	shots = 2;
+		              	shotDelay = 8;
+		              	firstShotDelay = 20f;
+		              }};
+		
+		              bullet = missile;
+		          }},
+		  		  new Weapon("tekton-mount-weapon") {{
+		              reload = 60f;
+		              x = 13f;
+		              shootY = 1.6f;
+		              y = 1.7f;
+		              rotate = true;
+		              shootCone = 360f;
+		              ejectEffect = Fx.none;
+		              shootSound = Sounds.shootMissile;
+		          	  inaccuracy = 4;
+		              //controllable = false;
+		              //autoTarget = true;
+		          	  layerOffset = 0.01f;
+		
+		              shoot = new ShootPattern() {{
+		              	shots = 2;
+		              	shotDelay = 8;
+		              }};
+		
+		              bullet = missile;
+		          }});
               researchCostMultiplier = 0f;
           }};
 
@@ -2836,12 +2838,14 @@ public class TektonUnits {
               moveSoundVolume = 1.1f;
               moveSound = Sounds.shipMoveBig;
               moveSoundPitchMin = moveSoundPitchMax = 0.9f;
+              
+              maxRange = 31 * tilesize;
 
               weapons.add(new Weapon(name + "-weapon") {{
               	mirror = true;
-                  x = 16f;
-                  y = -4f;
-                  ejectEffect = Fx.casing4;
+                x = 16f;
+                y = -4f;
+                ejectEffect = Fx.casing4;
               	inaccuracy = 6f;
               	shootSound = TektonSounds.shootCastelo;
               	soundPitchMin = 0.7f;
@@ -2864,7 +2868,7 @@ public class TektonUnits {
                   for(int i = 1; i <= 3; i++) {
                       int fi = i;
                       parts.add(new RegionPart("-blade") {{
-                      	mirror = true;
+                      	  mirror = true;
                           under = true;
                           layerOffset = -0.001f;
                           heatColor = Pal.turretHeat;
@@ -2877,7 +2881,7 @@ public class TektonUnits {
                           moveX = (mov) * 1.4f;
                           moveY = (-mov) * 1.4f;
                           rotation = 45f + 180f;
-                  		moveRot = 0f;
+                  		  moveRot = 0f;
                           //moves.add(new PartMove(PartProgress.reload.inv().mul(1.8f).inv().curve(fi / 5f, 0.2f), 0f, 0f, 36f));
                       }});
                   }

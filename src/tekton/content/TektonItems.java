@@ -27,7 +27,7 @@ public class TektonItems {
         }};
 
         silica = new Item("silica", Color.valueOf("e3beba")) {{
-        	hardness = 1;
+        	hardness = 0;
             cost = 1f;
             alwaysUnlocked = false;
         }};
@@ -46,21 +46,21 @@ public class TektonItems {
         }};
 
         magnet = new Item("magnet", Color.valueOf("cc5050")) {{
-        	hardness = 1;
+        	hardness = 3;
             cost = 3f;
             charge = 0.2f;
             alwaysUnlocked = false;
         }};
 
         polytalum = new Item("polytalum", Color.valueOf("5f98a5")) {{
-        	hardness = 3;
+        	hardness = 4;
             cost = 3.5f;
             explosiveness = 0.2f;
             alwaysUnlocked = false;
         }};
 
         uranium = new Item("uranium", Color.valueOf("50754d")) {{
-        	hardness = 4;
+        	hardness = 5;
             cost = 3.8f;
             explosiveness = 0.35f;
             radioactivity = 3;
@@ -68,10 +68,10 @@ public class TektonItems {
         }};
 
         nanoAlloy = new Item("nano-alloy", Color.valueOf("df882f")) {{
-        	hardness = 5;
+        	hardness = 7;
             cost = 4.5f;
-            radioactivity = 0.77f;
-            charge = 0.5f;
+            //radioactivity = 0.77f;
+            charge = 0.6f;
             alwaysUnlocked = false;
         }};
 

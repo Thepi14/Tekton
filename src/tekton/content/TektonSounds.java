@@ -24,17 +24,21 @@ public class TektonSounds {
 	shootHavoc,
 	shootTesla,
 	shootRepulsion,
+	shootConcentration,
 	shootRadiance,
 	
 	//shoot units
 	shootPiezo,
 	shootElectret,
 	
+	shootStrike,
 	shootHammer,
 	shootImpact,
 	shootEarthquake,
 	
+	shootSagres,
 	shootArgos,
+	shootAriete,
 	shootCastelo,
 	
 	shootEques,

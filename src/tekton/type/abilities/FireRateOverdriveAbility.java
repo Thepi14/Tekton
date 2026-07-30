@@ -21,7 +21,7 @@ import mindustry.ui.Bar;
 
 public class FireRateOverdriveAbility extends Ability {
 	public float minBoost = 0.1f, maxBoost = 2f, boostIncrease = 0.04f, boostDecrease = 0.2f;
-	public StatusEffect statusEffect = StatusEffects.slow;
+	public float speedMultiplier = 0.4f;
 	public Color heatColor = Pal.turretHeat.cpy();
 	public TextureRegion heatRegion;
 	public float heat = 0f;
@@ -36,6 +36,8 @@ public class FireRateOverdriveAbility extends Ability {
         t.add(Core.bundle.format("bullet.reload", Strings.autoFixed((int)(maxBoost * 100f), 3)));
         t.row();
         t.add(abilityStat("minreload", Strings.autoFixed((int)(minBoost * 100f), 3)));
+        t.row();
+        t.add(abilityStat("speedreduction", Strings.autoFixed((1f - speedMultiplier) * 100f, 1)));
     }
 
     @Override
@@ -72,11 +74,10 @@ public class FireRateOverdriveAbility extends Ability {
 		}
 		
 		data = Mathf.clamp(data, minBoost, maxBoost);
-		
-		if (data > minBoost && statusEffect != StatusEffects.none)
-			unit.apply(statusEffect);
-
 		heat = (data - minBoost) / (maxBoost - minBoost);
+		
+		if (data > minBoost)
+			unit.speedMultiplier *= speedMultiplier;
 
 		//int currentIndex = Math.min((int)(data * (200 / 4)), 199);
 		//Log.info(data + ", " + currentIndex + ", " + boosts.get(currentIndex).reloadMultiplier);

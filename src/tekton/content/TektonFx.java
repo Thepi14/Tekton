@@ -163,6 +163,30 @@ public class TektonFx {
         Fill.circle(e.x, e.y, e.fin() * 10);
         Drawf.light(e.x, e.y, e.fin() * 20f, Pal.lancerLaser, 0.7f);
     }).followParent(true).rotWithParent(true),
+	
+	flakExplosionBigColor = new Effect(30, e -> {
+        color(e.color, Color.white, 0.3f);
+
+        e.scaled(6, i -> {
+            stroke(3f * i.fout());
+            Lines.circle(e.x, e.y, 3f + i.fin() * 25f);
+        });
+
+        color(e.color, Color.gray, 0.5f);
+
+        randLenVectors(e.id, 6, 2f + 23f * e.finpow(), (x, y) -> {
+            Fill.circle(e.x + x, e.y + y, e.fout() * 4f + 0.5f);
+        });
+
+        color(e.color);
+        stroke(e.fout());
+
+        randLenVectors(e.id + 1, 4, 1f + 23f * e.finpow(), (x, y) -> {
+            lineAngle(e.x + x, e.y + y, Mathf.angle(x, y), 1f + e.fout() * 3f);
+        });
+
+        Drawf.light(e.x, e.y, 60f, e.color, 0.7f * e.fout());
+    }),
 
 	neurosporaContaminationSapped = new Effect(40f, e -> {
         color(TektonColor.neurospora);
