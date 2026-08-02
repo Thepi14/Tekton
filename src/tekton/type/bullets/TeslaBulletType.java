@@ -47,7 +47,7 @@ public class TeslaBulletType extends BulletType{
 		    		}}
 			};
 		}};
-		maxRange = 100f;
+		 maxRange = 100f;
 		 despawnEffect = Fx.none;
 		 lifetime = 20f;
 		 impact = true;
@@ -64,7 +64,7 @@ public class TeslaBulletType extends BulletType{
 
 		 //just make it massive, users of this bullet can adjust as necessary
 		 drawSize = 1000f;
-     }
+    }
 
     @Override
     public void init(Bullet b){
@@ -74,7 +74,7 @@ public class TeslaBulletType extends BulletType{
         var maxDistY = pos.dst(b.aimX, b.aimY) >= maxRange ? b.y + (Mathf.sin(Mathf.atan2(b.aimX - b.x, b.aimY - b.y)) * maxRange) : b.aimY;
         var absorber = Damage.findAbsorber(b.team, b.x, b.y, maxDistX, maxDistY);
 
-        if(absorber != null &&absorbable){
+        if(absorber != null && absorbable){
             hitAt(b, absorber.x, absorber.y);
         }
         else {

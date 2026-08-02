@@ -58,17 +58,24 @@ public class TektonPlanetGenerator extends PlanetGenerator {
 
     @Override
     public float getHeight(Vec3 position) {
+    	int[] oceanicSectors = {21, 73, 72, 8, 60, 55, 4, 38, 74, 90, 31, 47, 84, 85, 10, 70, 7, 71, 51, 9, 77, 79, 28, 41, 64, 65};
+    	
+    	for (int sector : oceanicSectors) {
+    		if (position.dst(TektonPlanets.tekton.sectors.get(sector).tile.v) < 0.235f)
+    			return oceanLevel;
+    	}
+    	
     	float pers = 1/4f;
     	var mul = 1.5f;
 
-    	float deepOceanHeight = 0.7f;
     	float oceanHeight = 0.65f;
     	float beachMethaneHeight = 0.62f;
-    	float beachHeight = 0.58f;
 
         float noise = Simplex.noise3d(seed + noiseSeedAdd , 4, 0.9f, 1f, (position.z / 10f) * sizeMultipliyer, (position.y) * sizeMultipliyer, (position.x / 2f) * sizeMultipliyer);
-        float puddleNoise = Simplex.noise3d(seed + puddleSeedAdd, 2, 0.8f, 1f / 4.5f, (position.x) * sizeMultipliyer * mul, (position.y) * sizeMultipliyer * mul, (position.z) * sizeMultipliyer * mul);
+        float puddleNoise = Simplex.noise3d(seed + puddleSeedAdd, 2, 0.8f, 1f / 4.5f, position.x * sizeMultipliyer * mul, position.y * sizeMultipliyer * mul, position.z * sizeMultipliyer * mul);
         float waveNoise = Ridged.noise3d(seed + waveSeedAdd, (position.y / 2f + noise * 4f) * sizeMultipliyer, 0, 0, pers);
+        
+        float secondaryPuddleNoise = Simplex.noise3d(seed + 60950, 3, 0.8f, 1f / 5f, -position.x * sizeMultipliyer - 5f, -position.y * sizeMultipliyer + 5f, position.z * sizeMultipliyer - 10f) - 0.037f;
 
         float actualNoise = noise * noiseMultipliyer;
 
@@ -76,10 +83,8 @@ public class TektonPlanetGenerator extends PlanetGenerator {
             return iceLevel;
         }
 
-        if(waveNoise >= deepOceanHeight || puddleNoise >= deepOceanHeight) return deepOceanLevel;
-        if(waveNoise >= oceanHeight || puddleNoise >= oceanHeight) return oceanLevel;
+        if(waveNoise >= oceanHeight || puddleNoise >= oceanHeight || secondaryPuddleNoise >= oceanHeight) return oceanLevel;
         if(waveNoise >= beachMethaneHeight || puddleNoise >= beachMethaneHeight) return subBeachLevel;
-        if(waveNoise >= beachHeight || puddleNoise >= beachHeight) return beachLevel;
 
         return Math.min(Math.max(actualNoise, oceanLevel), maxSize);
     }
@@ -117,7 +122,7 @@ public class TektonPlanetGenerator extends PlanetGenerator {
         		(rawHeight(position) > iceCoverage && rawHeight(position) < 1f - iceCoverage &&
         		(!(position.y > iceHeight - 1f) || !(position.y < 1f - iceHeight)) ||
         		Math.abs(position.y) > completeIceHeight)) {
-        	out.set(biomeMask > 0.8f || Math.abs(position.y) > completeIceHeight ? Color.valueOf("d0e36f") : Color.valueOf("b6c953"));
+        	out.set(biomeMask > 0.85f || Math.abs(position.y) > completeIceHeight ? Color.valueOf("d0e36f") : Color.valueOf("b6c953"));
     		return;
 		}
 
@@ -177,7 +182,7 @@ public class TektonPlanetGenerator extends PlanetGenerator {
         	out.set(Color.valueOf("5c483e")); //brown
     		return;
 		}
-        if(biomeMask > 0.4f && patternMask < 0.45f) {
+        if(biomeMask > 0.4f && patternMask < 0.45f && position.dst(TektonPlanets.tekton.sectors.get(39).tile.v) > 0.2f) { //remove uranium from River sector
         	out.set(Color.valueOf("425442")); //uranium
     		return;
 		}

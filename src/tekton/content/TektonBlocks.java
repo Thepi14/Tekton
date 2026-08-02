@@ -4670,7 +4670,7 @@ public class TektonBlocks {
                 lightningLength = 8;
                 lightningLengthRand = 10;
 				lightningColor = redShootColorLightning;
-				//lightningType.collidesAir = false;
+				
 				collidesAir = false;
 
 				applyEffect = new MultiEffect(
@@ -6621,7 +6621,7 @@ public class TektonBlocks {
 			requirements(Category.logic, tek(bioVisibility), with());
 			
 			fogRadius = 1;
-			reload = 30f;
+			shootReload = 30f;
 			maxNumberOfShots = 1;
 			
 			explosionShake = 5f;
@@ -6850,6 +6850,126 @@ public class TektonBlocks {
                 lightning = 8;
                 lightningLength = 3;
                 lightningLengthRand = 9;
+            }};
+            
+            teslaBullet = new TeslaBulletType() {{
+				hitSize = 4;
+				statusDuration = 600f;
+				status = TektonStatusEffects.shortCircuit;
+				hitColor = Pal.surge;
+				damage = 3000f;
+				lightning = 8;
+				lightningDamage = 80f;
+                lightningLength = 8;
+                lightningLengthRand = 10;
+				lightningColor = Pal.surge;
+				
+				float chargeEffectTimeScale = 2f;
+				
+				chargeEffect = new MultiEffect(
+					new WaveEffect() {{
+					sizeFrom = 30 * 4f;
+					sizeTo = 0.1f;
+					strokeFrom = 0f;
+					strokeTo = 4f;
+					interp = Interp.pow2In;
+					lifetime = 90f * chargeEffectTimeScale;
+					colorFrom = Color.white;
+					colorTo = lightColor = Pal.surge;
+				}}, new WaveEffect() {{
+					sizeFrom = 22 * 4f;
+					sizeTo = 0.1f;
+					strokeFrom = 0f;
+					strokeTo = 4f;
+					interp = Interp.pow2In;
+					lifetime = 75f * chargeEffectTimeScale;
+					colorFrom = Color.white;
+					colorTo = lightColor = Pal.surge;
+				}}, new WaveEffect() {{
+					sizeFrom = 14 * 4f;
+					sizeTo = 0.1f;
+					strokeFrom = 0f;
+					strokeTo = 4f;
+					interp = Interp.pow2In;
+					lifetime = 60f* chargeEffectTimeScale;
+					colorFrom = Color.white;
+					colorTo = lightColor = Pal.surge;
+				}}, new ParticleEffect() {{
+					particles = 9 * 4;
+					length = 50;
+					baseLength = 5;
+					sizeFrom = 0.1f;
+					sizeTo = 4f;
+					interp = Interp.pow2In;
+					sizeInterp = Interp.pow2;
+					lifetime = 180f * chargeEffectTimeScale;
+					colorFrom = Color.white;
+					colorTo = lightColor = Pal.surge;
+					line = true;
+					strokeFrom = 4f;
+					strokeTo = 0;
+				}}, //point
+				new ParticleEffect() {{
+					particles = 1;
+					length = 0;
+					baseLength = 0;
+					sizeFrom = 1f;
+					sizeTo = 12;
+					interp = Interp.pow2In;
+					sizeInterp = Interp.pow2;
+					lifetime = 100f * chargeEffectTimeScale;
+					colorFrom = Color.white;
+					colorTo = lightColor = Pal.surge;
+				}});
+				chargeEffect.lifetime = 100f * chargeEffectTimeScale - 10f;
+            	
+				chainEffect = Fx.chainEmp.wrap(Pal.surge);
+            	applyEffect = new MultiEffect(
+						Fx.titanExplosion.wrap(Pal.surge),
+	            		new Effect(120f, 20f, e -> {
+	                        TektonFx.rand.setSeed(e.id + 1);
+	                		color(e.color);
+	                        stroke(e.fout() * 2f);
+	                        float circleRad = 0.3f + e.finpow() * 180f;
+	                        float range = 2f;
+	                        float ex = TektonFx.rand.range(range);
+	                        float ey = TektonFx.rand.range(range);
+
+	                        for(int i = 0; i < 4; i++){
+	                            Drawf.tri(e.x + ex, e.y + ey, 5f, 20f * e.fout(), i*90);
+	                        }
+
+	                        color();
+	                        for(int i = 0; i < 4; i++){
+	                            Drawf.tri(e.x + ex, e.y + ey, 2.5f, 20f / 3f * e.fout(), i*90);
+	                        }
+
+	                        Drawf.light(e.x + ex, e.y + ey, circleRad * 1.6f, Pal.surge, e.fout());
+	                    }));
+
+				hitEffect = new MultiEffect(
+	        			new WaveEffect() {{
+	            	    	sizeFrom = 2;
+	            	    	sizeTo = 14;
+	            	    	lifetime = 10;
+	            	    	strokeFrom = 2;
+	            	    	strokeTo = 0;
+	            	    	colorFrom = Color.white;
+	            	    	colorTo = Pal.surge;
+	            	    }},
+	            		new ParticleEffect() {{
+	            			particles = 6;
+	            			line = true;
+	            			lifetime = 15;
+	            			length = 15;
+	            			lenFrom = 3;
+	            			lenTo = 0;
+	            			strokeFrom = 1;
+	            			strokeTo = 0;
+	            			colorFrom = Color.white;
+	            			colorTo = Pal.surge;
+	            		}}
+            	    );
             }};
 		}};
 

@@ -113,9 +113,13 @@ public class Tekton extends Mod {
         //Team.blue.emoji = "tekton-team-hapax";
         //Team.blue.name = "hapax";
 
-        Log.info("Tekton loaded, non-hidden content: " + returnResourcesSize());
+        Log.info("Tekton loaded, non-hidden content: " + returnResourcesSize() + ", current Sectors: " + returnSectorsSize());
 
 		contentLoadComplete = true;
+    }
+    
+    public static int returnSectorsSize() {
+		return TektonSectors.all.size;
     }
 
 	public static int returnResourcesSize() {

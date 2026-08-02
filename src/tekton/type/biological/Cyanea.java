@@ -77,6 +77,7 @@ import tekton.content.TektonStatusEffects;
 import tekton.content.TektonUnits;
 import tekton.content.TektonVars;
 import tekton.type.bullets.EmptyBulletType;
+import tekton.type.bullets.TeslaBulletType;
 
 //yeah i dont like hard coding but this time it makes some sense
 public class Cyanea extends Block implements BiologicalBlock {
@@ -92,7 +93,7 @@ public class Cyanea extends Block implements BiologicalBlock {
     public float minBiopower = 0f;
     
     //basic shoot related
-    public float reload = 120f;
+    public float shootReload = 120f;
     public int maxNumberOfShots = 15;
     
     public BulletType bullet1 = new EmptyBulletType();
@@ -110,15 +111,18 @@ public class Cyanea extends Block implements BiologicalBlock {
 	public float enemyDetectionRadiusMultiplier = 2f * tilesize;
 	public Effect chainEffect = Fx.chainEmp.wrap(Pal.surge.cpy());
 	
-	public float empDamageMultiplier = 10f;
+	public float empDamageMultiplier = 10f; //maxBioPower * this
 	
 	//spawn related
+	public float spawnTimerMultiplier = 60f * 60f * 3f;
     public Effect spawnEffect = Fx.none;
 	public Seq<UnitType> creatureTypes;
+	public float spawnRandomOffset = 4f * tilesize;
 	
 	//tesla attack related
-	public float teslaDamageScale = 1000;
-	public StatusEffect teslaAttackStatusEffect = TektonStatusEffects.shortCircuit;
+	public float teslaReload = 300f;
+	public TeslaBulletType teslaBullet = new TeslaBulletType();
+	public Sound teslaShootSound = TektonSounds.shootCyaneaLightning, teslaChargeSound = Sounds.none;
 	
 	//death related
     public int shieldHealth = 1000000000;
@@ -258,9 +262,9 @@ public class Cyanea extends Block implements BiologicalBlock {
 
         addBar("spawn", (CyaneaBuild entity) -> new Bar(
                 () -> Core.bundle.format("respawn",
-                		Strings.autoFixed((int)(entity.spawnProgress / entity.currentSpawnTimer * 100f), 3) + "%"),
+                		Strings.autoFixed((int)(entity.spawnProgress / entity.currentSpawnTimer() * 100f), 3) + "%"),
                 () -> Pal.power,
-                () -> entity.spawnProgress / entity.currentSpawnTimer));
+                () -> entity.spawnProgress / entity.currentSpawnTimer()));
     }
 
 	@Override
@@ -284,8 +288,15 @@ public class Cyanea extends Block implements BiologicalBlock {
         public long lastBiopowerUpdate = -1;
         public boolean enemiesClose = false;
 
-        public float openingProgress = 0f, spawnProgress = 0f, shootProgress = 0f;
-		protected float currentSpawnTimer = 0f, currentShootTimer = 0f;
+        public float 
+        		openingProgress = 0f, 
+        		spawnProgress = 0f, 
+        		shootProgress = 0f,
+        		teslaProgress = 0f;
+		protected float 
+				currentSpawnTimer = 0f, 
+				currentShootTimer = 0f,
+				currentTeslaTimer = 0f;
 
         public float maxBiopower = 0;
 		public Seq<Unit> spawnedCreatures = new Seq<Unit>();
@@ -368,7 +379,8 @@ public class Cyanea extends Block implements BiologicalBlock {
                 }
 
         		openingProgress = Mathf.lerpDelta(openingProgress, !enemiesClose ? 0f : 1f, shellOpeningSpeed);
-            	currentShootTimer = reload;
+        		
+            	currentShootTimer = shootReload; //TODO: change?
             	if (enemiesClose) {
                 	shootProgress = timer.getTime(timerShoot);
 
@@ -390,7 +402,7 @@ public class Cyanea extends Block implements BiologicalBlock {
             			b.shootEffect.at(this);
         				b.homingRange = detectionRadius() * 0.9f;
         				b.homingPower = 0.09f;
-        				b.homingDelay = 0.1f;
+        				b.homingDelay = 0f;
 
 	            		if (maxBiopower >= 40) {
                     		for (int i = 0; i < Math.min(maxNumberOfShots, (int)maxBiopower / 8); i++) {
@@ -417,19 +429,38 @@ public class Cyanea extends Block implements BiologicalBlock {
                 	
             		shootProgress = 0f;
             		
-            		//emp section
+            		//emp section TODO: make it less boring?
                 	if (maxBiopower >= 20) {
                 		if (previousBiopower > biopower) {
                 			empAttack();
                 		}
                 	}
+
+                	//tesla section
+                	teslaProgress += Time.delta * timeScale; //needs to be based on this because timers aren't that controllable
+                	currentTeslaTimer = 1f; //TODO: scale with amount of life?
                 	
-                	//spawnProgress = timer.getTime(timerSpawn);
+                	if (teslaProgress > currentTeslaTimer * teslaReload && enemiesClose && maxBiopower >= 20) {
+                		teslaAttack();
+                		teslaProgress = 0f;
+                	}
             	}
+        		
+        		//spawn section
+        		spawnProgress = timer.getTime(timerSpawn);
+        		currentSpawnTimer = 1f; //TODO: scale with amount of life?
+        		
+        		if (timer(timerSpawn, currentSpawnTimer())) {
+        			Unit unit = creatureTypes.random().spawn(team, x + Mathf.range(spawnRandomOffset), y + Mathf.range(spawnRandomOffset), Mathf.random(360f));
+        			spawnEffect.at(unit);
+        			spawnedCreatures.add(unit);
+        		}
         	}
 
         	previousBiopower = biopower;
         }
+        
+        protected Unit teslaTarget = null;
         
         public void damageBuildings() {
         	float rad = detectionRadius();
@@ -510,7 +541,30 @@ public class Cyanea extends Block implements BiologicalBlock {
         }
 
         public void teslaAttack() {
-        	
+        	Units.nearbyEnemies(team, x, y, detectionRadius(), other -> {
+                if (teslaTarget == null && other.hittable()) {
+                	teslaTarget = other;
+                }
+                else if (teslaTarget != null && (other.type.health > teslaTarget.type.health || teslaTarget.dead) && other.hittable()) {
+                	teslaTarget = other;
+                }
+            });
+    		
+    		if (teslaTarget != null) {
+    			if (teslaBullet.chargeEffect != Fx.none)
+    				teslaBullet.chargeEffect.at(this);
+    			
+    			if (teslaChargeSound != Sounds.none)
+    				teslaChargeSound.at(this);
+    			
+    			Time.run(teslaBullet.chargeEffect != Fx.none ? teslaBullet.chargeEffect.lifetime : 0f, () -> {
+    				TeslaBulletType b = (TeslaBulletType)teslaBullet.copy(); 
+    				b.maxRange = detectionRadius();
+    				Bullet bullet = b.create(this, team, x, y, Angles.angle(x, y, teslaTarget.x(), teslaTarget.y() * Mathf.radDeg), -1, 1f, 1f, teslaTarget, null, teslaTarget.x(), teslaTarget.y());
+        			if (teslaShootSound != Sounds.none)
+        				teslaShootSound.at(this);
+    				});
+    		}
         }
         
         @Override
@@ -574,6 +628,10 @@ public class Cyanea extends Block implements BiologicalBlock {
             Draw.blend();
             Draw.reset();
 		}
+        
+        public float currentSpawnTimer() {
+        	return currentSpawnTimer * spawnTimerMultiplier;
+        }
 
 		public float detectionRadius() {
 			return (1f + maxBiopower) * enemyDetectionRadiusMultiplier;
@@ -636,6 +694,7 @@ public class Cyanea extends Block implements BiologicalBlock {
             write.f(openingProgress);
             write.f(maxBiopower);
             write.bool(dead);
+            
 
             write.s(spawnedCreatures.size);
             for(var unit : spawnedCreatures) {
@@ -650,6 +709,7 @@ public class Cyanea extends Block implements BiologicalBlock {
             enemiesClose = openingProgress > 0.001f;
             maxBiopower = read.f();
             dead = read.bool();
+            
 
             int count = read.s();
             readCreatures.clear();
@@ -667,6 +727,11 @@ public class Cyanea extends Block implements BiologicalBlock {
         @Override
         public void onDestroyed() {
             super.onDestroyed();
+            
+            for (var unit : spawnedCreatures)
+            	if (!unit.dead)
+            		unit.kill();
+            
 			Drawt.DrawAmmoniaDebris(x, y, size);
         }
 

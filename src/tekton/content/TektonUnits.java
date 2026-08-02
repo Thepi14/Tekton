@@ -312,6 +312,7 @@ public class TektonUnits {
                     damage = 4f;
                     pierceArmor = true;
                     color = hitColor = Pal.lancerLaser;
+                    hitEffect = Fx.hitBulletColor;
                     range = rangeOverride = rang;
                     
                     beamEffectSize = 1f;
