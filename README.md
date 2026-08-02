@@ -12,22 +12,22 @@
 ## A still in development campaign mod that adds a new planet called Tekton. <br>
 
 ### Tekton is a extremely cold planet with equally extreme conditions. <br>
-### And unknown threats.
-<br>
 <br>
 
-### A new Faction, low resources, natural disasters, unknown creatures and ridiculous amounts of radiation, this mod is intended to have a very <s>hard</s> diversified gameplay. 
+![PlanetPreview]
+
+### A new Faction, new resources, unknown creatures, natural disasters and ridiculous amounts of radiation, this mod is intended to have a very <s>hard</s> diversified gameplay.
 <br>
 <br>
 
 ## Overview
 </div>
 
-- Currently 207 pieces of content, including blocks, units, items and liquids (excluding environment and ores).
-- 11 sectors at the moment of the creation of this README.
+- Currently 213 pieces of content, including blocks, units, items and liquids (excluding environment and ores).
+- 15 sectors at the moment of the creation of this README.
 - 4 unit trees with unique units.
 
-Keep in mind that this mod is still in development, so there will be bugs, missing things and other strange things.
+(Keep in mind that this mod is still in development, so there will be bugs, missing things and other strange things.)
 <br>
 <br>
 
@@ -36,12 +36,12 @@ Keep in mind that this mod is still in development, so there will be bugs, missi
 ## Mechanics
 </div>
 
-- Power on Tekton is transfered in Erekir-Style, while having various power generators and mechanics in Serpulo-Style.
-- Units are created bothe in Serpulo-Style and Erekir-Style factories.
-- A new Heat-like mechanic: Gravity, use it for advanced factories and weapons.
-- Gather resources in different ways, some are gathered Erekir-Style while others are gathered Serpulo-Style.
-- Protect your base from extreme weathers by using especific mechanics of blocks.
-- Use especial walls against PEM weapons (this is very common i know).
+- Power on Tekton is transferred in Erekir-Style, while having various power generators and mechanics in Serpulo-Style.
+- Units are created in Serpulo-Style factories at lower tiers and in Erekir-Style factories at higher ones, but with their own gimmicks.
+- A new Heat-like mechanic: Gravity, used for advanced factories and weapons.
+- Gather resources in different ways, some are gathered Erekir-Style while others are gathered Serpulo-Style, and some in completely different ways.
+- Use blocks that each add new mechanics, like radars that locate cores in the fog, lightning rods and so on.
+- Biological creatures that have their own mechanics, including colonies, nests, constructions and etc.
 <br>
 <br>
 
@@ -69,8 +69,9 @@ Keep in mind that this mod is still in development, so there will be bugs, missi
 [Badge Issues]: https://img.shields.io/github/issues/Thepi14/Tekton?style=for-the-badge
 
 <!----------------------------------[ Links ]---------------------------------->
-[Logo]: github/logo.png
+[Logo]: assets/sprites-override/ui/logo.png
 [Banner]: github/banner.png
+[PlanetPreview]: github/planet_preview.png
 [Alpha]: github/alpha-reimu.png
 [Commits]: https://github.com/Thepi14/Tekton/commits/main
 [Issues]: https://github.com/Thepi14/Tekton/issues
