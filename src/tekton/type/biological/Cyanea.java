@@ -694,7 +694,7 @@ public class Cyanea extends Block implements BiologicalBlock {
             write.f(openingProgress);
             write.f(maxBiopower);
             write.bool(dead);
-            
+            write.f(teslaProgress);
 
             write.s(spawnedCreatures.size);
             for(var unit : spawnedCreatures) {
@@ -709,7 +709,7 @@ public class Cyanea extends Block implements BiologicalBlock {
             enemiesClose = openingProgress > 0.001f;
             maxBiopower = read.f();
             dead = read.bool();
-            
+            teslaProgress = read.f();
 
             int count = read.s();
             readCreatures.clear();
