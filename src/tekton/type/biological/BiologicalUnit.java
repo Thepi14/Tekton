@@ -9,11 +9,12 @@ public interface BiologicalUnit {
 	public static StatusEffect[] getDefaultImmunities() {
 		return new StatusEffect[] { TektonStatusEffects.radioactiveContamination,
         		TektonStatusEffects.wetInAcid,
+        		TektonStatusEffects.acidified,
         		TektonStatusEffects.weaponLock,
         		TektonStatusEffects.shortCircuit,
-        		TektonStatusEffects.acidified,
-        		/*TektonStatusEffects.tarredInMethane,*/
+        		//TektonStatusEffects.tarredInMethane,
         		TektonStatusEffects.neurosporaSlowed,
-        		StatusEffects.freezing };
+        		//StatusEffects.freezing
+        		};
 	}
 }

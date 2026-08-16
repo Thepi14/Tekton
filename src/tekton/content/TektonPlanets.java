@@ -1,8 +1,10 @@
 package tekton.content;
 
+import arc.audio.Music;
 import arc.graphics.Color;
 import arc.struct.Seq;
 import arc.util.Time;
+import mindustry.Vars;
 import mindustry.content.Blocks;
 import mindustry.content.Items;
 import mindustry.content.Planets;
@@ -96,8 +98,8 @@ public class TektonPlanets {
             		/*new HexSkyMesh(this, 3377, 1.8f, 0.12f + increaseCloudRad, 5, Color.valueOf("57592b5e"), 3, 0.3f, 1f, 0.6f),
             		new HexSkyMesh(this, 714, -1.7f, 0.125f + increaseCloudRad, 5, Color.valueOf("57592b5e"), 3, 0.3f, 1f, 0.6f),*/
             		//outer
-            		new HexSkyMesh(this, 1477, 0.14f, 0.145f + increaseCloudRad, 5, Color.valueOf("74800e").a(0.75f), 4, 0.42f, 1f, 0.43f),
-            		new HexSkyMesh(this, 7714, 0.7f, 0.16f + increaseCloudRad, 5, Color.valueOf("c2d175").a(0.75f), 4, 0.42f, 1.2f, 0.45f));
+            		new HexSkyMesh(this, 1477, 0.14f, 0.145f + increaseCloudRad, 5, Color.valueOf("74800e").a(0.75f), 4, 0.42f, 1f, 0.45f),
+            		new HexSkyMesh(this, 7714, 0.7f, 0.16f + increaseCloudRad, 5, Color.valueOf("c2d175").a(0.75f), 4, 0.42f, 1.2f, 0.48f));
 
             //hiddenItems.addAll(Items.copper, Items.lead, Items.titanium, Items.plastanium, Items.thorium, Items.surgeAlloy, Items.metaglass, Items.carbide, Items.beryllium, Items.oxide, Items.tungsten, Items.sporePod, Items.pyratite, Items.blastCompound, Items.coal, Items.scrap);
 
@@ -106,6 +108,9 @@ public class TektonPlanets {
             		sector.preset = TektonSectors.satus;
             	}
             }
+
+            //ambientMusic = new Seq<Music>().addAll(TektonMusic.tektonBossMusic);
+            //darkMusic = new Seq<Music>().addAll(TektonMusic.tektonBossMusic);
 		}};
 
 		mirera = new TektonPlanet("mirera", tekton, 0.25f, 1) {{
@@ -175,7 +180,8 @@ public class TektonPlanets {
         //Planets.serpulo.hiddenItems.addAll(TektonItems.tektonOnlyItems);
         //Planets.erekir.hiddenItems.addAll(TektonItems.tektonOnlyItems);
 	}
-
+	
+	//TODO: why this exists in the first place?
 	public static class TektonPlanet extends Planet{
 		public TektonPlanet(String name, Planet parent, float radius, int sectorSize){
 			super(name, parent, radius, sectorSize);

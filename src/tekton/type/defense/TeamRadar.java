@@ -9,6 +9,8 @@ import mindustry.game.Team;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.world.blocks.defense.Radar;
+import mindustry.world.meta.Stat;
+import mindustry.world.meta.StatUnit;
 
 public class TeamRadar extends Radar {
 
@@ -25,6 +27,13 @@ public class TeamRadar extends Radar {
 
     	baseTeamRegion = Core.atlas.find(name + "-base-team");
 		teamGlowRegion = Core.atlas.find(name + "-team-glow");
+    }
+
+	@Override
+    public void setStats(){
+        super.setStats();
+
+        stats.add(Stat.range, fogRadius, StatUnit.blocks);
     }
 
 	public class TeamRadarBuild extends RadarBuild{

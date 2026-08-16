@@ -67,6 +67,7 @@ public class TektonSounds {
 	loopFreezer,
 	
 	loopGravity,
+	loopGravitationalDrill,
 	loopLatency,
 	loopSonar,
 	

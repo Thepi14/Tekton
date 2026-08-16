@@ -1,5 +1,6 @@
 package tekton.type.production;
 
+import static mindustry.Vars.content;
 import static mindustry.Vars.tilesize;
 
 import arc.Core;
@@ -12,6 +13,8 @@ import arc.struct.EnumSet;
 import arc.struct.Seq;
 import arc.util.Eachable;
 import arc.util.Nullable;
+import arc.util.Scaling;
+import arc.util.Strings;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.content.Fx;
@@ -22,14 +25,17 @@ import mindustry.gen.Sounds;
 import mindustry.graphics.Pal;
 import mindustry.logic.LAccess;
 import mindustry.type.Item;
+import mindustry.type.Liquid;
 import mindustry.type.LiquidStack;
 import mindustry.ui.Bar;
+import mindustry.ui.Styles;
 import mindustry.world.Block;
 import mindustry.world.draw.DrawBlock;
 import mindustry.world.draw.DrawDefault;
 import mindustry.world.meta.BlockFlag;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
+import mindustry.world.meta.StatValue;
 import mindustry.world.meta.StatValues;
 
 public class LiquidConverter extends Block {
@@ -105,16 +111,6 @@ public class LiquidConverter extends Block {
 		        () -> Math.min(entity.currentBoost, 1f)));*/
     }
 
-	private int bId = 0;
-	public float getBoost() {
-		bId++;
-		if (bId > convertableLiquids.length) {
-			bId = 0;
-		}
-		return convertableLiquids[bId - 1].amount;
-
-	}
-
 	@Override
     public void setStats(){
         stats.timePeriod = craftTime;
@@ -126,26 +122,32 @@ public class LiquidConverter extends Block {
 
         if(convertableLiquids.length > 1){
             stats.remove(Stat.booster);
-            /*stats.add(Stat.booster, StatValues.boosters(liquidConsumption, liquidConsumption / 60f, getBoost() / liquidConsumption, false, r -> {
-            	for (int i = 0; i < convertableLiquids.length; i++) {
-            		if (r == convertableLiquids[i].liquid) {
-            			return true;
-            		}
-            } return false; }));*/
-        	stats.add(Stat.booster,
-	                StatValues.speedBoosters("{0}" + StatUnit.percent.localized(),
-	    	        		liquidConsumption,
-	    	        		(liquidConsumption / getBoost()) * 100,
-	    	                false,
-	    	                r -> {
-	    	                	for (int i = 0; i < convertableLiquids.length; i++) {
-	    	                		if (r == convertableLiquids[i].liquid) {
-	    	                			return true;
-	    	                		}
-	    	                } return false; })
-	    	            );
+            for (LiquidStack liquid : convertableLiquids)
+            	stats.add(Stat.input, addBoosterLiquidStat(liquid));
         }
     }
+	
+	public StatValue addBoosterLiquidStat(LiquidStack stack) {
+		return table -> {
+            table.row();
+            table.table(c -> {
+            	
+                    c.table(Styles.grayPanel, b -> {
+                        b.image(stack.liquid.uiIcon).size(40).pad(10f).left().scaling(Scaling.fit).with(i -> StatValues.withTooltip(i, stack.liquid, false));
+                        b.table(info -> {
+                            info.add(stack.liquid.localizedName).left().row();
+                            info.add(Strings.autoFixed(liquidConsumption * 60f, 2) + StatUnit.perSecond.localized()).left().color(Color.lightGray);
+                        });
+
+                        b.table(bt -> {
+                            bt.right().defaults().padRight(3).left();
+                            bt.add(Core.bundle.format("stat.efficiency", (int)(stack.amount / liquidConsumption * 100))).pad(5);
+                        }).right().grow().pad(10f).padRight(15f);
+                    }).growX().pad(5).row();
+            }).growX().colspan(table.getColumns());
+            table.row();
+        };
+	}
 
 	@Override
     public void drawPlanRegion(BuildPlan plan, Eachable<BuildPlan> list){

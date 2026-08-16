@@ -31,6 +31,7 @@ import arc.math.Rand;
 import arc.math.geom.Vec2;
 import arc.struct.EnumSet;
 import arc.struct.Seq;
+import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.*;
 import mindustry.entities.Effect;
@@ -50,6 +51,7 @@ import mindustry.type.LiquidStack;
 import mindustry.type.PayloadStack;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
+import mindustry.world.Tile;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.*;
@@ -84,6 +86,8 @@ public class TektonBlocks {
 
 	//Environment
 	methane, deepMethane, methaneDarkSilicaSand, silicaSand, darkSilicaSand, acidFloor, //6
+	
+	ferricStoneVent, //1
 
 	brownSand, brownStone, brownIce, brownStoneWall, brownStoneVent, //5
 
@@ -215,7 +219,15 @@ public class TektonBlocks {
             lightRadius = 16f;
             lightColor = Color.acid.cpy().a(0.3f);
 		}};
-
+		
+		//ferric
+		
+		ferricStoneVent = new SteamVent("ferric-stone-vent") {{
+            parent = blendGroup = Blocks.ferricStone;
+            attributes.set(Attribute.steam, 1f);
+			variants = 2;
+        }};
+        
         //diatomite
 
 		diatomite = new Floor("diatomite-floor", 4) {{
@@ -251,14 +263,14 @@ public class TektonBlocks {
 
 		silicaSand = new Floor("silica-sand-floor", 3) {{
 			itemDrop = Items.sand;
-			attributes.set(TektonAttributes.silica, 1.2f);
+			attributes.set(TektonAttributes.silica, 1.25f);
 			playerUnmineable = true;
 			attributes.set(Attribute.water, 0.3f);
 		}};
 
 		darkSilicaSand = new Floor("dark-silica-sand-floor", 2) {{
 			itemDrop = Items.sand;
-			attributes.set(TektonAttributes.silica, 0.8f);
+			attributes.set(TektonAttributes.silica, 1f);
 			playerUnmineable = true;
 			attributes.set(Attribute.water, 0.3f);
 		}};
@@ -325,24 +337,46 @@ public class TektonBlocks {
 			attributes.set(Attribute.water, 0.35f);
 			status = TektonStatusEffects.neurosporaSlowed;
 			statusDuration = 100f;
-		}};
+		}
+	    	@Override
+		    public int minimapColor(Tile tile){
+		        return Color.valueOf("2c3c4dff").rgba8888();
+		    }
+	    
+		    @Override
+		    public Color getColor(Tile tile){
+		    	return Tmp.c3.set(Color.valueOf("2c3c4dff"));
+		    }
+	    };
 
 		neurosporaEvolvedFloor = new Floor("neurospora-evolved-floor", 3) {{
 			attributes.set(Attribute.water, 0.7f);
 			status = TektonStatusEffects.neurosporaSlowed;
 			statusDuration = 100f;
-		}};
+		}
+			@Override
+		    public int minimapColor(Tile tile){
+		        return Color.valueOf("2c3c4dff").lerp(acid, 0.1f).rgba8888();
+		    }
+    	
+		    @Override
+		    public Color getColor(Tile tile){
+		        return Tmp.c3.set(Color.valueOf("2c3c4dff").lerp(acid, 0.1f));
+		    }
+	    };
 
 		neurosporaFlower = new Prop("neurospora-flower") {{
             variants = 2;
             breakSound = Sounds.plantBreak;
+            
+            neurosporaFloor.asFloor().decoration = this;
+            neurosporaEvolvedFloor.asFloor().decoration = this;
         }};
 
         neurosporaWall = new StaticWall("neurospora-wall") {{
 			variants = 3;
 			neurosporaFloor.asFloor().wall = this;
-
-			attributes.set(Attribute.sand, 0.25f);
+			neurosporaEvolvedFloor.asFloor().wall = this;
 		}};
 
 		neurosporaCluster = new NotRotatedTreeBlock("neurospora-cluster") {{
@@ -367,7 +401,17 @@ public class TektonBlocks {
 			attributes.set(Attribute.water, -0.5f);
 			//status = TektonStatusEffects.radioactiveContamination;
 			statusDuration = 60f;
-		}};
+		}
+			@Override
+		    public int minimapColor(Tile tile){
+		        return Color.valueOf("212e21ff").rgba8888();
+		    }
+		
+		    @Override
+		    public Color getColor(Tile tile){
+		        return Tmp.c3.set(Color.valueOf("212e21ff"));
+		    }
+	    };
 
 		uraniniteWall = new StaticWall("uraninite-wall") {{
 			variants = 3;
@@ -384,7 +428,17 @@ public class TektonBlocks {
 			attributes.set(TektonAttributes.silica, 0.2f);
 			playerUnmineable = true;
 			//attributes.set(Attribute.water, 0.7f);
-		}};
+		}
+			@Override
+		    public int minimapColor(Tile tile){
+		        return Color.valueOf("425442ff").rgba8888();
+		    }
+		
+		    @Override
+		    public Color getColor(Tile tile){
+		        return Tmp.c3.set(Color.valueOf("425442ff"));
+		    }
+	    };
 
 		uraniniteBoulder = new Prop("uraninite-boulder") {{
 			variants = 2;
@@ -474,9 +528,20 @@ public class TektonBlocks {
         }};
 
         methaneIceWall = new StaticWall("methane-ice-wall") {{
-        	methaneIce.asFloor().wall = this;
             albedo = 0.6f;
-        }};
+        	methaneIce.asFloor().wall = this;
+        	methaneSnow.asFloor().wall = this;
+        }
+			@Override
+		    public int minimapColor(Tile tile){
+		        return Color.valueOf("e9f89eff").rgba8888();
+		    }
+		
+		    @Override
+		    public Color getColor(Tile tile){
+		        return Tmp.c3.set(Color.valueOf("e9f89eff"));
+		    }
+	    };
 
         methaneSnowBoulder = new Prop("methane-snow-boulder") {{
 			variants = 2;
@@ -509,15 +574,25 @@ public class TektonBlocks {
 
 		oreUranium = new OreBlock("ore-uranium", uranium) {{
 			oreDefault = true;
-			oreThreshold = 0.864f;
-			oreScale = 24.904762f;
+            oreThreshold = 0.882f;
+            oreScale = 25.380953f;
 			variants = 3;
 		}};
 
 		ferricIronWall = new StaticWall("ferric-iron-wall") {{
 			itemDrop = iron;
 			variants = 3;
-		}};
+		}
+			@Override
+		    public int minimapColor(Tile tile){
+		        return TektonItems.iron.color.cpy().rgba8888();
+		    }
+		
+		    @Override
+		    public Color getColor(Tile tile){
+		        return Tmp.c3.set( TektonItems.iron.color.cpy());
+		    }
+	    };
 
 		zirconWall = new StaticWall("zircon-wall") {{
 			itemDrop = zirconium;
@@ -618,6 +693,7 @@ public class TektonBlocks {
 			hasLiquids = true;
 			squareSprite = false;
 			ignoreLiquidFullness = true;
+			dumpExtraLiquid = true;
 			liquidCapacity = 40;
             fogRadius = 3;
 
@@ -1684,6 +1760,7 @@ public class TektonBlocks {
 			health = 250;
 			range = 6;
 			((Conduit)polycarbonatePipe).rotBridgeReplacement = this;
+			((Conduit)polytalumPipe).rotBridgeReplacement = this;
 			researchCostMultiplier = 0.4f;
 		}};
 
@@ -1942,6 +2019,7 @@ public class TektonBlocks {
 			heating = 0.02f;
 			squareSprite = false;
 			liquidCapacity = 80f;
+			coolantThreshold = 0.1f;
 
 			generateEffect = new RadialEffect(TektonFx.nuclearSmoke, 4, 90f, 13.25f) {{ rotationOffset = 45f; }};
 
@@ -1969,8 +2047,8 @@ public class TektonBlocks {
 			explosionRadius = 25;
 			explosionDamage = 5000;
 
-			consumeItem(uranium);
-			consumeLiquid(Liquids.water, 40f / 60f);
+			consumeItem(uranium).update = false;
+			consumeLiquid(Liquids.water, 15f / 60f).update = false;
 		}};
 
 		fusionReactor = new FusionReactor("fusion-reactor") {{
@@ -2064,7 +2142,7 @@ public class TektonBlocks {
 			hasLiquids = false;
 			baseEfficiency = 0;
 			displayEfficiencyScale = 1;
-			minEfficiency = 1;
+			minEfficiency = 0.1f;
 			boostScale = 0.25f;
 			maxBoost = 2;
 			attribute = TektonAttributes.silica;
@@ -2092,7 +2170,7 @@ public class TektonBlocks {
 			hasLiquids = false;
 			baseEfficiency = 0;
 			displayEfficiencyScale = 1;
-			minEfficiency = 1;
+			minEfficiency = 0.1f;
 			boostScale = 1f / 9f;
 			maxBoost = 2;
 			attribute = TektonAttributes.silica;
@@ -2113,6 +2191,11 @@ public class TektonBlocks {
 			ambientSoundVolume = 0.1f;
 			consumePower(40f / 60f);
 		}};
+		
+		float 
+		waterExtractionScale = 30f, 
+		ammoniaExtractionScale = 10f, 
+		undergroundWaterExtractorDebuff = 2f;
 
 		geothermalCondenser = new AttributeCrafterBoosted("geothermal-condenser") {{
             requirements(Category.production, tek(), with(Items.graphite, 20, Items.silicon, 40, iron, 60));
@@ -2131,6 +2214,7 @@ public class TektonBlocks {
             liquidBoostIntensity = 2f;
 			ignoreLiquidFullness = false;
 			squareSprite = false;
+			dumpExtraLiquid = true;
             craftEffect = Fx.turbinegenerate;
 
             itemCapacity = 0;
@@ -2138,20 +2222,18 @@ public class TektonBlocks {
             liquidCapacity = 60f;
 			regionRotated1 = 3;
 			liquidOutputDirections = new int[]{1, 3};
-			outputLiquids = LiquidStack.with(TektonLiquids.ammonia, 6f / 60f, Liquids.water, 20f / 60f);
+			outputLiquids = LiquidStack.with(TektonLiquids.ammonia, ammoniaExtractionScale / 60f, Liquids.water, waterExtractionScale / 60f);
 
             drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(TektonLiquids.ammonia, 1.4f), new DrawLiquidTile(Liquids.water, 1.4f), new DrawRegion() {{ buildingRotate = false; }}, new DrawLiquidOutputs(), new DrawBlurSpin("-rotator", 6f), new DrawRegion("-mid"),
             		new DrawLiquidTile(Liquids.hydrogen, 38f / 4f), new DrawRegion("-top") {{ buildingRotate = false; }});
 
-            consumeLiquid(Liquids.hydrogen, 1.5f / 60f).boost();
+            consumeLiquid(Liquids.hydrogen, 1f / 60f).boost();
             consumePower(80f / 60f);
 
             ambientSound = Sounds.loopHum;
             ambientSoundVolume = 0.06f;
 			researchCostMultiplier = 0.4f;
         }};
-
-        var undergroundWaterExtractorDebuff = 2f;
 
 		undergroundWaterExtractor = new AttributeCrafterBoosted("underground-water-extractor") {{
 			requirements(Category.production, tek(), with(tantalum, 60, Items.silicon, 60, zirconium, 80, Items.graphite, 60));
@@ -2170,18 +2252,19 @@ public class TektonBlocks {
 			boostScale = (1f / 9f) * 0.5f;
             liquidBoostIntensity = 2f;
 			ignoreLiquidFullness = false;
+			dumpExtraLiquid = true;
 			attribute = Attribute.water;
 			craftEffect = Fx.none;
 
 			liquidCapacity = 30f;
 			regionRotated1 = 3;
 			liquidOutputDirections = new int[]{1, 3};
-			outputLiquids = LiquidStack.with(TektonLiquids.ammonia, (6f / 60f) / undergroundWaterExtractorDebuff, Liquids.water, (20f / 60f) / undergroundWaterExtractorDebuff);
+			outputLiquids = LiquidStack.with(TektonLiquids.ammonia, (ammoniaExtractionScale / 60f) / undergroundWaterExtractorDebuff, Liquids.water, (waterExtractionScale / 60f) / undergroundWaterExtractorDebuff);
 
 			drawer = new DrawMulti(new DrawRegion("-bottom"), new DrawLiquidTile(TektonLiquids.ammonia, 4f), new DrawLiquidTile(Liquids.water, 4f), new DrawRegion() {{ buildingRotate = false; }},
 					new DrawLiquidOutputs(), new DrawRegion("-rotator", 1.5f, true) {{ buildingRotate = true; }}, new DrawRegion("-middle"), new DrawLiquidTile(Liquids.hydrogen, 38f / 4f), new DrawRegion("-top") {{ buildingRotate = false; }});
 
-            consumeLiquid(Liquids.hydrogen, 1.5f / 60f).boost();
+            consumeLiquid(Liquids.hydrogen, 1f / 60f).boost();
 			consumePower(80f / 60f);
 
 			ambientSound = Sounds.loopHum;
@@ -2242,28 +2325,30 @@ public class TektonBlocks {
 		    });
 			updateEffectChance = 0.03f;
 			drillEffect = Fx.mineHuge;
-			rotateSpeed = 10f;
+			rotateSpeed = 8f;
 			warmupSpeed = 0.01f;
 			itemCapacity = 50;
 			heatColor = TektonColor.gravityColor;
-			liquidCapacity = 30f;
+			
+			hasLiquids = false;
+			liquidCapacity = 0f;
 
 			requiredGravity = 6 * gravityMul;
 			maxGravity = 12 * gravityMul;
 
-	        ambientSoundVolume = 0.044f;
+	        ambientSoundVolume = 0.022f;
 
-			drillMultipliers.put(TektonItems.zirconium, multiCarbonicDrill(0.2f));
-			drillMultipliers.put(TektonItems.iron, multiCarbonicDrill(0.4f));
-			drillMultipliers.put(TektonItems.tantalum, multiCarbonicDrill(0.1f));
+			drillMultipliers.put(TektonItems.zirconium, multiGravitationalDrill(0.2f));
+			drillMultipliers.put(TektonItems.iron, multiGravitationalDrill(0.4f));
+			drillMultipliers.put(TektonItems.tantalum, multiGravitationalDrill(0.1f));
 			drillMultipliers.put(TektonItems.uranium, 1f);
 			blockedItem = Items.sand;
 			//drillMultipliers.put(Items.sand, multiCarbonicDrill(0.5f));
 
 			liquidBoostIntensity = 1f;
 
-			consumePower(480f / 60f);
-			consumeLiquid(Liquids.hydrogen, 6f / 60f);
+			consumePower(240f / 60f);
+			//consumeLiquid(Liquids.hydrogen, 3f / 60f);
 			//consumeLiquid(TektonLiquids.ammonia, 3f / 60f).boost();
 		}};
 
@@ -2748,7 +2833,7 @@ public class TektonBlocks {
 			
 			shootY = 6f;
 
-			shootType = new BasicBulletType(5.5f, 0) {{
+			shootType = new BasicBulletType(5.5f, 10) {{
 				hittable = false;
 				sprite = "large-orb";
 				smokeEffect = Fx.shootBigSmoke;
@@ -2799,7 +2884,7 @@ public class TektonBlocks {
 				lightning = 7;
 				lightningLength = 6;
 				lightningLengthRand = 8;
-				lightningDamage = 7;
+				lightningDamage = 8;
 				lightningColor = redShootColorLightning;
 				//lightningType.collidesAir = false;
 				ammoMultiplier = 1;
@@ -3456,7 +3541,7 @@ public class TektonBlocks {
 			
 			var timeScale = 0.75f;
 
-			shootType = new WidthLaserBulletType(60f) {{
+			shootType = new WidthLaserBulletType(120f) {{
 				colors = new Color[]{redShootColor, Color.valueOf("ff5959"), Color.valueOf("ff6e6e"), Color.valueOf("ff9191")};
 				
 				Seq<Effect> effects = new Seq<Effect>();
@@ -3574,6 +3659,7 @@ public class TektonBlocks {
 				length = 30f;
 				//pierceCap = 4;
 				pierce = true;
+				pierceArmor = true;
 				statusDuration = 60f * 5f;
 				status = StatusEffects.melting;
 				hitEffect = Fx.hitBulletColor;
@@ -6221,6 +6307,8 @@ public class TektonBlocks {
 			plans.addAll(new UnitPlan(TektonUnits.uwu, 60f * 5f, with()));
 
 			researchCostMultiplier = 0.1f;
+			
+			alwaysUnlocked = !Tekton.hideContent;
 		}};
 
 		//payload
@@ -7017,7 +7105,7 @@ public class TektonBlocks {
 		return 1f + (value / (4^2));
 	}
 
-	private static float multiCarbonicDrill(float value) {
+	private static float multiGravitationalDrill(float value) {
 		return 1f + (value / (5^2));
 	}
 

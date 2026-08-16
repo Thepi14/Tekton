@@ -28,6 +28,10 @@ public final class TekMath {
 		return Mathf.pow(number, 2);
 	}
 
+	public static float pow2(float number) {
+		return Mathf.pow(number, 2);
+	}
+
     public static Vec2 nearestPointOnFiniteLine(Vec2 start, Vec2 end, Vec2 pnt)
     {
         var line = new Vec2(end.x - start.x, end.y - start.y);

@@ -37,7 +37,7 @@ public class CoreRadar extends Block {
     public float discoveryTime = 60f * 0.1f;
     public float rotateSpeed = 0.5f;
     public float lineRotateSpeed = -3f, strokeSize = 1.5f;
-    public float maxRadius = 350f;
+    public float maxRadius = 600f;
     public float timeBetweenChecks = 60 * 4f;
     public float laserScale = 0.7f;
     public float warmupSpeed = 0.1f;
@@ -78,7 +78,7 @@ public class CoreRadar extends Block {
     public void setStats(){
         super.setStats();
 
-        stats.add(Stat.range, maxRadius * 2f, StatUnit.blocks);
+        stats.add(Stat.range, maxRadius, StatUnit.blocks);
     }
 
 	@Override
@@ -172,7 +172,7 @@ public class CoreRadar extends Block {
             warmup = Mathf.lerpDelta(warmup, efficiency, warmupSpeed);
 
             if (currentRadius < maxRadius && !reachedMax) {
-                currentRadius += (edelta() / discoveryTime) * efficiency;
+                currentRadius += (smoothEfficiency * delta()) / discoveryTime;
             }
 
             if (timer >= timeBetweenChecks) {

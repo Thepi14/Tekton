@@ -2,34 +2,46 @@ package tekton.type.gravity;
 
 import arc.Core;
 import arc.graphics.Blending;
+import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
+import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.struct.IntSet;
 import arc.util.Nullable;
+import arc.util.Time;
+import mindustry.Vars;
 import mindustry.graphics.Layer;
+import mindustry.graphics.Pal;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.production.Drill;
+import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import tekton.content.TektonColor;
+import tekton.content.TektonSounds;
 import tekton.content.TektonStat;
+import tekton.math.TekMath;
 
 public class GravitationalDrill extends Drill {
 	public int requiredGravity = 2;
 	public int maxGravity = requiredGravity * 2;
 	public TextureRegion gravityRegion;
+	
+	public float circleRadius = 12f, circleStroke = 4f;
+	public Color circleColor = TektonColor.gravityColor.cpy().mul(1.1f).a(1f);
 
 	public GravitationalDrill(String name) {
 		super(name);
-		// TODO Auto-generated constructor stub
+		ambientSound = TektonSounds.loopGravitationalDrill;
+        ambientSoundVolume = 0.01f;
 	}
 
 	@Override
     public void setBars() {
         super.setBars();
         addBar("gravity", (GravitationalDrillBuild entity) -> new Bar(
-        		() -> Core.bundle.format("bar.gravityPercent", (int)(Math.abs(entity.gravity) + 0.01f), (int)(entity.gravityFrac() * 100)),
+        		() -> Core.bundle.format("bar.gravityPercent", (int)(Math.abs(entity.gravity) + 0.01f), entity.gravityFrac() < 1f ? 0f : (int)(TekMath.pow2(entity.gravityFrac()) * 100)),
         		() -> TektonColor.gravityColor,
 				() -> entity.gravityFrac()));
     }
@@ -38,7 +50,7 @@ public class GravitationalDrill extends Drill {
     public void setStats(){
         super.setStats();
 
-        stats.add(Stat.maxEfficiency, (maxGravity / requiredGravity) * 100f, StatUnit.percent);
+        stats.add(Stat.maxEfficiency, (TekMath.pow2((maxGravity) / requiredGravity)) * 100f, StatUnit.percent);
         stats.add(TektonStat.gravityUse, requiredGravity, TektonStat.gravityPower);
     }
 
@@ -68,7 +80,7 @@ public class GravitationalDrill extends Drill {
 
             gravBoost = Mathf.approachDelta(gravBoost, gravityFrac() >= 0.999f ? gravityFrac() : 0f, warmupSpeed);
 
-            timeDrilled += (warmup * delta()) * gravBoost;
+            timeDrilled += warmup * delta() * gravBoost;
 
             float delay = getDrillTime(dominantItem);
 
@@ -101,12 +113,15 @@ public class GravitationalDrill extends Drill {
 				}
             }
         }
+        
+        protected float currentStroke = 0f;
 
         @Override
         public void draw() {
         	super.draw();
 
         	if (!gravityRegion.found()) {
+            	Draw.reset();
 				return;
 			}
         	Draw.z(Layer.blockAdditive);
@@ -122,14 +137,36 @@ public class GravitationalDrill extends Drill {
                 }
             }
 
+            Draw.z(Layer.effect);
+            currentStroke = Mathf.approachDelta(currentStroke, ((circleStroke * warmup * efficiency) - circleStroke) * (power.status > 0.001f && gravityFrac() > 1f && shouldConsume() ? 1 : 0), warmupSpeed);
+        	Lines.stroke(currentStroke, circleColor);
+        	Lines.circle(x, y, circleRadius);
+
             Draw.z(Layer.block);
 
         	Draw.reset();
         }
 
+    	@Override
+        public BlockStatus status() {
+    		if(!enabled){
+                return BlockStatus.logicDisable;
+            }
+
+            if(!shouldConsume() && gravityFrac() >= 1f){
+                return BlockStatus.noOutput;
+            }
+
+            if(efficiency <= 0 || !productionValid() || gravityFrac() < 1f){
+                return BlockStatus.noInput;
+            }
+
+            return ((Vars.state.tick / 30f) % 1f) < efficiency ? BlockStatus.active : BlockStatus.noInput;
+        }
+
         @Override
-        public boolean shouldConsume(){
-            return super.shouldConsume() && gravityFrac() >= 0.999f;
+        public boolean shouldConsume() {
+            return super.shouldConsume() && gravityFrac() >= 1f;
         }
 
         public float gravityFrac() {

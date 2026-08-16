@@ -52,6 +52,10 @@ public class GravitationalItemTurret extends ItemTurret {
 
         @Override
         public BlockStatus status() {
+            if(!enabled){
+                return BlockStatus.logicDisable;
+            }
+            
             float balance = power.status;
             if(balance > 0.001f && hasAmmo() && !isShooting()) {
 				return BlockStatus.noOutput;

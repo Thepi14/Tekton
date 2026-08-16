@@ -301,6 +301,8 @@ public class Cyanea extends Block implements BiologicalBlock {
         public float maxBiopower = 0;
 		public Seq<Unit> spawnedCreatures = new Seq<Unit>();
 		private int updateDelay = 10, currentUpdateDelay = 0;
+		
+		protected Seq<Unit> detectedUnits = new Seq<Unit>();
 
 		/*@Override
 		public Building create(Block clock, Team team) {
@@ -366,16 +368,17 @@ public class Cyanea extends Block implements BiologicalBlock {
                 	detectionDelayProgress = 0f;
 
                 	enemiesClose = false;
+                    Units.nearbyEnemies(team, x, y, detectionRadius(), other -> {
+                        if(other.team != team && other.hittable()) {
+    	                	enemiesClose = true;
+    	                	detectedUnits.add(other);
+                        }
+                    });
     	            Vars.indexer.allBuildings(x, y, detectionRadius(), other -> {
     	                if(team != other.team) {
     	                	enemiesClose = true;
     	                }
     	            });
-                    Units.nearbyEnemies(team, x, y, detectionRadius(), other -> {
-                        if(other.team != team && other.hittable()) {
-    	                	enemiesClose = true;
-                        }
-                    });
                 }
 
         		openingProgress = Mathf.lerpDelta(openingProgress, !enemiesClose ? 0f : 1f, shellOpeningSpeed);
@@ -447,13 +450,14 @@ public class Cyanea extends Block implements BiologicalBlock {
             	}
         		
         		//spawn section
-        		spawnProgress = timer.getTime(timerSpawn);
+        		spawnProgress += Time.delta * timeScale;
         		currentSpawnTimer = 1f; //TODO: scale with amount of life?
         		
-        		if (timer(timerSpawn, currentSpawnTimer())) {
+        		if (spawnProgress >= currentSpawnTimer()) {
         			Unit unit = creatureTypes.random().spawn(team, x + Mathf.range(spawnRandomOffset), y + Mathf.range(spawnRandomOffset), Mathf.random(360f));
         			spawnEffect.at(unit);
         			spawnedCreatures.add(unit);
+        			spawnProgress %= currentSpawnTimer();
         		}
         	}
 
@@ -541,14 +545,14 @@ public class Cyanea extends Block implements BiologicalBlock {
         }
 
         public void teslaAttack() {
-        	Units.nearbyEnemies(team, x, y, detectionRadius(), other -> {
-                if (teslaTarget == null && other.hittable()) {
-                	teslaTarget = other;
+        	for (Unit unit : detectedUnits) {
+        		if (teslaTarget == null && unit.hittable()) {
+                	teslaTarget = unit;
                 }
-                else if (teslaTarget != null && (other.type.health > teslaTarget.type.health || teslaTarget.dead) && other.hittable()) {
-                	teslaTarget = other;
+                else if (teslaTarget != null && (unit.type.health > teslaTarget.type.health || teslaTarget.dead) && unit.hittable()) {
+                	teslaTarget = unit;
                 }
-            });
+        	}
     		
     		if (teslaTarget != null) {
     			if (teslaBullet.chargeEffect != Fx.none)
@@ -695,6 +699,7 @@ public class Cyanea extends Block implements BiologicalBlock {
             write.f(maxBiopower);
             write.bool(dead);
             write.f(teslaProgress);
+            write.f(spawnProgress);
 
             write.s(spawnedCreatures.size);
             for(var unit : spawnedCreatures) {
@@ -710,6 +715,7 @@ public class Cyanea extends Block implements BiologicalBlock {
             maxBiopower = read.f();
             dead = read.bool();
             teslaProgress = read.f();
+            spawnProgress = read.f();
 
             int count = read.s();
             readCreatures.clear();

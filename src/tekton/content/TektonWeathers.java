@@ -18,7 +18,7 @@ public class TektonWeathers {
 	methaneRain,
 	darkSandstorm,
 	acidRain,
-	neurosporastorm,
+	neurosporaStorm,
 	electricStorm,
 	methaneSnow,
 	eggStorm
@@ -59,7 +59,7 @@ public class TektonWeathers {
             //duration = 8f * Time.toMinutes;
 	    }};
 
-	    darkSandstorm = new ParticleWeather("dark-sandstorm") {{
+	    darkSandstorm = new ParticleWeather("dark-sandstorm") {{ //probably will be substituted by other weather in some update
             color = noiseColor = Color.valueOf("3d352f");
             particleRegion = "particle";
             drawNoise = true;
@@ -82,7 +82,7 @@ public class TektonWeathers {
             duration = 7f * Time.toMinutes;
         }};
 
-	    neurosporastorm = new ParticleWeather("neurosporastorm") {{
+	    neurosporaStorm = new ParticleWeather("neurosporastorm") {{
             color = noiseColor = TektonColor.neurospora;
             particleRegion = "circle-small";
             drawNoise = true;

@@ -17,12 +17,12 @@ import tekton.Tekton;
 public class TektonSectors {
 	public static SectorPreset 
 	
-	satus, middle, 
-	scintilla, proelium, pit, 
-	lake, river, infestation, 
-	rainforest, beach, cave, aequor, 
-	transit, colony, 
-	radiation;
+	satus, middle, scintilla, //tutorial
+	proelium, pit, //early start, T1
+	lake, river, infestation, //intensification, T2
+	rainforest, beach, cave, aequor, //middle, still T2
+	transit, colony, //specials
+	radiation, doubleFortress; //post uranium, T3
 	
 	public static Seq<SectorPreset> all = new Seq<SectorPreset>();
 	
@@ -126,14 +126,6 @@ public class TektonSectors {
 			};
         }};
 
-        beach = new TektonSectorPreset("beach", tekton, 91){{
-            difficulty = 6;
-            captureWave = 61;
-            rules = r -> {
-				//r.hiddenBuildItems.clear();
-			};
-        }};
-
         cave = new TektonSectorPreset("cave", tekton, 63){{
             difficulty = 6;
             rules = r -> {
@@ -143,16 +135,24 @@ public class TektonSectors {
         }};
 
         aequor = new TektonSectorPreset("aequor", tekton, 2){{
-            difficulty = 6;
+            difficulty = 7;
             rules = r -> {
 				//r.hiddenBuildItems.clear();
 				r.attackMode = true;
 				r.waves = false;
 			};
         }};
+
+        beach = new TektonSectorPreset("beach", tekton, 91){{
+            difficulty = 7;
+            captureWave = 61;
+            rules = r -> {
+				//r.hiddenBuildItems.clear();
+			};
+        }};
         
         colony = new TektonSectorPreset("colony", tekton, 78){{
-            difficulty = 6;
+            difficulty = 7;
             captureWave = 3;
             rules = r -> {
 				//r.hiddenBuildItems.clear();
@@ -160,10 +160,18 @@ public class TektonSectors {
         }};
         
         radiation = new TektonSectorPreset("radiation", tekton, 45){{
-            difficulty = 6;
+            difficulty = 7;
             captureWave = 3;
             rules = r -> {
 				//r.hiddenBuildItems.clear();
+			};
+        }};
+        
+        doubleFortress = new TektonSectorPreset("doublefortress", tekton, 22){{
+            difficulty = 8;
+            rules = r -> {
+				//r.hiddenBuildItems.clear();
+				r.attackMode = true;
 			};
         }};
 

@@ -3374,6 +3374,10 @@ public class TektonUnits {
                 cooldownTime = 42f;
                 heatColor = TektonLiquids.acid.color;
                 ejectEffect = Fx.none;
+                
+                loopSound = Sounds.shootSublimate;
+                shootSound = Sounds.none;
+                loopSoundVolume = 1f;
 
                 bullet = new ContinuousFlameBulletType(20) {{
                 	width = 4f;
@@ -4099,6 +4103,7 @@ public class TektonUnits {
 			this.constructor = ElevationMoveUnit::create;
             hoverable = true;
             hovering = true;
+            canDrown = false;
 
             shadowElevation = 0.1f;
 

@@ -28,7 +28,7 @@ public class TektonColor {
 	gravityColor = Color.valueOf("639bff"),
 
 	neurospora = Color.valueOf("46617d"),
-	acid = Color.valueOf("82d629"),
+	acid = Color.valueOf("82d629ff"),
 	cobweb = Color.valueOf("d6d6d6"),
 	radiation = Color.valueOf("bbd658"),
 

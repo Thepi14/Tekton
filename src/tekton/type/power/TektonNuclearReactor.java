@@ -27,7 +27,11 @@ import mindustry.type.Item;
 import mindustry.type.Liquid;
 import mindustry.ui.Bar;
 import mindustry.world.blocks.power.PowerGenerator;
+import mindustry.world.consumers.Consume;
+import mindustry.world.consumers.ConsumeItems;
+import mindustry.world.consumers.ConsumeLiquid;
 import mindustry.world.meta.BlockFlag;
+import mindustry.world.meta.BlockStatus;
 import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
@@ -127,11 +131,20 @@ public class TektonNuclearReactor extends PowerGenerator {
 
             if (fullness >= fuelThreshold) {
             	if(timer(timerFuel, itemDuration / timeScale)) {
-                    consume();
+            		for(Consume cons : block.consumers) {
+            			if (cons instanceof ConsumeItems itemCons && itemCons.items[0].item == fuelItem)
+            				cons.trigger(self());
+                    }
                     if (generateEffect != Fx.none && generateEffect != null) {
 						generateEffect.at(this);
 					}
                 }
+            	
+            	for(Consume cons : block.consumers) {
+        			if (cons instanceof ConsumeLiquid liquidCons && liquidCons.liquid == coolantLiquid)
+        				cons.update(self());
+                }
+            	
             	if (coolantFullness >= coolantThreshold) {
                 	heat -= (heating / 2f) * ((coolantFullness - coolantThreshold) + 0.1f) * timeScale * Time.delta;
                 }
@@ -155,10 +168,31 @@ public class TektonNuclearReactor extends PowerGenerator {
             totalProgress += productionEfficiency * Time.delta * timeScale * (1f + (heat * overheatEfficiency));
             heat = Mathf.clamp(heat);
 
-            if(heat >= 0.999f){
+            if(heat >= 0.999f) {
                 Events.fire(Trigger.thoriumReactorOverheat);
                 kill();
             }
+        }
+
+        @Override
+        public BlockStatus status() {
+            if(!enabled){
+                return BlockStatus.logicDisable;
+            }
+            
+            float coolant = liquids.get(coolantLiquid);
+            float coolantFullness = coolant / liquidCapacity;
+            int fuel = items.get(fuelItem);
+            float fullness = (float)fuel / itemCapacity;
+            
+            if(coolantFullness <= coolantThreshold || (fuel > 0 && fullness < fuelThreshold)) {
+				return BlockStatus.noOutput;
+			}
+            
+            if(fullness >= fuelThreshold) {
+				return BlockStatus.active;
+			}
+            return BlockStatus.noInput;
         }
 
 		@Override

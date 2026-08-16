@@ -24,6 +24,7 @@ import tekton.content.TektonFx;
 import tekton.content.TektonItems;
 import tekton.content.TektonLiquids;
 import tekton.content.TektonLoadouts;
+import tekton.content.TektonMusic;
 import tekton.content.TektonPlanets;
 import tekton.content.TektonSectors;
 import tekton.content.TektonSounds;
@@ -46,7 +47,7 @@ public class Tekton extends Mod {
 	public static final String MOD_GITHUB_URL = "https://github.com/Thepi14/Tekton.git";
 	public static final String MOD_NAME = "tekton";
 
-	public static boolean hideContent = true;
+	public static boolean hideContent = false;
 	public static boolean drawBiologicalUnitsCell = false; //only made because the cell drawing system of mindustry is bugged (or is it? vsauce theme plays).
 	public static boolean showDebug = false;
 
@@ -95,6 +96,7 @@ public class Tekton extends Mod {
         TektonUnits.load();
         TektonBlocks.load();
         TektonWeathers.load();
+        TektonMusic.load();
         TektonPlanets.load();
         TektonSectors.load();
         TektonTechTree.load();

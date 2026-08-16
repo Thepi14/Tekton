@@ -64,6 +64,10 @@ public class GravitationalTurret extends PowerTurret {
 
     	@Override
         public BlockStatus status() {
+            if(!enabled){
+                return BlockStatus.logicDisable;
+            }
+            
             float balance = power.status;
             if(balance > 0.001f && gravityFrac() > 0.001f && !isShooting()) {
 				return BlockStatus.noOutput;

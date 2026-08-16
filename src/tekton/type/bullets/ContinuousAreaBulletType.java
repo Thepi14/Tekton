@@ -190,7 +190,7 @@ public class ContinuousAreaBulletType extends ContinuousBulletType {
             }
         }
         
-        if (b.timer(trailIntervalTimer, trailInterval)) {
+        if (b.timer(trailIntervalTimer, trailInterval) && b.fin() > 0.01f) {
         	if (b.owner instanceof Posc pos)
         		trailEffect.at(pos.x(), pos.y(), b.rotation(), trailColor, b.owner);
         	else
