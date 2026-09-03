@@ -6188,9 +6188,10 @@ public class TektonBlocks {
 
             consumePower(210f / 60f);
             consumeLiquid(TektonLiquids.dicyanogen, 6f / 60f);
-            consumeItem(cryogenicCompound, 1);
+            consumeItem(cryogenicCompound, 1).update(false);
+            
             itemDuration = 60f;
-            itemCapacity = 40;
+            itemCapacity = 20;
 
             researchCostMultiplier = 0.3f;
         }};
@@ -6215,10 +6216,11 @@ public class TektonBlocks {
 
             consumePower(360f / 60f);
             consumeLiquid(TektonLiquids.dicyanogen, 12f / 60f);
-            consumeItem(cryogenicCompound, 2);
+            consumeItem(cryogenicCompound, 1).update(false);
+            
             itemConsumption = 2;
-            itemDuration = 60f;
-            itemCapacity = 80;
+            itemDuration = 30f;
+            itemCapacity = 30;
             liquidCapacity = 20f;
 
             researchCostMultiplier = 0.5f;

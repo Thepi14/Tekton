@@ -1,9 +1,14 @@
 package tekton.type.payloads;
 
+import static mindustry.Vars.state;
 import static tekton.content.TektonBlocks.setPayloadRegions;
 
+import arc.math.Mathf;
+import arc.util.Log;
+import arc.util.Structs;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
+import mindustry.gen.Building;
 import mindustry.type.Item;
 import mindustry.world.blocks.units.UnitAssembler;
 import mindustry.world.meta.Env;
@@ -15,6 +20,7 @@ public class TektonUnitAssembler extends UnitAssembler {
 	public TektonUnitAssembler(String name) {
 		super(name);
 		envEnabled = Env.any;
+		hasItems = true;
 	}
 
     @Override
@@ -72,6 +78,16 @@ public class TektonUnitAssembler extends UnitAssembler {
             super.read(read, revision);
 
             itemTimer = read.f();
+        }
+
+        @Override
+        public int getMaximumAccepted(Item item){
+            return block.itemCapacity;
+        }
+
+        @Override
+        public boolean acceptItem(Building source, Item item){
+            return super.acceptItem(source, item) || (block.consumesItem(item) && items.get(item) < block.itemCapacity);
         }
     }
 }
