@@ -1,11 +1,7 @@
 package tekton.type.payloads;
 
-import static mindustry.Vars.state;
 import static tekton.content.TektonBlocks.setPayloadRegions;
 
-import arc.math.Mathf;
-import arc.util.Log;
-import arc.util.Structs;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
 import mindustry.gen.Building;

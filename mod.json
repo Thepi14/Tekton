@@ -5,7 +5,7 @@
 	"name": "tekton",
     "main": "tekton.Tekton"
 	
-    "subtitle": "Finally updated to V8.",
+    "subtitle": "Updated to 160.3",
 	
     "description": "A Mindustry Java mod adding a new planet called Tekton, with it's own campaign, blocks, units, mechanics and hazards.
 	
@@ -20,7 +20,7 @@
 	[accent[]](The planet is based off on Titan, one of Saturns moons)[[]]
 	",
 	
-    "version": "v0.4.37",
-    "minGameVersion": "158",
+    "version": "v0.4.40",
+    "minGameVersion": "160.3",
     "java": true,
 }

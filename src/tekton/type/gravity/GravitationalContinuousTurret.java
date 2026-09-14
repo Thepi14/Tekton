@@ -48,7 +48,7 @@ public class GravitationalContinuousTurret extends ContinuousTurret {
         @Override
         public void updateTile() {
             gravity = (int)calculateGravity(sideGravity);
-            unit.ammo(power.status * unit.type().ammoCapacity * gravityFrac());
+            unit.ammo(power.status * gravityFrac());
 
             super.updateTile();
         }

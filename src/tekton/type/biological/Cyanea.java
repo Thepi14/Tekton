@@ -4,20 +4,11 @@ import static mindustry.Vars.net;
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 
-import arc.graphics.*;
-import arc.graphics.g2d.*;
-
 import static arc.Core.settings;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 
-import arc.math.geom.*;
-import arc.math.*;
-
-import static arc.math.geom.Geometry.*;
 import static arc.math.Angles.*;
-import static arc.math.Mathf.*;
-import static arc.math.Rand.*;
 
 import arc.Core;
 import arc.audio.Sound;
@@ -57,7 +48,6 @@ import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
 import mindustry.logic.Ranged;
 import mindustry.type.Liquid;
-import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 import mindustry.world.Block;

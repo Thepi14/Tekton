@@ -1,14 +1,10 @@
 package tekton.content;
 
-import java.lang.reflect.Field;
-
 import arc.Events;
 import arc.audio.Music;
-import arc.audio.Sound;
 import arc.struct.Seq;
 import mindustry.Vars;
 import mindustry.game.EventType.MusicRegisterEvent;
-import mindustry.game.EventType.Trigger;
 
 public class TektonMusic {
 	public static Seq<String> tektonAmbientMusicNames, tektonDarkMusicNames, tektonBossMusicNames;

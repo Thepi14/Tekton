@@ -15,10 +15,7 @@ import tekton.content.TektonFx;
 import tekton.content.TektonLiquids;
 import tekton.type.abilities.ColorDebrisAbility;
 
-import arc.graphics.*;
-import arc.graphics.g2d.*;
 import static arc.graphics.g2d.Draw.*;
-import static arc.graphics.g2d.Lines.*;
 
 public class TektonBioUnitType extends UnitType implements BiologicalUnit {
 	public boolean customFogRadius = false;

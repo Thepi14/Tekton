@@ -1,6 +1,5 @@
 package tekton.type.production;
 
-import static mindustry.Vars.content;
 import static mindustry.Vars.tilesize;
 
 import arc.Core;
@@ -25,7 +24,6 @@ import mindustry.gen.Sounds;
 import mindustry.graphics.Pal;
 import mindustry.logic.LAccess;
 import mindustry.type.Item;
-import mindustry.type.Liquid;
 import mindustry.type.LiquidStack;
 import mindustry.ui.Bar;
 import mindustry.ui.Styles;

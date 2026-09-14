@@ -5,7 +5,6 @@ import static mindustry.Vars.renderer;
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
 
-import arc.Core;
 import arc.graphics.Blending;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -16,7 +15,6 @@ import arc.util.Time;
 import arc.util.Tmp;
 import mindustry.entities.Effect;
 import mindustry.entities.Puddles;
-import mindustry.game.Team;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;

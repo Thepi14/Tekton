@@ -6,20 +6,11 @@ import static tekton.content.TektonColor.*;
 import static tekton.content.TektonItems.*;
 import static tekton.content.TektonVars.gravityMul;
 
-import org.jline.reader.impl.history.DefaultHistory;
-
-import arc.graphics.*;
 import arc.graphics.g2d.*;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 
-import arc.math.geom.*;
-import arc.math.*;
-
-import static arc.math.geom.Geometry.*;
 import static arc.math.Angles.*;
-import static arc.math.Mathf.*;
-import static arc.math.Rand.*;
 
 import arc.Core;
 import arc.graphics.Blending;
@@ -27,7 +18,6 @@ import arc.graphics.Color;
 import arc.math.Angles;
 import arc.math.Interp;
 import arc.math.Mathf;
-import arc.math.Rand;
 import arc.math.geom.Vec2;
 import arc.struct.EnumSet;
 import arc.struct.Seq;
@@ -52,7 +42,6 @@ import mindustry.type.PayloadStack;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
 import mindustry.world.Tile;
-import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.distribution.*;
@@ -2141,7 +2130,7 @@ public class TektonBlocks {
 			craftTime = 300;
 			hasLiquids = false;
 			baseEfficiency = 0;
-			displayEfficiencyScale = 1;
+			//displayEfficiencyScale = 1;
 			minEfficiency = 0.1f;
 			boostScale = 0.25f;
 			maxBoost = 2;
@@ -2169,7 +2158,7 @@ public class TektonBlocks {
 			craftTime = 50;
 			hasLiquids = false;
 			baseEfficiency = 0;
-			displayEfficiencyScale = 1;
+			//displayEfficiencyScale = 1;
 			minEfficiency = 0.1f;
 			boostScale = 1f / 9f;
 			maxBoost = 2;

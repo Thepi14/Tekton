@@ -4,18 +4,10 @@ import static mindustry.Vars.headless;
 import static mindustry.Vars.tilesize;
 import static tekton.content.TektonColor.dicyanogenShootColor;
 
-import arc.graphics.*;
-import arc.graphics.g2d.*;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 
-import arc.math.geom.*;
-import arc.math.*;
-
-import static arc.math.geom.Geometry.*;
 import static arc.math.Angles.*;
-import static arc.math.Mathf.*;
-import static arc.math.Rand.*;
 
 import arc.Core;
 import arc.graphics.Blending;

@@ -4,10 +4,7 @@ import static mindustry.Vars.control;
 import static mindustry.Vars.headless;
 import static mindustry.Vars.world;
 
-import arc.graphics.*;
-import arc.graphics.g2d.*;
 import static arc.graphics.g2d.Draw.*;
-import static arc.graphics.g2d.Lines.*;
 
 import arc.Core;
 import arc.audio.Sound;

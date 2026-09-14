@@ -20,10 +20,7 @@ import mindustry.world.meta.Env;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 
-import arc.graphics.*;
-import arc.graphics.g2d.*;
 import static arc.graphics.g2d.Draw.*;
-import static arc.graphics.g2d.Lines.*;
 
 public class AdvancedWall extends Wall {
     public float effectChance = 0.003f;

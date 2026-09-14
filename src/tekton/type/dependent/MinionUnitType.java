@@ -7,7 +7,6 @@ import mindustry.type.UnitType;
 import mindustry.world.meta.Env;
 import tekton.content.TektonColor;
 import tekton.content.TektonFx;
-import tekton.content.TektonItems;
 import tekton.content.TektonMissileUnitType;
 
 public class MinionUnitType extends UnitType implements DependentType {

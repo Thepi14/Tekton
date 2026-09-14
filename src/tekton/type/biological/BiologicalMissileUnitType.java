@@ -7,10 +7,8 @@ import tekton.Tekton;
 import tekton.content.TektonColor;
 import tekton.content.TektonFx;
 import tekton.content.TektonMissileUnitType;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
+
 import static arc.graphics.g2d.Draw.*;
-import static arc.graphics.g2d.Lines.*;
 
 public class BiologicalMissileUnitType extends TektonMissileUnitType implements BiologicalUnit {
 

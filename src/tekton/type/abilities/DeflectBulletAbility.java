@@ -2,7 +2,6 @@ package tekton.type.abilities;
 
 import static arc.Core.settings;
 
-import arc.Core;
 import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;

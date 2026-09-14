@@ -5,25 +5,15 @@ import arc.graphics.g2d.Fill;
 import arc.math.Mathf;
 import arc.struct.Seq;
 import mindustry.Vars;
-import mindustry.content.Fx;
 import mindustry.content.Liquids;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Effect;
 import mindustry.graphics.Pal;
 import mindustry.type.StatusEffect;
 
-import arc.graphics.*;
-import arc.graphics.g2d.*;
 import static arc.graphics.g2d.Draw.*;
-import static arc.graphics.g2d.Lines.*;
 
-import arc.math.geom.*;
-import arc.math.*;
-
-import static arc.math.geom.Geometry.*;
 import static arc.math.Angles.*;
-import static arc.math.Mathf.*;
-import static arc.math.Rand.*;
 
 
 public class TektonStatusEffects {

@@ -6,7 +6,6 @@ import arc.math.geom.Vec2;
 import mindustry.content.Fx;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
-import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.ContinuousBulletType;
 import mindustry.game.Team;
 import mindustry.gen.Bullet;
@@ -15,10 +14,7 @@ import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import tekton.content.TektonColor;
-import tekton.type.bullets.WaveBulletType.GravWaveEffectContainer;
 
-import arc.graphics.*;
-import arc.graphics.g2d.*;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
 

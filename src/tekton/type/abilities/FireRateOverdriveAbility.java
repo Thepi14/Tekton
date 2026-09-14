@@ -9,13 +9,11 @@ import arc.math.Mathf;
 import arc.scene.ui.layout.Table;
 import arc.util.Strings;
 import mindustry.Vars;
-import mindustry.content.StatusEffects;
 import mindustry.entities.abilities.Ability;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
-import mindustry.type.StatusEffect;
 import mindustry.type.UnitType;
 import mindustry.ui.Bar;
 

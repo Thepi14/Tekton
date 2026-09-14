@@ -9,7 +9,6 @@ import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
 import arc.util.io.Reads;
 import arc.util.io.Writes;
-import mindustry.Vars;
 import mindustry.entities.Effect;
 import mindustry.entities.effect.WaveEffect;
 import mindustry.graphics.Drawf;
@@ -18,7 +17,6 @@ import mindustry.graphics.Pal;
 import mindustry.world.blocks.power.PowerGenerator;
 import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
-import mindustry.world.meta.StatValues;
 import tekton.Drawt;
 
 public class LightningRod extends PowerGenerator {

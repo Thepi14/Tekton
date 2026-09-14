@@ -1,10 +1,5 @@
 package tekton.type.defense;
 
-//import ent.anno.Annotations.*;
-/*import mindustry.annotations.*;
-import mindustry.annotations.util.*;
-import mindustry.annotations.util.TypeIOResolver.*;*/
-import static mindustry.Vars.content;
 import static mindustry.Vars.net;
 import static mindustry.Vars.state;
 import static mindustry.Vars.tilesize;

@@ -2,9 +2,7 @@ package tekton.type.bullets;
 
 import static mindustry.Vars.indexer;
 
-import arc.math.Angles;
 import arc.math.Mathf;
-import arc.util.Time;
 import mindustry.content.Fx;
 import mindustry.content.StatusEffects;
 import mindustry.entities.Damage;

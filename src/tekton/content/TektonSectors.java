@@ -200,35 +200,16 @@ public class TektonSectors {
 	}
 
 	public static class TektonSectorPreset extends SectorPreset{
-		
-		public boolean outline = true;
-	    public int outlineRadius = 5;
-		public Color outlineColor = TektonColor.tektonOutlineColor;
-
 		public TektonSectorPreset(String name, Planet planet, int sector){
 			super(name, planet, sector);
+			//outline = true;
+			//outlineRadius = 5;
+			outlineColor = TektonColor.tektonOutlineColor;
 	        noLighting = true;
             overrideLaunchDefaults = false;
             rules = r -> {
                 r.placeRangeCheck = false;
             };
 		}
-
-		//TODO: remove all of this once the game updates. TODO: (2) this doesn't work for some reason.
-	    @Override
-	    public void createIcons(MultiPacker packer){
-	        super.createIcons(packer);
-
-	        if(outline && Core.atlas.has("sector-" + name)){
-	            makeOutline(PageType.ui, packer, Core.atlas.find("sector-" + name), false, outlineColor, outlineRadius);
-	        }
-	    }
-
-	    @Override
-	    public void loadIcon(){
-	        if(Icon.terrain != null){
-	            uiIcon = fullIcon = Core.atlas.find("sector-" + name, Icon.terrain.getRegion());
-	        }
-	    }
 	}
 }

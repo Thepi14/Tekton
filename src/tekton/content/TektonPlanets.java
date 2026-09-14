@@ -1,12 +1,9 @@
 package tekton.content;
 
-import arc.audio.Music;
 import arc.graphics.Color;
 import arc.struct.Seq;
 import arc.util.Time;
-import mindustry.Vars;
 import mindustry.content.Blocks;
-import mindustry.content.Items;
 import mindustry.content.Planets;
 import mindustry.game.Team;
 import mindustry.graphics.g3d.HexMesh;

@@ -5,7 +5,6 @@ import arc.math.geom.Vec3;
 import arc.util.noise.Ridged;
 import arc.util.noise.Simplex;
 import mindustry.maps.generators.PlanetGenerator;
-import mindustry.type.Sector;
 import tekton.content.TektonItems;
 import tekton.content.TektonLoadouts;
 

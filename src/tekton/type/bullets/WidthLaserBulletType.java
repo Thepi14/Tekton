@@ -1,8 +1,5 @@
 package tekton.type.bullets;
 
-import static mindustry.Vars.tilesize;
-import static mindustry.Vars.world;
-
 import arc.audio.Sound;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
@@ -10,23 +7,15 @@ import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.math.Angles;
 import arc.math.Mathf;
-import arc.math.geom.Intersector;
 import arc.math.geom.Rect;
 import arc.math.geom.Vec2;
-import arc.struct.FloatSeq;
-import arc.util.Log;
-import arc.util.Tmp;
 import mindustry.Vars;
 import mindustry.content.Fx;
-import mindustry.core.World;
-import mindustry.entities.Damage;
 import mindustry.entities.Effect;
 import mindustry.entities.Units;
-import mindustry.entities.bullet.BulletType;
 import mindustry.entities.bullet.ContinuousBulletType;
 import mindustry.gen.Building;
 import mindustry.gen.Bullet;
-import mindustry.gen.Healthc;
 import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Pal;
