@@ -12,6 +12,7 @@ import mindustry.graphics.Layer;
 import mindustry.ui.Bar;
 import tekton.content.TektonColor;
 import tekton.content.TektonStat;
+import tekton.content.TektonStatUnit;
 import tekton.type.payloads.TektonUnitAssembler;
 
 public class GravitationalUnitAssembler extends TektonUnitAssembler {
@@ -45,7 +46,7 @@ public class GravitationalUnitAssembler extends TektonUnitAssembler {
     public void setStats(){
         super.setStats();
 
-        stats.add(TektonStat.gravityUse, maxGravity, TektonStat.gravityPower);
+        stats.add(TektonStat.gravityUse, maxGravity, TektonStatUnit.gravityPower);
     }
 
 	public class GravitationalUnitAssemblerBuild extends TektonUnitAssemblerBuild implements GravityConsumer {

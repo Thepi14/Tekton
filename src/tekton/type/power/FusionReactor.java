@@ -20,7 +20,6 @@ import arc.util.io.Writes;
 import mindustry.content.Fx;
 import mindustry.content.Liquids;
 import mindustry.game.EventType.Trigger;
-import mindustry.gen.Sounds;
 import mindustry.graphics.Drawf;
 import mindustry.graphics.Layer;
 import mindustry.graphics.Pal;
@@ -44,6 +43,7 @@ import tekton.content.TektonFx;
 import tekton.content.TektonItems;
 import tekton.content.TektonSounds;
 import tekton.content.TektonStat;
+import tekton.content.TektonStatUnit;
 import tekton.type.gravity.GravityConsumer;
 
 public class FusionReactor extends PowerGenerator {
@@ -123,7 +123,7 @@ public class FusionReactor extends PowerGenerator {
             stats.add(Stat.productionTime, itemDuration / 60f, StatUnit.seconds);
         }
         //stats.add(Stat.maxEfficiency, (maxGravity / requiredGravity) * 100f, StatUnit.percent);
-        stats.add(TektonStat.gravityUse, requiredGravity, TektonStat.gravityPower);
+        stats.add(TektonStat.gravityUse, requiredGravity, TektonStatUnit.gravityPower);
         
         if(consPower != null){
             //exponential decay formula

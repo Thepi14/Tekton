@@ -2,24 +2,19 @@ package tekton.type.abilities;
 
 import static mindustry.Vars.state;
 
-import arc.Core;
 import arc.Events;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.math.Angles;
-import arc.scene.style.Drawable;
-import arc.scene.ui.Tooltip;
 import arc.scene.ui.layout.Table;
 import arc.util.Scaling;
 import arc.util.Time;
 import mindustry.Vars;
 import mindustry.ai.types.MissileAI;
-import mindustry.ctype.UnlockableContent;
 import mindustry.entities.Units;
 import mindustry.entities.abilities.UnitSpawnAbility;
 import mindustry.game.EventType.UnitCreateEvent;
 import mindustry.gen.Icon;
-import mindustry.gen.Tex;
 import mindustry.gen.Unit;
 import mindustry.graphics.Drawf;
 import mindustry.type.UnitType;

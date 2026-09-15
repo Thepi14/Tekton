@@ -4,12 +4,7 @@ import static tekton.content.TektonPlanets.tekton;
 
 import java.lang.reflect.Field;
 
-import arc.Core;
-import arc.graphics.Color;
 import arc.struct.Seq;
-import mindustry.gen.Icon;
-import mindustry.graphics.MultiPacker;
-import mindustry.graphics.MultiPacker.PageType;
 import mindustry.type.Planet;
 import mindustry.type.SectorPreset;
 import tekton.Tekton;

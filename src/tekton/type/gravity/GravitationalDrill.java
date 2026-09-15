@@ -19,6 +19,7 @@ import mindustry.world.meta.StatUnit;
 import tekton.content.TektonColor;
 import tekton.content.TektonSounds;
 import tekton.content.TektonStat;
+import tekton.content.TektonStatUnit;
 import tekton.math.TekMath;
 
 public class GravitationalDrill extends Drill {
@@ -49,7 +50,7 @@ public class GravitationalDrill extends Drill {
         super.setStats();
 
         stats.add(Stat.maxEfficiency, (TekMath.pow2((maxGravity) / requiredGravity)) * 100f, StatUnit.percent);
-        stats.add(TektonStat.gravityUse, requiredGravity, TektonStat.gravityPower);
+        stats.add(TektonStat.gravityUse, requiredGravity, TektonStatUnit.gravityPower);
     }
 
     @Override

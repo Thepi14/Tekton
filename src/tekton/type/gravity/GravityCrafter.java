@@ -10,6 +10,7 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import tekton.content.TektonColor;
 import tekton.content.TektonStat;
+import tekton.content.TektonStatUnit;
 
 public class GravityCrafter extends GenericCrafter {
 	public int requiredGravity = 2;
@@ -34,7 +35,7 @@ public class GravityCrafter extends GenericCrafter {
         super.setStats();
 
         stats.add(Stat.maxEfficiency, (maxGravity / requiredGravity) * 100f, StatUnit.percent);
-        stats.add(TektonStat.gravityUse, requiredGravity, TektonStat.gravityPower);
+        stats.add(TektonStat.gravityUse, requiredGravity, TektonStatUnit.gravityPower);
     }
 
 	public class GravityCrafterBuild extends GenericCrafterBuild implements GravityConsumer {

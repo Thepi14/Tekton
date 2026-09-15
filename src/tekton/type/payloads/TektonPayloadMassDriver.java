@@ -11,6 +11,7 @@ import mindustry.world.blocks.payloads.PayloadMassDriver;
 import mindustry.world.meta.Env;
 import tekton.content.TektonColor;
 import tekton.content.TektonStat;
+import tekton.content.TektonStatUnit;
 import tekton.type.gravity.GravityConsumer;
 
 public class TektonPayloadMassDriver extends PayloadMassDriver {
@@ -41,7 +42,7 @@ public class TektonPayloadMassDriver extends PayloadMassDriver {
     public void setStats() {
         super.setStats();
 
-        stats.add(TektonStat.gravityUse, maxGravity, TektonStat.gravityPower);
+        stats.add(TektonStat.gravityUse, maxGravity, TektonStatUnit.gravityPower);
     }
 
     public class TektonPayloadDriverBuild extends PayloadDriverBuild implements GravityConsumer {

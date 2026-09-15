@@ -5,7 +5,6 @@ import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.struct.EnumSet;
-import arc.util.Tmp;
 import mindustry.game.Team;
 import mindustry.world.blocks.power.LightBlock;
 import mindustry.world.meta.BlockFlag;

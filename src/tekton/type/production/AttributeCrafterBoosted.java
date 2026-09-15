@@ -1,7 +1,6 @@
 package tekton.type.production;
 
 import arc.Core;
-import arc.util.Log;
 import arc.math.Mathf;
 import arc.util.Time;
 import mindustry.graphics.Pal;

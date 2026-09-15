@@ -5,7 +5,6 @@ import static mindustry.Vars.tilesize;
 import arc.Core;
 import arc.graphics.Color;
 import arc.graphics.g2d.Draw;
-import arc.graphics.g2d.Fill;
 import arc.graphics.g2d.Lines;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
@@ -65,7 +64,7 @@ public class BulletSlowdownDome extends Block {
         super.setStats();
 
         stats.add(Stat.range, range / tilesize, StatUnit.blocks);
-        stats.add(TektonStat.slowMultiplierFunction, speedMultiplier * 100, StatUnit.percent);
+        stats.add(TektonStat.speedMultiplierFunction, speedMultiplier * 100, StatUnit.percent);
     }
 
     @Override

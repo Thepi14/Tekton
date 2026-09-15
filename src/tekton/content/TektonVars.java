@@ -11,7 +11,10 @@ public class TektonVars {
 
 	public static final int
 	visualMaxGravity = 16,
-	gravityMul = 2
+	gravityMul = 2,
+	TektonDayHours = 36,
+	tektonMonthDays = 40,
+	tektonYearMonths = 178
 			;
 
 	public static Seq<RSeq<Vec2F>> vec2F = new Seq<>();

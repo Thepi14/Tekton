@@ -29,6 +29,7 @@ import mindustry.type.*;
 import mindustry.type.weapons.PointDefenseWeapon;
 import mindustry.type.weapons.RepairBeamWeapon;
 import mindustry.world.meta.*;
+import tekton.content.TektonStat.BiologicalOrigin;
 import tekton.type.abilities.*;
 import tekton.type.ai.*;
 import tekton.type.biological.*;
@@ -36,6 +37,9 @@ import tekton.type.bullets.*;
 import tekton.type.bullets.EmptyBulletType;
 import tekton.type.dependent.*;
 import tekton.type.part.*;
+
+import static tekton.content.TektonStat.*;
+import tekton.type.abilities.ColorDebrisAbility;
 
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
@@ -3089,6 +3093,10 @@ public class TektonUnits {
         var bioRegenAmount = 3f;
 
 		formica = new TektonBioUnitType("formica") {{
+			lifeExpectancyMonths = 5 * 12;
+			maximumLifeSpanMonths = 30 * 12;
+			maturationTimeMonths = 10;
+			
 			this.constructor = LegsUnit::create;
 			customFogRadius = true;
 			fogRadius = 6f;
@@ -3179,9 +3187,24 @@ public class TektonUnits {
             speed = rotateSpeed = 0f;
 
             abilities.add(new SpawnDeathHealthAbility() {{ amount = 1; spread = 0.1f; unit = formica; }});
-		}};
+		}
+
+		    @Override
+		    public void setStats() {
+		        stats.add(Stat.health, health);
+		        stats.add(Stat.armor, armor);
+		        stats.add(Stat.size, StatValues.squared(hitSize / tilesize, StatUnit.blocks));
+		        
+		    	stats.add(TektonStat.biologicalOrigin, GetUnitOriginString(origin));
+		    }
+	    
+		};
 
         gracilipes = new TektonBioUnitType("gracilipes") {{
+			lifeExpectancyMonths = 5 * 12;
+			maximumLifeSpanMonths = 30 * 12;
+			maturationTimeMonths = 10;
+			
 			this.constructor = LegsUnit::create;
             speed = 1f;
             drag = 0.1f;
@@ -3311,6 +3334,11 @@ public class TektonUnits {
         }};
 
         carabidae = new TektonBioUnitType("carabidae") {{
+        	origin = BiologicalOrigin.adapted;
+			lifeExpectancyMonths = 5 * 12;
+			maximumLifeSpanMonths = 30 * 12;
+			maturationTimeMonths = 10;
+			
 			this.constructor = LegsUnit::create;
             speed = 0.83f;
             drag = 0.1f;
@@ -3396,6 +3424,11 @@ public class TektonUnits {
         }};
 
         colobopsis = new TektonBioUnitType("colobopsis") {{
+        	origin = BiologicalOrigin.artificial;
+			lifeExpectancyMonths = 4 * 12;
+			maximumLifeSpanMonths = 20 * 12;
+			maturationTimeMonths = 6;
+			
         	this.constructor = CrawlUnit::create;
 			customFogRadius = true;
 			fogRadius = 6f;
@@ -3463,6 +3496,11 @@ public class TektonUnits {
         }};
 
         isoptera = new TektonBioUnitType("isoptera") {{
+        	origin = BiologicalOrigin.adapted;
+			lifeExpectancyMonths = 4 * 12;
+			maximumLifeSpanMonths = 20 * 12;
+			maturationTimeMonths = 6;
+			
 			this.constructor = LegsUnit::create;
 			customFogRadius = true;
 			fogRadius = 8f;
@@ -3548,6 +3586,10 @@ public class TektonUnits {
         }};
 
         araneae = new TektonBioUnitType("araneae") {{
+			lifeExpectancyMonths = 55 * 12;
+			maximumLifeSpanMonths = 80 * 12;
+			maturationTimeMonths = 7 * 12;
+			
         	this.constructor = LegsUnit::create;
             speed = 0.84f;
             hitSize = 12f;
@@ -3654,6 +3696,10 @@ public class TektonUnits {
         }};
 
         latrodectus = new TektonBioUnitType("latrodectus") {{
+			lifeExpectancyMonths = 55 * 12;
+			maximumLifeSpanMonths = 80 * 12;
+			maturationTimeMonths = 10 * 12;
+			
         	this.constructor = LegsUnit::create;
             speed = 0.6f;
             hitSize = 28f;
@@ -3930,6 +3976,10 @@ public class TektonUnits {
 		}};
 
 		danaus = new TektonBioUnitType("danaus"){{
+			lifeExpectancyMonths = 120 * 12;
+			maximumLifeSpanMonths = 260 * 12;
+			maturationTimeMonths = 60 * 12;
+			
 			this.constructor = CrawlUnit::create;
 			customFogRadius = true;
 			fogRadius = 3f;
@@ -3952,6 +4002,10 @@ public class TektonUnits {
         }};
 
 		antheraea = new TektonBioUnitType("antheraea"){{
+			lifeExpectancyMonths = 120 * 12;
+			maximumLifeSpanMonths = 260 * 12;
+			maturationTimeMonths = 60 * 12;
+			
 			this.constructor = CrawlUnit::create;
 			abilities.addAll(new SpawnDeathAbility(danaus, 4, 8f) {{ randAmount = 3; }}, new RadiationFieldAbility(300f, 180f, 30f * tilesize));
 			immunities.add(TektonStatusEffects.radiationAbsorption); //this creature would be too OP if it was enabled to consume radiation
@@ -3975,6 +4029,10 @@ public class TektonUnits {
         }};
         
         amecephalus = new TektonBioUnitType("amecephalus"){{
+			lifeExpectancyMonths = unknownTimeThreshold;
+			maximumLifeSpanMonths = unknownTimeThreshold;
+			maturationTimeMonths = 300 * 12;
+			
 			this.constructor = CrawlUnit::create;
 			float holeX = 1.7f * tilesize, holeY = 2.7f * tilesize, holeDelay = 20f, holeChance = -1f, minVelocityHole = 0f;
 			Effect holeEffect = new Effect(140f, e -> {
@@ -4091,6 +4149,10 @@ public class TektonUnits {
 		//air biological
 
         diptera = new TektonBioUnitType("diptera") {{
+			lifeExpectancyMonths = 22;
+			maximumLifeSpanMonths = 50;
+			maturationTimeMonths = 6;
+			
 			this.constructor = ElevationMoveUnit::create;
             hoverable = true;
             hovering = true;
@@ -4152,6 +4214,10 @@ public class TektonUnits {
 		}};
 
 		groundPolyphaga = new TektonBioUnitType("polyphaga-ground") {{
+			lifeExpectancyMonths = 8 * 12;
+			maximumLifeSpanMonths = 10 * 12;
+			maturationTimeMonths = 2 * 12;
+			
 			this.constructor = CrawlUnit::create;
             flying = false;
             hidden = true;
@@ -4208,6 +4274,10 @@ public class TektonUnits {
 		}};
 
 		polyphaga = new TektonBioUnitType("polyphaga") {{
+			lifeExpectancyMonths = 8 * 12;
+			maximumLifeSpanMonths = 10 * 12;
+			maturationTimeMonths = 2 * 12;
+			
 			this.constructor = UnitEntity::create;
             flying = true;
 
@@ -4268,6 +4338,10 @@ public class TektonUnits {
 		}};
 
 		lepidoptera = new TektonBioUnitType("lepidoptera") {{
+			lifeExpectancyMonths = 10 * 12;
+			maximumLifeSpanMonths = 15 * 12;
+			maturationTimeMonths = 8 * 12;
+			
 			this.constructor = UnitEntity::create;
             flying = true;
 
@@ -4342,6 +4416,10 @@ public class TektonUnits {
 		}};
 
 		aedes = new TektonBioUnitType("aedes") {{
+			lifeExpectancyMonths = 40 * 12;
+			maximumLifeSpanMonths = 60 * 12;
+			maturationTimeMonths = 10 * 12;
+			
 			this.constructor = UnitEntity::create;
             flying = true;
 
@@ -4499,6 +4577,11 @@ public class TektonUnits {
 		}};
 
 		achlyos = new TektonBioUnitType("achlyos") {{
+			origin = BiologicalOrigin.unknown;
+			lifeExpectancyMonths = 2;
+			maximumLifeSpanMonths = 6;
+			maturationTimeMonths = 0;
+			
 			this.constructor = UnitEntity::create;
             flying = true;
             health = 240;

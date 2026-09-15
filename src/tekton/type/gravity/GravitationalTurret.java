@@ -15,6 +15,7 @@ import mindustry.world.meta.Stat;
 import mindustry.world.meta.StatUnit;
 import tekton.content.TektonColor;
 import tekton.content.TektonStat;
+import tekton.content.TektonStatUnit;
 import tekton.type.bullets.WaveBulletType;
 
 public class GravitationalTurret extends PowerTurret {
@@ -44,7 +45,7 @@ public class GravitationalTurret extends PowerTurret {
         super.setStats();
 
         stats.add(Stat.maxEfficiency, (maxGravity / minGravity) * 100f, StatUnit.percent);
-        stats.add(TektonStat.gravityUse, minGravity, TektonStat.gravityPower);
+        stats.add(TektonStat.gravityUse, minGravity, TektonStatUnit.gravityPower);
 
         //stats.remove(Stat.reload);
         stats.remove(Stat.inaccuracy);

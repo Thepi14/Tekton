@@ -3,7 +3,7 @@ package tekton.type.biological;
 import static mindustry.Vars.net;
 import static mindustry.Vars.tilesize;
 import static mindustry.Vars.world;
-
+import static tekton.content.TektonStat.GetUnitOriginString;
 import static arc.Core.settings;
 import static arc.graphics.g2d.Draw.*;
 import static arc.graphics.g2d.Lines.*;
@@ -63,6 +63,8 @@ import tekton.content.TektonColor;
 import tekton.content.TektonFx;
 import tekton.content.TektonLiquids;
 import tekton.content.TektonSounds;
+import tekton.content.TektonStat;
+import tekton.content.TektonStat.BiologicalOrigin;
 import tekton.content.TektonStatusEffects;
 import tekton.content.TektonUnits;
 import tekton.content.TektonVars;
@@ -255,6 +257,13 @@ public class Cyanea extends Block implements BiologicalBlock {
                 		Strings.autoFixed((int)(entity.spawnProgress / entity.currentSpawnTimer() * 100f), 3) + "%"),
                 () -> Pal.power,
                 () -> entity.spawnProgress / entity.currentSpawnTimer()));
+    }
+
+    @Override
+    public void setStats() {
+    	super.setStats();
+    	
+    	stats.add(TektonStat.biologicalOrigin, GetUnitOriginString(BiologicalOrigin.unknown));
     }
 
 	@Override

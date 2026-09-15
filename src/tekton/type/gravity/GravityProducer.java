@@ -12,6 +12,7 @@ import mindustry.world.draw.DrawMulti;
 import mindustry.world.meta.BlockGroup;
 import tekton.content.TektonColor;
 import tekton.content.TektonStat;
+import tekton.content.TektonStatUnit;
 import tekton.type.draw.DrawGravityOutput;
 
 public class GravityProducer extends GenericCrafter{
@@ -35,7 +36,7 @@ public class GravityProducer extends GenericCrafter{
     public void setStats(){
         super.setStats();
 
-        stats.add(TektonStat.gravityOutput, gravityOutput, TektonStat.gravityPower);
+        stats.add(TektonStat.gravityOutput, gravityOutput, TektonStatUnit.gravityPower);
     }
 
     @Override

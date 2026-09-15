@@ -2130,7 +2130,6 @@ public class TektonBlocks {
 			craftTime = 300;
 			hasLiquids = false;
 			baseEfficiency = 0;
-			//displayEfficiencyScale = 1;
 			minEfficiency = 0.1f;
 			boostScale = 0.25f;
 			maxBoost = 2;
@@ -2158,7 +2157,6 @@ public class TektonBlocks {
 			craftTime = 50;
 			hasLiquids = false;
 			baseEfficiency = 0;
-			//displayEfficiencyScale = 1;
 			minEfficiency = 0.1f;
 			boostScale = 1f / 9f;
 			maxBoost = 2;
@@ -6395,8 +6393,6 @@ public class TektonBlocks {
             health = 80;
         }};
 
-		var bioVisibility = BuildVisibility.sandboxOnly;
-
 		//biological
 		
 		glowPod = new BioGlowPod("bio-glow-pod") {{
@@ -7053,7 +7049,7 @@ public class TektonBlocks {
 		}};
 
 		cyaneaVein = new Vein("cyanea-vein") {{
-			requirements(Category.logic, tek(bioVisibility), with());
+			requirements(Category.logic, BuildVisibility.sandboxOnly, with());
 			squareSprite = false;
 			health = 1000000000;
 			armor = 100000;
@@ -7065,6 +7061,8 @@ public class TektonBlocks {
 	        hasPower = true;
 			conductivePower = true;
 			fogRadius = 1;
+			
+			hideDatabase = true;
 
 			lightColor = glowColor = TektonColor.ammonia.cpy();
 		}};
@@ -7091,6 +7089,8 @@ public class TektonBlocks {
 		    explodeEffect = new MultiEffect(Fx.titanExplosion, Fx.titanSmoke).wrap(Pal.surge);
 		}};
 	}
+
+	private static final BuildVisibility bioVisibility = BuildVisibility.sandboxOnly;
 
 	private static float multiReactionDrill(float value) {
 		return 1f + (value / (4^2));

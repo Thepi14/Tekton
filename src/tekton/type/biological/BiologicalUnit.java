@@ -1,6 +1,5 @@
 package tekton.type.biological;
 
-import mindustry.content.StatusEffects;
 import mindustry.type.StatusEffect;
 import tekton.content.TektonStatusEffects;
 
