@@ -10,12 +10,12 @@ import arc.struct.IntSet;
 import arc.util.Nullable;
 import mindustry.graphics.Layer;
 import mindustry.ui.Bar;
+import mindustry.world.blocks.units.UnitAssembler;
 import tekton.content.TektonColor;
 import tekton.content.TektonStat;
 import tekton.content.TektonStatUnit;
-import tekton.type.payloads.TektonUnitAssembler;
 
-public class GravitationalUnitAssembler extends TektonUnitAssembler {
+public class GravitationalUnitAssembler extends UnitAssembler {
 	public int maxGravity = 12;
 	public Color gravityColor = TektonColor.gravityColor;
     public float pulse = 0.3f, pulseScl = 10f;
@@ -49,7 +49,7 @@ public class GravitationalUnitAssembler extends TektonUnitAssembler {
         stats.add(TektonStat.gravityUse, maxGravity, TektonStatUnit.gravityPower);
     }
 
-	public class GravitationalUnitAssemblerBuild extends TektonUnitAssemblerBuild implements GravityConsumer {
+	public class GravitationalUnitAssemblerBuild extends UnitAssemblerBuild implements GravityConsumer {
 		public int gravity = 0;
         public float[] sideGravity = new float[4];
 
