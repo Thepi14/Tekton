@@ -3394,9 +3394,9 @@ public class TektonUnits {
                 heatColor = TektonLiquids.acid.color;
                 ejectEffect = Fx.none;
                 
-                loopSound = Sounds.shootSublimate;
+                activeSound = Sounds.shootSublimate;
+                activeSoundVolume = 1f;
                 shootSound = Sounds.none;
-                loopSoundVolume = 1f;
 
                 bullet = new ContinuousFlameBulletType(20) {{
                 	width = 4f;
